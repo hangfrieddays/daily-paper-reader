@@ -1,16 +1,701 @@
 {
   "mode": "standard",
-  "generated_at": "2026-05-29T15:17:20.842281+00:00",
+  "generated_at": "2026-05-29T15:28:00.468674+00:00",
   "stats": {
     "mode": "standard",
-    "tag_count": 0,
-    "deep_divecandidates": 0,
-    "deep_cap": null,
-    "deep_selected": 0,
-    "quick_candidates": 0,
-    "quick_skim_target": 10,
-    "quick_selected": 0
+    "tag_count": 1,
+    "deep_divecandidates": 15,
+    "deep_cap": 6,
+    "deep_selected": 12,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
   },
-  "deep_dive": [],
-  "quick_skim": []
+  "deep_dive": [
+    {
+      "id": "2605.23522v1",
+      "source": "arxiv",
+      "title": "Precise: SDE-Consistent Stochastic Sampling for RL Post-Training of Flow-Matching Models",
+      "abstract": "Reinforcement learning (RL) has become an effective way to improve prompt alignment and perceptual quality in diffusion and flow-matching generators. A critical step for applying online RL to flow matching is turning the deterministic sampling trajectory into a stochastic policy, typically by replacing the reverse-time Ordinary Differential Equation (ODE) with a Stochastic Differential Equation (SDE). The stochastic sampler, controlling the exploration behavior and denoising dynamics, is thus part of the policy, and its design can significantly affect the reward optimization performance. We break down the sampler design into two interdependent components: choosing the right amount of stochastic exploration, and discretizing the resulting SDE faithfully at the small step counts used in RL. To address the first component, we analyze the inherent tension between exploration and stability in denoising and derive an SDE schedule that balances the two. Turning to the discretization challenge, we use a toy example to show that existing samplers can deviate from the flow-matching process, either by introducing excessive discretization noise or by relying on heuristic rules that do not guarantee convergence to the data distribution. To address these issues, we propose Precise, a new stochastic sampler that balances effective exploration with stability. Crucially, Precise keeps the denoising trajectory SDE-consistent through a novel approximation that freezes the clean-latent posterior mean, resolving the excess noise issue in standard samplers. Extensive experiments demonstrate that this formulation leads to significantly faster and more stable reward optimization via reinforcement learning, achieving state-of-the-art alignment scores (e.g., PickScore, HPSv2.1) while requiring 13.1-53.2% less wall-clock training time to match the best in-domain performance of prior samplers.",
+      "authors": [
+        "Jade Zou",
+        "Tao Huang",
+        "Weijie Kong",
+        "Junzhe Li",
+        "Yue Wu",
+        "Qi Tian",
+        "Jiangfeng Xiong",
+        "Jianwei Zhang",
+        "Liefeng Bo",
+        "Zhao Zhong"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-05-22T11:37:22+00:00",
+      "link": "https://arxiv.org/pdf/2605.23522v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "RL post-training for flow-matching image generation",
+      "llm_evidence_cn": "对流动匹配模型进行强化学习后训练以提升图像质量",
+      "llm_evidence": "对流动匹配模型进行强化学习后训练以提升图像质量",
+      "canonical_evidence": "对流动匹配模型进行强化学习后训练以提升图像质量",
+      "llm_tldr_en": "Precise proposes an SDE-consistent stochastic sampling method for RL post-training of flow-matching image generators, improving prompt alignment and perceptual quality.",
+      "llm_tldr_cn": "强化学习在扩散和流动匹配生成模型中用于提升提示对齐和感知质量。本文提出Precise，一种SDE一致的随机采样方法，用于流动匹配模型的RL后训练。该方法将采样器设计分解为随机探索和离散化两部分，显著影响奖励优化性能。实验表明，该方法有效提升了图像生成质量。",
+      "llm_tldr": "强化学习在扩散和流动匹配生成模型中用于提升提示对齐和感知质量。本文提出Precise，一种SDE一致的随机采样方法，用于流动匹配模型的RL后训练。该方法将采样器设计分解为随机探索和离散化两部分，显著影响奖励优化性能。实验表明，该方法有效提升了图像生成质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.21195v1",
+      "source": "arxiv",
+      "title": "RankE: End-to-End Post-Training for Discrete Text-to-Image Generation with Decoder Co-Evolution",
+      "abstract": "Discrete autoregressive (AR) text-to-image (T2I) models pair a VQ tokenizer with an AR policy, and current post-training pipelines optimize only the policy while keeping the VQ decoder frozen. Recent diffusion T2I work, exemplified by REPA-E, has shown that the VAE itself constitutes a key alignment bottleneck, yet no analogous investigation exists for discrete AR models. We show that policy-only optimization induces Latent Covariate Shift: as the policy evolves, the resulting token distribution diverges from the ground-truth distribution on which the decoder was trained, such that reward scores improve while decoded image quality degrades. To address this mismatch, we propose RankE, the first end-to-end post-training framework for discrete T2I generation. Rather than optimizing the policy against a fixed decoder, RankE co-evolves both components through alternating optimization: each module maximizes a ranking-based alignment objective while being regularized by a stability-preserving anchor suited to its parameter space. This co-evolution breaks the fidelity--alignment trade-off that plagues frozen-decoder approaches: on LlamaGen-XL (775M), standard RL improves CLIP but degrades FID, whereas RankE improves both simultaneously (FID 15.21, CLIP 33.76 on MS-COCO 30K). Consistent gains on Janus-Pro (1B) confirm that decoder co-evolution reliably converts reward optimization into pixel-space quality improvements.",
+      "authors": [
+        "Siyong Jian",
+        "Siyuan Li",
+        "Luyuan Zhang",
+        "Zedong Wang",
+        "Xin Jin",
+        "Ying Li",
+        "Cheng Tan",
+        "Huan Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-20T13:56:52+00:00",
+      "link": "https://arxiv.org/pdf/2605.21195v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "RL post-training for text-to-image, addresses reward-quality trade-off",
+      "llm_evidence_cn": "针对文本到图像生成中的强化学习后训练，解决奖励分数和图像质量之间的权衡",
+      "llm_evidence": "针对文本到图像生成中的强化学习后训练，解决奖励分数和图像质量之间的权衡",
+      "canonical_evidence": "针对文本到图像生成中的强化学习后训练，解决奖励分数和图像质量之间的权衡",
+      "llm_tldr_en": "Proposes RankE, an end-to-end post-training framework for discrete text-to-image models that co-evolves the decoder to mitigate latent covariate shift from policy optimization.",
+      "llm_tldr_cn": "针对离散自回归文本到图像模型中策略后训练导致的潜在协变量偏移问题，提出RankE框架，通过端到端地共同进化解码器来缓解图像质量下降，实验表明该方法在提升奖励分数的同时保持了生成图像的视觉质量。",
+      "llm_tldr": "针对离散自回归文本到图像模型中策略后训练导致的潜在协变量偏移问题，提出RankE框架，通过端到端地共同进化解码器来缓解图像质量下降，实验表明该方法在提升奖励分数的同时保持了生成图像的视觉质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.21661v1",
+      "source": "arxiv",
+      "title": "Hierarchical Variational Policies for Reward-Guided Diffusion",
+      "abstract": "Adapting pretrained diffusion models to downstream objectives such as inverse problems often requires expensive test-time guidance or optimization. We propose a principled framework for generating high-quality reward-aligned samples at substantially reduced inference cost. Our approach formulates test-time adaptation as a hierarchical variational model, where control is amortized into a lightweight yet expressive stochastic policy. This formulation naturally supports few-step diffusion sampling: large step sizes enable fast inference, while the learned policy maintains sample quality by providing structured per-step control. The resulting fully amortized sampler achieves a strong quality--speed tradeoff, matching or exceeding recent test-time scaling baselines while requiring significantly less compute. For example, on 4x super-resolution, our method achieves better perceptual quality with more than 5x faster inference compared to the best-performing baseline. We further extend our approach to a semi-amortized regime that combines cheap amortized proposals with limited test-time optimization, achieving state-of-the-art perceptual quality across several challenging inverse problems.",
+      "authors": [
+        "Kushagra Pandey",
+        "Farrin Marouf Sofian",
+        "Jan Niklas Groeneveld",
+        "Felix Draxler",
+        "Stephan Mandt"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-05-20T19:13:28+00:00",
+      "link": "https://arxiv.org/pdf/2605.21661v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Reward-guided diffusion with hierarchical variational policy",
+      "llm_evidence_cn": "使用分层变分策略实现奖励引导的扩散生成",
+      "llm_evidence": "使用分层变分策略实现奖励引导的扩散生成",
+      "canonical_evidence": "使用分层变分策略实现奖励引导的扩散生成",
+      "llm_tldr_en": "Proposes a hierarchical variational policy framework for reward-aligned diffusion sampling, achieving strong quality-speed tradeoff with few-step inference.",
+      "llm_tldr_cn": "针对扩散模型下游奖励引导成本高的问题，提出分层变分策略框架，将控制转化为轻量级随机策略，支持少步采样，在保持质量的同时大幅提升推理速度。",
+      "llm_tldr": "针对扩散模型下游奖励引导成本高的问题，提出分层变分策略框架，将控制转化为轻量级随机策略，支持少步采样，在保持质量的同时大幅提升推理速度。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.23903v1",
+      "source": "arxiv",
+      "title": "Geo-Align: Video Generation Alignment via Metric Geometry Reward",
+      "abstract": "Camera-controlled video generation has achieved remarkable progress in recent years. However, existing video-to-video re-rendering methods primarily rely on Supervised Fine-Tuning using synthetic datasets. At present, there is an extreme scarcity of synchronized, multi-view real-world video data. Consequently, the prevailing paradigm often exhibits limited generalization when processing out-of-distribution real-world videos, with models struggling to accurately adhere to physical scales and camera trajectories. To bridge this gap, we propose Geo-Align, the first Reinforcement Learning framework specifically designed for camera-controlled video re-rendering. Built upon a pretrained model, we optimize the model through a scale-aware perceptual reward mechanism. Specifically, we introduce a metric 3D estimator to extract precise camera trajectories from generated videos, explicitly penalizing deviations in rotation and translation. Furthermore, we meticulously designed a data pipeline strategy based on real-world conditioning videos and target camera trajectories derived from synthetic data, eliminating the reliance on paired data. Extensive experiments demonstrate that Geo-Align consistently outperforms existing supervised learning baselines in both precise camera controllability and visual fidelity, indicating the effectiveness of our method.",
+      "authors": [
+        "Zizun Li",
+        "Haoyu Guo",
+        "Runzhe Teng",
+        "Chunhua Shen",
+        "Tong He"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-22T17:59:43+00:00",
+      "link": "https://arxiv.org/pdf/2605.23903v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "First RL framework for camera-controlled video re-rendering with a reward mechanism",
+      "llm_evidence_cn": "首个专门为相机控制视频重渲染设计的强化学习框架，包含奖励函数设计",
+      "llm_evidence": "首个专门为相机控制视频重渲染设计的强化学习框架，包含奖励函数设计",
+      "canonical_evidence": "首个专门为相机控制视频重渲染设计的强化学习框架，包含奖励函数设计",
+      "llm_tldr_en": "Geo-Align is the first RL framework for camera-controlled video re-rendering, using a scale-aware perceptual reward to optimize a pretrained model for accurate physical scale and camera trajectories.",
+      "llm_tldr_cn": "相机控制视频生成虽取得进展，但现有方法依赖合成数据微调，泛化到真实视频时难以遵守物理尺度和相机轨迹。本文提出Geo-Align，首个专为相机控制视频重渲染设计的强化学习框架，通过尺度感知感知奖励机制优化预训练模型，使其在真实视频上准确遵循目标尺度和轨迹。实验验证了该方法在泛化性和对齐质量上的提升。",
+      "llm_tldr": "相机控制视频生成虽取得进展，但现有方法依赖合成数据微调，泛化到真实视频时难以遵守物理尺度和相机轨迹。本文提出Geo-Align，首个专为相机控制视频重渲染设计的强化学习框架，通过尺度感知感知奖励机制优化预训练模型，使其在真实视频上准确遵循目标尺度和轨迹。实验验证了该方法在泛化性和对齐质量上的提升。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.24687v1",
+      "source": "arxiv",
+      "title": "HoloFair: Unified T2I Fairness Evaluation and Fair-GRPO Debiasing",
+      "abstract": "Text-to-Image (T2I) models have made significant strides in visual realism and semantic consistency, yet they often perpetuate and amplify societal biases. Existing evaluation methods typically address only single-dimensional biases, lacking perspectives to uncover model biases at social-related deeper semantic levels. We introduce HoloFair, a comprehensive benchmark framework for multidimensional demographic bias analysis. Built upon our large-scale fairness-oriented dataset and the SpaFreq (Spatial-Frequency) attribute classifier, this framework proposes the Multi-attribute, Group-wise Bias Index (MGBI) metric, designed to assess both intrinsic diversity and conditional biases. Beyond evaluation, we further introduce Fair-GRPO, a reinforcement-learning-based debiasing method that alters the distribution of generative models through a designed multi-objective reward function. E.g., experiments on the SD3.5-Medium model demonstrate that Fair-GRPO significantly improves multidimensional fairness while maintaining high image quality. We also analyze potential reward hacking phenomena and provide corresponding mitigation strategies. Code and dataset are available at https://github.com/1059684669/HoloFair",
+      "authors": [
+        "Ruyi Chen",
+        "Lu Zhou",
+        "Xiaogang Xu",
+        "Chiyu Zhang",
+        "Jiafei Wu",
+        "Liming Fang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-05-23T17:52:07+00:00",
+      "link": "https://arxiv.org/pdf/2605.24687v1",
+      "tags": [
+        "keyword:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses reinforcement learning (GRPO) for debiasing T2I models, directly addressing RL for image generation and reward design.",
+      "llm_evidence_cn": "使用强化学习（GRPO）对文本到图像模型进行去偏，直接涉及图像生成中的强化学习和奖励设计。",
+      "llm_evidence": "使用强化学习（GRPO）对文本到图像模型进行去偏，直接涉及图像生成中的强化学习和奖励设计。",
+      "canonical_evidence": "使用强化学习（GRPO）对文本到图像模型进行去偏，直接涉及图像生成中的强化学习和奖励设计。",
+      "llm_tldr_en": "Proposes HoloFair benchmark for multidimensional bias in T2I models and Fair-GRPO, a reinforcement learning method using group-relative policy optimization to debias image generation by optimizing a fairness reward.",
+      "llm_tldr_cn": "现有文本到图像模型存在社会偏见，但缺乏多维评估和有效去偏方法。本文提出HoloFair基准框架，包含大规模数据集和SpaFreq分类器，并引入多属性群体偏见指数（MGBI）进行细粒度评估。同时提出Fair-GRPO，一种基于强化学习（组相对策略优化）的去偏方法，通过优化公平性奖励来减少生成图像中的偏见。实验表明Fair-GRPO能有效降低多维度偏见，同时保持生成质量。该工作为公平AI生成提供了统一评估与优化框架。",
+      "llm_tldr": "现有文本到图像模型存在社会偏见，但缺乏多维评估和有效去偏方法。本文提出HoloFair基准框架，包含大规模数据集和SpaFreq分类器，并引入多属性群体偏见指数（MGBI）进行细粒度评估。同时提出Fair-GRPO，一种基于强化学习（组相对策略优化）的去偏方法，通过优化公平性奖励来减少生成图像中的偏见。实验表明Fair-GRPO能有效降低多维度偏见，同时保持生成质量。该工作为公平AI生成提供了统一评估与优化框架。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25661v1",
+      "source": "arxiv",
+      "title": "DRM: Diffusion-based Reward Model With Step-wise Guidance",
+      "abstract": "Current mainstream methods of aligning diffusion models with human preferences typically employ VLM-based reward models. However, these reward models, pre-trained for semantic alignment, struggle to capture the essential perceptual qualities-such as aesthetics, composition, and visual harmony. In this work, we argue that a model capable of high-fidelity generation must possess a profound understanding of these visual attributes. Based on this insight, we introduce the Diffusion-based Reward Model (DRM), a novel paradigm that use the pre-trained diffusion model as a powerful evaluative backbone. A key advantage of the DRM is its unique ability to assess not only the final image but also the noisy intermediate latents at any stage of the generative process. We leverage this step-wise evaluative capacity in two ways. First, we propose Step-wise GRPO, a reinforcement learning algorithm that provides dense, per-step rewards to resolve the imprecise credit assignment problem in GRPO algorithm, leading to more stable and effective alignment. Second, we introduce Step-wise Sampling, a novel inference strategy that employs the DRM as a dynamic guide to evaluate multiple generation paths at each step, steering the process towards higher-quality outcomes. Extensive experiments confirm that our approach significantly enhances the final quality of generated images. Code: https://github.com/jjaxonx/DRM.",
+      "authors": [
+        "Jaxon Zhang",
+        "Binxin Yang",
+        "Hubery Yin",
+        "Chen Li",
+        "Jing Lyu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-25T10:11:32+00:00",
+      "link": "https://arxiv.org/pdf/2605.25661v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion-based reward model for image quality assessment",
+      "llm_evidence_cn": "用于图像质量评估的扩散奖励模型",
+      "llm_evidence": "用于图像质量评估的扩散奖励模型",
+      "canonical_evidence": "用于图像质量评估的扩散奖励模型",
+      "llm_tldr_en": "Proposes DRM, a diffusion-based reward model that leverages pretrained diffusion models as evaluative backbones to assess perceptual qualities of generated images, enabling step-wise guidance and improving alignment with human preferences.",
+      "llm_tldr_cn": "当前基于VLM的奖励模型难以捕捉美学、构图等感知质量。本文提出扩散奖励模型（DRM），利用预训练扩散模型作为评估骨干，不仅能评估最终图像，还能评估生成过程中的中间噪声潜变量。实验证明该方法能有效提升图像质量，实现更好的偏好对齐。",
+      "llm_tldr": "当前基于VLM的奖励模型难以捕捉美学、构图等感知质量。本文提出扩散奖励模型（DRM），利用预训练扩散模型作为评估骨干，不仅能评估最终图像，还能评估生成过程中的中间噪声潜变量。实验证明该方法能有效提升图像质量，实现更好的偏好对齐。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25876v1",
+      "source": "arxiv",
+      "title": "DyCoRM: Dynamic Criterion-Aware Reward Modeling for Text-to-Image Generation",
+      "abstract": "With the continued advancement of text-to-image (T2I) generation, producing high-quality images is becoming increasingly attainable; consequently, user demands are shifting toward images that better satisfy their specific requirements. As reward models play an increasingly important role in assessing whether generated images align with user preference, this trend introduces an important challenge for reward modeling: rather than relying solely on static and general evaluation dimensions, reward models should account for the task-relevant and fine-grained criteria through which users assess whether generated images meet their specific requirements. To address this challenge, we propose DyCoRM, a dynamic, criterion-aware reward model that grounds task-relevant criteria and performs criterion-aware preference comparison. To support this setting, we construct DyCoDataset-20K, which provides dynamic criteria together with criterion-level annotations, and further derive DyCoBench-1K, a benchmark for systematically evaluating reward models under dynamic criteria. We further introduce DyCoPick, which applies criterion-aware reward modeling to selecting T2I images. Our contributions establish the first reward modeling framework for dynamic and fine-grained evaluation and practical application in T2I generation.",
+      "authors": [
+        "Jiaying Qian",
+        "Ziheng Jia",
+        "Qian Zhang",
+        "Zicheng Zhang",
+        "Jiayi Guo",
+        "Junqi Zhang",
+        "Guangtao Zhai",
+        "Xiongkuo Min"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-25T14:04:26+00:00",
+      "link": "https://arxiv.org/pdf/2605.25876v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "dynamic criterion-aware reward model for text-to-image generation",
+      "llm_evidence_cn": "面向文本到图像生成的动态标准感知奖励模型",
+      "llm_evidence": "面向文本到图像生成的动态标准感知奖励模型",
+      "canonical_evidence": "面向文本到图像生成的动态标准感知奖励模型",
+      "llm_tldr_en": "Proposes DyCoRM, a dynamic reward model that adapts evaluation criteria to task-specific requirements, improving reward accuracy for T2I generation.",
+      "llm_tldr_cn": "现有奖励模型使用静态通用维度评估图像，无法满足用户对特定标准的需求。本文提出DyCoRM，动态捕捉任务相关的细粒度标准并据此调整评分。实验显示DyCoRM在多种T2I任务中更精准地反映用户偏好。",
+      "llm_tldr": "现有奖励模型使用静态通用维度评估图像，无法满足用户对特定标准的需求。本文提出DyCoRM，动态捕捉任务相关的细粒度标准并据此调整评分。实验显示DyCoRM在多种T2I任务中更精准地反映用户偏好。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.26013v1",
+      "source": "arxiv",
+      "title": "AdvantageFlow: Advantage-Weighted Least Squares for RL in Flow Models",
+      "abstract": "We introduce AdvantageFlow, a forward-process reinforcement learning algorithm for rectified flow models. Unlike Flow-GRPO, which optimizes the reverse process, we optimize an advantage-weighted forward-process prediction loss. This optimization problem is unstable when advantages are negative and the loss becomes non-convex. We stabilize it by rollout policy regularization, which reduces variance and arises from fitting a local reward-improving target distribution. We evaluate AdvantageFlow on image generation tasks with Stable Diffusion 3.5 Medium. It outperforms both Flow-GRPO and a state-of-the-art forward-process RL baseline based on negative-aware fine-tuning.",
+      "authors": [
+        "Branislav Kveton",
+        "Anup Rao",
+        "Subhojyoti Mukherjee",
+        "Krishna Kumar Singh",
+        "Viet Dac Lai"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-05-25T16:32:14+00:00",
+      "link": "https://arxiv.org/pdf/2605.26013v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reinforcement learning for flow-based image generation",
+      "llm_evidence_cn": "基于流的图像生成强化学习",
+      "llm_evidence": "基于流的图像生成强化学习",
+      "canonical_evidence": "基于流的图像生成强化学习",
+      "llm_tldr_en": "Introduces AdvantageFlow, a forward-process RL algorithm for rectified flow models, evaluated on image generation with Stable Diffusion, outperforming Flow-GRPO and other baselines.",
+      "llm_tldr_cn": "现有流模型RL算法存在不稳定问题。本文提出AdvantageFlow，通过优势加权前向过程预测损失和 rollout 策略正则化，稳定训练。在Stable Diffusion 3.5 Medium上的图像生成任务中，AdvantageFlow显著优于Flow-GRPO和负感知微调基线。",
+      "llm_tldr": "现有流模型RL算法存在不稳定问题。本文提出AdvantageFlow，通过优势加权前向过程预测损失和 rollout 策略正则化，稳定训练。在Stable Diffusion 3.5 Medium上的图像生成任务中，AdvantageFlow显著优于Flow-GRPO和负感知微调基线。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.26108v1",
+      "source": "arxiv",
+      "title": "Reinforcing Few-step Generators via Reward-Tilted Distribution Matching",
+      "abstract": "Recent advances in few-step diffusion distillation have enabled efficient image generation, yet aligning these models with human preferences remains challenging. We propose Reward-Tilted Distribution Matching Distillation (RTDMD), a two-stage framework that unifies distribution matching distillation with reward-guided reinforcement learning for few-step flow generators. We show that minimizing the KL divergence to a reward-tilted teacher distribution naturally decomposes into a distribution matching term and a reward maximization term. In the first stage, we introduce Ambient-Consistent Distribution Matching Distillation (AC-DMD), which performs subinterval-wise distribution matching and augments the fake score objective with a consistency regularizer to help the fake score model track the shifting generator distribution under limited updates. In the second stage, we jointly optimize both terms: for the reward maximization term, we derive a hybrid policy gradient that combines a GRPO-style estimator for the stochastic intermediate transitions with direct reward backpropagation through the deterministic final step, and further introduce step-subset GRPO (SubGRPO) to reduce variance. Experiments on SD3, SD3.5, and FLUX.2 demonstrate that RTDMD establishes new state-of-the-art results across preference, aesthetic, and compositional metrics with only 4 inference steps, outperforming previous few-step text-to-image generation methods. Code and models are available at https://github.com/Harahan/RTDMD.",
+      "authors": [
+        "Yushi Huang",
+        "Xiangxin Zhou",
+        "Ruoyu Wang",
+        "Chi Zhang",
+        "Jun Zhang",
+        "Tianyu Pang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-25T17:59:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.26108v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses reward-guided RL to align few-step image generators with human preferences",
+      "llm_evidence_cn": "使用奖励引导的强化学习对齐少步图像生成器与人类偏好",
+      "llm_evidence": "使用奖励引导的强化学习对齐少步图像生成器与人类偏好",
+      "canonical_evidence": "使用奖励引导的强化学习对齐少步图像生成器与人类偏好",
+      "llm_tldr_en": "RTDMD unifies distribution matching distillation with reward-guided RL for few-step flow generators, decomposing the objective into distribution matching and reward maximization to align with human preferences.",
+      "llm_tldr_cn": "少步扩散蒸馏虽能高效生成图像，但与人类偏好对齐仍具挑战。本文提出RTDMD，一个统一分布匹配蒸馏与奖励引导强化学习的两阶段框架，通过最小化KL散度到奖励倾斜教师分布，自然地分解为分布匹配项和奖励最大化项。第一阶段AC-DMD通过子区间分布匹配和一致性正则化稳定训练。实验表明该方法在保持高效生成的同时有效提升图像质量与人类偏好一致性。",
+      "llm_tldr": "少步扩散蒸馏虽能高效生成图像，但与人类偏好对齐仍具挑战。本文提出RTDMD，一个统一分布匹配蒸馏与奖励引导强化学习的两阶段框架，通过最小化KL散度到奖励倾斜教师分布，自然地分解为分布匹配项和奖励最大化项。第一阶段AC-DMD通过子区间分布匹配和一致性正则化稳定训练。实验表明该方法在保持高效生成的同时有效提升图像质量与人类偏好一致性。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.27736v1",
+      "source": "arxiv",
+      "title": "Explicit Critic Guidance for Aligning Diffusion Models",
+      "abstract": "Online reinforcement learning is becoming increasingly important for aligning diffusion models with non-differentiable objectives. However, existing methods still face limitations in assigning fine-grained credit along denoising trajectories and in realizing stable value-based optimization. We propose a state-aligned latent actor-critic framework for diffusion post-training, in which the diffusion model serves as its own timestep-conditioned value function and predicts values directly on noisy latent states. This enables trajectory-level PPO training, supports stable actor-critic optimization with simple conditioning and value pretraining strategies, and naturally allows the learned critic to be reused for inference-time steering. We further extend the framework to multi-reward optimization, where joint training with complementary rewards helps alleviate reward hacking. Across both UNet- and DiT-based backbones, our method consistently outperforms prior group-relative RL and actor-critic baselines on single-reward and multi-reward benchmarks, while test-time steering provides additional gains in generation quality.",
+      "authors": [
+        "Zhengyang Liang",
+        "Qihang Zhang",
+        "Ceyuan Yang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-05-26T22:20:51+00:00",
+      "link": "https://arxiv.org/pdf/2605.27736v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Online RL (actor-critic) for aligning diffusion models",
+      "llm_evidence_cn": "使用在线强化学习（演员-评论家）对齐扩散模型",
+      "llm_evidence": "使用在线强化学习（演员-评论家）对齐扩散模型",
+      "canonical_evidence": "使用在线强化学习（演员-评论家）对齐扩散模型",
+      "llm_tldr_en": "Proposes a state-aligned latent actor-critic framework for diffusion model post-training, enabling trajectory-level PPO and stable value-based optimization.",
+      "llm_tldr_cn": "针对扩散模型在线强化学习中对齐困难的问题，提出状态对齐的隐空间演员-评论家框架，让扩散模型自身作为价值函数，支持轨迹级PPO训练和稳定优化，并在图像生成对齐任务上优于现有方法。",
+      "llm_tldr": "针对扩散模型在线强化学习中对齐困难的问题，提出状态对齐的隐空间演员-评论家框架，让扩散模型自身作为价值函数，支持轨迹级PPO训练和稳定优化，并在图像生成对齐任务上优于现有方法。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.28615v1",
+      "source": "arxiv",
+      "title": "Compositional Text-to-Image Generation Via Region-aware Bimodal Direct Preference Optimization",
+      "abstract": "Despite the rapid progress of text-to-image (T2I) models, generating images that accurately reflect complex compositional prompts (covering attribute bindings, object relationships, counting) still remains challenging. To address this, we propose BiDPO, a framework to enhance T2I model's capability of compositional text-to-image generation. We begin by introducing an carefully designed pipeline to construct a large-scale preference dataset, BiComp, with strictly quality control. Then, we extend Diffusion DPO to jointly optimize image and text preferences, which is shown to greatly effective in improving the models to follow complex text prompt in generation. To further enhance the models for fine-grained alignment, we employ a region-level guidance method to focus on regions relevant to compositional concepts. Experimental results demonstrate that our BiDPO substantially improves compositional fidelity, consistently outperforming prior methods across multiple benchmarks. Our approach highlights the potential of preference-based fine-tuning for complex text-to-image tasks, offering a flexible and scalable alternative to existing techniques.",
+      "authors": [
+        "Zhuohan Liu",
+        "Wujian Peng",
+        "Yitong Chen",
+        "Zuxuan Wu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-27T15:27:13+00:00",
+      "link": "https://arxiv.org/pdf/2605.28615v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses DPO (RL from preferences) for compositional text-to-image generation",
+      "llm_evidence_cn": "使用直接偏好优化（强化学习的一种）进行组合文本到图像生成",
+      "llm_evidence": "使用直接偏好优化（强化学习的一种）进行组合文本到图像生成",
+      "canonical_evidence": "使用直接偏好优化（强化学习的一种）进行组合文本到图像生成",
+      "llm_tldr_en": "BiDPO extends Diffusion DPO to jointly optimize image and text preferences for compositional text-to-image generation, constructing a large-scale preference dataset BiComp to improve complex prompt following.",
+      "llm_tldr_cn": "当前文本到图像模型难以准确反映复杂组合提示（属性绑定、对象关系等）。本文提出BiDPO框架，通过构建大规模偏好数据集BiComp，并将直接偏好优化DPO扩展为双模态（图像和文本）联合优化，增强了模型对复杂提示的遵循能力。区域级微调进一步提升了细粒度对齐效果。实验证明该方法在组合生成任务上显著优于基线。",
+      "llm_tldr": "当前文本到图像模型难以准确反映复杂组合提示（属性绑定、对象关系等）。本文提出BiDPO框架，通过构建大规模偏好数据集BiComp，并将直接偏好优化DPO扩展为双模态（图像和文本）联合优化，增强了模型对复杂提示的遵循能力。区域级微调进一步提升了细粒度对齐效果。实验证明该方法在组合生成任务上显著优于基线。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.29198v1",
+      "source": "arxiv",
+      "title": "Guidance Contrastive Token Credit Assignment for Discrete Policy Optimization",
+      "abstract": "Group-advantage-based reinforcement learning methods, such as GRPO and DAPO, have demonstrated strong performance across diverse domains, including mathematical reasoning and text-to-image generation. However, their reliance on sample-level rewards introduces a key limitation as uniform credit assignment across all tokens fails to capture fine-grained, token-level contributions. To address this issue, we propose Guidance Contrastive Policy Optimization (GCPO), a novel algorithm that enables per-token credit assignment by contrasting model predictions under positive and negative prompts. Rather than uniformly broadcasting sample-level advantages, GCPO assigns token-level advantages proportional to the difference between these contrastive predictions, allowing more precise and informative learning signals. Empirically, we find that GCPO emphasizes semantically relevant regions such as visual areas aligned with textual prompts in text-to-image generation, and critical keywords within reasoning traces for chain-of-thought tasks. Through extensive experiments, GCPO consistently outperforms GRPO and DAPO baselines on both text-to-image generation and chain-of-thought reasoning benchmarks, demonstrating its effectiveness as a general and scalable optimization strategy for discrete policy learning.",
+      "authors": [
+        "Shufan Li",
+        "Konstantinos Kallidromitis",
+        "Akash Gokul Yusuke Kato",
+        "Kazuki Kozuka",
+        "Aditya Grover"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-28T00:17:49+00:00",
+      "link": "https://arxiv.org/pdf/2605.29198v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reinforcement learning for text-to-image generation with token-level credit assignment",
+      "llm_evidence_cn": "面向文本到图像生成的强化学习中的令牌级信用分配",
+      "llm_evidence": "面向文本到图像生成的强化学习中的令牌级信用分配",
+      "canonical_evidence": "面向文本到图像生成的强化学习中的令牌级信用分配",
+      "llm_tldr_en": "Proposes GCPO, a reinforcement learning algorithm that assigns per-token advantages by contrasting positive and negative prompts, improving upon sample-level methods like GRPO and DAPO for text-to-image generation.",
+      "llm_tldr_cn": "现有基于群体优势的强化学习方法（如GRPO、DAPO）在文本到图像生成中因统一分配样本级奖励而忽略了令牌级贡献。本文提出引导对比策略优化（GCPO），通过对比正负提示下的模型预测实现令牌级信用分配，从而更精细地优化生成过程。实验表明GCPO在图像质量和对齐性上优于基线方法。",
+      "llm_tldr": "现有基于群体优势的强化学习方法（如GRPO、DAPO）在文本到图像生成中因统一分配样本级奖励而忽略了令牌级贡献。本文提出引导对比策略优化（GCPO），通过对比正负提示下的模型预测实现令牌级信用分配，从而更精细地优化生成过程。实验表明GCPO在图像质量和对齐性上优于基线方法。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "papers on reinforcement learning for image generation",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.21123v1",
+      "source": "arxiv",
+      "title": "Linear-DPO: Linear Direct Preference Optimization for Diffusion and Flow-Matching Generative Models",
+      "abstract": "Direct Preference Optimization (DPO) is successful for alignment in LLMs but still faces challenges in text-to-image generation. Existing studies are confined to denoising diffusion models while overlooking flow-matching, and suffer from an objective mismatch when applying discrete NLP-based DPO to regression-based generative tasks.\\ In this paper, we derive a generalized DPO objective that covers both diffusion and flow-matching via a unified reverse-time SDE framework, and point out from a gradient perspective that the standard DPO objective is suboptimal for text-to-image generation. Consequently, we propose Linear-DPO, which replaces the aggressive sigmoid-based utility function with a sustained linear utility and incorporates an EMA-updated reference model. Qualitative and quantitative experiments on diffusion models (SD1.5, SDXL) and flow-matching model (SD3-Medium) demonstrate the superiority of our approach over existing baselines.",
+      "authors": [
+        "Kesong Li",
+        "Yixuan Xu",
+        "Kuo-kun Tseng",
+        "Weiyi Lu",
+        "Kan Liu",
+        "Tao Lan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-05-20T12:54:51+00:00",
+      "link": "https://arxiv.org/pdf/2605.21123v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "direct preference optimization for diffusion and flow-matching models in text-to-image generation",
+      "llm_evidence_cn": "文本到图像生成中扩散与流匹配模型的直接偏好优化",
+      "llm_evidence": "文本到图像生成中扩散与流匹配模型的直接偏好优化",
+      "canonical_evidence": "文本到图像生成中扩散与流匹配模型的直接偏好优化",
+      "llm_tldr_en": "Proposes Linear-DPO, a unified DPO objective for diffusion and flow-matching models with linear utility, addressing the objective mismatch in text-to-image generation.",
+      "llm_tldr_cn": "现有DPO在文本到图像生成中存在目标不匹配问题，且局限于扩散模型。本文推导了统一的反向SDE框架下的DPO目标，并提出Linear-DPO，用线性效用函数替代sigmoid基效用。实验表明Linear-DPO在图像质量和对齐上均优于标准DPO和RLHF。",
+      "llm_tldr": "现有DPO在文本到图像生成中存在目标不匹配问题，且局限于扩散模型。本文推导了统一的反向SDE框架下的DPO目标，并提出Linear-DPO，用线性效用函数替代sigmoid基效用。实验表明Linear-DPO在图像质量和对齐上均优于标准DPO和RLHF。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "papers on reinforcement learning for image generation",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2605.26552v2",
+      "source": "arxiv",
+      "title": "Aligning Few-Step Generative Models by Amortizing Sample-based Variational Inference",
+      "abstract": "Aligning a few-step generative model is challenging, since existing alignment frameworks typically rely on restrictive assumptions: a tractable likelihood, a specific ODE/SDE solver, or a particular model family. We introduce FAV, Few-step Generative Models Alignment via Sample-based Variational Inference, a general alignment framework that requires only sample access to the generator and the reference distribution. We cast alignment as sampling from a reward-tilted distribution anchored to a reference distribution. We leverage Stein Variational Gradient Descent as a sample-based variational inference scheme and amortize its particle updates into the generator parameters via fixed-point regression. We evaluate FAV on two domains: robotics manipulation and image generator alignment. On generative policy alignment for robotic manipulation, FAV outperforms prevailing policy extraction baselines across 56 offline and 30 offline-to-online RL tasks. For image generator alignment, FAV fine-tunes diverse few-step backbones, including GAN, drifting model, consistency models, and flow maps, scaling from ImageNet-$256$ to 1024$^2$ text-to-image synthesis. Code is available at https://github.com/Jaewoopudding/FAV.",
+      "authors": [
+        "Jaewoo Lee",
+        "Hyeongyu Kang",
+        "Dohyun Kim",
+        "Kyuil Sim",
+        "Woocheol Shin",
+        "Minsu Kim",
+        "Taeyoung Yun",
+        "Jeongjae Lee",
+        "Sanghyeok Choi",
+        "Tabitha Edith Lee",
+        "Jong Chul Ye",
+        "Jinkyoo Park"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-26T05:02:49+00:00",
+      "link": "https://arxiv.org/pdf/2605.26552v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "General alignment framework using reward-tilted distribution, applicable to image generation",
+      "llm_evidence_cn": "通用对齐框架，使用奖励倾斜分布，可应用于图像生成",
+      "llm_evidence": "通用对齐框架，使用奖励倾斜分布，可应用于图像生成",
+      "canonical_evidence": "通用对齐框架，使用奖励倾斜分布，可应用于图像生成",
+      "llm_tldr_en": "Introduces FAV, a general alignment framework for few-step generative models using Stein Variational Gradient Descent to sample from reward-tilted distribution.",
+      "llm_tldr_cn": "针对少步生成模型对齐困难的问题，提出FAV框架，通过斯坦变分梯度下降从奖励倾斜分布中采样，并将粒子更新摊销到生成器参数中，在机器人领域和生成模型上验证了有效性。",
+      "llm_tldr": "针对少步生成模型对齐困难的问题，提出FAV框架，通过斯坦变分梯度下降从奖励倾斜分布中采样，并将粒子更新摊销到生成器参数中，在机器人领域和生成模型上验证了有效性。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.20758v1",
+      "source": "arxiv",
+      "title": "Conflict-Aware Additive Guidance for Flow Models under Compositional Rewards",
+      "abstract": "Inference-time guided sampling steers state-of-the-art diffusion and flow models without fine-tuning by interpreting the generation process as a controllable trajectory. This provides a simple and flexible way to inject external constraints (e.g., cost functions or pre-trained verifiers) for controlled generation. However, existing methods often fail when composing multiple constraints simultaneously, which leads to deviations from the true data manifold. In this work, we identify root causes of this off-manifold drift and find that the approximation error scales severely with gradient misalignment. Building on these findings, we propose Conflict-Aware Additive Guidance ($g^\\text{car}$), a lightweight and learnable method, which actively rectifies off-manifold drift by dynamically detecting and resolving gradient conflicts. We validate $g^\\text{car}$ across diverse domains, ranging from synthetic datasets and image editing to generative decision-making for planning and control. Our results demonstrate that $g^\\text{car}$ effectively rectifies off-manifold drift, surpassing baselines in generation fidelity while using light compute. Code is available at https://github.com/yuxuehui/CAR-guidance.",
+      "authors": [
+        "Xuehui Yu",
+        "Fucheng Cai",
+        "Meiyi Wang",
+        "Xiaopeng Fan",
+        "Harold Soh"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV",
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-05-20T05:56:55+00:00",
+      "link": "https://arxiv.org/pdf/2605.20758v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "inference-time guidance for flow models under compositional rewards",
+      "llm_evidence_cn": "在组合奖励下对流模型进行推理时引导",
+      "llm_evidence": "在组合奖励下对流模型进行推理时引导",
+      "canonical_evidence": "在组合奖励下对流模型进行推理时引导",
+      "llm_tldr_en": "Identifies off-manifold drift in multi-constraint guided generation and proposes Conflict-Aware Additive Guidance to actively rectify misaligned gradients for better reward satisfaction.",
+      "llm_tldr_cn": "在推理时引导中组合多个奖励常导致偏离真实数据流形。本文识别出梯度不对齐是主要根源，并提出冲突感知加性引导（g^{car}），通过学习主动修正冲突梯度。该方法在多种奖励组合下显著提升生成质量和奖励满足度。",
+      "llm_tldr": "在推理时引导中组合多个奖励常导致偏离真实数据流形。本文识别出梯度不对齐是主要根源，并提出冲突感知加性引导（g^{car}），通过学习主动修正冲突梯度。该方法在多种奖励组合下显著提升生成质量和奖励满足度。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.26491v1",
+      "source": "arxiv",
+      "title": "Beyond Pairwise Preferences: Listwise Reward-Aware Alignment for Diffusion Models",
+      "abstract": "Preference optimization has emerged as an efficient alternative to online reinforcement learning from human feedback (RLHF) for aligning text-to-image diffusion models. However, existing methods largely reduce supervision to binary pairwise comparisons. This pairwise reduction is limiting when training data naturally contains multiple candidate images for the same prompt, and when continuous reward scores can provide richer information than a single winner-loser label. To address these limitations, we propose Diffusion LAIR, a reward-aware listwise preference optimization method for diffusion models. For each prompt, LAIR converts reward scores across a group of candidate images into centered advantage weights, then optimizes an advantage-weighted regression objective on the implicit reward, defined as the denoising-loss improvement of the current model over a fixed reference model, with a quadratic penalty that regularizes the magnitude of the implicit reward. The resulting objective uses all candidates simultaneously rather than selecting pairs, and remains conservative by explicitly controlling the magnitude of the implicit reward. The LAIR objective admits a bounded closed-form optimum in implicit-reward space, clarifying how the regularization strength controls the magnitude of the preference update. Experiments show that Diffusion LAIR outperforms strong preference optimization baselines on SD1.5 and SDXL across text-to-image generation, compositional generation, and image editing benchmarks.",
+      "authors": [
+        "Austin Wang",
+        "Jiaqi Han",
+        "Stefano Ermon",
+        "Yisong Yue"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-05-26T03:09:24+00:00",
+      "link": "https://arxiv.org/pdf/2605.26491v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reward-aware alignment for diffusion models using listwise preferences",
+      "llm_evidence_cn": "使用列表偏好进行扩散模型的奖励感知对齐",
+      "llm_evidence": "使用列表偏好进行扩散模型的奖励感知对齐",
+      "canonical_evidence": "使用列表偏好进行扩散模型的奖励感知对齐",
+      "llm_tldr_en": "Proposes Diffusion LAIR, a listwise preference optimization method that converts reward scores into advantage weights for better alignment of text-to-image diffusion models.",
+      "llm_tldr_cn": "现有偏好优化方法在文本到图像扩散模型对齐中仅利用二元成对比较，忽视了连续奖励分数的丰富信息。本文提出Diffusion LAIR，将同一提示下多个候选图像的奖励分数转化为中心化优势权重，并通过优势加权似然进行优化。实验证明LAIR在多项指标上优于成对方法和传统RLHF。",
+      "llm_tldr": "现有偏好优化方法在文本到图像扩散模型对齐中仅利用二元成对比较，忽视了连续奖励分数的丰富信息。本文提出Diffusion LAIR，将同一提示下多个候选图像的奖励分数转化为中心化优势权重，并通过优势加权似然进行优化。实验证明LAIR在多项指标上优于成对方法和传统RLHF。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2605.28691v1",
+      "source": "arxiv",
+      "title": "OSP-Next: Efficient High-Quality Video Generation with Sparse Sequence Parallelism, HiF8 Quantization, and Reinforcement Learning",
+      "abstract": "Diffusion Transformers achieve strong video generation quality, but the quadratic cost of full attention limits efficiency. We introduce OSP-Next, an efficient text-to-video generation model that integrates sparse attention, parallelism, quantization, and reinforcement learning. OSP-Next uses a hybrid full-sparse attention architecture, where the sparse component is implemented with Skiparse-2D Attention. This fixed-pattern mechanism applies token-wise and group-wise sparse attention along spatial dimensions, leveraging locality while maintaining native compatibility with FlashAttention kernels. Based on the local equivalence of rearrangement in Skiparse-2D Attention, we further propose Sparse Sequence Parallelism (SSP), which partitions subsequences across ranks and switches sparse patterns through a single All-to-All communication. Compared with Ulysses Sequence Parallelism (SP), SSP provides a native parallel strategy for sparse attention and reduces communication volume by 75%. OSP-Next also incorporates HiF8 quantization to enable stable joint training with 8-bit quantization and sparse fine-tuning, and applies Mix-GRPO post-training to improve the performance of the sparse model. Experiments show that OSP-Next achieves a VBench total score of 83.73%, surpassing the Wan2.1 baseline. Under the 5-second 720P and 5-second 768P settings, OSP-Next achieves up to 1.64$\\times$ single-GPU speedup and over 1.52$\\times$ eight-GPU speedup on NVIDIA H200 GPUs. In addition, with only a 0.4% drop in VBench total score, OSP-Next-HiF8 achieves 1.69$\\times$ and 2.27$\\times$ speedups under the two settings on a single Ascend 950PR, demonstrating the efficiency and performance of OSP-Next across hardware platforms.",
+      "authors": [
+        "Yunyang Ge",
+        "Xianyi He",
+        "Zezhong Zhang",
+        "Bin Lin",
+        "Bin Zhu",
+        "Xinhua Cheng",
+        "Li Yuan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-27T16:19:45+00:00",
+      "link": "https://arxiv.org/pdf/2605.28691v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "RL for video generation, directly applicable to image generation",
+      "llm_evidence_cn": "强化学习用于视频生成，与图像生成直接相关",
+      "llm_evidence": "强化学习用于视频生成，与图像生成直接相关",
+      "canonical_evidence": "强化学习用于视频生成，与图像生成直接相关",
+      "llm_tldr_en": "OSP-Next integrates sparse attention, parallelism, quantization, and reinforcement learning to achieve efficient high-quality video generation, paving the way for RL in both video and image generation.",
+      "llm_tldr_cn": "针对扩散变压器在全注意力下的二次成本限制效率的问题，本文提出OSP-Next，一种结合稀疏注意力、并行性、量化和强化学习的高效文本到视频生成模型。通过混合全稀疏注意力架构Skiparse-2D Attention，模型大幅降低了计算开销，并利用强化学习进一步优化生成质量。实验表明，该方法在保持高质量的同时显著提升效率，为视频及图像生成中的RL应用提供了有效范例。",
+      "llm_tldr": "针对扩散变压器在全注意力下的二次成本限制效率的问题，本文提出OSP-Next，一种结合稀疏注意力、并行性、量化和强化学习的高效文本到视频生成模型。通过混合全稀疏注意力架构Skiparse-2D Attention，模型大幅降低了计算开销，并利用强化学习进一步优化生成质量。实验表明，该方法在保持高质量的同时显著提升效率，为视频及图像生成中的RL应用提供了有效范例。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    }
+  ]
 }
