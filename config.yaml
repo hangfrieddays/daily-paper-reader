@@ -25,5 +25,48 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
-  intent_profiles: []
-source_backends: {}
+  intent_profiles:
+    - tag: image-gen-rl
+      description: 找图像生成领域用到强化学习的论文
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: image generation reinforcement learning
+          keyword_cn: 图像生成强化学习
+          query: reinforcement learning for image generation
+        - keyword: reward function image generation
+          keyword_cn: 奖励函数图像生成
+          query: designing reward functions for image generation tasks
+      intent_queries:
+        - query: papers on reinforcement learning for image generation
+          query_cn: 关于图像生成强化学习的论文
+          enabled: true
+          source: manual
+          note: ''
+        - query: how to use reinforcement learning to improve image quality in generation
+          query_cn: 如何使用强化学习提高生成图像质量
+          enabled: true
+          source: manual
+          note: ''
+        - query: survey of reinforcement learning in image synthesis
+          query_cn: 图像合成中强化学习的综述
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-05-29T15:23:24.363Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
