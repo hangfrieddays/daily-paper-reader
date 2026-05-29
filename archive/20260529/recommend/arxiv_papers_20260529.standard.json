@@ -1,0 +1,170 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-29T20:50:25.868354+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2605.25759v1",
+      "source": "arxiv",
+      "title": "Towards Anatomically Plausible Human Image Generation via Synthetic Localized Preferences",
+      "abstract": "Large-scale text-to-image foundation models have achieved remarkable visual realism, yet generating human images with correct anatomical structures remains challenging. Existing approaches enforce anatomical constraints through part-specific modules or localized loss weighting during supervised fine-tuning on high-quality human photos, but such datasets are limited and often provide ambiguous optimization signals due to confounding factors such as lighting, pose, and background. Preference-based alignment offers an alternative, but standard Direct Preference Optimization (DPO) treats all pixels equally and therefore fails to exploit the localized nature of anatomical artifacts. To address this, we propose the framework of Alignment via Synthetic Anatomical Preference (ASAP), which constructs controlled preference pairs through a localized degradation mechanism applied to high-fidelity human images. This mechanism performs a controlled experiment on images by introducing explicit anatomical errors in targeted regions while preserving the remaining content. With this mechanism, we create the Human Anatomical Preference (HAP) dataset with over 10K curated pairs for effective anatomical alignment of text-to-image human image generative models. To better leverage the locality of these controlled preference pairs, we introduce a localized and margin-bounded variant of DPO that prioritizes optimization in targeted anatomical regions while enforcing a finite preference margin to prevent over-optimization and preserve global semantics. We further introduce HAF-Bench, a benchmark for systematic evaluation of anatomical fidelity. Extensive experiments demonstrate that ASAP consistently reduces anatomical errors across multiple foundation models while maintaining overall image quality.",
+      "authors": [
+        "Bao Li",
+        "Yuliang Xiu",
+        "Zhen Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-25T12:10:23+00:00",
+      "link": "https://arxiv.org/pdf/2605.25759v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "preference-based alignment for anatomical plausibility",
+      "llm_evidence_cn": "基于偏好的对齐，用于解剖合理性",
+      "llm_evidence": "基于偏好的对齐，用于解剖合理性",
+      "canonical_evidence": "基于偏好的对齐，用于解剖合理性",
+      "llm_tldr_en": "Uses synthetic localized preferences and a modified DPO to enforce anatomical correctness in human image generation, improving generation quality.",
+      "llm_tldr_cn": "针对文本到图像模型生成人体解剖结构不合理的问题，提出合成局部偏好对齐框架。通过模拟局部偏好数据并改进直接偏好优化，在保持整体真实感的同时显著提升解剖正确性。实验证明该方法优于监督微调和标准DPO，为高质量人体图像生成提供了新思路。",
+      "llm_tldr": "针对文本到图像模型生成人体解剖结构不合理的问题，提出合成局部偏好对齐框架。通过模拟局部偏好数据并改进直接偏好优化，在保持整体真实感的同时显著提升解剖正确性。实验证明该方法优于监督微调和标准DPO，为高质量人体图像生成提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.26108v2",
+      "source": "arxiv",
+      "title": "Reinforcing Few-step Generators via Reward-Tilted Distribution Matching",
+      "abstract": "Recent advances in few-step diffusion distillation have enabled efficient image generation, yet aligning these models with human preferences remains challenging. We propose Reward-Tilted Distribution Matching Distillation (RTDMD), a two-stage framework that unifies distribution matching distillation with reward-guided reinforcement learning for few-step flow generators. We show that minimizing the KL divergence to a reward-tilted teacher distribution naturally decomposes into a distribution matching term and a reward maximization term. In the first stage, we introduce Ambient-Consistent Distribution Matching Distillation (AC-DMD), which performs subinterval-wise distribution matching and augments the fake score objective with a consistency regularizer to help the fake score model track the shifting generator distribution under limited updates. In the second stage, we jointly optimize both terms: for the reward maximization term, we derive a hybrid policy gradient that combines a GRPO-style estimator for the stochastic intermediate transitions with direct reward backpropagation through the deterministic final step, and further introduce step-subset GRPO (SubGRPO) to reduce variance. Experiments on SD3, SD3.5, and FLUX.2 demonstrate that RTDMD establishes new state-of-the-art results across preference, aesthetic, and compositional metrics with only 4 inference steps, outperforming previous few-step text-to-image generation methods. Code and models are available at https://github.com/Harahan/RTDMD.",
+      "authors": [
+        "Yushi Huang",
+        "Xiangxin Zhou",
+        "Ruoyu Wang",
+        "Chi Zhang",
+        "Jun Zhang",
+        "Tianyu Pang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-25T17:59:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.26108v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "unifies distribution matching distillation with reward-guided RL for few-step image generators",
+      "llm_evidence_cn": "将分布匹配蒸馏与奖励引导的强化学习统一用于少步图像生成器",
+      "llm_evidence": "将分布匹配蒸馏与奖励引导的强化学习统一用于少步图像生成器",
+      "canonical_evidence": "将分布匹配蒸馏与奖励引导的强化学习统一用于少步图像生成器",
+      "llm_tldr_en": "Proposes a two-stage framework combining distribution matching distillation and reward-guided RL to align few-step flow generators with human preferences.",
+      "llm_tldr_cn": "该论文针对少步扩散蒸馏模型与人类偏好对齐困难的问题，提出了奖励倾斜分布匹配蒸馏（RTDMD）框架。该框架将KL散度最小化分解为分布匹配项和奖励最大化项。第一阶段提出环境一致分布匹配蒸馏（AC-DMD），通过子区间分布匹配和一致性正则化提升生成质量；第二阶段利用奖励引导进一步优化。实验证明该方法在少步生成器上显著提升了图像质量和对齐度。该工作为图像生成中的奖励函数设计与RL应用提供了统一框架。",
+      "llm_tldr": "该论文针对少步扩散蒸馏模型与人类偏好对齐困难的问题，提出了奖励倾斜分布匹配蒸馏（RTDMD）框架。该框架将KL散度最小化分解为分布匹配项和奖励最大化项。第一阶段提出环境一致分布匹配蒸馏（AC-DMD），通过子区间分布匹配和一致性正则化提升生成质量；第二阶段利用奖励引导进一步优化。实验证明该方法在少步生成器上显著提升了图像质量和对齐度。该工作为图像生成中的奖励函数设计与RL应用提供了统一框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.30257v1",
+      "source": "arxiv",
+      "title": "Stable-Layers: Fine-Tuning Image Layer Decomposition Models with VLM-Scored Reinforcement Learning",
+      "abstract": "We present Stable-Layers, a reinforcement learning framework that eliminates the need for paired supervision by fine-tuning a pretrained layer decomposition model using only feedback from a vision-language model (VLM). Starting from Qwen-Image-Layered, we apply Flow-GRPO with LoRA adaptation, sampling multiple candidate decompositions per image, scoring them with a VLM, and optimising the policy from group-relative advantages. The key challenge lies in designing a reliable reward signal: VLMs scoring samples in isolation tend to compress their judgements into a narrow band, leaving GRPO with little within-group variance to learn from. We address this with a two-stage evaluation pipeline that pairs structured per-sample scoring across five edit-centric criteria with a grid-based calibration step in which the VLM re-scores all candidates side-by-side. Stable-Layers produces decompositions with stronger layer separation, fewer blank or artifact-heavy layers, and lower per-layer reconstruction error on the Crello dataset compared to the base model.",
+      "authors": [
+        "Ciara Rowles",
+        "Reshinth Adithyan",
+        "Nikhil Pinnaparaju",
+        "Vikram Voleti",
+        "Mark Boss"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-28T17:20:31+00:00",
+      "link": "https://arxiv.org/pdf/2605.30257v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "RL fine-tuning for image layer decomposition with VLM reward",
+      "llm_evidence_cn": "使用强化学习和VLM评分微调图像分解模型",
+      "llm_evidence": "使用强化学习和VLM评分微调图像分解模型",
+      "canonical_evidence": "使用强化学习和VLM评分微调图像分解模型",
+      "llm_tldr_en": "Stable-Layers uses Reinforcement Learning (Flow-GRPO) with VLM feedback to fine-tune image layer decomposition models without paired data, addressing the reward signal design challenge with a two-stage evaluation pipeline.",
+      "llm_tldr_cn": "本文提出Stable-Layers框架，针对图像层分解任务，使用强化学习（Flow-GRPO）和视觉语言模型（VLM）评分进行微调，无需成对监督数据。该框架设计了双阶段评估流水线解决VLM评分方差小的问题，有效提升了分解质量，展示了强化学习在图像生成子任务中的应用潜力。",
+      "llm_tldr": "本文提出Stable-Layers框架，针对图像层分解任务，使用强化学习（Flow-GRPO）和视觉语言模型（VLM）评分进行微调，无需成对监督数据。该框架设计了双阶段评估流水线解决VLM评分方差小的问题，有效提升了分解质量，展示了强化学习在图像生成子任务中的应用潜力。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25123v1",
+      "source": "arxiv",
+      "title": "Inference-Time Alignment of Diffusion Models via Trust-Region Iterative Twisted Sequential Monte Carlo",
+      "abstract": "We study inference-time alignment for diffusion-based generative models, aiming to steer a base model toward high-reward outputs without updating its weights. Recent Sequential Monte Carlo (SMC)-based steering methods approximate reward-tilted target distributions in a principled way, but their proposals remain largely tied to the base sampler. Since reward information is mainly used after propagation through particle reweighting and resampling, these methods can require large particle budgets and suffer from weight degeneracy and high-variance estimates. One way to reduce variance and improve particle efficiency is to iteratively learn twisting functions that provide look-ahead guidance, as in twisted SMC. However, existing learnable twisting methods are developed mainly for classical sequential inference and can be unstable when applied to diffusion-based alignment with high-dimensional state spaces and terminal, noisy, or black-box rewards. We propose Trust-Region Iterative Twisted Sequential Monte Carlo (TRI-TSMC), a trust-region framework for learning twisting functions in SMC-based inference-time alignment. Each iteration computes an exact KL-constrained update in path space, which admits a closed-form solution by tempered importance reweighting, and projects this target back to the parameterized twisted family by weighted maximum likelihood. Theoretically, we formalize the value-function interpretation of the optimal twisting function and show that it yields a zero-variance sampler. We prove that the trust-region update follows an escort path toward the target distribution, that the weighted maximum-likelihood update is a forward-KL projection, and that the path reduces residual importance-weight variance. Empirically, TRI-TSMC improves primary alignment objectives on discrete diffusion text generation and text-to-image generation under matched inference-time budgets.",
+      "authors": [
+        "Weixin Wang",
+        "Yu Yang",
+        "Wei Deng",
+        "Pan Xu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL",
+        "cs.CV",
+        "stat.ML"
+      ],
+      "published": "2026-05-24T15:08:52+00:00",
+      "link": "https://arxiv.org/pdf/2605.25123v1",
+      "tags": [
+        "keyword:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "inference-time alignment with reward-tilted distributions",
+      "llm_evidence_cn": "推理时对齐，使用奖励倾斜分布",
+      "llm_evidence": "推理时对齐，使用奖励倾斜分布",
+      "canonical_evidence": "推理时对齐，使用奖励倾斜分布",
+      "llm_tldr_en": "Proposes trust-region iterative twisted SMC to steer diffusion models toward high-reward outputs at inference time, improving alignment without weight updates.",
+      "llm_tldr_cn": "针对扩散模型推理时对齐问题，提出基于信赖域迭代扭曲序列蒙特卡洛的方法，通过奖励信息引导生成，无需更新权重即可提升输出质量。实验表明该方法在减少粒子退化和方差方面优于现有SMC方法，为生成模型的对齐提供了高效解决方案。",
+      "llm_tldr": "针对扩散模型推理时对齐问题，提出基于信赖域迭代扭曲序列蒙特卡洛的方法，通过奖励信息引导生成，无需更新权重即可提升输出质量。实验表明该方法在减少粒子退化和方差方面优于现有SMC方法，为生成模型的对齐提供了高效解决方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

@@ -1,0 +1,69 @@
+{
+  "label": "2026-05-29",
+  "date": "2026-05-29",
+  "generated_at": "2026-05-29T20:54:19",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202605/29/2605.25759v1-towards-anatomically-plausible-human-image-generation-via-synthetic-localized-preferences",
+      "section": "deep",
+      "title_en": "Towards Anatomically Plausible Human Image Generation via Synthetic Localized Preferences",
+      "authors": "Bao Li, Yuliang Xiu, Zhen Liu",
+      "date": "2026-05-25",
+      "pdf": "https://arxiv.org/pdf/2605.25759v1",
+      "score": "9.0",
+      "evidence": "基于偏好的对齐，用于解剖合理性",
+      "tldr": "文本生成图像模型在人体生成中常出现解剖结构错误，现有监督微调方法受限于有限的高质量数据及混杂因素（如光照、姿态）。本文提出ASAP框架，通过局部退化机制在高质量人体图像中制造可控解剖错误，构建超过1万对的人体解剖偏好数据集HAP，并引入局部且带间隔约束的DPO变体，优先优化解剖区域同时防止全局语义破坏。在多个基础模型上，ASAP持续降低解剖错误，同时保持图像整体质量。此外，本文还提出了系统评估解剖保真度的基准HAF-Bench。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Large-scale text-to-image foundation models have achieved remarkable visual realism, yet generating human images with correct anatomical structures remains challenging. Existing approaches enforce anatomical constraints through part-specific modules or localized loss weighting during supervised fine-tuning on high-quality human photos, but such datasets are limited and often provide ambiguous optimization signals due to confounding factors such as lighting, pose, and background. Preference-based alignment offers an alternative, but standard Direct Preference Optimization (DPO) treats all pixels equally and therefore fails to exploit the localized nature of anatomical artifacts. To address this, we propose the framework of Alignment via Synthetic Anatomical Preference (ASAP), which constructs controlled preference pairs through a localized degradation mechanism applied to high-fidelity human images. This mechanism performs a controlled experiment on images by introducing explicit anatomical errors in targeted regions while preserving the remaining content. With this mechanism, we create the Human Anatomical Preference (HAP) dataset with over 10K curated pairs for effective anatomical alignment of text-to-image human image generative models. To better leverage the locality of these controlled preference pairs, we introduce a localized and margin-bounded variant of DPO that prioritizes optimization in targeted anatomical regions while enforcing a finite preference margin to prevent over-optimization and preserve global semantics. We further introduce HAF-Bench, a benchmark for systematic evaluation of anatomical fidelity. Extensive experiments demonstrate that ASAP consistently reduces anatomical errors across multiple foundation models while maintaining overall image quality.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/29/2605.26108v2-reinforcing-few-step-generators-via-reward-tilted-distribution-matching",
+      "section": "deep",
+      "title_en": "Reinforcing Few-step Generators via Reward-Tilted Distribution Matching",
+      "authors": "Yushi Huang, Xiangxin Zhou, Ruoyu Wang, Chi Zhang, Jun Zhang, Tianyu Pang",
+      "date": "2026-05-25",
+      "pdf": "https://arxiv.org/pdf/2605.26108v2",
+      "score": "9.0",
+      "evidence": "将分布匹配蒸馏与奖励引导的强化学习统一用于少步图像生成器",
+      "tldr": "针对少步扩散蒸馏模型与人类偏好对齐的难题，提出RTDMD两阶段框架，统一分布匹配蒸馏与奖励引导强化学习。第一阶段AC-DMD通过子区间匹配和一致性正则化稳定训练，第二阶段联合优化并引入混合策略梯度与SubGRPO降低方差。在SD3等模型上以4步推理超越先前方法，在偏好、美学和组合性指标上取得新最佳。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Recent advances in few-step diffusion distillation have enabled efficient image generation, yet aligning these models with human preferences remains challenging. We propose Reward-Tilted Distribution Matching Distillation (RTDMD), a two-stage framework that unifies distribution matching distillation with reward-guided reinforcement learning for few-step flow generators. We show that minimizing the KL divergence to a reward-tilted teacher distribution naturally decomposes into a distribution matching term and a reward maximization term. In the first stage, we introduce Ambient-Consistent Distribution Matching Distillation (AC-DMD), which performs subinterval-wise distribution matching and augments the fake score objective with a consistency regularizer to help the fake score model track the shifting generator distribution under limited updates. In the second stage, we jointly optimize both terms: for the reward maximization term, we derive a hybrid policy gradient that combines a GRPO-style estimator for the stochastic intermediate transitions with direct reward backpropagation through the deterministic final step, and further introduce step-subset GRPO (SubGRPO) to reduce variance. Experiments on SD3, SD3.5, and FLUX.2 demonstrate that RTDMD establishes new state-of-the-art results across preference, aesthetic, and compositional metrics with only 4 inference steps, outperforming previous few-step text-to-image generation methods. Code and models are available at https://github.com/Harahan/RTDMD.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/29/2605.30257v1-stable-layers-fine-tuning-image-layer-decomposition-models-with-vlm-scored-reinforcement-learning",
+      "section": "deep",
+      "title_en": "Stable-Layers: Fine-Tuning Image Layer Decomposition Models with VLM-Scored Reinforcement Learning",
+      "authors": "Ciara Rowles, Reshinth Adithyan, Nikhil Pinnaparaju, Vikram Voleti, Mark Boss",
+      "date": "2026-05-28",
+      "pdf": "https://arxiv.org/pdf/2605.30257v1",
+      "score": "9.0",
+      "evidence": "使用强化学习和VLM评分微调图像分解模型",
+      "tldr": "图像层分解模型通常依赖成对监督数据，限制了其应用。本文提出Stable-Layers，利用视觉语言模型评分作为强化学习奖励，无需成对数据即可微调预训练模型。通过两阶段评估（逐样本评分和网格校准）解决奖励信号区分度不足的问题。在Crello数据集上，该方法相比基线实现了更好的层分离、更少的空白层和更低的重建误差。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We present Stable-Layers, a reinforcement learning framework that eliminates the need for paired supervision by fine-tuning a pretrained layer decomposition model using only feedback from a vision-language model (VLM). Starting from Qwen-Image-Layered, we apply Flow-GRPO with LoRA adaptation, sampling multiple candidate decompositions per image, scoring them with a VLM, and optimising the policy from group-relative advantages. The key challenge lies in designing a reliable reward signal: VLMs scoring samples in isolation tend to compress their judgements into a narrow band, leaving GRPO with little within-group variance to learn from. We address this with a two-stage evaluation pipeline that pairs structured per-sample scoring across five edit-centric criteria with a grid-based calibration step in which the VLM re-scores all candidates side-by-side. Stable-Layers produces decompositions with stronger layer separation, fewer blank or artifact-heavy layers, and lower per-layer reconstruction error on the Crello dataset compared to the base model.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/29/2605.25123v1-inference-time-alignment-of-diffusion-models-via-trust-region-iterative-twisted-sequential-monte-carlo",
+      "section": "deep",
+      "title_en": "Inference-Time Alignment of Diffusion Models via Trust-Region Iterative Twisted Sequential Monte Carlo",
+      "authors": "Weixin Wang, Yu Yang, Wei Deng, Pan Xu",
+      "date": "2026-05-24",
+      "pdf": "https://arxiv.org/pdf/2605.25123v1",
+      "score": "8.0",
+      "evidence": "推理时对齐，使用奖励倾斜分布",
+      "tldr": "扩散模型推理时对齐需在不更新权重下引导高奖励输出，但现有序贯蒙特卡洛方法因奖励信息利用有限，面临权重退化与高方差问题。本文提出信任区域迭代扭曲序贯蒙特卡洛（TRI-TSMC），通过每步在路径空间做精确KL约束更新并投影回参数化扭曲族，学习前瞻指导函数。理论证明该更新可降低重要性权重方差，达到零方差采样。在离散文本生成和文本到图像生成任务中，TRI-TSMC在匹配推理预算下显著提升对齐目标，为扩散模型推理时对齐提供了稳定高效的框架。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We study inference-time alignment for diffusion-based generative models, aiming to steer a base model toward high-reward outputs without updating its weights. Recent Sequential Monte Carlo (SMC)-based steering methods approximate reward-tilted target distributions in a principled way, but their proposals remain largely tied to the base sampler. Since reward information is mainly used after propagation through particle reweighting and resampling, these methods can require large particle budgets and suffer from weight degeneracy and high-variance estimates. One way to reduce variance and improve particle efficiency is to iteratively learn twisting functions that provide look-ahead guidance, as in twisted SMC. However, existing learnable twisting methods are developed mainly for classical sequential inference and can be unstable when applied to diffusion-based alignment with high-dimensional state spaces and terminal, noisy, or black-box rewards. We propose Trust-Region Iterative Twisted Sequential Monte Carlo (TRI-TSMC), a trust-region framework for learning twisting functions in SMC-based inference-time alignment. Each iteration computes an exact KL-constrained update in path space, which admits a closed-form solution by tempered importance reweighting, and projects this target back to the parameterized twisted family by weighted maximum likelihood. Theoretically, we formalize the value-function interpretation of the optimal twisting function and show that it yields a zero-variance sampler. We prove that the trust-region update follows an escort path toward the target distribution, that the weighted maximum-likelihood update is a forward-KL projection, and that the path reduces residual importance-weight variance. Empirically, TRI-TSMC improves primary alignment objectives on discrete diffusion text generation and text-to-image generation under matched inference-time budgets.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
