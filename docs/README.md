@@ -6,35 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-29
-- 运行时间：2026-05-29 20:54:12 UTC
+- 最新运行日期：2026-05-30
+- 运行时间：2026-05-30 20:54:58 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：4
-- 速读区：0
+- 本次总论文数：3
+- 精读区：0
+- 速读区：3
 
 ### 今日简报（AI）
-1) 今日精读两篇高评分论文：解剖合理性人体图像生成与少步生成器的强化学习。  
-2) 最值得关注的方向：利用合成局部偏好提升人体生成解剖合理性，以及通过奖励倾斜分布匹配优化少步扩散模型。  
-3) 建议：若对生成图像质量有更高要求，可重点关注这两项技术的结合应用。
-- 详情：[/202605/29/README](/202605/29/README)
+1) 今日速读3篇论文，重点聚焦强化学习与工具引导的分割优化。  
+2) 最值得关注两个方向：矩匹配Q学习与基于鲁棒评分奖励的强化学习。  
+3) 建议从两篇7.0分论文入手，理解强化学习在复杂奖励设计上的新思路。
+- 详情：[/202605/30/README](/202605/30/README)
 
 ### 精读区论文标签
-1. [Towards Anatomically Plausible Human Image Generation via Synthetic Localized Preferences](/202605/29/2605.25759v1-towards-anatomically-plausible-human-image-generation-via-synthetic-localized-preferences)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：基于偏好的对齐，用于解剖合理性
-2. [Reinforcing Few-step Generators via Reward-Tilted Distribution Matching](/202605/29/2605.26108v2-reinforcing-few-step-generators-via-reward-tilted-distribution-matching)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：将分布匹配蒸馏与奖励引导的强化学习统一用于少步图像生成器
-3. [Stable-Layers: Fine-Tuning Image Layer Decomposition Models with VLM-Scored Reinforcement Learning](/202605/29/2605.30257v1-stable-layers-fine-tuning-image-layer-decomposition-models-with-vlm-scored-reinforcement-learning)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：使用强化学习和VLM评分微调图像分解模型
-4. [Inference-Time Alignment of Diffusion Models via Trust-Region Iterative Twisted Sequential Monte Carlo](/202605/29/2605.25123v1-inference-time-alignment-of-diffusion-models-via-trust-region-iterative-twisted-sequential-monte-carlo)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：推理时对齐，使用奖励倾斜分布
+- 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Moment Matching Q-Learning](/202605/30/2605.29033v1-moment-matching-q-learning)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：提出矩匹配Q学习以加速图像生成中基于分数的生成模型的采样
+2. [Reinforcement Learning with Robust Rubric Rewards](/202605/30/2605.30244v1-reinforcement-learning-with-robust-rubric-rewards)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：为视觉语言任务设计鲁棒评分标准奖励，可迁移至图像生成奖励设计
+3. [B-GRTO: Bootstrapped Group Relative Tool Optimization for Referring Segmentation](/202605/30/2605.23500v1-b-grto-bootstrapped-group-relative-tool-optimization-for-referring-segmentation)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：将强化学习（组相对优化）应用于指称分割
 
 
 <div class="dpr-home-promo-card">

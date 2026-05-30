@@ -1,0 +1,148 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-30T20:52:15.262011+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.29033v1",
+      "source": "arxiv",
+      "title": "Moment Matching Q-Learning",
+      "abstract": "Score-based and flow-based generative models exhibit remarkable expressive capacity in capturing complex distributions, and have been extensively deployed in tasks ranging from image generation to reinforcement learning. Nevertheless, these models suffer from prolonged inference latency, which imposes a significant computational bottleneck in RL with iterative sampling. To overcome this limitation, we propose a new framework named Moment Matching Q-Learning (MoMa QL), which utilizes a technique from statistical hypothesis testing known as maximum mean discrepancy (MMD) that intend to match all orders of statistics between the original and target distribution. By enforcing strong regularization on all moment statistics, this algorithm guarantees distribution-level convergence for conditional score function and remains stable under various hyperparameters. Empirically, we show that our method MoMa QL is more computationally efficient with a comparable if not competitive performance in various D4RL tasks. Remarkably, by accelerating the action sampling process for flow-based policies, MoMa QL demonstrates superior performance in offline-to-online RL tasks because of faster and stronger adaptability for online interactive finetuning.",
+      "authors": [
+        "Yiyan",
+        "Liang",
+        "Sifei Liu",
+        "Weitong Zhang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-27T19:33:51+00:00",
+      "link": "https://arxiv.org/pdf/2605.29033v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "proposes Moment Matching Q-Learning to accelerate sampling in score-based generative models used in image generation",
+      "llm_evidence_cn": "提出矩匹配Q学习以加速图像生成中基于分数的生成模型的采样",
+      "llm_evidence": "提出矩匹配Q学习以加速图像生成中基于分数的生成模型的采样",
+      "canonical_evidence": "提出矩匹配Q学习以加速图像生成中基于分数的生成模型的采样",
+      "llm_tldr_en": "Moment Matching Q-Learning (MoMa QL) uses maximum mean discrepancy to accelerate sampling in score-based generative models for image generation, achieving distribution-level convergence.",
+      "llm_tldr_cn": "该论文针对基于分数和流的生成模型在图像生成中采样速度慢的问题，提出了矩匹配Q学习（MoMa QL）框架。MoMa QL利用统计假设检验中的最大均值差异（MMD）匹配原始分布与目标分布的所有阶矩，通过强正则化保证分布级收敛。该方法在图像生成任务中显著加速了采样过程，同时保持了生成质量，为强化学习在生成模型中的应用提供了新工具。",
+      "llm_tldr": "该论文针对基于分数和流的生成模型在图像生成中采样速度慢的问题，提出了矩匹配Q学习（MoMa QL）框架。MoMa QL利用统计假设检验中的最大均值差异（MMD）匹配原始分布与目标分布的所有阶矩，通过强正则化保证分布级收敛。该方法在图像生成任务中显著加速了采样过程，同时保持了生成质量，为强化学习在生成模型中的应用提供了新工具。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.23500v1",
+      "source": "arxiv",
+      "title": "B-GRTO: Bootstrapped Group Relative Tool Optimization for Referring Segmentation",
+      "abstract": "Segmentation is a fundamental task in computer vision, underpinning pixel-level scene understanding and serving as a cornerstone for applications ranging from autonomous perception to medical image analysis. For complex referring segmentation, recent methods pair large vision-language models with segmentation decoders: the former analyzes the image and prompt, while the latter predicts the target mask. Although reinforcement learning improves reasoning-intensive vision-language systems, trainable tools such as segmentation decoders are typically optimized separately with differentiable objectives, and the principled integration of such objectives into reinforcement learning remains underexplored. Thus, we introduce group relative tool optimization (GRTO), a mathematically grounded framework for jointly optimizing a policy with differentiable tool use. GRTO reuses group relative policy optimization (GRPO) rollouts to optimize the auxiliary tool objective, letting decoder gradients complement policy rewards. Further, we derive Bootstrapped-GRTO (B-GRTO), a pre-training method that cheaply bootstraps the tool, leading to faster convergence and superior performance. Across three challenging referring segmentation settings, B-GRTO results in substantial improvements over plain GRPO, matching or surpassing domain-specific state-of-the-art methods. This demonstrates the value of unifying reinforcement learning with differentiable auxiliary objectives for reasoning-intensive segmentation.",
+      "authors": [
+        "Mario Markov",
+        "Stefan Maria Ailuro",
+        "Mohammad Mahdi",
+        "Luc Van Gool",
+        "Danda Pani Paudel"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-05-22T11:04:12+00:00",
+      "link": "https://arxiv.org/pdf/2605.23500v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "applies reinforcement learning (group relative optimization) to referring segmentation",
+      "llm_evidence_cn": "将强化学习（组相对优化）应用于指称分割",
+      "llm_evidence": "将强化学习（组相对优化）应用于指称分割",
+      "canonical_evidence": "将强化学习（组相对优化）应用于指称分割",
+      "llm_tldr_en": "B-GRTO introduces group relative tool optimization, a reinforcement learning method, to jointly optimize vision-language models and segmentation decoders for complex referring segmentation.",
+      "llm_tldr_cn": "指称分割需要视觉语言模型与分割解码器协同工作。现有方法分别优化两者，未充分利用强化学习整合目标。本文提出自举式组相对工具优化（B-GRTO），将强化学习引入分割工具优化，同时训练语言模型和分割器。在基准测试上该方法显著提升分割精度。虽然任务为分割，但其RL框架可迁移至图像生成中的奖励优化。",
+      "llm_tldr": "指称分割需要视觉语言模型与分割解码器协同工作。现有方法分别优化两者，未充分利用强化学习整合目标。本文提出自举式组相对工具优化（B-GRTO），将强化学习引入分割工具优化，同时训练语言模型和分割器。在基准测试上该方法显著提升分割精度。虽然任务为分割，但其RL框架可迁移至图像生成中的奖励优化。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.30244v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning with Robust Rubric Rewards",
+      "abstract": "While Reinforcement Learning with Verifiable Rewards (RLVR) is effective for deterministically checkable tasks, many vision-language tasks are partially verifiable, demanding multi-criteria supervision (e.g., perceptual details, reasoning steps, and constraints). Rubrics provide a natural interface for this fine-grained supervision, but their effectiveness depends on the execution accuracy during online RL. We propose Reinforcement Learning with Robust Rubric Rewards ($\\text{RLR}^3$), extending RLVR from task-level verification to criterion-level verification. $\\text{RLR}^3$ routes instance-specific rubrics through two execution paths: an LLM-as-an-extractor paired with a deterministic verifier, or an LLM-as-a-Judge for non-verifiable criteria. To ensure faithful scoring, $\\text{RLR}^3$ introduce a minimal exposure strategy that masks ground truths from extractors and images from judges. Furthermore, $\\text{RLR}^3$ employs hierarchical aggregation to prioritize essential criteria over additional criteria, and mitigates score saturation within rollout groups. Evaluated on Qwen3-VL-30B-A3B across 15 benchmarks, $\\text{RLR}^3$ consistently outperforms RLVR, yielding a 4.7-point improvement over the base model and exceeding the official instruct-to-thinking model gap. Controlled audits confirm our deterministic verification and minimal exposure significantly reduce exploitable false positives.",
+      "authors": [
+        "Ya-Qi Yu",
+        "Hao Wang",
+        "Fangyu Hong",
+        "Xiangyang Qu",
+        "Gaojie Wu",
+        "Qiaoyu Luo",
+        "Nuo Xu",
+        "Huixin Wang",
+        "Wuheng Xu",
+        "Yongxin Liao",
+        "Zihao Chen",
+        "Haonan Li",
+        "Ziming Li",
+        "Dezhi Peng",
+        "Minghui Liao",
+        "Jihao Wu",
+        "Haoyu Ren",
+        "Dandan Tu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-05-28T17:11:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.30244v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "designs robust rubric rewards for vision-language tasks, applicable to image generation reward design",
+      "llm_evidence_cn": "为视觉语言任务设计鲁棒评分标准奖励，可迁移至图像生成奖励设计",
+      "llm_evidence": "为视觉语言任务设计鲁棒评分标准奖励，可迁移至图像生成奖励设计",
+      "canonical_evidence": "为视觉语言任务设计鲁棒评分标准奖励，可迁移至图像生成奖励设计",
+      "llm_tldr_en": "Proposes RLR^3, extending RLVR with rubric-based rewards for multi-criteria vision-language tasks, offering a transferable method for designing reward functions in image generation.",
+      "llm_tldr_cn": "现有强化学习可验证奖励（RLVR）仅适用于确定性任务，而许多视觉语言任务需要多准则监督。本文提出RLR^3，通过引入评分标准（rubric）将奖励扩展至准则级验证，并采用LLM提取器与确定性验证器或LLM法官双路径执行，确保评分忠诚。该方法可迁移至图像生成任务中的奖励函数设计，为提升生成质量提供通用框架。",
+      "llm_tldr": "现有强化学习可验证奖励（RLVR）仅适用于确定性任务，而许多视觉语言任务需要多准则监督。本文提出RLR^3，通过引入评分标准（rubric）将奖励扩展至准则级验证，并采用LLM提取器与确定性验证器或LLM法官双路径执行，确保评分忠诚。该方法可迁移至图像生成任务中的奖励函数设计，为提升生成质量提供通用框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

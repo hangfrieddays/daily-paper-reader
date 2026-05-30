@@ -1,0 +1,54 @@
+{
+  "label": "2026-05-30",
+  "date": "2026-05-30",
+  "generated_at": "2026-05-30T20:55:05",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202605/30/2605.29033v1-moment-matching-q-learning",
+      "section": "quick",
+      "title_en": "Moment Matching Q-Learning",
+      "authors": "Yiyan, Liang, Sifei Liu, Weitong Zhang",
+      "date": "2026-05-27",
+      "pdf": "https://arxiv.org/pdf/2605.29033v1",
+      "score": "7.0",
+      "evidence": "提出矩匹配Q学习以加速图像生成中基于分数的生成模型的采样",
+      "tldr": "基于分数和流的生成模型在强化学习中因迭代采样导致计算瓶颈。本文提出MoMa QL，利用最大均值差异匹配原始与目标分布所有阶统计量，通过强正则化保证条件分数函数分布级收敛。实验证明在D4RL任务中计算效率更高且性能相当，在离线到在线RL中加速采样实现更快更强的自适应能力。该框架为RL中高效生成模型提供了新思路。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Score-based and flow-based generative models exhibit remarkable expressive capacity in capturing complex distributions, and have been extensively deployed in tasks ranging from image generation to reinforcement learning. Nevertheless, these models suffer from prolonged inference latency, which imposes a significant computational bottleneck in RL with iterative sampling. To overcome this limitation, we propose a new framework named Moment Matching Q-Learning (MoMa QL), which utilizes a technique from statistical hypothesis testing known as maximum mean discrepancy (MMD) that intend to match all orders of statistics between the original and target distribution. By enforcing strong regularization on all moment statistics, this algorithm guarantees distribution-level convergence for conditional score function and remains stable under various hyperparameters. Empirically, we show that our method MoMa QL is more computationally efficient with a comparable if not competitive performance in various D4RL tasks. Remarkably, by accelerating the action sampling process for flow-based policies, MoMa QL demonstrates superior performance in offline-to-online RL tasks because of faster and stronger adaptability for online interactive finetuning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/30/2605.30244v1-reinforcement-learning-with-robust-rubric-rewards",
+      "section": "quick",
+      "title_en": "Reinforcement Learning with Robust Rubric Rewards",
+      "authors": "Ya-Qi Yu, Hao Wang, Fangyu Hong, Xiangyang Qu, Gaojie Wu, Qiaoyu Luo, Nuo Xu, Huixin Wang, Wuheng Xu, Yongxin Liao, Zihao Chen, Haonan Li, Ziming Li, Dezhi Peng, Minghui Liao, Jihao Wu, Haoyu Ren, Dandan Tu",
+      "date": "2026-05-28",
+      "pdf": "https://arxiv.org/pdf/2605.30244v1",
+      "score": "7.0",
+      "evidence": "为视觉语言任务设计鲁棒评分标准奖励，可迁移至图像生成奖励设计",
+      "tldr": "现有RLVR对部分可验证的视觉语言任务缺乏多标准监督，评分规则虽能提供细粒度监督但在线RL中执行准确性不足。本文提出RLR^3，将验证从任务级扩展到标准级，通过LLM提取器+确定性验证或LLM评判器两种路径，并采用最小暴露策略屏蔽真实值和图像，确保忠实评分。层次聚合优先关键标准，缓解分数饱和。在15个基准上使用Qwen3-VL-30B-A3B，RLR^3比基模型提升4.7分，持续优于RLVR，并显著减少假阳性，验证了其有效性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "While Reinforcement Learning with Verifiable Rewards (RLVR) is effective for deterministically checkable tasks, many vision-language tasks are partially verifiable, demanding multi-criteria supervision (e.g., perceptual details, reasoning steps, and constraints). Rubrics provide a natural interface for this fine-grained supervision, but their effectiveness depends on the execution accuracy during online RL. We propose Reinforcement Learning with Robust Rubric Rewards ($\\text{RLR}^3$), extending RLVR from task-level verification to criterion-level verification. $\\text{RLR}^3$ routes instance-specific rubrics through two execution paths: an LLM-as-an-extractor paired with a deterministic verifier, or an LLM-as-a-Judge for non-verifiable criteria. To ensure faithful scoring, $\\text{RLR}^3$ introduce a minimal exposure strategy that masks ground truths from extractors and images from judges. Furthermore, $\\text{RLR}^3$ employs hierarchical aggregation to prioritize essential criteria over additional criteria, and mitigates score saturation within rollout groups. Evaluated on Qwen3-VL-30B-A3B across 15 benchmarks, $\\text{RLR}^3$ consistently outperforms RLVR, yielding a 4.7-point improvement over the base model and exceeding the official instruct-to-thinking model gap. Controlled audits confirm our deterministic verification and minimal exposure significantly reduce exploitable false positives.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/30/2605.23500v1-b-grto-bootstrapped-group-relative-tool-optimization-for-referring-segmentation",
+      "section": "quick",
+      "title_en": "B-GRTO: Bootstrapped Group Relative Tool Optimization for Referring Segmentation",
+      "authors": "Mario Markov, Stefan Maria Ailuro, Mohammad Mahdi, Luc Van Gool, Danda Pani Paudel",
+      "date": "2026-05-22",
+      "pdf": "https://arxiv.org/pdf/2605.23500v1",
+      "score": "6.0",
+      "evidence": "将强化学习（组相对优化）应用于指称分割",
+      "tldr": "指代分割中，视觉语言模型与分割解码器组合但优化分离。提出B-GRTO，通过自举式分组相对工具优化联合训练策略和可微工具。在三个任务上显著优于普通GRPO，匹配或超越SOTA。统一强化学习与可微辅助目标，为推理密集型分割提供有效框架。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Segmentation is a fundamental task in computer vision, underpinning pixel-level scene understanding and serving as a cornerstone for applications ranging from autonomous perception to medical image analysis. For complex referring segmentation, recent methods pair large vision-language models with segmentation decoders: the former analyzes the image and prompt, while the latter predicts the target mask. Although reinforcement learning improves reasoning-intensive vision-language systems, trainable tools such as segmentation decoders are typically optimized separately with differentiable objectives, and the principled integration of such objectives into reinforcement learning remains underexplored. Thus, we introduce group relative tool optimization (GRTO), a mathematically grounded framework for jointly optimizing a policy with differentiable tool use. GRTO reuses group relative policy optimization (GRPO) rollouts to optimize the auxiliary tool objective, letting decoder gradients complement policy rewards. Further, we derive Bootstrapped-GRTO (B-GRTO), a pre-training method that cheaply bootstraps the tool, leading to faster convergence and superior performance. Across three challenging referring segmentation settings, B-GRTO results in substantial improvements over plain GRPO, matching or surpassing domain-specific state-of-the-art methods. This demonstrates the value of unifying reinforcement learning with differentiable auxiliary objectives for reasoning-intensive segmentation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
