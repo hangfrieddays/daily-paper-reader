@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-05-31 <!--dpr-date:20260531-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202605/31/2605.26552v2-aligning-few-step-generative-models-by-amortizing-sample-based-variational-inference" data-sidebar-item="{&quot;title&quot;: &quot;Aligning Few-Step Generative Models by Amortizing Sample-based Variational Inference&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2605.26552v2-aligning-few-step-generative-models-by-amortizing-sample-based-variational-inference&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;通过奖赏倾斜分布对齐生成模型&quot;}">Aligning Few-Step Generative Models by Amortizing Sample-based Variational Inference</a>
   * 2026-05-30 <!--dpr-date:20260530-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202605/30/2605.29033v1-moment-matching-q-learning" data-sidebar-item="{&quot;title&quot;: &quot;Moment Matching Q-Learning&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2605.29033v1-moment-matching-q-learning&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;提出矩匹配Q学习以加速图像生成中基于分数的生成模型的采样&quot;}">Moment Matching Q-Learning</a>

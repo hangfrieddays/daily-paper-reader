@@ -1,0 +1,64 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-31T20:24:49.491438+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.26552v2",
+      "source": "arxiv",
+      "title": "Aligning Few-Step Generative Models by Amortizing Sample-based Variational Inference",
+      "abstract": "Aligning a few-step generative model is challenging, since existing alignment frameworks typically rely on restrictive assumptions: a tractable likelihood, a specific ODE/SDE solver, or a particular model family. We introduce FAV, Few-step Generative Models Alignment via Sample-based Variational Inference, a general alignment framework that requires only sample access to the generator and the reference distribution. We cast alignment as sampling from a reward-tilted distribution anchored to a reference distribution. We leverage Stein Variational Gradient Descent as a sample-based variational inference scheme and amortize its particle updates into the generator parameters via fixed-point regression. We evaluate FAV on two domains: robotics manipulation and image generator alignment. On generative policy alignment for robotic manipulation, FAV outperforms prevailing policy extraction baselines across 56 offline and 30 offline-to-online RL tasks. For image generator alignment, FAV fine-tunes diverse few-step backbones, including GAN, drifting model, consistency models, and flow maps, scaling from ImageNet-$256$ to 1024$^2$ text-to-image synthesis. Code is available at https://github.com/Jaewoopudding/FAV.",
+      "authors": [
+        "Jaewoo Lee",
+        "Hyeongyu Kang",
+        "Dohyun Kim",
+        "Kyuil Sim",
+        "Woocheol Shin",
+        "Minsu Kim",
+        "Taeyoung Yun",
+        "Jeongjae Lee",
+        "Sanghyeok Choi",
+        "Tabitha Edith Lee",
+        "Jong Chul Ye",
+        "Jinkyoo Park"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-26T05:02:49+00:00",
+      "link": "https://arxiv.org/pdf/2605.26552v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general generative model alignment via reward-tilted distribution",
+      "llm_evidence_cn": "通过奖赏倾斜分布对齐生成模型",
+      "llm_evidence": "通过奖赏倾斜分布对齐生成模型",
+      "canonical_evidence": "通过奖赏倾斜分布对齐生成模型",
+      "llm_tldr_en": "FAV aligns few-step generative models using sample-based variational inference with reward-tilted distributions, offering a general framework that could extend to image generation RL.",
+      "llm_tldr_cn": "现有对齐框架依赖似然或特定求解器，限制了在少步生成模型上的应用。本文提出FAV，仅需样本访问，通过Stein变分梯度下降从奖赏倾斜分布中采样，并利用固定点回归将粒子更新摊销到生成器参数中。在机器人领域验证了有效性，为图像生成中的强化学习对齐提供了可迁移的方法论基础。",
+      "llm_tldr": "现有对齐框架依赖似然或特定求解器，限制了在少步生成模型上的应用。本文提出FAV，仅需样本访问，通过Stein变分梯度下降从奖赏倾斜分布中采样，并利用固定点回归将粒子更新摊销到生成器参数中。在机器人领域验证了有效性，为图像生成中的强化学习对齐提供了可迁移的方法论基础。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

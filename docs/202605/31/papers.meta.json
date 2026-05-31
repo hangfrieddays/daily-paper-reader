@@ -1,0 +1,24 @@
+{
+  "label": "2026-05-31",
+  "date": "2026-05-31",
+  "generated_at": "2026-05-31T20:31:19",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202605/31/2605.26552v2-aligning-few-step-generative-models-by-amortizing-sample-based-variational-inference",
+      "section": "quick",
+      "title_en": "Aligning Few-Step Generative Models by Amortizing Sample-based Variational Inference",
+      "authors": "Jaewoo Lee, Hyeongyu Kang, Dohyun Kim, Kyuil Sim, Woocheol Shin, Minsu Kim, Taeyoung Yun, Jeongjae Lee, Sanghyeok Choi, Tabitha Edith Lee, Jong Chul Ye, Jinkyoo Park",
+      "date": "2026-05-26",
+      "pdf": "https://arxiv.org/pdf/2605.26552v2",
+      "score": "6.0",
+      "evidence": "通过奖赏倾斜分布对齐生成模型",
+      "tldr": "对齐少步生成模型因需可处理似然或特定求解器等严苛假设而困难。本文提出FAV框架，将对齐视为从奖励倾斜分布采样，利用Stein变分梯度下降进行样本变分推理，并通过固定点回归将粒子更新摊销到生成器参数。在机器人操作领域，FAV在56个离线与30个离线到在线RL任务中超越基线；在图像生成领域，微调了GAN、一致性模型等多种少步骨干，从ImageNet-256扩展到1024×1024文本到图像合成。该框架仅需样本访问，通用且高效。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Aligning a few-step generative model is challenging, since existing alignment frameworks typically rely on restrictive assumptions: a tractable likelihood, a specific ODE/SDE solver, or a particular model family. We introduce FAV, Few-step Generative Models Alignment via Sample-based Variational Inference, a general alignment framework that requires only sample access to the generator and the reference distribution. We cast alignment as sampling from a reward-tilted distribution anchored to a reference distribution. We leverage Stein Variational Gradient Descent as a sample-based variational inference scheme and amortize its particle updates into the generator parameters via fixed-point regression. We evaluate FAV on two domains: robotics manipulation and image generator alignment. On generative policy alignment for robotic manipulation, FAV outperforms prevailing policy extraction baselines across 56 offline and 30 offline-to-online RL tasks. For image generator alignment, FAV fine-tunes diverse few-step backbones, including GAN, drifting model, consistency models, and flow maps, scaling from ImageNet-$256$ to 1024$^2$ text-to-image synthesis. Code is available at https://github.com/Jaewoopudding/FAV.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
