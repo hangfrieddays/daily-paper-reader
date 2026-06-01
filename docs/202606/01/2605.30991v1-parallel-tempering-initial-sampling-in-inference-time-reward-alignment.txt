@@ -1,0 +1,1799 @@
+Title: Parallel Tempering Initial Sampling in Inference-Time Reward Alignment
+
+URL Source: https://arxiv.org/pdf/2605.30991v1
+
+Published Time: Mon, 01 Jun 2026 01:47:04 GMT
+
+Number of Pages: 31
+
+Markdown Content:
+# Parallel Tempering Initial Sampling in Inference-Time Reward Alignment 
+
+Myeongjun Oh 1 Gwangho Kim 2 Sungyoon Lee 1,21Department of Artificial Intelligence 
+
+> 2
+
+Department of Computer Science Hanyang University, Seoul, Korea 
+
+{dhaudwns0526, ggh1999, sungyoonlee}@hanyang.ac.kr 
+
+## Abstract 
+
+Inference-time reward alignment steers pretrained diffusion and flow-based gen-erative models to satisfy user-specified rewards without retraining. Recently, Sequential Monte Carlo (SMC) has emerged as a powerful framework for this task by iteratively filtering and propagating multiple particles. However, we show that standard SMC-based methods often suffer from poor performance because they initialize particles from a standard prior, whereas high-reward regions in complex reward landscapes are extremely rare. Further, we show that even recent reward-aware initial sampling approaches remain vulnerable to getting trapped in local modes, as complex reward landscapes are often multi-modal. To overcome these limitations, we propose PATHS (PArallel Tempering for High-complexity reward Sampling), a novel initialization method that couples multiple sampling chains through parallel tempering. PATHS maintains a ladder of reward-tempered chains and periodically performs Metropolis swaps, enabling efficient exploration across flattened reward landscapes, thereby mitigating the mode-trapping issues. Our analysis reveals that this mechanism substantially enhances the finite-budget exploration of rare, high-reward regions that are typically challenging to sample. Experiments on layout-to-image and quantity-aware generation show that PATHS achieves consistent gains in alignment quality, particularly on complex prompts. 
+
+## 1 Introduction 
+
+The frontier of generative modeling is shifting beyond scaling pre-training alone toward improving post-training and inference-time computation. In continuous-domain generative modeling, diffusion and flow models [ 38 , 19 , 39 , 25 , 28 ] are increasingly expected to satisfy user-specified rewards, including fine-grained text alignment, layout constraints, and structural plausibility [ 7, 51 , 14 ]. 
+
+Inference-time reward alignment addresses this objective without modifying pretrained models [ 42 ]. Recent approaches formulate inference-time reward alignment as Sequential Monte Carlo (SMC), where multiple particles are propagated and reweighted throughout the denoising trajectory [ 44 ,21 , 22 , 36 , 37 ]. However, Yoon et al. [50] show that standard SMC methods often suffer from poor performance due to inadequate initialization from reward-agnostic priors. To address this, 
+
+Ψ-Sampler proposes sampling from a reward-informed initial distribution using the preconditioned Crank–Nicolson Langevin (pCNL) algorithm [ 9], substantially improving initialization quality. This focus on initialization is especially timely given the rise of recent few-step generative models [ 5], where early latent selection becomes increasingly critical. Despite these advances, we show that both SMC-based methods and Ψ-Sampler can still fail under complex reward landscapes, particularly when (1) high-reward states are extremely rare within 
+
+> Preprint.
+> arXiv:2605.30991v1 [cs.LG] 29 May 2026 Prompt : "A car and airplane above a horse and on the right of a dog..."
+
+Cold Chain 
+
+MCMC steps during initial particle sampling 
+
+Hot Chain 
+
+Swap          
+
+> Figure 1: Replica-exchange swap in PATHS for initial noise sampling on a layout task. We visualize the initial noise using Tweedie’s formula across MCMC steps. Hot chain: While the hot chain explores diverse particles under a flattened reward landscape, it lacks the stability to settle on high-reward states, causing discovered particles to continuously shift. Cold chain: Conversely, the cold chain tends to get trapped in local optima and suffers from frequent rejections, failing to explore new regions. Metropolis swap: By periodically swapping states, the cold chain inherits high-reward particles discovered by the hot chain, effectively transmitting global exploration to a stable exploitation process .
+
+the prior distribution, or (2) the reward landscape is highly multi-modal . First, while prior work attributes SMC failure partly to vanishing guidance strength across denoising steps, we show that SMC can fail more severely in rare, high-complexity reward settings, where particles initialized from the prior often struggle to sufficiently cover reward-relevant regions (Section 4.1). Second, although 
+
+Ψ-Sampler mitigates this initialization mismatch, we show that independent pCNL chains remain vulnerable to mode trapping in multi-modal reward landscapes, often collapsing onto limited subsets of valid modes and failing to adequately explore high-reward regions (Section 4.2). To address these limitations, we propose PATHS (PA rallel Tempering for High-complexity reward 
+
+Sampling), an inference-time initialization framework that leverages Parallel Tempering (Replica Exchange) [ 40 , 16 , 11 ]. PATHS runs multiple pCNL chains across a temperature ladder: higher-temperature chains more freely traverse flattened reward landscapes and discover promising but otherwise difficult-to-reach reward modes, while the lowest-temperature chain targets the original reward-aware posterior. As illustrated in Figure 1, periodic Metropolis swap proposals allow high-reward states discovered by exploratory hot chains to be exchanged into colder chains, enabling the cold chain to inherit better reward-aligned configurations without independently overcoming severe local barriers. This cross-temperature exploration substantially improves initialization under rare and multi-modal reward landscapes. We evaluate PATHS on two reward-alignment tasks characterized by inherently complex reward landscapes: layout-to-image generation , where multiple object arrangements can satisfy target bounding-box constraints, and quantity-aware generation , where many spatial compositions can realize the same target object count. Across both tasks, PATHS consistently outperforms prior SMC-based methods, including TDS [ 44 ] and DAS [ 22 ], as well as Ψ-Sampler [ 50 ], with particularly strong gains in complex settings. These results highlight the importance of not only reward-aware initialization, but also robust cross-mode exploration for inference-time reward alignment under complex reward landscapes. 
+
+## 2 Related Work 
+
+2.1 Inference-time alignment for diffusion models 
+
+A natural approach to aligning diffusion models is to steer pretrained models at sampling time using external reward or guidance signals without additional training. Classifier guidance [ 10 ] requires access to classifiers trained on noisy inputs at intermediate diffusion steps. Several subsequent works 2[ 7, 3, 51 , 18 ] circumvent this requirement by leveraging Tweedie’s formula [ 12 ] to approximate the guidance term. To address the inexactness and bias introduced by these approximations, more recent approaches have incorporated Sequential Monte Carlo (SMC) and inference-time scaling strategies for more accurate alignment [44, 22, 36, 37, 21]. Another line of work in inference-time scaling focuses on searching for better initial noise, leveraging the observation that some noises consistently lead to higher-quality generations than others [ 29 , 1,32 , 47 ]. Crucially, Yoon et al. [50] argue that SMC-based methods can be fundamentally limited by poor initial noise sampling, and propose pCNL-based reward-informed initialization to address this issue. This perspective is particularly relevant for recent few-step or distilled diffusion models, where straighter generation trajectories and more reliable early-stage Tweedie estimates make reward-informed initialization increasingly tractable and effective. However, we show that naive pCNL can still fail on complex reward, and use Parallel Tempering to overcome this limitation. Recently, He et al. [17] proposed CREPE, a replica-exchange framework for inference-time diffusion control. Unlike CREPE, which manages the full diffusion process, PATHS targets the initialization bottleneck in SMC-based alignment where finite particles struggle to cover sparse, multi-modal reward peaks. PATHS employs replica exchange on the initial noise posterior to generate superior starting particles for subsequent SMC, maintaining a matched reward-evaluation budget. 
+
+2.2 Fine-tuning-based alignment for diffusion models 
+
+Aligning pre-trained diffusion models through fine-tuning has been extensively studied. Early ap-proaches primarily relied on supervised fine-tuning with reward weighting [ 23 , 45 ], while subsequent works incorporated reinforcement learning by formulating the denoising process as a Markov Deci-sion Process [ 4, 13 ]. More recently, diffusion models have adopted preference-based optimization such as DPO [ 43 , 49 ] and GRPO-style methods [ 26 , 48 ]. Beyond RL-based frameworks, some studies directly optimize models by backpropagating differentiable rewards [46, 8, 30], or decouple data collection from policy optimization to improve efficiency [ 52 ]. However, these fine-tuning approaches require costly retraining whenever the reward objective changes, whereas inference-time methods offer greater flexibility by adapting without additional training. 
+
+## 3 Background 
+
+3.1 Diffusion Models and Flow Models 
+
+Flow-based generative models [ 25 , 28 , 2] learn a transport from a simple prior distribution p1 =
+
+N (0 , I ) to a complex data distribution p0 via a deterministic probability flow. This process is governed by an Ordinary Differential Equation (ODE): 
+
+dxt = u(xt, t )d t, 
+
+where the time-dependent vector field ut is parameterized by a neural network uθ .While these flow models are inherently deterministic, they share the same marginal densities 
+
+{pt}t∈[0 ,1] with a corresponding class of reverse-time Stochastic Differential Equations (SDEs), such as diffusion models [38, 19, 39]: 
+
+dxt = f (xt, t )d t + g(t)d w, f (xt, t ) = u(xt, t ) − g(t)2
+
+2 ∇ log pt(xt),
+
+where x1 ∼ p1, f (xt, t ) denotes the drift coefficient, g(t) is the diffusion coefficient, and w represents a standard Brownian motion. This equivalent SDE formulation is essential for SMC-based sampling, as it introduces the stochasticity required for particle-based exploration. We refer to both diffusion and flow-based models as the score-based generative model. 
+
+3.2 Sequential Monte Carlo and Reward Alignment Reward-tilted target. A common objective for aligning score-based generative models is the following KL-regularized reward maximization problem [41]: 
+
+max  
+
+> p
+
+Ex∼p[r(x)] − αD KL (p∥pθ ), (1) 3where pθ denotes the pretrained distribution, and the KL term is used for preventing reward over-optimization [15]. The solution is the exponentially tilted distribution 
+
+π∗ 
+
+> 0
+
+(x0) = 1
+
+Z pθ (x0) exp 
+
+ r(x0)
+
+α
+
+
+
+, (2) where Z is the normalizing constant [ 34 ]. SMC-based methods target the corresponding trajectory-level target: 
+
+p(x0: T ) = 1
+
+Z p(xT )
+
+YT −1 
+
+> t=0
+
+pθ (xt | xt+1 )
+
+
+
+exp 
+
+ r(x0)
+
+α
+
+
+
+(3) where x0: T = ( x0, . . . , x T ) is the discretization of [0 , 1] into T steps. The marginal at t = 0 recovers the reward-tilted target in Eq. (2). 
+
+Twisted intermediate targets and proposals [ 44 ]. Naively applying importance sampling to Eq. (3) can be inefficient, since the number of particles required for accurate estimation may grow rapidly with the discrepancy between the proposal and target distributions [ 6]. Twisted diffusion sampling [ 44 ] addresses this issue by introducing intermediate targets and guided proposals along the reverse diffusion trajectory. Following TDS-style twisting constructions [44], the intermediate target at time t is defined as: 
+
+πt(xt) := γt(xt)
+
+Zt
+
+, γt(xt) := pt(xt) exp 
+
+ r(ˆ x0(xt)) 
+
+α
+
+
+
+, (4) where Zt is the normalizing constant, pt(xt) is the marginal distribution induced by the pretrained dif-fusion model, and ˆx0(xt) denotes the denoised prediction of x0 obtained via Tweedie’s formula [ 12 ]. Since ˆx0(x0) = x0, the final target π0 matches Eq. (2) . Notably, by incorporating a tempering sched-ule into the intermediate targets (i.e., multiplying r by λt), this framework recovers the Diffusion Alignment as Sampling (DAS) [22] approach. For the pretrained reverse transition pθ (xt−1 | xt) = N (xt−1; μθ (xt, t ), σ 2 
+
+> t
+
+I), the commonly used proposal [44, 22] is: 
+
+mt−1(xt−1 | xt) := N
+
+
+
+xt−1; μθ (xt, t ) + σ2
+
+> t
+
+α ∇xt r(ˆ x0(xt)) , σ 2 
+
+> t
+
+I
+
+
+
+. (5) At each step, particles are assigned incremental importance weights: 
+
+wt−1(xt−1, x t) := pθ (xt−1 | xt) exp ( r(ˆ x0(xt−1)/α )
+
+mt−1(xt−1 | xt) exp ( r(ˆ x0(xt)) /α ) . (6) 
+
+Sampling procedure. The resulting SMC sampler initializes particles from N (0 , I ), propagates them using the twisted proposal in Eq. (5) , assigns importance weights according to Eq. (6) , and resamples particles according to their normalized weights. Repeating this procedure from t = T to 
+
+t = 0 yields samples from the reward-tilted target π∗ 
+
+> 0
+
+.
+
+## 4 Why current methods fail in complex reward 
+
+In this section, visually motivated by the toy example in Fig. 2, we examine the challenges of complex rewards —landscapes characterized by target regions that are rare, sharp, and highly multi-modal. Within this context, we argue for two key limitations of inference-time reward alignment in diffusion models: (1) why SMC-based methods (Fig. 2C, D) can fail when initialization is poor, particularly because high-reward regions are too rare to be adequately covered by standard priors (Section 4.1), and (2) why Ψ-sampler and its multi-chain extensions (Fig. 2E, F) can also struggle despite explicitly improving initialization, as local MCMC transitions are highly vulnerable to mode-trapping in multi-modal landscapes (Section 4.2). Addressing these sequential bottlenecks ultimately motivates our proposed PATHS (Fig. 2G). 4(A) Original (B) Ground Truth (C) TDS (D) DAS (E) Ψ-Sampler (F) Best-of-L (G) PATHS (Ours) Figure 2: Toy sampling method comparison. Each panel visualizes initial latent samples (blue) and their corresponding denoised samples (red). The target density is dominated by a single primary mode with higher weight, while the remaining 8 modes have low weights, making them hardly visible in the ground truth distribution. From left to right: samples from (A) the pre-trained flow model; (B) the target distribution defined by Eq. (2) (red) and Eq. (7) (blue); (C) TDS [ 44 ], an SMC-based method; (D) DAS [ 22 ], another SMC-based method; (E) ψ-Sampler [ 50 ]; (F) Best-of-L, which selects the highest-reward chain among L = 3 independent chains; and (G) results from our proposed PATHS .
+
+4.1 Why Does Using Only SMC Fail? Why Initial Noise Sampling Matters 
+
+While Yoon et al. [50] emphasize the importance of initial noise sampling in addressing vanishing guidance strength across denoising steps, we argue that its role becomes even more critical in rare, high-reward settings. SMC-based methods are asymptotically exact [ 44 ], but this guarantee applies only in the infinite-particle limit. In practical regimes with limited particles, approximation quality can degrade substan-tially. In particular, when the proposal and target distributions are highly mismatched, the number of particles required can scale exponentially with their KL divergence [ 6 ]. Twisting partially alleviates this issue by improving intermediate targets and proposals [ 44 ], but we argue that a fundamental bottleneck remains at the very first step. Specifically, SMC-based methods initialize particles from the prior distribution p1 = N (0 , I ). Thus, performance critically depends on how well this prior aligns with the reward-aware target initialization distribution 
+
+π∗ 
+
+> 1
+
+(x1) ∝ p1(x1) exp ( r(ˆ x0(x1)) /α ) . (7) When high-reward regions occupy only a tiny fraction of prior mass—as is often the case under complex rewards that are sharp, multi-modal, or highly compositional (e.g., spatial layout constraints requiring a person to be generated on top of a car, as in Fig. 5)—the initial KL divergence be-comes large. In such cases, even perfectly designed later-stage twisting cannot recover from poor initialization without an impractically large particle budget. We formalize this below. 
+
+Proposition 4.1 (Large Initial KL under complex reward) . Assume there exists a high-reward region 
+
+B ⊂ X 0 in the data space. Let ν be the pushforward measure of the prior p1 under the Tweedie estimator ˆx0, such that the probability of initial particles falling into the high-reward region is 
+
+ν(B) = Px1∼p1 (ˆ x0(x1) ∈ B) = ε ≪ 1. Furthermore, assume there is a reward gap ∆ > 0
+
+separating B from its complement. Let π∗ 
+
+> 1
+
+denote the reward-aware initial distribution defined in Eq. (7) . If ∆ is sufficiently large, satisfying ∆/α ≥ log(1 /ε ) + C for some constant C > 0, then: 
+
+DKL (π∗ 
+
+> 1
+
+∥p1) = Ω 
+
+
+
+log 1
+
+ε
+
+
+
+. (8) See Appendix E for a proof. Since particle complexity scales exponentially with KL divergence [ 6 ], even asymptotically exact SMC becomes practically ineffective unless initialization is fundamentally improved. Crucially, this bottleneck persists even when advanced tempering schedules are employed. For instance, while a tempering approach like DAS [ 22 ] theoretically improves sample efficiency, its practical effectiveness remains severely constrained. Due to the finite number of sampling steps and the intractability of finding an optimal tempering path, even tempered SMC cannot fully bridge the vast KL divergence inherent to structurally complex rewards. Consequently, as shown in Fig. 2D, these methods continue to waste particles in suboptimal regions and struggle to consistently discover the global optimum within a limited budget. This explains why improving the initialization itself is far more critical than simply smoothing the target distribution over time. 54.2 Why Does Ψ-sampler Fail? Mode Trapping Problem 
+
+We argue that Ψ-sampler [ 50 ] can fail even if it aims to sample initial noise from the reward-aware posterior π∗ 
+
+> 1
+
+, especially under complex reward landscapes. To approximate π∗ 
+
+> 1
+
+, Ψ-sampler employs the Preconditioned Crank–Nicolson Langevin (pCNL) algorithm [ 9]. Specifically, for a current state 
+
+x and step size h > 0, the pCNL proposal x′ is generated as: 
+
+x′ = ρx + p1 − ρ2 ξ +
+
+√h
+
+2
+
+∇r(ˆ x0(x)) 
+
+α
+
+!
+
+, ξ ∼ N (0 , I ), (9) where ρ = (1 −h/ 4) /(1+ h/ 4) . While pCNL is dimension-robust and effective for high-dimensional latent spaces, it remains fundamentally a local MCMC method. As visually demonstrated in Fig. 2E, this restricted exploration leads to a critical mode-trapping problem: the Markov chain’s trajectory is largely dictated by its initialization, often exhibiting metastability within suboptimal regions. In complex, sharp reward landscapes, escaping a local mode (e.g., correctly matching only two out of four bounding boxes in a layout task) requires large-scale proposals that are inherently incompatible with the moderate step-size h necessary to maintain stable acceptance rates. Consequently, any attempt to traverse high-energy barriers results in vanishingly low acceptance probabilities, as the target density π∗ 
+
+> 1
+
+drops precipitously outside the narrow reward peaks. This effectively confines the chain to the initial basin of attraction, preventing the discovery of the global optimum regardless of the sampling budget. One might consider the Best-of-L strategy (Fig. 2F)—running L independent Ψ-sampler chains and selecting the one with the highest reward—as a potential remedy. However, this fails to fundamentally resolve the exploration bottleneck. Such a brute-force approach relies on the "lucky" chance that at least one initialization lands near the global optimum—a probability that vanishes rapidly as the reward landscape grows complex. Thus, overcoming this bottleneck necessitates a more systematic approach. 
+
+## 5 PATHS: Parallel Tempering for High-complexity Reward Sampling 
+
+To address the mode-trapping and exploration bottlenecks discussed in Section 4.2, we propose 
+
+PATHS (PA rallel Tempering for High-complexity reward Sampling). Unlike Ψ-sampler, which relies on a single local Markov chain, PATHS employs a systematic global exploration strategy by constructing a sequence of tempered target distributions. 
+
+5.1 PATHS: Parallel-Tempering pCNL 
+
+PATHS leverages the efficiency of pCNL for high-dimensional spaces while overcoming its locality through a parallel tempering (PT) framework [ 40 ]. The core idea is to interpolate between the tractable prior π1 (where exploration is easy) and the sharp, complex reward-aware posterior π∗
+
+> 1
+
+(where the global optimum resides). 
+
+Tempered ladder. PATHS maintains L chains targeting a sequence of tempered distributions: 
+
+π∗
+
+> 1,ℓ
+
+(x) ∝ p1(x) exp 
+
+ r(ˆ x0(x1)) 
+
+α · Tℓ
+
+
+
+, ℓ = 1 , . . . , L, (10) with a geometric temperature ladder T1 = 1 < T 2 < · · · < T L. This setup assigns distinct roles to each chain (as illustrated in Fig. 3): • Low-temperature (Cold) Chains (Small ℓ): These chains, including the target chain where 
+
+T1 = 1 , are dedicated to high-fidelity sampling from the reward-aware posterior π∗ 
+
+> 1
+
+. While they effectively refine samples within precise modes, they are highly susceptible to mode-trapping within the rugged reward landscape, often leading to frequent rejections and an inability to escape local optima. • High-temperature (Hot) Chains (Large ℓ): By employing elevated temperatures, these chains effectively flatten the reward landscape to facilitate global exploration. However, due to this reduced sensitivity to the reward signal, they lack the stability to remain on any single high-reward mode; the discovered states continuously shift rather than being refined, necessitating a swap to transfer these findings to a more stable chain. 6epochs 
+
+> temperature
+
+Cold Chain 
+
+Hot Chain Figure 3: Visualization of the Parallel Tempering mechanism. Hot chains explore flattened reward landscapes, while accepted moves propagate states. 0 20 40 60 80 100 120 
+
+> Monte Carlo Step
+> T₁ = 1.0
+> (cold)
+> T₂ = 2.0
+> T₃ = 4.0
+> T₄ = 8.0
+> (hot)
+> Temperature
+> Parallel Tempering: Walker Trajectory through Temperature Ladder
+> Chain 0
+> Chain 1
+> Chain 2
+> Chain 3
+
+Figure 4: Visualization of replica-exchange swap trajectories across the temperature ladder T ∈{1, 2, 4, 8}, recorded from an actual PATHS run on a single layout-to-image instance. Swap pro-posals are attempted every m = 5 steps; accepted swaps allow chains to move between temperature levels, enabling information exchange. 
+
+We adopt a geometric ladder Tℓ = T ℓ−1ratio following the standard parallel-tempering practice, which provides approximately uniform overlap between adjacent chains [31]. 
+
+Replica Exchange (Swap). PATHS periodically attempts to swap states between adjacent chains 
+
+ℓ and ℓ + 1 every m steps (see Fig. 4 for trajectory visualization). The exchange is governed by the Metropolis-Hastings acceptance ratio. For two states xℓ and xℓ+1 in adjacent chains, the swap probability is defined as: 
+
+A(xℓ, x ℓ+1 ) = min 
+
+
+
+1, π∗ 
+
+> ℓ
+
+(xℓ+1 )π∗
+
+> ℓ+1
+
+(xℓ)
+
+π∗ 
+
+> ℓ
+
+(xℓ)π∗
+
+> ℓ+1
+
+(xℓ+1 )
+
+
+
+(11) Substituting the tempered distribution from Eq. (10) , the prior terms p1(x) cancel out, and the ratio simplifies to: 
+
+A(xℓ, x ℓ+1 ) = min 
+
+
+
+1, exp 
+
+ 1
+
+Tℓ
+
+− 1
+
+Tℓ+1 
+
+  r(ˆ x0(xℓ+1 )) 
+
+α − r(ˆ x0(xℓ)) 
+
+α
+
+ 
+
+(12) This criterion establishes a reward-driven sorting mechanism across the temperature ladder. Samples with higher rewards are preferentially transitioned to colder chains for local refinement near the target modes, while lower-reward samples are moved to warmer chains. In these warmer chains, the flattened energy landscape facilitates more effective mode-hopping and global exploration, ultimately concentrating the particle population in the high-density regions of the target distribution π∗ 
+
+> 1
+
+.After the parallel tempering process concludes, we collect K samples specifically from the coldest chain ( T1 = 1 ), which directly targets the reward-aware posterior π∗ 
+
+> 1
+
+defined in Eq. 7. We then proceed with the final sampling process using SMC as described in Section 3.2. As visually demonstrated in Fig. 2G, while other methods struggle with mode-trapping, PATHS is the only approach that consistently escapes suboptimal local modes with closely matching the ground truth. The detailed procedure is provided in Algorithm 1 in Appendix C. 
+
+## 6 Experiments 
+
+We evaluate PATHS on two compositional reward-alignment tasks: layout-to-image generation and quantity-aware sampling. Both tasks induce multi-modal reward landscapes: multiple object configurations can satisfy the same spatial layout, and many spatial arrangements can realize the same target count. We therefore use these tasks to test whether parallel-tempering initialization improves finite-budget exploration beyond independent posterior-initialization baselines. 
+
+6.1 Experimental Setup Tasks. In the layout-to-image task, the goal is to generate images that place specified objects in target bounding boxes while preserving text-image alignment and image quality. In the quantity-aware task, the goal is to generate a specified number of target objects. For both tasks, we report results 7Sampling from Prior Sampling from Posterior     
+
+> TDS DAS ψ-Sampler Best-of-4 PATHS (Ours)
+> Layout-to-Image
+
+“A person and airplane over a car and under the chair....” 
+
+> Quantity-Aware
+
+24 (∆13) 25 (∆12) 33 (∆4) 35 (∆2) 37 (∆0) 
+
+“37 strawberries ” 
+
+> Figure 5: Qualitative comparison on Layout-to-Image and Quantity-Aware tasks. We compare sampling from prior (TDS, DAS) and sampling from posterior ( ψ-Sampler, Best-of-4, PATHS ). PATHS effectively aligns with complex geometric layouts and exact object counts without degrading image quality.
+
+on the full benchmark and on difficulty-stratified simple and complex subsets. The complex subsets contain prompts with more demanding compositional structure, such as multiple objects, spatial relations, or larger target counts. Further benchmark and subset details are provided in Appendix F. 
+
+Baselines and compute. We compare PATHS against prior-initialized reward-guided SMC base-lines, including TDS [ 44 ] and DAS [ 22 ], and posterior-initialization baselines, including Ψ-Sampler [ 50 ] and Best-of-4. Ψ-Sampler uses independent same-temperature pCNL chains, while Best-of-4 runs four independent cold pCNL chains and forwards the highest-reward chain to the SMC stage. We use Best-of-4 because PATHS also uses four parallel chains, making the comparison compute-matched. All experiments use FLUX.1-schnell [ 5 ] and a total budget of 1000 reward-model evaluations, split evenly between initial sampling and the downstream SMC stage. Thus, improve-ments over Ψ-Sampler and Best-of-4 reflect the effect of tempering and online replica exchange rather than additional reward-model evaluations. Full hyperparameters, temperature ladders, and SMC details are provided in Appendix F. 
+
+Evaluation metrics. For layout-to-image generation, we report the seen GroundingDINO-based layout reward, held-out mIoU, ImageReward, and VQAScore. For quantity-aware sampling, we report the seen T2I-Count error together with ImageReward and VQAScore. Metrics used directly for guidance are marked with †, while the remaining metrics are used only for evaluation. 
+
+6.2 Experiment Results Qualitative Results Figure 5 provides representative qualitative comparisons for both tasks. PATHS better satisfies complex layout and count constraints while preserving visual fidelity. Additional qual-itative examples, including prompt-level comparisons and failure cases, are provided in Appendix I. 
+
+Layout-to-Image Generation Table 1 reports quantitative results on the layout-to-image task. PATHS improves performance most clearly on the complex subset, where prompts contain multiple objects and spatial relations. Compared with independent posterior-initialization baselines, PATHS improves held-out image quality and text-image alignment while remaining competitive on layout metrics. The comparison with Best-of-4 is particularly important: selecting the best independent chain after sampling cannot replace the online information exchange induced by replica-exchange swaps. 8Table 1: Quantitative comparison on Layout-to-Image and Quantity-Aware Sampling . We report results on the full benchmark and difficulty-stratified Complex and Simple subsets. Metrics marked with † are used as seen rewards during reward-guided sampling, while the remaining metrics are held-out evaluations. Best results are shown in bold and second-best results are underlined.                                                                                                                                                   
+
+> Task Subset Metric Sampling from Prior Sampling from Posterior TDS [44] DAS [22] ψ-Sampler [50] Best-of-4 PATHS
+> Layout-to-Image Overall (N= 50 )GroundingDINO †[27] ↑0.352 0.297 0.348 0.363 0.376
+> mIoU [20] ↑0.348 0.299 0.325 0.355 0.366
+> ImageReward [46] ↑0.827 0.872 0.705 0.826 0.949
+> VQA [24] ↑0.766 0.774 0.738 0.771 0.797
+> Complex (N= 20 )GroundingDINO †[27] ↑0.261 0.226 0.239 0.265 0.266
+> mIoU [20] ↑0.287 0.265 0.266 0.273 0.274 ImageReward [46] ↑1.034 0.861 0.625 0.781 1.411
+> VQA [24] ↑0.618 0.608 0.580 0.588 0.706
+> Simple (N= 30 )GroundingDINO †[27] ↑0.412 0.344 0.420 0.428 0.450
+> mIoU [20] ↑0.390 0.321 0.365 0.411 0.428
+> ImageReward [46] ↑0.689 0.879 0.764 0.856 0.820 VQA [24] ↑0.864 0.885 0.844 0.893 0.858 Quantity-Aware Sampling Overall (N= 60 )T2I-Count †[33] ↓2.083 1.786 2.412 1.613 1.344
+> ImageReward [46] ↑-0.243 -0.331 0.048 0.095 0.244
+> VQAScore [24] ↑0.549 0.553 0.645 0.652 0.669
+> Complex (N= 30 )T2I-Count †[33] ↓3.250 3.108 4.181 2.463 1.725
+> ImageReward [46] ↑-0.300 -0.325 0.104 0.170 0.202
+> VQAScore [24] ↑0.546 0.555 0.616 0.608 0.657
+> Simple (N= 30 )T2I-Count †[33] ↓1.305 0.904 0.644 0.763 0.963 ImageReward [46] ↑-0.159 -0.339 -0.007 0.019 0.286
+> VQAScore [24] ↑0.555 0.550 0.673 0.696 0.681
+
+Quantity-Aware Sampling Table 1 reports quantitative results on quantity-aware sampling. The gains are strongest on the complex subset, where target counts are harder to realize under a fixed inference-time budget. PATHS substantially reduces count error compared with Ψ-Sampler and Best-of-4 while also improving held-out preference and text-image alignment metrics. This indicates that the benefit is not simply due to running multiple independent chains, but to tempering and online inter-chain communication. 
+
+Takeaways. Across both tasks, the largest gains appear in the complex subsets, where the reward landscapes contain more separated high-reward modes induced by multi-object layouts or difficult counting constraints. This supports the central hypothesis of PATHS: under a matched reward-model evaluation budget, replacing independent same-temperature chains with a tempered, swap-coupled ensemble improves finite-budget exploration. The gains on held-out metrics further suggest that PATHS does not merely optimize the seen reward, but provides better initial particles for the downstream SMC stage. 
+
+## 7 Conclusion 
+
+We introduced PATHS, an inference-time initialization framework that improves reward alignment in diffusion models under rare and multi-modal reward landscapes. By leveraging Parallel Tempering, PATHS enables more effective exploration of complex reward-aware posteriors and produces stronger initial particles for downstream SMC-based alignment. Across layout-to-image and quantity-aware generation tasks, PATHS consistently outperforms prior SMC-based methods and Ψ-Sampler, demon-strating that robust initialization and cross-mode exploration are critical for inference-time reward alignment in high-complexity settings. 9References 
+
+[1] Donghoon Ahn, Jiwon Kang, Sanghyun Lee, Jaewon Min, Minjae Kim, Wooseok Jang, Hyoung-won Cho, Sayak Paul, SeonHwa Kim, Eunju Cha, et al. A noise is worth diffusion guidance. 
+
+arXiv preprint arXiv:2412.03895 , 2024. [2] Michael Albergo, Nicholas M Boffi, and Eric Vanden-Eijnden. Stochastic interpolants: A unifying framework for flows and diffusions. Journal of Machine Learning Research , 26(209): 1–80, 2025. [3] Arpit Bansal, Hong-Min Chu, Avi Schwarzschild, Soumyadip Sengupta, Micah Goldblum, Jonas Geiping, and Tom Goldstein. Universal guidance for diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 843–852, 2023. [4] Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, and Sergey Levine. Training diffusion models with reinforcement learning. In The Twelfth International Conference on Learning Representations , 2024. URL https://openreview.net/forum?id=YCWjhGrJFD .[5] Black Forest Labs. Flux.1: High-quality image generation model, 2024. https://blackforestlabs.ai/. [6] Sourav Chatterjee and Persi Diaconis. The sample size required in importance sampling. The Annals of Applied Probability , 28(2):1099–1135, 2018. [7] Hyungjin Chung, Jeongsol Kim, Michael T Mccann, Marc L Klasky, and Jong Chul Ye. Diffusion posterior sampling for general noisy inverse problems. ICLR , 2023. [8] Kevin Clark, Paul Vicol, Kevin Swersky, and David J. Fleet. Directly fine-tuning diffusion models on differentiable rewards. In The Twelfth International Conference on Learning Repre-sentations , 2024. URL https://openreview.net/forum?id=1vmSEVL19f .[9] Simon L Cotter, Gareth O Roberts, Andrew M Stuart, and David White. Mcmc methods for functions: modifying old algorithms to make them faster. Statistical Science , 28(3):424–446, 2013. [10] Prafulla Dhariwal and Alexander Nichol. Diffusion models beat gans on image synthesis. In 
+
+NeurIPS , 2021. [11] David J Earl and Michael W Deem. Parallel tempering: Theory, applications, and new perspec-tives. Physical Chemistry Chemical Physics , 7(23):3910–3916, 2005. [12] Bradley Efron. Tweedie’s formula and selection bias. Journal of the American Statistical Association , 106(496):1602–1614, 2011. [13] Ying Fan, Olivia Watkins, Yuqing Du, Hao Liu, Moonkyung Ryu, Craig Boutilier, Pieter Abbeel, Mohammad Ghavamzadeh, Kangwook Lee, and Kimin Lee. Dpok: Reinforcement learning for fine-tuning text-to-image diffusion models. Advances in Neural Information Processing Systems , 36:79858–79885, 2023. [14] Weixi Feng et al. Layoutgpt: Compositional visual planning and generation with large language models. In NeurIPS , 2024. [15] Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization. In International Conference on Machine Learning , pages 10835–10866. PMLR, 2023. [16] Charles J Geyer. Markov chain monte carlo maximum likelihood. Computing Science and Statistics , 1991. [17] Jiajun He, Paul Jeha, Peter Potaptchik, Leo Zhang, José Miguel Hernández-Lobato, Yuanqi Du, Saifuddin Syed, and Francisco Vargas. Crepe: Controlling diffusion with replica exchange. 
+
+arXiv preprint arXiv:2509.23265 , 2025. [18] Yutong He, Naoki Murata, Chieh-Hsin Lai, Yuhta Takida, Toshimitsu Uesaka, Dongjun Kim, Wei-Hsiang Liao, Yuki Mitsufuji, J Zico Kolter, Ruslan Salakhutdinov, et al. Manifold preserv-ing guided diffusion. arXiv preprint arXiv:2311.16424 , 2023. 10 [19] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. NeurIPS ,2020. [20] Xiuquan Hou, Meiqin Liu, Senlin Zhang, Ping Wei, and Badong Chen. Salience detr: Enhancing detection transformer with hierarchical salience filtering refinement. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 17574–17583, 2024. [21] Jaihoon Kim, Taehoon Yoon, Jisung Hwang, and Minhyuk Sung. Inference-time scaling for flow models via stochastic generation and rollover budget forcing. arXiv preprint arXiv:2503.19385 ,2025. [22] Sunwoo Kim, Minkyu Kim, and Dongmin Park. Test-time alignment of diffusion models without reward over-optimization. In The Thirteenth International Conference on Learning Representations , 2025. URL https://openreview.net/forum?id=vi3DjUhFVm .[23] Kimin Lee, Hao Liu, Moonkyung Ryu, Olivia Watkins, Yuqing Du, Craig Boutilier, Pieter Abbeel, Mohammad Ghavamzadeh, and Shixiang Shane Gu. Aligning text-to-image models using human feedback. arXiv preprint arXiv:2302.12192 , 2023. [24] Zhiqiu Lin, Deepak Pathak, Baiqi Li, Jiayao Li, Xide Xia, Graham Neubig, Pengchuan Zhang, and Deva Ramanan. Evaluating text-to-visual generation with image-to-text generation. In 
+
+European Conference on Computer Vision , pages 366–384. Springer, 2024. [25] Yaron Lipman, Ricky T.Q. Chen, Heli Ben-Hamu, Maximilian Nickel, and Matthew Le. Flow matching for generative modeling. ICLR , 2023. [26] Jie Liu, Gongye Liu, Jiajun Liang, Yangguang Li, Jiaheng Liu, Xintao Wang, Pengfei Wan, Di Zhang, and Wanli Ouyang. Flow-grpo: Training flow matching models via online rl. arXiv preprint arXiv:2505.05470 , 2025. [27] Shilong Liu, Zhaoyang Zeng, Tianhe Ren, Feng Li, Hao Zhang, Jie Yang, Qing Jiang, Chunyuan Li, Jianwei Yang, Hang Su, et al. Grounding dino: Marrying dino with grounded pre-training for open-set object detection. In European conference on computer vision , pages 38–55. Springer, 2024. [28] Xingchao Liu, Chengyue Gong, and Qiang Liu. Flow straight and fast: Learning to generate and transfer data with rectified flow. arXiv preprint arXiv:2209.03003 , 2022. [29] Nanye Ma, Shangyuan Tong, Haolin Jia, Hexiang Hu, Yu-Chuan Su, Mingda Zhang, Xuan Yang, Yandong Li, Tommi Jaakkola, Xuhui Jia, et al. Inference-time scaling for diffusion models beyond scaling denoising steps. arXiv preprint arXiv:2501.09732 , 2025. [30] Mihir Prabhudesai, Anirudh Goyal, Deepak Pathak, and Katerina Fragkiadaki. Aligning text-to-image diffusion models with reward backpropagation. arXiv preprint arXiv:2310.03739 ,2023. [31] Cristian Predescu, Mihaela Predescu, and Cristian V Ciobanu. The incomplete beta function law for parallel tempering sampling of classical canonical systems. The Journal of Chemical Physics , 120(9):4119–4128, 2004. [32] Zipeng Qi, Lichen Bai, Haoyi Xiong, and Zeke Xie. Not all noises are created equally: Diffusion noise selection and optimization. arXiv preprint arXiv:2407.14041 , 2024. [33] Yifei Qian, Zhongliang Guo, Bowen Deng, Chun Tong Lei, Shuai Zhao, Chun Pong Lau, Xiaopeng Hong, and Michael P Pound. T2icount: Enhancing cross-modal understanding for zero-shot counting. In Proceedings of the Computer Vision and Pattern Recognition Conference ,pages 25336–25345, 2025. [34] Rafael Rafailov, Archit Sharma, Eric Mitchell, Christopher D Manning, Stefano Ermon, and Chelsea Finn. Direct preference optimization: Your language model is secretly a reward model. 
+
+Advances in neural information processing systems , 36:53728–53741, 2023. [35] Christoph Schuhmann. LAION aesthetic predictor. https://laion.ai/blog/ laion-aesthetics/ , 2022. Accessed: 2024-09-29. 11 [36] Raghav Singhal, Zachary Horvitz, Ryan Teehan, Mengye Ren, Zhou Yu, Kathleen McKeown, and Rajesh Ranganath. A general framework for inference-time scaling and steering of diffusion models. arXiv preprint arXiv:2501.06848 , 2025. [37] Marta Skreta, Tara Akhound-Sadegh, Viktor Ohanesian, Roberto Bondesan, Alán Aspuru-Guzik, Arnaud Doucet, Rob Brekelmans, Alexander Tong, and Kirill Neklyudov. Feynman-kac correctors in diffusion: Annealing, guidance, and product of experts. arXiv preprint arXiv:2503.02819 , 2025. [38] Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli. Deep unsuper-vised learning using nonequilibrium thermodynamics. In International conference on machine learning , pages 2256–2265. pmlr, 2015. [39] Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole. Score-based generative modeling through stochastic differential equations. ICLR ,2021. [40] Robert H Swendsen and Jian-Sheng Wang. Replica monte carlo simulation of spin-glasses. 
+
+Physical Review Letters , 57(21):2607, 1986. [41] Masatoshi Uehara, Yulai Zhao, Kevin Black, Ehsan Hajiramezanali, Gabriele Scalia, Nathaniel Lee Diamant, Alex M Tseng, Tommaso Biancalani, and Sergey Levine. Fine-tuning of continuous-time diffusion models as entropy-regularized control. arXiv preprint arXiv:2402.15194 , 2024. [42] Masatoshi Uehara, Yulai Zhao, Chenyu Wang, Xiner Li, Aviv Regev, Sergey Levine, and Tom-maso Biancalani. Inference-time alignment in diffusion models with reward-guided generation: Tutorial and review. arXiv preprint arXiv:2501.09685 , 2025. [43] Bram Wallace, Meihua Dang, Rafael Rafailov, Linqi Zhou, Aaron Lou, Senthil Purushwalkam, Stefano Ermon, Caiming Xiong, Shafiq Joty, and Nikhil Naik. Diffusion model alignment using direct preference optimization. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 8228–8238, 2024. [44] Luhuan Wu, Brian L. Trippe, Christian A Naesseth, John Patrick Cunningham, and David Blei. Practical and asymptotically exact conditional sampling in diffusion models. In Thirty-seventh Conference on Neural Information Processing Systems , 2023. URL https://openreview. net/forum?id=eWKqr1zcRv .[45] Xiaoshi Wu, Keqiang Sun, Feng Zhu, Rui Zhao, and Hongsheng Li. Human preference score: Better aligning text-to-image models with human preference. In Proceedings of the IEEE/CVF International Conference on Computer Vision , pages 2096–2105, 2023. [46] Jiazheng Xu, Xiao Liu, Yuchen Wu, Yuxuan Tong, Qinkai Li, Ming Ding, Jie Tang, and Yuxiao Dong. Imagereward: Learning and evaluating human preferences for text-to-image generation. 
+
+Advances in Neural Information Processing Systems , 36:15903–15935, 2023. [47] Katherine Xu, Lingzhi Zhang, and Jianbo Shi. Good seed makes a good crop: Discovering secret seeds in text-to-image diffusion models. In 2025 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) , pages 3024–3034. IEEE, 2025. [48] Zeyue Xue, Jie Wu, Yu Gao, Fangyuan Kong, Lingting Zhu, Mengzhao Chen, Zhiheng Liu, Wei Liu, Qiushan Guo, Weilin Huang, et al. Dancegrpo: Unleashing grpo on visual generation. 
+
+arXiv preprint arXiv:2505.07818 , 2025. [49] Kai Yang, Jian Tao, Jiafei Lyu, Chunjiang Ge, Jiaxin Chen, Weihan Shen, Xiaolong Zhu, and Xiu Li. Using human feedback to fine-tune diffusion models without any reward model. In 
+
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 8941–8951, 2024. [50] Taehoon Yoon, Yunhong Min, Kyeongmin Yeo, and Minhyuk Sung. Psi-sampler: Initial particle sampling for smc-based inference-time reward alignment in score models. arXiv preprint arXiv:2506.01320 , 2025. 12 [51] Jiwen Yu, Yinhuai Wang, Chen Zhao, Bernard Ghanem, and Jian Zhang. Freedom: Training-free energy-guided conditional diffusion model. ICCV , 2023. [52] Kaiwen Zheng, Huayu Chen, Haotian Ye, Haoxiang Wang, Qinsheng Zhang, Kai Jiang, Hang Su, Stefano Ermon, Jun Zhu, and Ming-Yu Liu. Diffusionnft: Online diffusion reinforcement with forward process. arXiv preprint arXiv:2509.16117 , 2025. 13 A Temperature-Scaled pCNL Transition 
+
+We describe the within-temperature pCNL transition used in PATHS and show how the temperature scaling enters both the proposal drift and the Metropolis-Hastings correction. For each temperature level Tℓ, the tempered initial posterior is 
+
+π∗
+
+> 1,ℓ
+
+(x) = 1
+
+Zℓ
+
+p1(x) exp 
+
+ r(ˆ x0(x1)) 
+
+αT ℓ
+
+
+
+, (13) where p1(x) = N (0, I), ˆx0(x1) is the one-step denoised estimate from x, r(ˆ x0(x1)) is the reward, 
+
+α controls the reward strength, and Tℓ is the temperature. The cold chain has T1 = 1 and therefore targets the original reward-aware posterior, while larger Tℓ values flatten the reward contribution and define hotter chains. Let 
+
+Φℓ(x) = r(ˆ x)
+
+αT ℓ
+
+(14) denote the temperature-scaled reward potential, and let 
+
+gℓ(x) = ∇xΦℓ(x) = 1
+
+αT ℓ
+
+∇xr(ˆ x0(x1)) (15) be the corresponding temperature-scaled reward gradient. Thus, hotter chains use weaker reward gradients, which allows them to explore a flatter reward landscape. Given the current state x(ℓ) 
+
+> k
+
+of chain ℓ at MCMC iteration k, the pCNL proposal is 
+
+x′ = ρℓx(ℓ) 
+
+> k
+
++
+
+q
+
+1 − ρ2
+
+> ℓ
+
+
+
+ξ +
+
+√sℓ
+
+2 gℓ(x(ℓ) 
+
+> k
+
+)
+
+
+
+, ξ ∼ N (0, I), (16) where sℓ > 0 is the Langevin step size and ρℓ ∈ (0 , 1) controls the pCN persistence. Equivalently, this proposal has Gaussian transition density 
+
+qℓ(x′ | x) = N x′; ρℓx +
+
+p1 − ρ2
+
+> ℓ
+
+√sℓ
+
+2 gℓ(x), (1 − ρ2 
+
+> ℓ
+
+)I
+
+!
+
+. (17) The proposed state is accepted with the Metropolis-Hastings probability 
+
+aℓ(x, x ′) = min 
+
+(
+
+1, π∗
+
+> 1,ℓ
+
+(x′)qℓ(x | x′)
+
+π∗
+
+> 1,ℓ
+
+(x)qℓ(x′ | x)
+
+)
+
+. (18) Substituting Eq. (13), the log acceptance ratio becomes 
+
+log Aℓ(x, x ′) = Φ ℓ(x′) − Φℓ(x) + log p1(x′) − log p1(x) + log qℓ(x | x′) − log qℓ(x′ | x)= r(ˆ x′
+
+> 0
+
+(x1)) − r(ˆ x0(x1)) 
+
+αT ℓ
+
++ log p1(x′) − log p1(x) + log qℓ(x | x′) − log qℓ(x′ | x).
+
+(19) Since p1 = N (0, I), the prior contribution is 
+
+log p1(x′) − log p1(x) = − 12 ∥x′∥22 + 12 ∥x∥22. (20) The proposal-density correction is 
+
+log qℓ(x | x′) − log qℓ(x′ | x) = − 12(1 − ρ2 
+
+> ℓ
+
+) x − ρℓx′ −
+
+p1 − ρ2
+
+> ℓ
+
+√sℓ
+
+2 gℓ(x′)
+
+> 22
+
++ 12(1 − ρ2 
+
+> ℓ
+
+) x′ − ρℓx −
+
+p1 − ρ2
+
+> ℓ
+
+√sℓ
+
+2 gℓ(x)
+
+> 22
+
+. (21) Combining Eqs. (19) , (20) , and (21) yields the temperature-scaled Metropolis-Hastings correction used by each PATHS replica. 14 This correction is important for two reasons. First, the reward difference is divided by αT ℓ, so hotter chains are less sharply biased toward local reward peaks. Second, the proposal drift gℓ(x) is also scaled by 1/(αT ℓ), so hotter chains take weaker reward-gradient-guided moves and can explore the prior geometry more broadly. The Metropolis-Hastings correction then ensures that, despite this biased proposal, the Markov kernel at temperature Tℓ leaves the intended tempered target π∗
+
+> 1,ℓ
+
+invariant. As a useful special case, if the Langevin drift is removed by setting gℓ(x) = 0, the proposal reduces to the standard pCN proposal 
+
+x′ = ρℓx +
+
+q
+
+1 − ρ2 
+
+> ℓ
+
+ξ, ξ ∼ N (0, I). (22) This proposal is reversible with respect to the Gaussian prior p1, so the prior and proposal-density terms cancel in the Metropolis-Hastings ratio. The acceptance probability then simplifies to 
+
+apCN  
+
+> ℓ
+
+(x, x ′) = min 
+
+
+
+1, exp 
+
+ r(ˆ x′
+
+> 0
+
+(x1)) − r(ˆ x0(x1)) 
+
+αT ℓ
+
+ 
+
+. (23) The pCNL transition used in PATHS can therefore be viewed as a reward-gradient-informed extension of this prior-preserving pCN update, with an additional Metropolis-Hastings correction that preserves the temperature-specific target in Eq. (13). 
+
+## B Derivation of the Replica-Exchange Swap Acceptance Rule 
+
+We derive the Metropolis acceptance probability used for replica-exchange moves in PATHS. PATHS uses an increasing temperature ladder 
+
+1 = T1 < T 2 < · · · < T L,
+
+where T1 = 1 denotes the cold chain and larger Tℓ values denote hotter chains. For each temperature level Tℓ, the tempered initial posterior is defined as 
+
+π∗
+
+> 1,ℓ
+
+(x) = 1
+
+Zℓ
+
+p1(x) exp 
+
+ r(ˆ x0(x1)) 
+
+αT ℓ
+
+
+
+, (24) where p1(x) = N (0, I), Zℓ is the normalizing constant, r(ˆ x0(x1)) is the reward computed on the denoised estimate, and α controls the strength of reward tempering. Larger Tℓ values flatten the reward contribution and therefore define hotter, more exploratory chains. The joint target distribution of the parallel tempering system is 
+
+πpt (x(1) , . . . , x (L)) = 
+
+> L
+
+Y
+
+> ℓ=1
+
+π∗
+
+> 1,ℓ
+
+(x(ℓ)). (25) Consider swapping the states of two neighboring temperature levels i and j = i + 1 , where Ti < T j .Let x(i) and x(j) denote the current states at temperatures Ti and Tj , respectively. The proposed swap is 
+
+(x(i), x (j)) 7 → (x(j), x (i)).
+
+Since the swap proposal is symmetric, the Metropolis-Hastings acceptance ratio is given by the ratio of the joint target density after and before the swap: 
+
+Aswap = π∗
+
+> 1,i
+
+(x(j))π∗ 
+
+> 1,j
+
+(x(i))
+
+π∗
+
+> 1,i
+
+(x(i))π∗ 
+
+> 1,j
+
+(x(j)) . (26) Substituting Eq. (24) into Eq. (26), we obtain 
+
+log Aswap = log π∗
+
+> 1,i
+
+(x(j)) + log π∗ 
+
+> 1,j
+
+(x(i)) − log π∗
+
+> 1,i
+
+(x(i)) − log π∗ 
+
+> 1,j
+
+(x(j))=
+
+"
+
+log p1(x(j)) + r(ˆ x(j)0 (x1)) 
+
+αT i
+
+− log Zi
+
+#
+
++
+
+"
+
+log p1(x(i)) + r(ˆ x(i)0 (x1)) 
+
+αT j
+
+− log Zj
+
+#
+
+−
+
+"
+
+log p1(x(i)) + r(ˆ x(i)0 (x1)) 
+
+αT i
+
+− log Zi
+
+#
+
+−
+
+"
+
+log p1(x(j)) + r(ˆ x(j)0 (x1)) 
+
+αT j
+
+− log Zj
+
+#
+
+.
+
+(27) 15 The Gaussian prior terms log p1(·) cancel because all temperature levels share the same prior reference measure. The normalizing constants log Zi and log Zj also cancel because the swap only exchanges states between two fixed temperature levels. Therefore, 
+
+log Aswap =
+
+ 1
+
+Ti
+
+− 1
+
+Tj
+
+ r(ˆ x(j)0 (x1)) − r(ˆ x(i)0 (x1)) 
+
+α . (28) The swap is accepted with probability 
+
+aswap = min {1, exp (log Aswap )} . (29) This expression has an intuitive interpretation. Since Ti < T j , the coefficient 
+
+1
+
+Ti
+
+− 1
+
+Tj
+
+is positive. Therefore, if the hotter chain j has discovered a higher-reward state than the colder chain 
+
+i, namely if 
+
+r(ˆ x(j)0 (x1)) > r (ˆ x(i)0 (x1)) ,
+
+then log Aswap > 0, and the swap is accepted with probability one. This allows high-reward states discovered by hotter chains to move down toward colder temperatures. Conversely, swaps that move lower-reward states into colder chains may still be accepted with probability exp(log Aswap ), which is necessary for detailed balance and prevents the algorithm from degenerating into greedy reward maximization. In our implementation, swaps are applied particle-wise. If x(ℓ) 
+
+> c
+
+denotes the c-th particle at temperature level ℓ, then the particle-wise log acceptance ratio is 
+
+log A(c)swap =
+
+ 1
+
+Ti
+
+− 1
+
+Tj
+
+ r(ˆ x(j)0,c (x1)) − r(ˆ x(i)0,c (x1)) 
+
+α . (30) This is the expression used in Eq. (28) . If an entire block of C particles were swapped jointly instead, the log acceptance ratio would be the sum of the particle-wise log ratios: 
+
+log Ablock swap =
+
+> C
+
+X
+
+> c=1
+
+log A(c)swap . (31) Finally, the swap transition preserves the joint tempered distribution πpt . Because the adjacent-replica swap proposal is symmetric, the Metropolis rule satisfies detailed balance: 
+
+πpt (x)q(x, x ′)a(x, x ′) = πpt (x′)q(x′, x )a(x′, x ), (32) where x′ denotes the swapped state. Hence, the replica-exchange kernel leaves πpt invariant. Since the within-temperature pCNL kernels also preserve their respective tempered targets, the composition of pCNL updates and replica-exchange swaps preserves the full joint target distribution in Eq. (25) .
+
+## C Algorithm Details for PATHS 
+
+Here we provide the detailed pseudocode for PATHS. The procedure is summarized in Algorithm 1. The implementation uses the compact per-particle pCNL log-density contribution Λℓ,c defined below, which is equivalent to the temperature-scaled Metropolis–Hastings correction in Appendix A. Replica-exchange swaps are implemented using an even–odd schedule: at successive swap intervals, PATHS alternates between the disjoint adjacent pairs {(1 , 2) , (3 , 4) , . . . } and {(2 , 3) , (4 , 5) , . . . }.This allows multiple non-overlapping swaps to be proposed in parallel while ensuring that every adjacent temperature pair is attempted regularly. 16 Algorithm 1 PATHS: Parallel Tempering pCNL for Initial Particle Sampling 
+
+Require: Initial cold-chain particles X(1) 0 ∈ RC×D ; reward r; reward scale α; pCNL step sizes 
+
+{hℓ}Lℓ=1 ; temperatures 1 = T1 < T 2 < · · · < T L; swap interval ∆swap ; burn-in B; post-burn-in iterations M ; number of SMC initial particles Ninit 
+
+Ensure: Initial particle set Sinit  
+
+> 1:
+
+// Initialization  
+
+> 2:
+
+X(1) ← X(1) 0 
+
+> 3:
+
+for ℓ = 2 , . . . , L do  
+
+> 4:
+
+Sample X(ℓ) ∼ p⊗C 
+
+> 1
+> 5:
+
+end for  
+
+> 6:
+
+Evaluate rewards r(ℓ) and gradients G(ℓ) for all ℓ 
+
+> 7:
+
+S ← ∅  
+
+> 8:
+
+for k = 1 , . . . , B + M do  
+
+> 9:
+
+// Within-temperature pCNL updates  
+
+> 10:
+
+for ℓ = 1 , . . . , L do  
+
+> 11:
+
+Compute temperature-scaled rewards and gradients: ˜r(ℓ) = r(ℓ)/(αT ℓ), ˜G(ℓ) = G(ℓ)/(αT ℓ) 
+
+> 12:
+
+Propose X′(ℓ) using the temperature-scaled pCNL proposal in Eq. (33)  
+
+> 13:
+
+Evaluate proposed rewards r′(ℓ) and gradients G′(ℓ) 
+
+> 14:
+
+Compute log A(ℓ)pCNL using Eq. (35)  
+
+> 15:
+
+Accept or reject each particle independently and update (X(ℓ), r(ℓ), G(ℓ)) 
+
+> 16:
+
+end for  
+
+> 17:
+
+// Replica-exchange swaps with even–odd schedule  
+
+> 18:
+
+if k mod ∆ swap = 0 and L > 1 then  
+
+> 19:
+
+q ← k/ ∆swap  
+
+> 20:
+
+Pk ← { (2 m − 1, 2m)}⌊L/ 2⌋ 
+
+> m=1
+
+if q is odd, otherwise Pk ← { (2 m, 2m + 1) }⌊(L−1) /2⌋ 
+
+> m=1
+> 21:
+
+for (i, j ) ∈ P k do  
+
+> 22:
+
+Compute particle-wise swap log-ratio 
+
+log A(i,j )swap =
+
+ 1
+
+Ti
+
+− 1
+
+Tj
+
+ r(j) − r(i)
+
+α 
+
+> 23:
+
+Accept or reject each particle-wise swap independently  
+
+> 24:
+
+end for  
+
+> 25:
+
+end if  
+
+> 26:
+
+// Cold-chain sample collection  
+
+> 27:
+
+if k > B then  
+
+> 28:
+
+Append X(1) to S 
+
+> 29:
+
+end if  
+
+> 30:
+
+end for  
+
+> 31:
+
+Apply chain-stratified thinning to S and select Ninit cold-chain particles  
+
+> 32:
+
+return Sinit 
+
+X′(ℓ) = ρℓX(ℓ) +
+
+q
+
+1 − ρ2
+
+> ℓ
+
+
+
+Ξ(ℓ) +
+
+√hℓ
+
+2 ˜G(ℓ)
+
+
+
+, Ξ(ℓ) ∼ N (0, ID )⊗C . (33) For each particle c, the pCNL Metropolis–Hastings correction uses the following log-density contri-bution. For a proposal from xc to yc at temperature level ℓ, define 
+
+Λℓ,c (yc | xc; ˜ r(yc), ˜g(yc)) = ˜ r(yc) − hℓ
+
+8 ∥˜g(yc)∥2 +
+
+√hℓ
+
+2
+
+*
+
+xc − ρℓyc
+
+p1 − ρ2
+
+> ℓ
+
+, ˜g(yc)
+
++
+
+, (34) where 
+
+˜r(yc) = r(ˆ y0|1,c )
+
+αT ℓ
+
+, ˜g(yc) = ∇x1 r(ˆ y0|1,c )
+
+αT ℓ
+
+.
+
+17 The particle-wise pCNL acceptance probability is 
+
+A(ℓ)pCNL ,c = min 
+
+n
+
+1, exp 
+
+h
+
+Λℓ,c 
+
+
+
+x′(ℓ) 
+
+> c
+
+| x(ℓ) 
+
+> c
+
+; ˜ r′(ℓ) 
+
+> c
+
+, ˜g′(ℓ)
+
+> c
+
+
+
+− Λℓ,c 
+
+
+
+x(ℓ) 
+
+> c
+
+| x′(ℓ) 
+
+> c
+
+; ˜ r(ℓ) 
+
+> c
+
+, ˜g(ℓ)
+
+> c
+
+io 
+
+. (35) Equivalently, Eq. (35) is applied independently across the C particles in the vectorized implementa-tion. 
+
+## D Invariant Distribution of PATHS 
+
+We show that the PATHS transition preserves the joint tempered target distribution. For one particle per temperature level, define 
+
+Π( x(1) , . . . , x (L)) = 
+
+> L
+
+Y
+
+> ℓ=1
+
+π∗
+
+> 1,ℓ
+
+(x(ℓ)). (36) Let Kℓ denote the Metropolis-corrected pCNL kernel at temperature Tℓ. As described in Appendix A, this kernel targets π∗ 
+
+> 1,ℓ
+
+and satisfies detailed balance: 
+
+π∗
+
+> 1,ℓ
+
+(dx ) Kℓ(x, dx ′) = π∗
+
+> 1,ℓ
+
+(dx ′) Kℓ(x′, dx ). (37) Therefore, the product within-temperature kernel 
+
+Kwithin =
+
+> L
+
+Y
+
+> ℓ=1
+
+Kℓ (38) preserves the product target Π.Next, consider the replica-exchange swap kernel Kswap . As derived in Appendix B, the adjacent-temperature swap proposal is accepted with the Metropolis probability 
+
+aswap = min 
+
+
+
+1, Π( Sij x)Π( x)
+
+
+
+, (39) where Sij x denotes the state obtained by swapping replicas i and j. Since the swap proposal is symmetric, this Metropolis rule satisfies detailed balance with respect to Π. Hence, Kswap also preserves Π.A full PATHS update consists of within-temperature pCNL transitions, optionally followed by a replica-exchange swap: 
+
+KPATHS = Kswap ◦ K within . (40) Since both Kwithin and Kswap preserve Π, their composition also preserves Π. Therefore, 
+
+Z
+
+Π( dx ) KPATHS (x, dx ′) = Π( dx ′). (41) If swaps are performed every ∆swap iterations, the kernel becomes 
+
+KPATHS ,∆ = Kswap ◦ K ∆swap 
+
+> within
+
+, (42) which also preserves Π, since powers of an invariant kernel remain invariant. In the particle-wise implementation with C particles per temperature, the joint target becomes 
+
+ΠC =
+
+> C
+
+Y
+
+> c=1
+> L
+
+Y
+
+> ℓ=1
+
+π∗
+
+> 1,ℓ
+
+
+
+x(ℓ,c )
+
+. (43) Because both pCNL updates and swap moves are applied particle-wise using the same Metropolis corrections, the same argument shows that ΠC is invariant under the full PATHS transition. 
+
+## E Proof of Proposition 4.1 
+
+We restate the proposition and provide a proof. 18 Statement Assume that there exists a measurable high-reward region B ⊂ X 0 in the data space. Let T (x1) = ˆ x0(x1) denote the Tweedie estimator, and let ν = T#p1 be the pushforward measure of the prior p1 under T . Suppose that 
+
+ν(B) = Px1∼p1
+
+ T (x1) ∈ B = ε ≪ 1.
+
+Furthermore, assume that there is a reward gap ∆ > 0 separating B from its complement, namely 
+
+inf  
+
+> x0∈B
+
+r(x0) − sup 
+
+> x0∈Bc
+
+r(x0) ≥ ∆.
+
+Let π∗ 
+
+> 1
+
+denote the reward-aware initial distribution defined in Eq. (7), i.e., 
+
+π∗ 
+
+> 1
+
+(x1) = p1(x1) exp ( r(T (x1)) /α )
+
+R 
+
+> X1
+
+p1(z) exp ( r(T (z)) /α ) dz .
+
+If, for some fixed η ∈ (0 , 1) ,
+
+∆
+
+α ≥ log 1
+
+ε + log 1 − ηη ,
+
+then 
+
+DKL (π∗ 
+
+> 1
+
+∥p1) ≥ (1 − η) log 1
+
+ε − h(η),
+
+where 
+
+h(η) = −η log η − (1 − η) log(1 − η)
+
+is the binary entropy function. In particular, for any fixed η ∈ (0 , 1) ,
+
+DKL (π∗ 
+
+> 1
+
+∥p1) = Ω 
+
+
+
+log 1
+
+ε
+
+
+
+.
+
+Proof. Let 
+
+T (x1) = ˆ x0(x1)
+
+be the Tweedie estimator, and define the pre-image of the high-reward region B by 
+
+A = T −1(B) = {x1 ∈ X 1 : T (x1) ∈ B}.
+
+By the definition of the pushforward measure ν = T#p1, we have 
+
+p1(A) = ν(B) = ε. 
+
+Let β = 1 /α . The probability of A under the reward-aware initial distribution π∗ 
+
+> 1
+
+is 
+
+π∗ 
+
+> 1
+
+(A) = 
+
+R 
+
+> A
+
+p1(x1) exp ( βr (T (x1))) dx 1
+
+R 
+
+> X1
+
+p1(x1) exp ( βr (T (x1))) dx 1
+
+=
+
+R 
+
+> B
+
+exp ( βr (x0)) dν (x0)
+
+R 
+
+> B
+
+exp ( βr (x0)) dν (x0) + R 
+
+> Bc
+
+exp ( βr (x0)) dν (x0) .
+
+Define 
+
+R+ = inf  
+
+> x0∈B
+
+r(x0), R− = sup 
+
+> x0∈Bc
+
+r(x0).
+
+By assumption, 
+
+R+ − R− ≥ ∆.
+
+Therefore, 
+
+Z
+
+> B
+
+exp ( βr (x0)) dν (x0) ≥ ν(B)eβR + = εe βR + ,
+
+Z
+
+> Bc
+
+exp ( βr (x0)) dν (x0) ≤ ν(Bc)eβR − = (1 − ε)eβR − .
+
+19 Substituting these bounds gives 
+
+π∗ 
+
+> 1
+
+(A) ≥ εe βR +
+
+εe βR + + (1 − ε)eβR −
+
+= εε + (1 − ε)e−β(R+−R−)
+
+≥ εε + (1 − ε)e−β∆ = q∆.
+
+We now show that q∆ is close to one under the assumed scaling of β∆. Since 
+
+β∆ = ∆
+
+α ≥ log 1
+
+ε + log 1 − ηη ,
+
+we have 
+
+e−β∆ ≤ ε η
+
+1 − η .
+
+Hence 
+
+q∆ = εε + (1 − ε)e−β∆
+
+≥ εε + (1 − ε)ε η
+
+> 1−η
+
+= 11 + (1 − ε) η
+
+> 1−η
+
+≥ 1 − η. 
+
+Therefore, 
+
+π∗ 
+
+> 1
+
+(A) ≥ q∆ ≥ 1 − η. 
+
+Next, apply the data processing inequality for KL divergence under the binary partition {A, A c}.This yields 
+
+DKL (π∗ 
+
+> 1
+
+∥p1) ≥ dBern (π∗ 
+
+> 1
+
+(A)∥p1(A)) ,
+
+where 
+
+dBern (q∥ε) = q log qε + (1 − q) log 1 − q
+
+1 − ε .
+
+Since p1(A) = ε and π∗ 
+
+> 1
+
+(A) ≥ 1 − η, we obtain 
+
+DKL (π∗ 
+
+> 1
+
+∥p1) ≥ dBern (1 − η∥ε),
+
+using the fact that dBern (q∥ε) is increasing in q for q > ε .It remains to lower bound this Bernoulli KL divergence. We have 
+
+dBern (1 − η∥ε) = (1 − η) log 1 − ηε + η log η
+
+1 − ε
+
+= (1 − η) log 1
+
+ε + (1 − η) log(1 − η) + η log η − η log(1 − ε)
+
+≥ (1 − η) log 1
+
+ε − h(η),
+
+where 
+
+h(η) = −η log η − (1 − η) log(1 − η),
+
+and we used −η log(1 − ε) ≥ 0.Thus, 
+
+DKL (π∗ 
+
+> 1
+
+∥p1) ≥ (1 − η) log 1
+
+ε − h(η).
+
+For any fixed η ∈ (0 , 1) , the dominant term as ε → 0 is (1 − η) log(1 /ε ). Therefore, 
+
+DKL (π∗ 
+
+> 1
+
+∥p1) = Ω 
+
+
+
+log 1
+
+ε
+
+
+
+.
+
+20 F Experimental Details 
+
+Base model and stochastic sampling. All experiments use FLUX.1-schnell [ 5] as the pretrained score-based generative model. Although FLUX.1-schnell is implemented as a flow-based model, we use its stochastic sampling formulation for SMC-based inference-time reward alignment. We keep the downstream reward-guided SMC denoising pipeline fixed across methods and modify only the initialization stage. 
+
+Inference-time budget. We use a total inference-time budget of 1000 reward-model function evaluations for all methods and all tasks. For posterior-initialization methods, 500 evaluations are allocated to initial particle sampling and 500 evaluations are allocated to the downstream SMC stage. The SMC stage is initialized with 20 particles produced by the initialization method and is run for 
+
+25 denoising steps. Since reward evaluation is performed once per particle per denoising step, this corresponds to 20 × 25 = 500 reward-model evaluations in the SMC stage. Prior-initialized SMC baselines allocate the full budget to the SMC stage, corresponding to 40 particles over 25 denoising steps. Thus, all methods are compared under the same total reward-model evaluation budget. 
+
+Benchmarks. We evaluate PATHS on two compositional reward-alignment tasks: layout-to-image generation and quantity-aware sampling. Both tasks induce multi-modal reward landscapes: multiple object configurations can satisfy the same spatial layout, and many spatial arrangements can realize the same target object count. We therefore report results not only on the full benchmark, but also on difficulty-stratified simple and complex subsets. 
+
+Layout-to-image benchmark. We evaluate layout-to-image generation on the prompt set in 
+
+selected_prompts_data.json . Each prompt specifies object phrases, target bounding boxes, and spatial relations. We split the benchmark by the number of objects: prompts with four objects are assigned to the complex subset, while prompts with three or fewer objects are assigned to the simple subset. The complex subset contains 10 prompts and the simple subset contains 15 prompts. For each prompt, we generate two images per method, yielding 25 × 2 = 50 images in total for evaluation, with 20 complex images and 30 simple images. 
+
+Quantity-aware benchmark. We evaluate quantity-aware sampling on the prompt set in 
+
+quantity_aware_selected_20.json . The benchmark contains 20 prompts, each specifying a target object category and count. We split the prompts by target count: prompts with ngt ≥ 25 
+
+are assigned to the complex subset, while prompts with ngt < 25 are assigned to the simple subset. For each prompt, we generate three images per method, yielding 20 × 3 = 60 images in total for evaluation. This gives 30 images in the complex subset and 30 images in the simple subset. 
+
+Reward and evaluation models. For layout-to-image generation, the seen reward is computed using GroundingDINO [ 27 ]. Given a generated image, target object phrases, and target bounding boxes, GroundingDINO predicts object boxes for each phrase. We compute the layout reward by measuring the agreement between predicted boxes and target boxes. We additionally report held-out mIoU using a different detector, Salience DETR [20], which is never used during sampling. For quantity-aware sampling, the seen reward is computed using T2I-Count [ 33 ]. Given a generated image and target object category, T2I-Count outputs a density map, and the predicted count is obtained by summing the density map. The reward used during sampling is the negative smooth L1 loss in Eq. (44) . In the quantitative table, we report the corresponding positive T2I-Count error, where lower values indicate better count alignment. For both tasks, we further evaluate generated images using ImageReward [ 46 ] and VQAScore [ 24 ]. ImageReward measures preference-based image quality, while VQAScore evaluates text-image alignment using a visual question answering model. These metrics are not used for guidance and are reported only as held-out evaluations. 
+
+Quantity-aware reward. For quantity-aware sampling, let npred denote the predicted count ob-tained by summing the T2I-Count density map, and let ngt denote the target object count. During 21 Table 2: Main PATHS hyperparameters used in the experiments. 
+
+Hyperparameter Layout-to-Image Quantity-Aware Number of temperatures L 4 4
+
+Particles per temperature C 1 1
+
+Burn-in B 65 65 
+
+Post-burn-in iterations M 60 60 
+
+Swap interval ∆swap 5 5
+
+Temperature ladder {1, 2, 4, 8} {1, 4, 16 , 64 }
+
+pCNL step size hℓ 0.5 for all ℓ 0.5 for all ℓ
+
+pCN persistence ρℓ 0.7778 for all ℓ 0.7778 for all ℓ
+
+Reward scale αMCMC 0.02 0.03 
+
+SMC reward scale α 0.02 0.03 
+
+MCMC gradient clipping None 10 −4
+
+SMC gradient clipping None 2.5 × 10 −4
+
+sampling, we define the reward as the negative smooth L1 loss: 
+
+rcount = −SmoothL1( npred , n gt ) = 
+
+(− 12 (npred − ngt )2, |npred − ngt | < 1,
+
+−| npred − ngt | + 12 , |npred − ngt | ≥ 1. (44) Thus, maximizing the reward is equivalent to minimizing the smooth counting discrepancy. 
+
+PATHS hyperparameters. PATHS uses L = 4 temperature levels and C = 1 particle per tempera-ture level. Each temperature chain is run with burn-in B = 65 and post-burn-in MCMC iterations 
+
+M = 60 . Replica-exchange swaps are proposed every ∆swap = 5 MCMC iterations. Unless other-wise specified, hot replicas are initialized independently from the Gaussian reference distribution 
+
+p1 = N (0, I), as described in Algorithm 1. The layout-to-image task uses the temperature ladder 
+
+T ∈ { 1, 2, 4, 8},
+
+while the quantity-aware task uses the wider ladder 
+
+T ∈ { 1, 4, 16 , 64 }.
+
+We distinguish between the reward scale used during initial MCMC sampling, αMCMC , and the reward scale used during downstream SMC denoising, αSMC . In our experiments, these two values are set equal within each task: 0.02 for layout-to-image generation and 0.03 for quantity-aware sampling. The pCNL step size is hℓ = 0 .5 for all temperatures, corresponding to ρℓ = (1 − hℓ/4) /(1 + hℓ/4) = 0.7778 . For quantity-aware sampling, we apply gradient clipping with thresholds 10 −4 during MCMC initialization and 2.5 × 10 −4 during SMC denoising; no gradient clipping is used for layout-to-image generation. 
+
+Even–odd replica-exchange schedule. Rather than sampling a single adjacent pair uniformly at random, we use an even–odd swap schedule. At every swap interval ∆swap , we alternate between two sets of disjoint adjacent temperature pairs: 
+
+Podd = {(1 , 2) , (3 , 4) , . . . }, Peven = {(2 , 3) , (4 , 5) , . . . }.
+
+For L = 4 , this corresponds to alternating between swaps on (T1, T 2) and (T3, T 4), followed by swaps on (T2, T 3). Because pairs within each set are disjoint, the swap proposals can be applied in parallel without any chain participating in two swaps at the same step. Each proposed adjacent swap is accepted independently using the Metropolis replica-exchange rule in Eq. (29) . This schedule ensures that all neighboring temperature pairs are regularly attempted while preserving the standard detailed-balance correction for each swap move. 
+
+Temperature ladder sensitivity. We analyze the effect of the temperature ladder using the sen-sitivity study shown in Figure 6. Parallel tempering requires sufficient overlap between adjacent tempered distributions so that replica-exchange moves can transmit information across the ladder, and 22 [1, 2, 4, 8] [1, 3, 9, 27] [1, 4, 16, 64]        
+
+> Temperature ladder
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Adjacent-pair swap ratio
+> 40%
+> 31%
+> 26%
+> 66%
+> 72%
+> 78%
+> 83%
+> 91%
+> 95%
+> Selected (a) Layout-to-Image
+> [1, 2, 4, 8] [1, 3, 9, 27] [1, 4, 16, 64]
+> Temperature ladder
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Adjacent-pair swap ratio
+> 53%
+> 48%
+> 41%
+> 55%
+> 45% 44%
+> 49%
+> 42%
+> 36%
+> Selected (b) Quantity-Aware
+> 0.345
+> 0.350
+> 0.355
+> 0.360
+> 0.365
+> 0.370
+> 0.375
+> 0.380
+> Mean final reward
+> 0.38
+> 0.36
+> 0.35
+> -1.8
+> -1.6
+> -1.4
+> -1.2
+> -1.0
+> -0.8
+> Mean final reward -1.15
+> -1.82
+> -0.88
+> Swap ratio 0–1 Swap ratio 1–2 Swap ratio 2–3 Mean final reward
+
+Figure 6: Temperature ladder sensitivity of PATHS. Bars show adjacent-pair replica-exchange swap ratios between neighboring temperatures (T0, T 1), (T1, T 2), and (T2, T 3), while the black line shows the mean final reward. The shaded ladders are selected for the main experiments. For layout-to-image generation, the milder ladder [1 , 2, 4, 8] achieves the highest mean final reward. For quantity-aware sampling, the wider ladder [1 , 4, 16 , 64] achieves the highest mean final reward and maintains moderate swap ratios across adjacent temperature pairs. These results illustrate the exploration–communication trade-off in choosing the temperature ladder. 
+
+geometric temperature ladders are a standard practical choice for encouraging such overlap [ 11 , 31 ]. However, the appropriate ladder is task-dependent: overly narrow ladders may not sufficiently flatten the reward landscape for effective exploration, while overly wide ladders may weaken the coupling between hot-chain exploration and cold-chain reward quality. Figure 6 illustrates this exploration–communication trade-off by reporting both mean final reward and adjacent-pair swap ratios for several geometric ladders. For layout-to-image generation, the milder ladder [1 , 2, 4, 8] provides the best empirical trade-off among the tested settings. For quantity-aware sampling, the wider ladder [1 , 4, 16 , 64] performs better, suggesting that difficult counting constraints benefit from stronger reward flattening while still maintaining non-negligible swap rates across adjacent temperature pairs. We therefore use these task-level calibrated ladders for the main quantitative and qualitative experiments. We emphasize that this analysis is intended as a task-level sensitivity study rather than a fully independent validation-based hyperparameter selection protocol. A more rigorous evaluation would select temperature ladders on a held-out validation prompt set or adapt them per prompt; we leave such validation-based or adaptive ladder selection to future work. 
+
+Ψ-Sampler and Best-of-4. For Ψ-Sampler [ 50 ], we use independent same-temperature pCNL chains targeting the cold posterior π∗
+
+1 . The chains use the same total initialization budget as PATHS, and collected samples are pooled and thinned before being passed to the SMC stage. Best-of-4 uses four independent pCNL chains with the same per-chain budget as PATHS, but all chains use the same temperature T = 1 . After burn-in and thinning, each chain is scored by the average reward of its collected particles, and only the highest-scoring chain is forwarded to the SMC stage. We use K = 4 
+
+for all tasks to match the number of temperature levels in PATHS. 
+
+Compute matching. PATHS and Best-of-4 both use four parallel MCMC chains with C = 1 , B =65 , and M = 60 . The key distinction is that Best-of-4 runs four independent cold chains, whereas PATHS runs four tempered chains coupled by replica-exchange swaps. Therefore, the comparison evaluates the effect of temperature-based exploration and online inter-chain communication under a matched initialization budget. Replica-exchange swaps do not require additional reward-model evaluations, since the swap acceptance ratio reuses the rewards already computed during the pCNL updates. 
+
+Qualitative examples. The main paper includes representative qualitative comparisons in Figure 5. Additional qualitative examples for layout-to-image and quantity-aware sampling are provided in Appendix I. 23 G Synthetic Experiment Details 
+
+All methods are evaluated with the same total NFE budget of 3,000 . Each method is independently repeated B = 2 ,000 times, and the sample with the highest reward is selected from each run. For PATHS, we use three parallel chains at temperatures T ∈ { 1.0, 2.0, 4.0} with a temperature ratio of 
+
+2.0.
+
+Base Diffusion Model 
+
+We use a pre-trained Rectified Flow model [ 28 ] whose source distribution π0 is an isotropic two-dimensional Gaussian, 
+
+π0 = N (0, I2) , (45) and whose training target distribution π1 is an anisotropic Gaussian, 
+
+π1 = N
+
+ 00
+
+
+
+,
+
+1 00 0.05 
+
+ 
+
+. (46) At inference, denoising trajectories are computed with the Euler sampler. 
+
+Reward Function 
+
+We define a multi-modal reward function r : R2 → R in the output space ( x1) of the flow. The reward is defined as a weighted sum of K = 9 Gaussian bumps, 
+
+r(x1) = 1
+
+α
+
+> K
+
+X
+
+> k=1
+
+wk exp  −10 ∥x1 − μk∥2 , α = 0 .05 , (47) where μk are fixed mode centres spread across [−2, 2] 2 and the weights wk ∈ 0.4, 0.5, 1.0 are chosen to produce modes of varying heights, with one dominant mode at weight 1.0, making the landscape intentionally multi-modal. 
+
+## H Limitations 
+
+Reward complexity dependence. The advantage of PATHS arises specifically from the multi-modal structure of the reward landscape. PATHS’ replica-exchange mechanism is designed to bridge isolated high-reward modes by exchanging information between hot and cold chains, and consequently delivers the largest gains when the reward landscape contains many disconnected high-reward basins separated by low-reward barriers. The layout-to-image and quantity-aware tasks studied in Section 6 exhibit precisely this structure. In the layout task, a prompt such as “A person and an airplane over a car and under the chair...” admits many distinct geometric configurations that satisfy the bounding-box constraints — different placements of each of the four objects, different camera viewpoints, and different scene compositions — each forming a separate mode in the reward-aware posterior. Similarly, in the quantity-aware task, generating “82 blueberries” is compatible with a wide range of spatial arrangements, occlusion patterns, and viewpoints, and the reward drops sharply once the count deviates even slightly from the target (e.g., generating 80 instead of 82 blueberries already incurs a substantial penalty under the smooth-L1 count reward in Eq. (44) ), creating sharply peaked, well-separated modes. In both cases, independent chain pCNL methods such as Ψ-Sampler tend to commit to a single basin and fail to discover competing high-reward configurations, whereas PATHS’ tempered ladder enables systematic exploration across these modes. 
+
+Reduced gains under low-complexity rewards. To illustrate the boundary of PATHS’ advantage, we evaluate it on the aesthetic-preference generation task, where the reward is defined by the LAION Aesthetic Predictor [ 35 ]. Quantitative results are reported in Table 3 and qualitative comparisons in Figure 7. In contrast to layout/quantity tasks, PATHS’ improvement over Ψ-Sampler and Best-of-4 is marginal — for instance, on the overall split, PATHS achieves an aesthetic score of 6.9785 versus 6.9684 for Ψ-Sampler, and the differences in held-out metrics are within noise. We attribute this attenuation to two factors that together make the aesthetic-preference reward landscape significantly less complex than the compositional rewards considered in our main experiments. 24 Table 3: Quantitative comparison on the Aesthetic Score Optimization task. We evaluate the performance across the Overall dataset ( N = 60 ), as well as two difficulty-based subsets: Complex (N = 30 ) and Simple                                                  
+
+> (N= 30 ). Metrics marked with †are used as seen reward during reward-guided sampling, where others are held-out reward.
+> Subset Metrics Methods
+> ψ-Sampler [50] Best-of-4 PATHS (Ours)
+> Overall (N= 60 )Aesthetic †[35] ↑6.9684 6.9487 6.9785
+> ImageReward [46] ↑1.0710 1.0980 1.1036
+> VQAScore [24] ↑0.8571 0.8579 0.8469 Complex (N= 30 )Aesthetic †[35] ↑6.7708 6.7746 6.7977
+> ImageReward [46] ↑1.2245 1.2319 1.2174 VQAScore [24] ↑0.7537 0.7536 0.7375 Simple (N= 30 )Aesthetic †[35] ↑7.1659 7.1228 7.1593 ImageReward [46] ↑0.9175 0.9642 0.9898
+> VQAScore [24] ↑0.9604 0.9622 0.9563
+
+First, the aesthetic reward is defined purely on visual quality: the LAION Aesthetic Predictor [ 35 ]scores an image based on lighting, composition, color harmony, and similar low-level visual factors, without taking the text prompt into account. As a result, a wide variety of unrelated images can achieve comparably high scores, and the high-reward region in the latent space is broad and well-connected rather than partitioned into narrow, prompt-specific modes. This is in sharp contrast to compositional rewards such as GroundingDINO [ 27 ]-based layout matching or T2ICount [ 33 ]-based counting, which couple the prompt to the image and produce sharp, prompt-dependent reward peaks. Second, the absence of a hard structural constraint (such as “four objects in specified bounding boxes” or “exactly 82 instances”) removes the all-or-nothing failure modes that make compositional rewards multi-modal in the first place. When the reward landscape is smooth and largely uni-modal, independent-chain methods such as Ψ-Sampler can already locate high-reward regions effectively, and the mode-bridging benefit of replica exchange becomes negligible. 
+
+Implications and outlook. This boundary is not a defect of PATHS but a direct consequence of its design rationale: PATHS provides a systematic mechanism for escaping local modes and is therefore most useful precisely when such modes exist. Practitioners can use this principle as a guide — PATHS is the appropriate choice when the reward couples the prompt to fine-grained structural properties (object placement, count, relations, or compositional constraints), whereas simpler independent-chain posterior initialization suffices for smooth, structurally-unconstrained rewards. We further note that the trend in inference-time alignment is moving toward increasingly complex and specific guidance signals: layout-conditioned generation, controllable scene composition, instruction-following with multi-object spatial relations, and fine-grained counting are all active research directions that demand exactly the kind of multi-modal, compositional rewards on which PATHS excels. As generative models are deployed in settings that require precise, structured user control rather than generic visual quality, the regime in which PATHS provides the largest benefit is likely to become the dominant rather than the exceptional case. At the same time, stronger controllability in text-to-image generation may amplify existing risks of misleading or harmful synthetic content, especially when precise spatial or compositional constraints are used for deceptive purposes. To mitigate release-related risks, we do not introduce or release a new generative model checkpoint or sensitive dataset; PATHS is an inference-time sampling procedure evaluated on synthetic prompts and existing models, and any released code or prompts should be used consistently with the terms and safety policies of the underlying generative model. 25 TDS DAS ψ-Sampler Best-of-4 PATHS (Ours)                 
+
+> Aesthetic
+> Simple prompt
+> 7.05 7.01 7.22 7.06 7.44
+> “Cat”
+> 6.86 6.91 7.43 7.02 7.80
+> “Dog”
+> Aesthetic
+> Complex prompt
+> 6.65 6.25 6.60 6.08 6.34
+> “Exactly three crushed, rusty soda cans stacked vertically on top of a luxurious red velvet pillow. The pillow rests on a marble pedestal in a pristine, sunlit art gallery.”
+> 7.16 7.01 7.21 7.15 7.05
+> “A grand piano sinking into a desert of pink sand. A giant green cactus is growing directly out of the piano’s keyboard, under a starry night sky.”
+
+Figure 7: Qualitative comparison on the aesthetic-preference generation task. We compare TDS [ 44 ], DAS [ 22 ], Ψ-Sampler [ 50 ], Best-of-4, and PATHS on prompts of varying descriptive complexity. Top two rows (Simple prompts: “Cat”, “Dog”) : short prompts impose minimal structural constraints, leaving the reward landscape dominated by smooth visual-quality preferences. The qualitative differences across methods are subtle, and all methods produce visually plausible outputs. Bottom two rows (Complex prompts) : although these prompts are linguistically detailed (e.g., “Exactly three crushed, rusty soda cans stacked vertically on top of a luxurious red velvet pillow...”), the LAION Aesthetic Predictor [ 35 ] used as the reward does not evaluate prompt alignment and only scores generic visual quality. Consequently, the reward landscape remains largely uni-modal even for these prompts. This figure illustrates the regime in which PATHS’ replica-exchange mechanism offers limited benefit: when the reward landscape is smooth and structurally unconstrained. 
+
+26 I Additional Qualitative Results 
+
+I.1 Replica-exchange swap trajectories 
+
+Beyond the qualitative comparisons of final outputs, we visualize the inner mechanism of PATHS during initial particle sampling. Figures 8–9 show actual replica-exchange swap events recorded from PATHS runs on individual layout-to-image instances, with each row displaying the one-step Tweedie estimates ˆx0|1 of the hot chain (top, TL > 1) and the cold chain (bottom, T1 = 1 ) across consecutive MCMC iterations. The thick-bordered images mark the moment of an accepted Metropolis swap. A consistent pattern emerges across all four examples: • Cold chain alone gets trapped. Before the swap, the cold chain refines a layout that satisfies only a subset of the target boxes (e.g., missing the car in Figure 9(Top), or the 
+
+horse in Figure 9(Bottom)). Local pCNL updates struggle to recover the missing object because adding it requires a large configurational change that the sharp posterior π∗ 
+
+> 1
+
+heavily penalizes during proposal. • Hot chain explores broadly. Operating under a flattened reward landscape, the hot chain visits diverse object configurations and eventually produces a state in which all target boxes are correctly populated. • Swap transfers the discovery. When the hot chain’s state has higher reward than the cold chain’s current state, the Metropolis swap is accepted and the well-composed latent is moved directly into the cold chain. Because both chains’ rewards have already been computed for their own pCNL updates, the swap reuses cached reward evaluations and incurs no additional reward-model overhead. • Cold chain refines from the new starting point. After the swap, the cold chain continues local pCNL refinement from the inherited state and produces small, targeted corrections (e.g., sharper object boundaries, slightly improved spatial alignment) rather than re-exploring the layout from scratch. These trajectories make explicit the mechanism that drives the quantitative gains reported in the Table 1: PATHS does not merely run more chains; it actively transfers exploration done at high temperature into refinement at low temperature. 
+
+I.2 Prompt-level Qualitative Comparisons 
+
+We provide additional per-prompt qualitative comparisons against all baselines considered in the main paper, covering both the layout-to-image generation and quantity-aware sampling tasks. Figure 10 presents layout-to-image examples, where target bounding boxes are overlaid on each generated image so that successful placement of the requested objects can be verified visually. Figure 11 presents quantity-aware examples, where the predicted object count and its absolute deviation from the target count are reported below each image. These per-prompt examples illustrate the same pattern as the aggregate quantitative results: PATHS more reliably satisfies the full set of spatial and counting constraints, whereas prior-initialized SMC baselines (TDS, DAS) tend to ignore parts of the prompt entirely, and independent posterior-initialization baselines ( Ψ-Sampler, Best-of-4) often partially recover the required structure but still miss specific objects or counts. Together, Figures 10 and 11 show that PATHS’ gains are most visible on complex prompts requiring coordinated object placement or accurate high-count generation. Appendix I.1 additionally visualizes the internal swap dynamics that produce these final outputs. 27 Prompt: "A car and cat beneath an airplane and below a banana..." Cold Chain 
+
+## MCMC steps during initial particle sampling 
+
+## Hot Chain 
+
+## Swap 
+
+> Prompt: "A person and a dog in the middle of banana and cat..."
+
+## Cold Chain 
+
+## MCMC steps during initial particle sampling 
+
+## Hot Chain 
+
+## Swap 
+
+Figure 8: Replica-exchange swap trajectories from PATHS runs on layout-to-image instances (1/2). Each row visualizes the one-step Tweedie estimates ˆx0(x1) of the hot chain (top, TL>1) and the cold chain (bottom, 
+
+T1=1 ) across consecutive MCMC steps during initial particle sampling; thick-bordered images mark the moment of an accepted Metropolis swap. In each example the cold chain alone converges to a layout that satisfies only a subset of the target boxes, while the hot chain explores under a flattened reward and discovers a state matching additional constraints. The Metropolis swap then transfers this state to the cold chain, which inherits it as a new starting point and continues local refinement—all without additional reward-model evaluations, since the swap reuses rewards already computed for the within-chain pCNL updates. 
+
+28 Prompt: "A person and airplane over a car and under the chair..." Cold Chain 
+
+## MCMC steps during initial particle sampling 
+
+## Hot Chain 
+
+## Swap 
+
+> Prompt: "A person and chair beneath an airplane and on a horse..."
+
+## Cold Chain 
+
+## MCMC steps during initial particle sampling 
+
+## Hot Chain 
+
+## Swap 
+
+Figure 9: Replica-exchange swap trajectories from PATHS runs on layout-to-image instances (2/2). 
+
+Continuing Figure 8: the same mechanism operates across more complex spatial-relation prompts. The cold chain alone gets trapped in layouts missing the car (top row) or the horse (bottom row); the hot chain discovers states satisfying these constraints; and the Metropolis swap transfers them to the cold chain. As before, swaps reuse cached reward evaluations and add no further reward-model overhead. 
+
+29 TDS DAS ψ-Sampler Best-of-4 PATHS (Ours) 
+
+> Layout-to-Image
+> Complex (= 4 obj.)
+
+“A car and cat beneath an airplane and below a banana...” 
+
+“A car and a banana in the middle of dog and chair...” 
+
+“A person and chair beneath an airplane and on a horse...” 
+
+> Layout-to-Image
+> Simple ( < 4 obj.)
+
+“A car among banana and dog....” 
+
+“A horse on the right of an airplane....” 
+
+“A horse beneath a cat...” 
+
+Figure 10: Qualitative comparison on complex and simple layouts. PATHS (Ours) demonstrates superior performance in aligning with spatial constraints across varying levels of difficulty. 
+
+30 TDS DAS ψ-Sampler Best-of-4 PATHS (Ours) 
+
+> Quantity-Aware
+> Complex ( >= 25 quantities.)
+> “82 blueberries”
+
+57 (∆25) 62 (∆20) 63 (∆19) 83 (∆-1) 82 (∆0) 
+
+> “63 olives”
+
+51 (∆12) 53 (∆10) 62 (∆1) 56 (∆7) 63 (∆0) 
+
+> Quantity-Aware
+> Simple ( < 25 quantities.)
+> “5 rubies”
+
+5 (∆0) 5 (∆0) 5 (∆0) 5 (∆0) 5 (∆0) 
+
+> “14 cake pops”
+
+8 (∆6) 14 (∆0) 14 (∆0) 14 (∆0) 14 (∆0) Figure 11: Qualitative comparison on complex and simple quantity-aware tasks. PATHS (Ours) demonstrates superior performance in satisfying quantity constraints across varying levels of difficulty. 
+
+31

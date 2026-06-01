@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-01",
+  "date": "2026-06-01",
+  "generated_at": "2026-06-01T21:54:35",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/01/2605.29198v2-guidance-contrastive-token-credit-assignment-for-discrete-policy-optimization",
+      "section": "deep",
+      "title_en": "Guidance Contrastive Token Credit Assignment for Discrete Policy Optimization",
+      "authors": "Shufan Li, Konstantinos Kallidromitis, Akash Gokul, Yuta Kyuragi, Aditya Grover",
+      "date": "2026-05-28",
+      "pdf": "https://arxiv.org/pdf/2605.29198v2",
+      "score": "9.0",
+      "evidence": "文本到图像生成中策略优化的令牌级信用分配",
+      "tldr": "现有基于组优势的强化学习方法（如GRPO、DAPO）采用样本级奖励，对所有token均匀分配信用，忽略了细粒度贡献。GCPO通过对比正负提示下的模型预测，实现逐token信用分配，使优势与预测差异成比例。在文本到图像生成和思维链推理任务中，GCPO显著优于基线方法。该工作为离散策略学习提供了一种通用且可扩展的优化策略。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Group-advantage-based reinforcement learning methods, such as GRPO and DAPO, have demonstrated strong performance across diverse domains, including mathematical reasoning and text-to-image generation. However, their reliance on sample-level rewards introduces a key limitation as uniform credit assignment across all tokens fails to capture fine-grained, token-level contributions. To address this issue, we propose Guidance Contrastive Policy Optimization (GCPO), a novel algorithm that enables per-token credit assignment by contrasting model predictions under positive and negative prompts. Rather than uniformly broadcasting sample-level advantages, GCPO assigns token-level advantages proportional to the difference between these contrastive predictions, allowing more precise and informative learning signals. Empirically, we find that GCPO emphasizes semantically relevant regions such as visual areas aligned with textual prompts in text-to-image generation, and critical keywords within reasoning traces for chain-of-thought tasks. Through extensive experiments, GCPO consistently outperforms GRPO and DAPO baselines on both text-to-image generation and chain-of-thought reasoning benchmarks, demonstrating its effectiveness as a general and scalable optimization strategy for discrete policy learning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/01/2605.30991v1-parallel-tempering-initial-sampling-in-inference-time-reward-alignment",
+      "section": "deep",
+      "title_en": "Parallel Tempering Initial Sampling in Inference-Time Reward Alignment",
+      "authors": "Myeongjun Oh, Gwangho Kim, Sungyoon Lee",
+      "date": "2026-05-29",
+      "pdf": "https://arxiv.org/pdf/2605.30991v1",
+      "score": "9.0",
+      "evidence": "针对扩散模型的推理时奖励对齐",
+      "tldr": "推理时奖励对齐旨在无需重训练即可引导扩散模型满足用户指定奖励。标准SMC方法因从先验初始化粒子，在高维复杂奖励景观中难以探索高奖励区域，且易陷入局部模式。本文提出PATHS，通过并行回火耦合多个采样链，利用Metropolis交换在扁平化奖励景观中高效探索，显著提升稀有高奖励区域的采样效率。实验表明，PATHS在布局生成与数量感知任务中一致提升对齐质量，尤其在复杂提示下表现突出。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Inference-time reward alignment steers pretrained diffusion and flow-based generative models to satisfy user-specified rewards without retraining. Recently, Sequential Monte Carlo (SMC) has emerged as a powerful framework for this task by iteratively filtering and propagating multiple particles. However, we show that standard SMC-based methods often suffer from poor performance because they initialize particles from a standard prior, whereas high-reward regions in complex reward landscapes are extremely rare. Further, we show that even recent reward-aware initial sampling approaches remain vulnerable to getting trapped in local modes, as complex reward landscapes are often multi-modal. To overcome these limitations, we propose PATHS (PArallel Tempering for High-complexity reward Sampling), a novel initialization method that couples multiple sampling chains through parallel tempering. PATHS maintains a ladder of reward-tempered chains and periodically performs Metropolis swaps, enabling efficient exploration across flattened reward landscapes, thereby mitigating the mode-trapping issues. Our analysis reveals that this mechanism substantially enhances the finite-budget exploration of rare, high-reward regions that are typically challenging to sample. Experiments on layout-to-image and quantity-aware generation show that PATHS achieves consistent gains in alignment quality, particularly on complex prompts.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
