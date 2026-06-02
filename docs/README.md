@@ -6,27 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-01
-- 运行时间：2026-06-01 21:54:29 UTC
+- 最新运行日期：2026-06-02
+- 运行时间：2026-06-02 22:31:33 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：2
-- 速读区：0
+- 本次总论文数：5
+- 精读区：3
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读两篇9.0高分论文，分别聚焦离散策略优化的对比Token信用分配和推理时奖励对齐的并行退火初始采样。值得关注的方向：强化学习中的细粒度信用分配机制，以及通过并行退火提升推理时采样效率。建议读者可对比这两篇方法在离散控制与语言模型对齐任务中的适用性。
-- 详情：[/202606/01/README](/202606/01/README)
+今日推荐5篇论文，精读3篇，重点聚焦多轮图像编辑与视觉表示对齐。最值得关注的是《MT-EditFlow: 基于流匹配的多轮图像编辑强化学习》及《用GRPO改进视觉表示对齐生成》。建议优先精读这两篇，它们展示了强化学习与流匹配在生成任务中的最新应用。
+- 详情：[/202606/02/README](/202606/02/README)
 
 ### 精读区论文标签
-1. [Guidance Contrastive Token Credit Assignment for Discrete Policy Optimization](/202606/01/2605.29198v2-guidance-contrastive-token-credit-assignment-for-discrete-policy-optimization)  
+1. [MT-EditFlow: Reinforcement Learning for Multi-Turn Image Editing with Flow Matching](/202606/02/2606.01985v1-mt-editflow-reinforcement-learning-for-multi-turn-image-editing-with-flow-matching)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：文本到图像生成中策略优化的令牌级信用分配
-2. [Parallel Tempering Initial Sampling in Inference-Time Reward Alignment](/202606/01/2605.30991v1-parallel-tempering-initial-sampling-in-inference-time-reward-alignment)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：针对扩散模型的推理时奖励对齐
+   evidence：使用强化学习和流匹配优化多轮图像编辑
+2. [Improving Visual Representation Alignment Generation with GRPO](/202606/02/2606.00583v1-improving-visual-representation-alignment-generation-with-grpo)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：采用强化学习优化扩散变换器中的视觉表示对齐
+3. [Drifting Preference Optimization for One-Step Generative Models](/202606/02/2606.02521v1-drifting-preference-optimization-for-one-step-generative-models)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：使用奖励排序的偏好优化提升一步图像生成器质量
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Aligning Few-Step Generative Models by Amortizing Sample-based Variational Inference](/202606/02/2605.26552v2-aligning-few-step-generative-models-by-amortizing-sample-based-variational-inference)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：利用奖励倾斜分布对齐生成模型
+2. [LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching](/202606/02/2606.00228v1-lithogrpo-fast-inverse-lithography-via-grpo-reinforced-flow-matching)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：将GRPO强化学习与流匹配结合应用于逆光刻这一图像合成任务
 
 
 <div class="dpr-home-promo-card">

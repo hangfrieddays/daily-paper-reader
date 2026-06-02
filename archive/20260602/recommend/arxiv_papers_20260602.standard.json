@@ -1,0 +1,226 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-02T22:22:25.324650+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2606.01985v1",
+      "source": "arxiv",
+      "title": "MT-EditFlow: Reinforcement Learning for Multi-Turn Image Editing with Flow Matching",
+      "abstract": "Recent breakthroughs in instruction-based image editing have captured significant attention, as models are now capable of handling real-world editing demands with the practicality required by everyday users. However, editing models trained primarily for single-turn edits often break down in multi-turn editing--the natural interactive setting where a user iteratively refines an image based on the model's own previous outputs. This failure stems from the all-or-nothing requirement, where a single failed turn compromises the entire sequence, and error propagation, where exposure bias leads to compounding editing errors. To address these challenges, we introduce MT-EditFlow, a flow-matching reinforcement learning framework designed to optimize reward signals for sequential image editing. MT-EditFlow integrates a multi-turn perspective with a multi-reward formulation to provide a unified structure applicable to both GRPO and NFT-based reinforcement learning methods. We systematically analyze and optimize the reward signal by investigating effective scoring strategies for turn-level aggregation, VLM reasoning modes to trade off reward bias and variance, and advantage fusion levels to prevent reward hacking. Our findings reveal that broadcasting the aggregated advantage across the entire editing trajectory effectively bridges the gap between local planning and global multi-turn task success. Extensive experiments demonstrate that MT-EditFlow significantly improves performance across diverse base models. Notably, it boosts FLUX.1-Kontext-dev by 6.85 points in turn-3 overall performance, surpassing state-of-the-art open-source models such as Qwen-Image-Edit. By maintaining high marginal success rates and reducing exposure bias, MT-EditFlow provides a foundation for more reliable and natural human-AI collaboration in visual content creation.",
+      "authors": [
+        "Jiahui Huang",
+        "Yasi Zhang",
+        "Tianyu Chen",
+        "Shu Wang",
+        "Jianwen Xie",
+        "Oscar Leong",
+        "Mingyuan Zhou",
+        "Nanzhu Wang",
+        "Ying Nian Wu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-01T09:46:10+00:00",
+      "link": "https://arxiv.org/pdf/2606.01985v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses RL with flow matching to optimize multi-turn image editing",
+      "llm_evidence_cn": "使用强化学习和流匹配优化多轮图像编辑",
+      "llm_evidence": "使用强化学习和流匹配优化多轮图像编辑",
+      "canonical_evidence": "使用强化学习和流匹配优化多轮图像编辑",
+      "llm_tldr_en": "Introduces MT-EditFlow, an RL framework for multi-turn image editing. It uses flow matching as the base and reinforcement learning to mitigate error propagation in iterative editing.",
+      "llm_tldr_cn": "该论文针对多轮图像编辑中因失败传播和曝光偏差导致的性能退化问题，提出MT-EditFlow框架，将流匹配与强化学习结合。通过RL优化编辑策略，模型在多轮交互中能够自我修正，避免错误累积。实验表明，MT-EditFlow在多轮编辑任务上显著优于基线，展示了强化学习在图像编辑中的潜力，为图像生成中的交互式优化提供了新范式。",
+      "llm_tldr": "该论文针对多轮图像编辑中因失败传播和曝光偏差导致的性能退化问题，提出MT-EditFlow框架，将流匹配与强化学习结合。通过RL优化编辑策略，模型在多轮交互中能够自我修正，避免错误累积。实验表明，MT-EditFlow在多轮编辑任务上显著优于基线，展示了强化学习在图像编辑中的潜力，为图像生成中的交互式优化提供了新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.00583v1",
+      "source": "arxiv",
+      "title": "Improving Visual Representation Alignment Generation with GRPO",
+      "abstract": "Recent diffusion transformers have demonstrated strong image synthesis capabilities but remain inefficient to train due to weak alignment between generative and discriminative representations. While representation alignment frameworks such as REPA improve convergence by aligning noisy denoising features with pretrained visual encoders, their externally supervised alignment loss is static and lacks adaptivity during training and inference. Existing methods rely on fixed cosine alignment or contrastive objectives, which cannot dynamically balance representation consistency and generation quality, resulting in limited discriminative benefit and failing to optimize alignment in a task-adaptive manner. To address this, we propose VRPO, a reinforcement-based optimization strategy that replaces REPA's static alignment loss with a generative representation policy optimization objective. Instead of enforcing a fixed similarity constraint, VRPO treats representation alignment as a reward-guided process: the model receives adaptive rewards based on generation fidelity, perceptual quality, and semantic coherence between the diffusion features and pretrained visual embeddings. This formulation enables the generator to continuously refine its internal representations toward semantically meaningful directions while improving image quality. Our VRPO-driven training seamlessly integrates into diffusion transformers, introducing negligible computation cost and preserving full compatibility with SiT and DiT architectures. Extensive experiments on ImageNet-256x256 demonstrate that our VRPO-Alignment substantially enhances both convergence and fidelity, achieving up to +1.8 FID improvement and 2.3x faster training compared to REPA under identical compute budgets.",
+      "authors": [
+        "Shentong Mo",
+        "Sukmin Yun"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG",
+        "cs.MM"
+      ],
+      "published": "2026-05-30T07:21:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.00583v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Reinforcement-based optimization for visual representation alignment in diffusion transformers",
+      "llm_evidence_cn": "采用强化学习优化扩散变换器中的视觉表示对齐",
+      "llm_evidence": "采用强化学习优化扩散变换器中的视觉表示对齐",
+      "canonical_evidence": "采用强化学习优化扩散变换器中的视觉表示对齐",
+      "llm_tldr_en": "VRPO uses a reinforcement-based objective to dynamically balance representation consistency and generation quality in diffusion transformers, improving image synthesis efficiency.",
+      "llm_tldr_cn": "针对扩散变换器训练中表示对齐损失静态、无法动态平衡一致性和生成质量的问题，本文提出VRPO，一种基于强化学习的优化方法。该方法自适应地调整对齐目标，在保持生成质量的同时提升表示一致性。实验表明，VRPO在图像生成任务中提高了训练效率和视觉质量。",
+      "llm_tldr": "针对扩散变换器训练中表示对齐损失静态、无法动态平衡一致性和生成质量的问题，本文提出VRPO，一种基于强化学习的优化方法。该方法自适应地调整对齐目标，在保持生成质量的同时提升表示一致性。实验表明，VRPO在图像生成任务中提高了训练效率和视觉质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.02521v1",
+      "source": "arxiv",
+      "title": "Drifting Preference Optimization for One-Step Generative Models",
+      "abstract": "One-step text-to-image generators are attractive for deployment because they generate an image with a single forward pass, but preference finetuning them remains difficult: standard alignment methods often rely on policy likelihoods, denoising trajectories, differentiable reward gradients, or test-time optimization. We propose Drifting Preference Optimization (DrPO), an online preference-finetuning method for deterministic one-step generators. For each prompt, DrPO samples candidates from the current generator, ranks them with a target reward, and uses high- and low-scoring samples to synthesize a feature-space update direction. The update is a non-parametric dipole preference field plus a reference drift estimated from the frozen base generator, and is optimized through a detached feature-space regression target. The target reward is used only for ranking, so DrPO can train with large, black-box, or non-differentiable rewards while inference remains a single generator call. We evaluate DrPO on SD-Turbo and SDXL-Turbo with multiple target rewards and benchmarks, including HPSv3 and GenEval. DrPO improves alignment over reward-gradient-free one-step preference baselines and reduces HPSv3 training computation by $3.51\\times$ under the matched effective-batch setting by removing reward-model backpropagation. Initial offline experiments suggest that sample-based gradient synthesis can also be used beyond online reward ranking.",
+      "authors": [
+        "Zhou Jiang",
+        "Yandong Wen",
+        "Zhen Liu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-06-01T17:31:49+00:00",
+      "link": "https://arxiv.org/pdf/2606.02521v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Uses preference optimization with reward ranking to improve one-step image generators",
+      "llm_evidence_cn": "使用奖励排序的偏好优化提升一步图像生成器质量",
+      "llm_evidence": "使用奖励排序的偏好优化提升一步图像生成器质量",
+      "canonical_evidence": "使用奖励排序的偏好优化提升一步图像生成器质量",
+      "llm_tldr_en": "Proposes DrPO, an online preference finetuning method for one-step generators. It ranks candidates with a target reward and computes a non-parametric dipole preference field plus reference drift to update the generator.",
+      "llm_tldr_cn": "该论文针对一步式文本到图像生成器的偏好微调难题，提出漂移偏好优化（DrPO）方法。DrPO对当前生成器的候选样本使用目标奖励排序，然后合成一个非参数偶极偏好场和参考漂移，在特征空间中更新生成器。实验表明，DrPO能够有效提升生成图像的质量和偏好对齐，且无需复杂的扩散轨迹或可微奖励。该方法为一步生成模型的强化学习偏好对齐提供了新框架。",
+      "llm_tldr": "该论文针对一步式文本到图像生成器的偏好微调难题，提出漂移偏好优化（DrPO）方法。DrPO对当前生成器的候选样本使用目标奖励排序，然后合成一个非参数偶极偏好场和参考漂移，在特征空间中更新生成器。实验表明，DrPO能够有效提升生成图像的质量和偏好对齐，且无需复杂的扩散轨迹或可微奖励。该方法为一步生成模型的强化学习偏好对齐提供了新框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.26552v2",
+      "source": "arxiv",
+      "title": "Aligning Few-Step Generative Models by Amortizing Sample-based Variational Inference",
+      "abstract": "Aligning a few-step generative model is challenging, since existing alignment frameworks typically rely on restrictive assumptions: a tractable likelihood, a specific ODE/SDE solver, or a particular model family. We introduce FAV, Few-step Generative Models Alignment via Sample-based Variational Inference, a general alignment framework that requires only sample access to the generator and the reference distribution. We cast alignment as sampling from a reward-tilted distribution anchored to a reference distribution. We leverage Stein Variational Gradient Descent as a sample-based variational inference scheme and amortize its particle updates into the generator parameters via fixed-point regression. We evaluate FAV on two domains: robotics manipulation and image generator alignment. On generative policy alignment for robotic manipulation, FAV outperforms prevailing policy extraction baselines across 56 offline and 30 offline-to-online RL tasks. For image generator alignment, FAV fine-tunes diverse few-step backbones, including GAN, drifting model, consistency models, and flow maps, scaling from ImageNet-$256$ to 1024$^2$ text-to-image synthesis. Code is available at https://github.com/Jaewoopudding/FAV.",
+      "authors": [
+        "Jaewoo Lee",
+        "Hyeongyu Kang",
+        "Dohyun Kim",
+        "Kyuil Sim",
+        "Woocheol Shin",
+        "Minsu Kim",
+        "Taeyoung Yun",
+        "Jeongjae Lee",
+        "Sanghyeok Choi",
+        "Tabitha Edith Lee",
+        "Jong Chul Ye",
+        "Jinkyoo Park"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-26T05:02:49+00:00",
+      "link": "https://arxiv.org/pdf/2605.26552v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses reward-tilted distribution to align generative models",
+      "llm_evidence_cn": "利用奖励倾斜分布对齐生成模型",
+      "llm_evidence": "利用奖励倾斜分布对齐生成模型",
+      "canonical_evidence": "利用奖励倾斜分布对齐生成模型",
+      "llm_tldr_en": "Proposes FAV, a framework aligning few-step generative models via reward-tilted sampling and amortized variational inference, enabling reward-guided image generation without restrictive assumptions.",
+      "llm_tldr_cn": "现有对齐框架对少步生成模型有诸多限制（如要求可解似然或特定求解器）。本文提出FAV框架，将对齐视为从奖励倾斜分布中采样，并利用斯坦变分梯度下降和固定点回归摊销粒子更新，仅需生成器和参考分布的样本访问。在机器人轨迹和图像生成任务上验证了有效性，为图像生成中的奖励驱动对齐提供了通用方法。",
+      "llm_tldr": "现有对齐框架对少步生成模型有诸多限制（如要求可解似然或特定求解器）。本文提出FAV框架，将对齐视为从奖励倾斜分布中采样，并利用斯坦变分梯度下降和固定点回归摊销粒子更新，仅需生成器和参考分布的样本访问。在机器人轨迹和图像生成任务上验证了有效性，为图像生成中的奖励驱动对齐提供了通用方法。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.00228v1",
+      "source": "arxiv",
+      "title": "LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching",
+      "abstract": "In semiconductor manufacturing, lithography projects circuit layouts onto silicon wafers through an optical mask. As circuit features shrink below the wavelength of light, optical diffraction causes the printed patterns to deviate from their intended layouts. Inverse Lithography Technology (ILT) addresses this challenge by generating optimized masks that enhance the fidelity of pattern transfer onto wafers. While ILT resembles an image synthesis task, its reliance on explicit physical metrics for mask evaluation limits the applicability of existing generative models. We introduce LithoGRPO, an ILT framework that integrates the flow-matching paradigm with GRPO-based reinforcement learning (RL) fine-tuning, enabling efficient exploration of diverse masks for a given target layout. Unlike purely generative or optimization-based approaches, RL in LithoGRPO exploits the explicitly defined, physics-based reward function of ILT, enabling optimization under complex, process-aware constraints. To the best of our knowledge, this is the first framework that unifies flow matching and RL for mask optimization. To improve RL sampling efficiency, we propose a fast shot-counting algorithm for manufacturability evaluation, achieving over 130x speedup while preserving the mask ranking of the traditional shot-count metric. Extensive experiments demonstrate that LithoGRPO achieves state-of-the-art performance over both optimization-based and learning-based methods, while maintaining efficient mask generation.",
+      "authors": [
+        "Yao Lai",
+        "Xuyuan Xiong",
+        "Zeyue Xue",
+        "Guojin Chen",
+        "Jing Wang",
+        "Xihui Liu",
+        "Rui Zhang",
+        "Robert Mullins",
+        "Bei Yu",
+        "Ping Luo"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-29T18:01:59+00:00",
+      "link": "https://arxiv.org/pdf/2606.00228v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Applies GRPO (RL) with flow matching to inverse lithography, an image synthesis task",
+      "llm_evidence_cn": "将GRPO强化学习与流匹配结合应用于逆光刻这一图像合成任务",
+      "llm_evidence": "将GRPO强化学习与流匹配结合应用于逆光刻这一图像合成任务",
+      "canonical_evidence": "将GRPO强化学习与流匹配结合应用于逆光刻这一图像合成任务",
+      "llm_tldr_en": "Proposes LithoGRPO, integrating flow matching with GRPO-based RL fine-tuning for inverse lithography, enabling efficient mask generation with physical metrics as reward.",
+      "llm_tldr_cn": "该论文针对逆光刻（ILT）这一类似图像合成的任务，提出LithoGRPO框架，将流匹配与基于GRPO的强化学习微调相结合。通过使用物理指标作为奖励，框架能够高效探索多样化掩模空间，生成高保真图案。实验表明，LithoGRPO在掩模质量和计算效率上均优于传统方法，展示了强化学习在工业图像合成中的有效性，为RL在图像生成领域的应用提供了新案例。",
+      "llm_tldr": "该论文针对逆光刻（ILT）这一类似图像合成的任务，提出LithoGRPO框架，将流匹配与基于GRPO的强化学习微调相结合。通过使用物理指标作为奖励，框架能够高效探索多样化掩模空间，生成高保真图案。实验表明，LithoGRPO在掩模质量和计算效率上均优于传统方法，展示了强化学习在工业图像合成中的有效性，为RL在图像生成领域的应用提供了新案例。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
