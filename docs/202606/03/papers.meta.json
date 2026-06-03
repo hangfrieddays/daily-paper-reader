@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-03",
+  "date": "2026-06-03",
+  "generated_at": "2026-06-03T21:55:50",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/03/2606.00228v1-lithogrpo-fast-inverse-lithography-via-grpo-reinforced-flow-matching",
+      "section": "deep",
+      "title_en": "LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching",
+      "authors": "Yao Lai, Xuyuan Xiong, Zeyue Xue, Guojin Chen, Jing Wang, Xihui Liu, Rui Zhang, Robert Mullins, Bei Yu, Ping Luo",
+      "date": "2026-05-29",
+      "pdf": "https://arxiv.org/pdf/2606.00228v1",
+      "score": "9.0",
+      "evidence": "GRPO强化学习用于图像合成（逆光刻）",
+      "tldr": "半导体光刻中，光学衍射使图案失真，逆光刻技术（ILT）通过优化掩模解决此问题。本文提出LithoGRPO，将流匹配与基于GRPO的强化学习（RL）微调结合，首次统一生成模型与物理奖励优化。提出快速shot计数算法，加速制造性评估超130倍。实验表明，LithoGRPO在掩模优化上达到最优性能，兼顾生成效率与准确性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "In semiconductor manufacturing, lithography projects circuit layouts onto silicon wafers through an optical mask. As circuit features shrink below the wavelength of light, optical diffraction causes the printed patterns to deviate from their intended layouts. Inverse Lithography Technology (ILT) addresses this challenge by generating optimized masks that enhance the fidelity of pattern transfer onto wafers. While ILT resembles an image synthesis task, its reliance on explicit physical metrics for mask evaluation limits the applicability of existing generative models. We introduce LithoGRPO, an ILT framework that integrates the flow-matching paradigm with GRPO-based reinforcement learning (RL) fine-tuning, enabling efficient exploration of diverse masks for a given target layout. Unlike purely generative or optimization-based approaches, RL in LithoGRPO exploits the explicitly defined, physics-based reward function of ILT, enabling optimization under complex, process-aware constraints. To the best of our knowledge, this is the first framework that unifies flow matching and RL for mask optimization. To improve RL sampling efficiency, we propose a fast shot-counting algorithm for manufacturability evaluation, achieving over 130x speedup while preserving the mask ranking of the traditional shot-count metric. Extensive experiments demonstrate that LithoGRPO achieves state-of-the-art performance over both optimization-based and learning-based methods, while maintaining efficient mask generation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

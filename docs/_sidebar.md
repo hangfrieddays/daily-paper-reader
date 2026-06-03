@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-06-03 <!--dpr-date:20260603-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/03/2606.00228v1-lithogrpo-fast-inverse-lithography-via-grpo-reinforced-flow-matching" data-sidebar-item="{&quot;title&quot;: &quot;LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.00228v1-lithogrpo-fast-inverse-lithography-via-grpo-reinforced-flow-matching&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;GRPO强化学习用于图像合成（逆光刻）&quot;}">LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching</a>
   * 2026-06-02 <!--dpr-date:20260602-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/02/2606.01985v1-mt-editflow-reinforcement-learning-for-multi-turn-image-editing-with-flow-matching" data-sidebar-item="{&quot;title&quot;: &quot;MT-EditFlow: Reinforcement Learning for Multi-Turn Image Editing with Flow Matching&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.01985v1-mt-editflow-reinforcement-learning-for-multi-turn-image-editing-with-flow-matching&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用强化学习和流匹配优化多轮图像编辑&quot;}">MT-EditFlow: Reinforcement Learning for Multi-Turn Image Editing with Flow Matching</a>
