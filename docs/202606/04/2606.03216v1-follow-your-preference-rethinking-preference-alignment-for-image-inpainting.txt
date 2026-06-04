@@ -1,0 +1,605 @@
+Title: Follow-Your-Preference++: Rethinking Preference Alignment for Image Inpainting
+
+URL Source: https://arxiv.org/pdf/2606.03216v1
+
+Published Time: Wed, 03 Jun 2026 00:50:21 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# Follow-Your-Preference++: Rethinking Preference Alignment for Image Inpainting 
+
+## Junkun Yuan 1∗ Yutao Shen 2∗ Toru Aonishi 2 Hideki Nakayama 2 Yue Ma 3†
+
+> 1
+
+## Zhejiang University 2The University of Tokyo 3Tsinghua University  
+
+> ∗Equal contribution. †Corresponding author.
+
+## Abstract 
+
+We study preference alignment for image inpainting. Rather than proposing yet another method, we revisit the problem from first principles and reassess its core challenges. We adopt the widely used direct preference optimization frame-work and construct preference training data with publicly available reward models. Our empirical study spans nine reward models, two benchmarks, and two baseline inpaint-ing models that differ in architecture and generative mecha-nism. Our main findings are: (1) Most reward models pro-vide valid signals for preference data construction, although some are unreliable as evaluators. (2) Across models and benchmarks, preference data exhibits consistent trends un-der both candidate and sample scaling. (3) Reward models display pronounced biases–particularly in brightness, com-position, and color scheme–that make them prone to induc-ing reward hacking. (4) A simple ensemble of reward models mitigates such biases and yields robust, generalizable perfor-mance. (5) Preference alignment is transferable to the object removal task, where the goal shifts from open-ended creative generation to coherent background completion. (6) Further analysis reveals that a calibrated ensemble method further mitigates hacking and improves robustness. Without modify-ing model architectures or introducing additional datasets, our models substantially outperform prior state-of-the-art models on standard metrics, large vision-language model evaluations, and human assessments. Our code is available at: https://github.com/shenytzzz/Follow-Your-Preference .
+
+## 1. Introduction 
+
+Image inpainting [5] aims to reconstruct user-specified re-gions of an image so that the completed result is visu-ally coherent with the surrounding context and photoreal-istic. It underpins a wide range of applications, including photo restoration [30], content creation [80], and image edit-ing [77]. Driven by the rapid progress in diffusion mod-els [21] and flow-based models [32], image inpainting has become a prominent research direction. Aligning visual generation systems with human prefer-ences has recently emerged as a central research focus [6, 13, 61, 72]. Despite the substantial progress of image inpaint-ing [23, 47, 69, 80], comparatively little effort has been de-voted to aligning inpainting outputs with human preferences. This paper studies preference alignment for image in-painting. Given the limited prior work on this task, our goal is not to introduce yet another method, but to revisit its fun-damental questions. To this end, we adopt the widely used Direct Preference Optimization (DPO) [34, 51, 61] as the ba-sis of our analysis for its simplicity and efficiency. To avoid the high cost and limited scalability of human annotation, we construct preference training data using publicly avail-able, off-the-shelf reward models. Our investigation centers on three core questions: (1) How effective are these reward models at scoring candidates and constructing high-quality preference data? (2) How scalable is preference data with respect to candidate quantity and sample quantity? (3) How does reward hacking [48] arise, and how can it be mitigated? To address these questions, we conduct experiments across nine commonly used reward models (e.g., HPSv2 [70], PickScore [25]), two representative benchmarks (Brush-Bench [23], EditBench [66]), and two baseline inpainting models (BrushNet [23], FLUX.1 Fill [8]) that cover diverse architectures (U-Net [53], Transformer [60]) and generative paradigms (diffusion [21], flow matching [32]). Our results show that: (1) Most reward models yield valid reward signals for constructing effective preference training data, although some of them are unreliable as evaluators and share common biases. (2) Across baselines and benchmarks, preference data exhibits consistent trends under both candidate scaling and sample scaling; nevertheless, biases in certain reward models (e.g., HPSv2) can induce reward hacking and weaken the ef-fectiveness of scaling. (3) We uncover clear biases in reward models—particularly in brightness , composition , and color scheme —that make them susceptible to reward hacking. For instance, HPSv2 favors images with bright illumination, in-tricate compositions, and vivid colors, whereas PickScore ex-1             
+
+> arXiv:2606.03216v1 [cs.CV] 2 Jun 2026 Apaper boat drifts on a lake. Adoorway to a magical world.
+> Girl in bunny ears scarf.
+> Minecraft people in the museum.
+> Darth Vader in Van Gogh style. ACorgi in the burger. Figure 1. Results of our model. The inpainting outputs generated by our model are visually coherent, semantically aligned with text prompts, and consistent with human aesthetic preferences.
+
+hibits the opposite tendency. Consistent with this, PickScore pairs well with BrushNet, which generates vibrant outputs, while HPSv2 pairs well with FLUX.1 Fill, which produces plainer ones. We further trace these biases to systematic dif-ferences in the training data used by different reward mod-els. (4) A simple ensemble of these reward models exhibits strong versatility across baselines and yields balanced, aes-thetically pleasing inpainting results. (5) Preference align-ment also transfers effectively to object removal with only minor pipeline adaptations. (6) Going beyond the conference version [56], we study several Ensemble variants and find that the original Ensemble still suffers from reward hacking; we therefore propose a calibrated ensemble that calibrates reward models, mitigates bias-induced hacking, and further improves robustness. A preliminary version of this work appeared at ICLR 2026 [56], with the primary focus on creative image gen-eration in the inpainting setting. The present paper extends this line of research in three directions. First , we generalize preference alignment to object-removal inpainting , a more challenging setting that requires the completed background to be both structurally coherent and visually plausible. Sec-ond , we provide a more comprehensive analysis of the En-semble method, studying weighting strategies across reward models and the efficiency gains brought by filtering out in-valid reward signals. Third , we revisit the mathematical for-mulation of the conference-version Ensemble, show that it can be interpreted as a calibration across reward models, and integrate it into the IPO loss [3] to further mitigate reward hacking. Together, these extensions establish a new state-of-the-art over the conference version. Based on this exploration, we build simple yet effective preference-aligned inpainting models via reward ensembling. Without modifying model architectures or introducing new datasets, our models substantially outperform prior state-of-the-art models on standard metrics, large vision-language model evaluations, and human assessments. Qualitative com-parisons further show that our models generate more coher-ent and visually appealing results than competing methods. We hope this work establishes a simple yet strong baseline that helps advance this promising research direction. 
+
+## 2. Related Work 
+
+Image inpainting [5] aims to restore missing or corrupted regions of an image by generating visually plausible and semantically coherent content that is well aligned with the surrounding context. The field has progressed rapidly [15, 47, 67, 75, 76], largely driven by the development of diffu-sion [21] and flow-based generative models [11, 12, 32, 39– 43, 45, 46, 63]. These models progressively transform ran-dom noise into structured visual content through iterative denoising or rectified flow matching, thereby providing a powerful generative prior for synthesizing realistic and high-quality image regions. Building on these advances, pio-neering efforts [2, 52, 78] have introduced such genera-tive paradigms to image inpainting, and subsequent meth-ods [23, 74, 80] have further improved architectural design, controllability, and generation quality under more challeng-ing inpainting settings. For example, BrushNet [23] intro-duces a dual-branch architecture that explicitly decouples masked-image feature extraction from the subsequent gener-ation process, enabling the model to better preserve contex-tual information while producing more flexible and effective inpainting results. FLUX [7], in contrast, is a rectified-flow transformer that exhibits strong image generation capability, producing visually appealing results with high fidelity. Its in-2painting variant, FLUX.1 Fill [8], serves as a strong baseline for high-quality content completion in masked regions. 
+
+Object removal can be viewed as a free-form image inpainting task, but with a stronger emphasis on seamless and plausible background completion rather than open-ended or creative generation. Its goal is to replace user-specified masked objects with realistic background content that is vi-sually coherent with the surrounding context. Recent studies are predominantly built on diffusion and flow-based mod-els [12, 21, 32, 58], and largely fall into two paradigms: inversion-based methods [19, 36] and training-based meth-ods [10, 24, 29]. For instance, RORem [29] alternates be-tween training a discriminator and optimizing a diffusion model with human annotators in the loop, ultimately yield-ing both a well-aligned diffusion model and a high-quality dataset for object removal. 
+
+Image generation with preference alignment is an emerging field that seeks to align synthesized images with human preferences [22, 73]. Earlier works [6, 13] em-ploy reinforcement learning (RL) [59] to fine-tune genera-tive models with feedback from reward models. More re-cent works explore methods built on Direct Preference Opti-mization (DPO) [51], which bypasses the explicit RL stage. For instance, Diffusion-DPO [61] is the first attempt to align diffusion-based generation with human preferences by opti-mizing a pairwise preference objective. CaPO [27] aligns diffusion models with multiple reward models by first cal-ibrating the scores across reward models and matching the resulting calibrated reward differences via a regression loss. PrefPaint [35] refines image inpainting results using a reward model trained on human-annotated data. 
+
+## 3. Preliminaries 
+
+3.1. Diffusion Models and Flow-Based Models 
+
+Diffusion models [57, 58], such as DDPM [21], are a class of generative models that learn to reverse a gradual noise cor-ruption process. DDPM assumes a forward process that grad-ually applies noise to real data. At timestep t, the real data 
+
+x0 is destroyed to xt: q(xt|x0) = N (xt; √¯αtx0, (1 − ¯αt)I),where ¯αt is a noise scheduling hyper-parameter. It has a repa-rameterization formula: xt = √¯αtx0 + √1 − ¯αtϵ, where noise ϵ ∼ N (0 , I). DDPM learns a reverse process using a denoising model ϵθ with parameters θ, inverting the forward process: pθ (xt−1|xt) = N (μθ (xt), Σθ (xt)) . The denoising model ϵθ can be trained by minimizing: 
+
+LDDPM = Et,x 0,ϵ 
+
+|| ϵ − ϵθ (√¯αtx0 + √1 − ¯αtϵ, t )|| 2 .
+
+(1) Flow-based models [12] are generative models that learn to model data distributions using invertible transformations. Recently, Flow Matching [32] has emerged as a prominent approach for visual generation [16, 37]. It usually learns a continuous-time flow that transforms a simple prior distribu-tion into the data distribution by solving an ODE. The pro-cess, with an optimal-transport path, employs a linear inter-polation scheme: xt = (1 − t)x0 + tϵ . A denoising model vθ
+
+is trained to predict the velocity field by minimizing: 
+
+LFM = Et,x 0,ϵ 
+
+|| vθ ((1 − t)x0 + tϵ, t ) − (ϵ − x0)|| 2 . (2) 
+
+U-Net [53] is used as the basic model structure by many previous denoising models [21, 58]. U-Net is a symmetric encoder-decoder architecture that captures multi-scale fea-tures through progressive downsampling and upsampling. 
+
+Transformers [60], employed in recent works [16, 17, 26, 62], process all data elements in parallel using attention, fa-cilitating training scalability. To improve the reliability and generalization of conclu-sions drawn in our studies, we conduct investigations using two different baseline models —BrushNet [23] and FLUX.1 Fill [8], introduced in section 2. BrushNet is built on a U-Net-like architecture and trained with the DDPM loss, while FLUX leverages transformers and learns via Flow Matching. 
+
+3.2. Preference Alignment 
+
+The standard pipeline for training large-scale models typi-cally involves pre-training, supervised fine-tuning, and pref-erence alignment. Preference alignment refines model out-puts to better match human values. Reinforcement Learning from Human Feedback (RLHF) [4] is a popular alignment approach. It utilizes human preferences on model outputs to train a separate reward model , which subsequently provides rewards for alignment via reinforcement learning algorithms such as PPO [55] and GRPO [18]. In comparison, Direct Preference Optimization (DPO) [51], which performs di-rect supervised learning, offers higher training efficiency. It constructs a preference dataset that comprises preferred sam-ples and dispreferred samples . DPO learns human prefer-ences implicitly contained within the data by maximizing: 
+
+Ex,y w ,y l [log σ(β log πθ (yw|x)
+
+πref (yw|x) − β log πθ (yl|x)
+
+πref (yl|x) )] , (3) where σ is the sigmoid function; πθ and πref are the pol-icy and the reference policy , respectively. In image genera-tion, given a text prompt x, yw and yl denote the generated preferred image and dispreferred image, respectively. The hyper-parameter β controls the strength of regularization: a large value of β increases regularization pressure, dampening preference learning. In visual generation, Equation 3 can be derived to yield a simplified loss [34, 61]: 
+
+LDPO = −E[log σ(−β(( Lwθ − L w 
+
+> ref
+
+) − (Llθ − L l 
+
+> ref
+
+)))] , (4) where Lwθ and Llθ denote the loss (Equation 1 or Equa-tion 2) applied to the policy on preferred samples and dis-preferred samples, respectively; similarly, Lw 
+
+> ref
+
+and Ll 
+
+> ref
+
+de-note the losses applied to the reference policy. This loss 3Table 1. Comparisons of reward models using BrushNet on BrushBench and EditBench. 
+
+reward model CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 GPT-4 Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Baseline 26.415 27.337 6.425 5.392 12.717 -1.296 22.133 20.616 27.509 23.076 9.060 6.770 3.303 2.100 26.290 26.410 5.749 0.403 79.391 57.046 Random 26.441 27.631 6.424 5.392 12.685 -1.136 22.130 20.642 27.501 23.067 9.050 6.917 3.302 2.110 26.292 26.422 5.738 0.425 79.177 56.753 CLIPScore 26.461 27.710 6.430 5.393 12.782 -0.720 22.146 20.680 27.582 23.316 9.062 6.894 3.341 2.124 26.324 26.548 5.777 0.640 79.661 57.539 Aesthetic 26.465 27.355 6.477 5.520 12.994 -0.877 22.221 20.689 27.594 23.166 9.065 6.828 3.343 2.140 26.293 26.342 5.922 0.597 81.603 58.603 ImageR 26.471 27.539 6.462 5.434 12.891 -0.377 22.153 20.701 27.672 23.467 9.036 6.761 3.334 2.144 26.305 26.501 5.913 0.782 80.341 57.806 PickScore 26.397 27.199 6.454 5.454 12.893 -1.364 22.254 20.732 27.322 22.933 9.062 6.873 3.353 2.178 26.273 26.427 5.750 0.469 82.726 59.550 
+
+HPSv2 26.481 27.677 6.476 5.495 12.890 0.128 22.137 20.725 27.818 23.742 9.073 6.818 3.332 2.155 26.361 26.678 5.979 1.061 79.914 57.658 VQAScore 26.442 27.524 6.429 5.407 12.658 -0.800 22.126 20.667 27.527 23.234 9.038 6.879 3.311 2.139 26.326 26.406 5.723 0.555 78.877 56.975 UnifiedR 26.428 27.505 6.433 5.402 12.764 -0.812 22.157 20.675 27.562 23.204 9.061 6.857 3.329 2.155 26.320 26.436 5.800 0.540 80.333 57.185 Perception 26.448 27.484 6.428 5.393 12.789 -0.973 22.177 20.660 27.519 23.111 9.069 6.894 3.327 2.160 26.310 26.515 5.764 0.433 80.277 57.254 HPSv3 26.461 27.547 6.464 5.448 12.922 -0.146 22.176 20.713 27.758 23.491 9.065 6.850 3.344 2.158 26.317 26.535 6.014 0.863 80.623 57.485 Ensemble 26.535 27.398 6.485 5.497 13.037 -0.352 22.229 20.735 27.797 23.522 9.053 6.892 3.365 2.176 26.338 26.603 6.074 1.015 82.172 58.986 
+
+Bold values denote the best results. Underlined values denote the second-best results. Values in blue denote the results below the baseline or random chance. 
+
+Table 2. Comparisons of reward models using FLUX.1 Fill on BrushBench and EditBench. 
+
+reward model CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 GPT-4 Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Baseline 26.244 27.103 6.429 5.458 12.760 4.910 22.327 21.211 27.476 24.076 9.081 8.012 3.360 2.485 25.945 26.834 6.055 2.470 83.935 66.979 Random 26.239 27.078 6.431 5.459 12.772 4.955 22.328 21.211 27.475 24.100 9.077 8.030 3.356 2.491 25.944 26.838 6.056 2.490 83.517 66.942 CLIPScore 26.233 27.072 6.432 5.477 12.791 4.997 22.329 21.215 27.487 24.121 9.071 8.071 3.361 2.512 25.948 26.859 6.056 2.499 83.942 66.997 Aesthetic 26.250 27.200 6.432 5.478 12.823 5.175 22.337 21.219 27.520 24.142 9.075 8.001 3.363 2.507 25.954 26.878 6.075 2.577 83.950 67.906 ImageR 26.251 27.121 6.434 5.481 12.823 5.001 22.336 21.211 27.518 24.143 9.080 7.977 3.362 2.536 25.946 26.846 6.078 2.550 84.176 67.785 PickScore 26.236 27.195 6.436 5.476 12.879 5.134 22.341 21.223 27.530 24.154 9.076 8.003 3.383 2.514 25.955 26.900 6.105 2.548 84.188 67.100 HPSv2 26.246 27.160 6.441 5.475 12.904 5.145 22.356 21.232 27.605 24.202 9.085 8.028 3.363 2.553 25.963 26.895 6.181 2.605 84.699 68.186 
+
+VQAScore 26.243 27.101 6.432 5.466 12.781 4.926 22.329 21.215 27.486 24.104 9.075 8.020 3.353 2.501 25.950 26.861 6.046 2.473 83.854 66.793 UnifiedR 26.235 27.133 6.434 5.473 12.769 5.034 22.331 21.212 27.485 24.120 9.076 8.014 3.366 2.517 25.954 26.853 6.057 2.524 83.950 67.372 Perception 26.251 27.088 6.433 5.466 12.752 4.975 22.331 21.209 27.479 24.109 9.082 8.023 3.356 2.514 25.951 26.818 6.064 2.504 84.022 68.024 HPSv3 26.238 27.223 6.441 5.465 12.855 5.092 22.340 21.226 27.534 24.155 9.083 8.000 3.378 2.497 25.957 26.859 6.106 2.568 84.615 68.107 Ensemble 26.239 27.158 6.442 5.472 12.884 5.239 22.346 21.215 27.560 24.146 9.082 8.036 3.367 2.507 25.963 26.905 6.151 2.577 84.628 67.549 
+
+Bold values denote the best results. Underlined values denote the second-best results. Values in blue denote the results below the baseline or random chance. 
+
+function aligns the distribution of generated samples with the preferred data distribution and encourages it to diverge from the dispreferred distribution. Due to the simplicity, ef-ficiency, and stability of DPO, this paper will explore pref-erence alignment for image inpainting by optimizing Equa-tion 4 on different preference datasets that are constructed for investigation. 
+
+3.3. Reward Models 
+
+Reward models play an important role in preference align-ment: they provide real-time rewards in RLHF [55], and offer scores for constructing offline preference data in DPO [27, 68]. However, prior works [64, 72] directly employ off-the-shelf reward models for visual preference alignment without systematic evaluation. In this paper, we evaluate the effec-tiveness of these reward models in constructing preference 4data via extensive studies. Specifically, we examine the fol-lowing public reward models : (1) CLIPScore [20] mea-sures semantic alignment between images and text prompts by calculating cosine similarities of their CLIP embed-dings [50]. (2) Aesthetic [54] predicts human aesthetic pref-erences on top of the CLIP embeddings. (3) ImageReward (ImageR) [71] is trained by fine-tuning BLIP [28] on 137K preference samples. (4) PickScore [25] is a CLIP-based im-age scoring model, trained on over 500K synthesized image samples with users’ preference choices. (5) HPSv2 [70] is also a CLIP-based model that evaluates both image qual-ity and text-image alignment by learning from 798K human preferences on 433K sample pairs. (6) VQAScore [31] pro-vides a semantic alignment score by computing the proba-bility of a VQA model answering “yes” to each question: “Does this figure show {text }?”. (7) UnifiedReward (Uni-fiedR) [68] is a unified model that assesses both visual gen-eration and understanding. (8) Perception Encoder (Per-ception) [9] is trained by contrastive visual-language pre-training, producing semantically aligned multimodal embed-dings. (9) HPSv3 [44] is trained on 1.5M annotated sample pairs using Qwen2VL-7B [65]. To assess their efficacy, these models are employed to as-sign reward scores to candidate samples that are generated by the baseline models with different random seeds. The resulting highest- and lowest-scoring samples for each text prompt are subsequently utilized as the preferred and dispre-ferred samples for DPO training. Based on the evaluation of training results, the top-performing ones are designated as the most effective reward models to provide accurate re-wards, whereas the lowest-performing models are designated as the least effective. 
+
+## 4. How Effective are Reward Models? 
+
+The ability of reward models to accurately predict human preferences is critical to the performance of preference align-ment algorithms. To evaluate this capability, we apply DPO to the preference data constructed by the reward models and evaluate the model’s performance after training. Specifi-cally, based on the popular dataset of BrushData [23], we generate 16 candidate inpainting results with varied random seeds for each prompt and the corresponding masked im-age. The candidates are scored by the reward models, and the highest-scoring (preferred) and lowest-scoring (dispreferred) samples form preference pairs for DPO training. Follow-ing [38, 68], the reward models are employed to serve two purposes: (1) providing scores to construct training data , and (2) evaluating performance after training . All experiments adhere to the same training configurations by default (e.g., a learning rate of 1e-7, β of 2000, and 2000 training steps, etc.), with the only variation being the reward model used to score and construct the training data. Note that we may en-counter an oracle reward model [38], where the same model 
+
+Algorithm 1: Ensemble Reward via Mean Rank 
+
+Input : I: set of candidate images generated with different random seeds under the same prompt; 
+
+M: set of reward models; 
+
+s[m][ i]: reward score of image i ∈ I 
+
+assigned by reward model m ∈ M .
+
+Output: Winning sample iw and losing sample il. 
+
+> 1
+
+begin 
+
+// Step 1: rank candidates under each reward model (rank 1
+
+denotes the highest score).  
+
+> 2
+
+for m ∈ M do  
+
+> 3
+
+Sort {s[m][ i]}i∈I in descending order and let 
+
+rank[ m][ i] be the position of image i in the sorted list;  
+
+> 4
+
+end for 
+
+// Step 2: average per-model ranks to obtain the Ensemble rank.  
+
+> 5
+
+for i ∈ I do  
+
+> 6
+
+Ensemble[ i] ← 1
+
+|M| 
+
+P 
+
+> m∈M
+
+rank[ m][ i]; 
+
+> 7
+
+end for 
+
+// Step 3: select the best and worst candidates (a smaller Ensemble value indicates a better candidate).  
+
+> 8
+
+iw ← arg min i∈I Ensemble[ i]; 
+
+> 9
+
+il ← arg max i∈I Ensemble[ i]; 
+
+> 10
+
+end 
+
+is used both for data construction and performance evalua-tion within one experiment. We assess results on two bench-marks, i.e., BrushBench [23] and EditBench [66]. Here, we introduce a new reward model— Ensemble —that selects preference pairs based on the mean rank across all reward models: for images generated with different ran-dom seeds under the same prompt, we rank the images un-der each reward model and average the per-model ranks of each image to obtain its Ensemble rank; we then select the highest-ranked image as the winning sample and the lowest-ranked image as the losing sample. The full procedure is summarized in Algorithm 1. We make GPT-4 [1] serve as a “fair” evaluator by as-sessing aesthetic quality, structural coherence, and semantic alignment of the results. Given GPT-4’s [1] strong multi-modal understanding capabilities, we use it to evaluate image inpainting results. Specifically, we provide GPT-4 with (1) a system prompt, (2) an input image, (3) the mask to inpaint, (4) an inpainting prompt, (5) and the inpainting result. The 5(a) Candidate scaling using HPSv2. 
+
+> (b) Candidate scaling using PickScore.
+> (c) Candidate scaling using Ensemble.
+> (d) Sample scaling using HPSv2.
+> (e) Sample scaling using PickScore.
+> (f) Sample scaling using Ensemble.
+
+Figure 2. Candidate scaling (a-c) and sample scaling (d-f) using HPSv2, PickScore, and Ensemble. We employ Aesthetic, ImageR, HPSv2, PickScore, and GPT-4 for evaluation. The first and second row of each sub-figure is based on BrushNet and FLUX.1 Fill, respectively. We use training steps to indicate the consumed samples to align the scaling across models (their batch-sizes are different). 
+
+6prompt for GPT-4 is: You are an expert in analysis of image inpainting. Please evaluate the image inpainting result based on three criteria: Aesthetic Quality (0–40 points)—visual ap-peal in color harmony, composition, and style coherence, as well as texture realism and naturalness; Structural Coher-ence (0–30 points)—preservation of geometric structures and content continuity, and seamlessness at mask boundaries; Semantic Alignment (0–30 points)—faithfulness to the Text Prompt instructions and contextual consistency of added or restored content. For each criterion, provide a sub-score and a 1–2-sentence justification, then compute the total score (0–100). 
+
+We report two other results. Baseline: The model’s per-formance prior to DPO training. Random: It involves train-ing with randomly sampled preferred and dispreferred pairs. Results are reported in Table 1 and Table 2. We have the following observations and conclusions. 
+
+Some reward models are not reliable evaluators. It is believed that an accurate and robust reward model should as-sign high evaluation scores to models trained on its own pref-erence dataset (i.e., the oracle reward model setting). Surpris-ingly, we find that CLIPScore, VQAScore, and Perception fail to meet this requirement—in Table 2, their scores can be even lower than those of the baseline or the random-pair baseline. We hypothesize that the failure of CLIPScore and Perception stems from their large-scale yet potentially coarse contrastive pre-training, and the failure of VQAScore likely arises from its simplistic, VQA-like evaluation approach. In light of this, we exclude these models from subsequent anal-yses .
+
+Most reward models provide valid reward scores. Most reward models are capable of offering valid reward scores for preference data construction, as they outperform both the baseline and random selection across most evaluation results—especially GPT-4. Even though CLIPScore and Per-ception are observed to be less effective at accurately eval-uating on small-scale benchmarks, they remain viable when their reward scores are incorporated into larger-scale pref-erence training datasets. In this context, we continue to at-tribute VQAScore’s limitations to its simple scoring method-ology. 
+
+Reward models share common biases. We find that the model trained on HPSv2-constructed data outperforms most competitors when evaluated using public reward mod-els. Specifically, when trained using BrushNet, it ranks first or second in 4 out of 12 evaluations; when trained using FLUX.1 Fill, it ranks first or second in 9 out of 12 eval-uations. This pattern aligns with GPT-4’s results when us-ing FLUX.1 Fill but diverges when using BrushNet—under the latter condition, the model is largely outperformed by PickScore. We posit that HPSv2 and many other models may share some common biases, which can potentially lead to re-ward hacking [48]. 
+
+Ensemble is an accurate and robust reward model. It shows that Ensemble ranks first or second in 11 out of 12 public model evaluations when using BrushNet, and 7 out of 12 when using FLUX.1 Fill. Besides, Ensemble ranks first or second in 3 out of 4 GPT-4’s evaluations across both baseline models, demonstrating its robustness in constructing effec-tive preference data. We hypothesize that its versatility arises from the bias of reward models being weakened in Ensemble. 
+
+## 5. How Scalable are Preference Data? 
+
+The results in section 4 have shown that HPSv2 , PickScore ,and Ensemble are the most effective reward models for pref-erence data construction. Building on this finding, we con-duct an investigation into the scalability of preference data using these reward models. Specifically, we explore along two dimensions: (1) Candidate scaling. As the number of candidate samples generated from different random seeds increases, their diversity expands. Larger candidate diver-sity widens the quality gap between the highest- and lowest-scoring samples, making the constructed preference pairs more informative. (2) Sample scaling. A larger dataset en-ables the model to capture nuanced patterns more compre-hensively, leading to deeper learning of preferences. Based on the insights in section 4, we select Aesthetic, ImageR, HPSv2, PickScore, and GPT-4 as the evaluation models. To enable the model to achieve optimal performance, we conduct a search over two typical hyper-parameters— β and learning rate (see details in the Appendix), before the scaling experiments. For each experiment, we tune one scaling di-mension and fix the other dimension. The results are reported in Figure 2. We have the following results and discoveries. 
+
+Consistent scaling trends across models and bench-marks. First, we observe that data scaling demonstrates robust trends regardless of the model used—BrushNet and FLUX.1 Fill, in the first and second rows of each sub-figure, respectively. Second, we find that similar scaling trends emerge when evaluating on different benchmarks, as evi-denced by the comparable patterns of the two lines within each sub-figure. These findings indicate that the observed scaling behavior is robust and generalizable. However, we also observe some inconsistent phenomena: when using PickScore as the reward model, ImageR/HPSv2 exhibit op-posite trends on BrushNet and FLUX.1 Fill. This issue is caused by the characteristics of both reward models and base-line models, as analyzed in section 6. 
+
+Reward hacking from HPSv2 undermines train-ing. When evaluated by Aesthetic, ImageR, HPSv2, and PickScore, using HPSv2 as the reward model shows bene-fits from both candidate scaling and sample scaling. How-ever, its GPT-4 results deteriorate significantly in the later stages of scaling. This observation aligns with our finding in section 4, where HPSv2 achieves good results under pub-lic model evaluations but sometimes loses to others when as-7(a) Examples from models trained using BrushNet . 
+
+> (b) Examples from models trained using FLUX.1 Fill .
+
+Figure 3. Bias studies. In each sub-figure, the four images (from left to right) display: the masked image , followed by inpainting results from models trained using HPSv2 , PickScore , and Ensemble . We omit text prompts for brevity. Zoom in to see details. Find more examples in the Appendix.   
+
+> (a) Examples from models trained using BrushNet .
+> (b) Examples from models trained using FLUX.1 Fill .
+
+Figure 4. Qualitative results of ablations. In each sub-figure, the three images (from left to right) display: the masked image , followed by inpainting results from baseline models and baseline models + preference alignment using Ensemble . We omit text prompts for brevity. Zoom in to see details. 
+
+sessed by GPT-4. We hypothesize that this degradation stems from some shared common biases among these reward mod-els. 
+
+Ensemble offers robust data scaling by resisting hack-ing. Although PickScore demonstrates good scaling behav-ior, its performance remains sub-optimal. In contrast, the Ensemble approach achieves the best results across bench-marks, model structures, evaluation models, and scaling di-mensions. This is likely because Ensemble averages the pref-erence choices of different reward models, which eliminates the biases of the employed reward models and improves its resistance to the hacking. 
+
+## 6. How does Reward Hacking Happen? 
+
+We identify potential biases in reward models that may lead to reward hacking, as discussed in section 4 and section 5. In this section, we delve deeper into exploring these intriguing biases—examining their nature and how they make reward hacking happen. To investigate it, we sample inpainting ex-amples in Figure 3 and Figure 4. We report the following findings and insights. 
+
+Reward models exhibit biases in brightness, composi-tion, and color scheme. As evidenced by the results from HPSv2 and PickScore—the second and third images in each sub-figure of Figure 3 respectively, we observe notable biases 8Table 3. Ablation studies on a new dataset of I Dream My Painting [14]. 
+
+inpainting model CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 GPT-4 BrushNet 24.849 5.923 -0.246 20.550 19.749 8.503 2.317 27.317 -0.551 72.669 
+
+BruPA (ours) 25.460 6.111 2.152 20.735 21.086 8.653 2.463 28.294 1.265 73.739 
+
+FLUX.1 Fill 24.194 6.017 0.544 20.855 20.203 8.667 2.476 26.627 0.547 76.391 
+
+FluPA (ours) 25.500 6.448 5.961 21.407 23.770 9.031 2.784 28.868 5.023 79.255 Bold values denote the best results. 
+
+Table 4. Comparisons of state-of-the-art image inpainting models on BrushBench and EditBench.                                                                                                                                                                                                                                                                  
+
+> inpainting model CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 GPT-4 Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. Brush. Edit. SDI 26.304 26.526 6.368 5.377 12.026 -1.100 22.105 20.791 27.079 23.203 8.981 6.923 3.268 2.069 26.190 25.382 5.320 0.849 79.004 60.751 CNI 26.341 26.972 6.305 5.382 11.421 -1.044 21.953 20.874 26.633 23.076 8.890 6.906 3.218 2.125 26.150 25.894 4.546 0.894 74.173 63.921 BLD 26.337 27.666 6.262 5.372 11.161 0.563 21.901 20.980 26.723 23.839 8.852 7.467 3.202 2.228 26.128 27.093 4.559 1.114 71.794 62.690 PowerPaint 26.265 27.291 6.312 5.448 11.771 0.720 22.089 20.912 27.065 23.347 8.931 7.238 3.271 2.219 26.123 26.264 5.112 1.068 78.241 63.092 PrefPaint 26.268 25.569 6.377 5.296 11.798 -3.023 22.125 20.666 26.855 22.241 8.925 6.226 3.271 1.951 26.116 24.264 5.208 -0.336 80.327 60.815 StrDiffusion 23.872 21.398 5.330 4.405 -0.063 -16.282 20.342 19.147 21.431 16.616 7.281 3.662 2.417 1.236 23.381 20.102 -2.243 -7.131 34.255 25.200 HD-Painter 26.367 26.934 6.480 5.640 12.913 0.046 22.314 21.016 27.931 23.951 9.019 6.682 3.349 2.136 26.214 25.721 6.224 1.983 85.016 69.087 ASUKA 24.387 20.842 6.294 5.078 5.208 -14.110 21.601 19.603 25.285 18.702 7.681 3.631 2.862 1.282 23.959 19.017 3.556 -3.506 75.140 58.686 BrushNet 26.415 27.337 6.425 5.392 12.717 -1.296 22.133 20.616 27.509 23.076 9.060 6.770 3.303 2.100 26.290 26.410 5.749 0.403 79.391 57.046
+> BruPA (ours) 26.547 27.694 6.516 5.577 13.315 10.463 22.279 20.844 28.037 23.933 9.093 7.043 3.371 2.193 26.390 26.881 6.276 1.398 83.054 61.186 FLUX.1 Fill 26.244 27.103 6.429 5.458 12.760 4.910 22.327 21.211 27.476 24.076 9.081 8.021 3.360 2.485 25.945 26.834 6.055 2.470 83.935 66.979
+> FluPA (ours) 26.436 27.813 6.546 5.681 13.859 7.707 22.577 21.559 28.735 25.972 9.152 8.434 3.457 2.649 26.096 27.617 7.000 4.230 87.609 72.307 Bold values denote the best results. Underlined values denote the second-best results. All methods are evaluated using official implementations with blending [23].
+
+in their preferences. HPSv2 tends to favor images with bright lighting, complex composition with rich details, and vivid colors. In contrast, PickScore shows a preference for dim lighting, simple composition with few details, and muted col-ors. We also make an attempt to leverage GPT-4 for evaluat-ing generation biases quantitatively. We report the results on BrushBench in Table 5. The quantitative results well validate our analyses that HPSv2 favors images with bright lighting, complex composition, and vivid colors; PickScore shows the opposite tendency; and our Ensemble falls squarely between the two. 
+
+Table 5. Quantitative results of biases evaluated by GPT-4. 
+
+model reward model brightness composition color BrushNet HPSv2 79.221 82.979 81.267 
+
+Ensemble 78.180 80.922 78.513 PickScore 73.545 75.019 70.641 FLUX.1 Fill HPSv2 76.617 74.547 70.978 
+
+Ensemble 76.412 74.057 70.496 PickScore 76.124 73.512 69.824 
+
+Biases in reward models affect different baseline mod-els in distinct ways. Although each reward model has its own inherent biases, we find that their influence varies across baseline models. For instance, BrushNet trained using HPSv2 produces inpainting outputs characterized by exces-sively bright lighting, overly intricate details, and unnaturally vivid colors—they seem to deviate from human aesthetic preferences. In contrast, FLUX.1 Fill trained using HPSv2 generates visually pleasing results. PickScore shows a simi-lar disparity in performance. It stems from the characteristics of baseline models as shown in Figure 4: BrushNet generates vibrant images, making PickScore particularly suitable for it; while FLUX.1 Fill produces plain images, aligning with HPSv2’s property. 
+
+Ensemble shows generality and generalization by mit-igating biases. Ensemble, a simple and straightforward method implemented through reward ensembling, exhibits strong versatility across models by producing balanced and aesthetically pleasing inpainting results, as shown in Figure 3 and Figure 4. It likely stems from Ensemble’s ability to mit-igate biases inherent in reward models. 
+
+## 7. What is the Origin of the Biases? 
+
+To better understand the source of the biases identified above, we examine the training data of two representative reward models—HPSv2 and PickScore—whose biases run in op-posite directions. Specifically, we sample 1,000 preference 9A girl  is painting a pumpkin with a cat. 
+
+A colorful cat  with a splash of paint on its face. 
+
+A cartoon girl  with long hair and backpack. 
+
+Cartoon fox  driving a car with a cute face. 
+
+Condition  SDI  CNI  BLD  PowerPaint  PrefPaint  StrDiffusion  HD -Painter  ASUKA  Ours Figure 5. Qualitative comparisons with state-of-the-art image inpainting models. 
+
+pairs (each consisting of one winning and one losing sam-ple) from HPDv2 [70] and Pick-a-Pic [25], the datasets used to train HPSv2 and PickScore, respectively. We then prompt GPT-4 to score these images along three attributes— brightness, composition, and color—and report the results in Table 6. As expected, HPDv2 exhibits substantial gaps between its winning and losing samples across all three attributes, whereas Pick-a-Pic shows only marginal differ-ences. These dataset characteristics offer a natural explana-tion for the model-level behavior observed in previous sec-tions: HPSv2 tends to favor bright, compositionally complex, and vividly colored images, whereas PickScore exhibits the opposite tendency. 
+
+Table 6. Bias analysis on HPDv2 and Pick-a-Pic.                        
+
+> dataset brightness composition color win loss win −lose win loss win −lose win loss win −lose HPDv2 40.641 39.236 1.405 45.208 41.560 3.648 42.340 38.269 4.071
+> Pick-a-Pic 42.421 42.415 0.006 46.144 45.899 0.245 43.943 44.137 -0.194
+
+## 8. Ablation Studies and Comparisons with State-of-the-Art 
+
+We name our methods BruPA and FluPA —BrushNet and FLUX.1 Fill with Ensemble-based preference alignment. We compare them with state-of-the-art image inpainting models. Specifically, the following methods are compared (they are introduced in section 2): SDI [52], CNI [78], BLD [2], PowerPaint [80], BrushNet [23], PrefPaint [35], StrDiffusion [33], FLUX.1 Fill [8], HD-Painter [47], and ASUKA [67], where BrushNet and FLUX.1 Fill are also the baseline models for ablation studies .
+
+Table 7. Details of GPT-4 evaluations. 
+
+inpainting model overall aesthetics structure semantics BrushNet 79.391 30.301 24.035 25.055 BruPA 83.054 33.516 24.069 25.469 
+
+FLUX.1 Fill 83.935 32.617 24.997 26.321 FluPA 87.609 35.100 25.627 26.883 
+
+Ablation studies on preference alignment . We report quantitative and qualitative ablation studies, before and af-ter preference alignment training, in Table 4 and Figure 4, respectively. After preference alignment using Ensemble, our method significantly surpasses the baseline models by achieving much better results and yielding visually appeal-ing results. We also report the details of GPT-4 evaluation in Table 7. According to GPT-4 on each sub-dimension, pref-erence alignment consistently improves image quality across all aspects—aesthetic appeal, structure accuracy, and seman-tic alignment. We further conduct ablation studies on a new 10 Figure 6. User studies. We compare each pair of models by randomly sampling 100 pairs from their inpainting results. We invite 30 volunteers to participate in a blind assessment to determine which one is better (“A win”, “B win”, or “tie”) based on their preferences. We report the winning rates .Table 8. Evaluation by GPT-4 and Qwen3-VL                                                                                                                                                      
+
+> inpainting model GPT-4 Qwen3-VL Brush. Edit. Brush. Edit. SDI 79.004 ±0.203 63.921 ±0.410 90.323 ±0.245 88.300 ±0.310 CNI 74.173 ±0.817 60.751 ±0.590 88.101 ±0.277 85.519 ±0.337 BLD 71.794 ±0.657 62.690 ±0.736 85.719 ±0.461 86.886 ±0.336 PowerPaint 78.241 ±0.912 63.092 ±0.738 89.763 ±0.250 85.682 ±0.425 PrefPaint 80.327 ±0.293 60.815 ±0.392 91.249 ±0.220 83.269 ±0.449 StrDiffusion 34.255 ±0.159 25.200 ±0.236 49.560 ±0.394 40.867 ±0.336 HD-Painter 85.016 ±0.626 69.089 ±0.628 92.361 ±0.026 87.389 ±0.325 ASUKA 75.140 ±1.022 58.686 ±0.477 84.597 ±0.458 73.614 ±0.980 BrushNet 79.391 ±0.375 57.046 ±1.151 89.930 ±0.396 85.064 ±0.450
+> BruPA (ours) 83.054 ±0.886 61.081 ±0.764 92.255 ±0.163 88.686 ±0.248 FLUX.1 Fill 83.935 ±0.414 67.465 ±0.463 92.752 ±0.145 88.649 ±0.306
+> FluPA (ours) 87.609 ±0.291 72.307 ±0.560 94.501 ±0.154 91.603 ±0.220
+
+dataset, which are reported in Table 3. It also confirms that our improvement is generalizable across data distributions. 
+
+Comparisons with state-of-the-art. Table 4 reports the results. Our BruPA and FluPA set new state-of-the-art re-sults, attaining the best scores on all evaluations and the second-best scores in nearly half of the cases. Notably, even on coarser metrics—CLIPScore, VQAScore, and Perception (analyzed in section 4)—our methods still outperform com-petitors. Besides, BruPA and FluPA significantly outperform BrushNet and FLUX.1 Fill, i.e., the baselines before apply-ing preference alignment. The qualitative results are reported in Figure 5, and our models generate images with better aes-thetics. 
+
+Effectiveness of GPT-4. To validate the effectiveness of GPT-4, we conduct user studies. All participants were in-formed of the purpose and procedure of the user study and provided informed consent before participation. The study collected only anonymized preference judgments and did not collect personally identifiable information. We randomly se-lected 500 inpainting pairs and invited volunteers to judge which result is better. Our human raters were drawn com-pletely at random from a large and diverse volunteer pool. This random selection ensures that the evaluation is represen-tative. To quantify agreement, we compute the alignment ac-curacy between the reward models and human raters, defined as the average proportion of cases in which both the raters and the model prefer the same result. In our evaluation, GPT-4 achieves 86% accuracy; HPSv2: 82%, PickScore: 80%, ImageReward: 77%, and Aesthetic: 80%. To further evaluate the results, we include an open-source vision-language foun-dation model—Qwen3-VL [49]—for evaluation. The results with means and standard deviations are reported in Table 8. Evaluation results of GPT-4 and Qwen3-VL are broadly sta-ble, with our BruPA and FluPA delivering consistently re-11 (a) Sensitivity analysis on β.
+
+> (b) Sensitivity analysis on lr.
+
+Figure 7. Searches of β, i.e., sub-figure (a), and learning rate (lr), i.e., sub-figure (b). The first and second row of each sub-figure is based on BrushNet and FLUX.1 Fill , respectively. 
+
+markable performance gains. For completeness, we also re-port the Qwen3-VL counterparts of Table 5 and Table 7 in Table 9 and Table 10, respectively. The conclusions remain highly consistent across different vision-language foundation models. To eliminate the potential biases in our design of prompts, we provide more results on the weights of the criteria—aesthetic quality, structural coherence, and seman-tic alignment—in Table 11. Our BruPA and FluPA con-sistently outperform the baseline models by a large mar-gin, showing the significant and robust improvement of our method in GPT-4 evaluations. 
+
+Analysis of Hyper-Parameters. We conduct hyper-parameter searches for Ensemble, as shown in Figure 7. For Ensemble, we finally adopt a learning rate of 1e-6, and set 
+
+β = 4000 for BrushNet; while using a learning rate of 1e-5 and setting β = 2000 for FLUX.1 Fill. For HPSv2, we use a learning rate of 1e-5 with β = 4000 for BrushNet; and a learning rate of 1e-6 with β = 8000 for FLUX.1 Fill. For PickScore, we set the learning rate to 1e-7 and use β = 2000 
+
+for both BrushNet and FLUX.1 Fill. We also find that fine-tuning these hyper-parameters is not critical. Even when using fixed moderate values ( β = 4000 
+
+and lr = 1 e − 6, as suggested by [61]) across all experi-ments, our method still far exceeds the baseline w/o DPO: BruPA on BrushBench (83.133 vs. 79.391), BruPA on Edit-Bench (72.442 vs. 57.046), FluPA on BrushBench (86.337 vs. 83.935), FluPA on EditBench (77.908 vs. 66.979). The new results remain the SOTA by outperforming previous best methods: BrushBench (86.337 vs. 85.016) and EditBench (77.908 vs. 69.087). Besides, Ensemble is less sensitive to hyper-parameter variations than single reward models like HPSv2 and PickScore. We hypothesize that this robustness 
+
+Table 9. Quantitative results of biases evaluated by Qwen3-VL.                       
+
+> model reward model brightness composition color BrushNet HPSv2 83.843 88.310 85.565
+> Ensemble 83.284 88.180 84.644 PickScore 82.615 86.530 82.516 FLUX.1 Fill HPSv2 82.750 85.832 81.695
+> Ensemble 82.527 85.611 81.454 PickScore 82.508 85.481 81.389
+
+Table 10. Details of Qwen3-VL evaluations. 
+
+inpainting model overall aesthetics structure semantics BrushNet 89.930 35.141 27.395 27.393 BruPA 92.255 36.032 28.018 28.204 
+
+FLUX.1 Fill 92.752 36.244 28.080 28.426 FluPA 94.501 36.972 28.477 29.052 
+
+arises because the Ensemble integrates different reward mod-els, thereby mitigating the sensitivity inherent to any individ-ual reward model. 
+
+Table 11. GPT-4 evaluation results with different weight combi-nations: [aesthetic quality]-[structural coherence]-[semantic align-ment]. “auto” represents the weight is determined by GPT-4 itself.                       
+
+> inpainting model 40-30-30 30-40-30 30-30-40 33-33-33 auto BrushNet 79.391 78.423 77.937 78.169 77.388 BruPA 83.054 82.538 82.388 82.226 81.036
+> FLUX.1 Fill 83.935 83.746 83.229 83.217 81.649 FluPA 87.609 87.559 87.368 87.243 85.309
+
+Compute Costs of Each Reward Model. We report the 12 Table 12. Compute cost for giving score to a single sample. 
+
+reward model CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 cost (seconds) 0.154 0.048 0.0759 0.0319 0.219 0.288 3.051 0.155 0.379         
+
+> (a) Examples from models trained using BrushNet .
+> (b) Examples from models trained using FLUX.1 Fill .
+> Figure 8. Different Ensemble variants. In each sub-figure, the four images (from left to right) display: the masked image , followed by inpainting results from models trained using Ensemble (vanilla) ,Ensemble (w/o VQAScore) , and Ensemble (Linear) . We omit text prompts for brevity. Zoom in to see details.
+
+compute cost of each reward model for giving a score to a single sample in Table 12. Note that our Ensemble method only introduces additional cost for scoring samples and con-structing preference pairs; the cost for training remains the same as in standard methods. 
+
+User studies. As shown in Figure 6, our models align with human preferences better. 
+
+## 9. Stronger Ensemble Variants 
+
+We have identified biases across reward models and proposed a new reward model, Ensemble , to mitigate reward hacking. In this section, we further explore how to push the limit of 
+
+Ensemble . To this end, we introduce three complementary strategies: filtering out weaker reward models, weighted en-sembling, and calibrated ensembling. 
+
+Removing the weaker reward models. As discussed in section 4, we find that VQAScore is neither a reliable evaluator nor an effective reward signal provider. Therefore, we conduct a new experiment by removing this weak reward model from Ensemble . The quantitative results on Brush-Bench are reported in Table 13 and the qualitative results are reported in Figure 8. We observe a significant improvement in the GPT-4 evaluation scores of BruPA and FluPA after ex-cluding VQAScore. This result preliminarily suggests that removing weaker reward models, although sacrificing the di-versity of reward signals, can further enhance the results of preference alignment. There seems to be a trade-off between the diversity and effectiveness of reward signals when weaker reward models are present. 
+
+Weighted Ensemble . We find that assigning differ-ent weights to reward models when constructing ensem-ble scores significantly affects the performance. We report the results of two new variants— Linear Weighted Ensemble 
+
+(named BruPA (linear) and FluPA (linear) ), and Softmax Weighted Ensemble (named BruPA (softmax) and FluPA (softmax) )—in Table 14 and Figure 8. In BruPA (vanilla) 
+
+and FluPA (vanilla) , each reward model is given equal weight. In comparison, in BruPA (linear) and FluPA (linear), each reward model is weighted by its corresponding GPT-4 score (from Table 1 and Table 2), thereby granting greater in-fluence to higher-performing models. The BruPA (softmax) and FluPA (softmax) further normalize these weights via a 13 Table 13. Comparisons of different Ensemble variants on removing the weaker reward models. 
+
+inpainting model CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 GPT-4 BruPA 26.547 6.516 13.315 22.279 28.037 9.093 3.371 26.390 6.276 83.054 BruPA w/o VQAScore 26.555 6.524 13.337 22.278 28.055 9.082 3.362 26.385 6.306 83.659 
+
+FluPA 26.436 6.546 13.859 22.577 28.735 9.152 3.457 26.096 7.000 87.609 FluPA w/o VQAScore 26.438 6.576 14.017 22.605 28.747 9.186 3.466 26.113 7.068 88.972 
+
+Table 14. Comparisons of different Ensemble variants with different weights applied to reward models. 
+
+variant CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 GPT-4 BruPA 26.547 6.516 13.315 22.279 28.037 9.093 3.371 26.390 6.276 83.054 BruPA (linear) 26.568 6.521 13.342 22.274 28.050 9.098 3.372 26.400 6.288 83.479 
+
+BruPA (softmax) 26.573 6.516 13.136 22.265 28.073 9.092 3.359 26.409 6.310 83.136 FluPA 26.436 6.546 13.859 22.577 28.735 9.152 3.457 26.096 7.000 87.609 FluPA (linear) 26.513 6.556 14.030 22.605 28.815 9.172 3.452 26.171 7.136 89.190 
+
+FluPA (softmax) 26.434 6.553 13.834 22.538 28.609 9.166 3.443 26.080 6.984 88.145 
+
+Table 15. Comparisons of different Ensemble variants with different training objectives. 
+
+variant CLIPScore Aesthetic ImageR PickScore HPSv2 VQAScore UnifiedR Perception HPSv3 GPT-4 BruPA 26.547 6.516 13.315 22.279 28.037 9.093 3.371 26.390 6.276 83.054 BruPA (CaPO) 26.567 6.522 13.269 22.286 27.962 9.084 3.350 26.401 6.242 83.659 BruPA (CaEN) 26.537 6.515 13.288 22.293 28.032 9.062 3.358 26.410 6.259 83.717 
+
+FluPA 26.436 6.546 13.859 22.577 28.735 9.152 3.457 26.096 7.000 87.609 FluPA (CaPO) 26.398 6.498 13.773 22.559 28.398 9.161 3.433 26.075 6.808 88.499 FluPA (CaEN) 26.421 6.557 13.934 22.616 28.642 9.161 3.474 26.114 6.993 88.541 
+
+softmax transformation. Based on GPT-4 evaluations, both linear and softmax variants outperform the vanilla Ensemble approach. However, these weighting strategies remain overly simple and may further exacerbate reward hacking. 
+
+Ensemble as a calibrated reward. One core difficulty in multi-reward preference alignment lies in the inconsistency across the reward distributions. CaPO [27] addresses this challenge by approximating the advantage of sample xi using the average pairwise win rate between xi and xj in the batch 
+
+{xi}Ni=1 sampled from the reference policy pref (·| c) under the conditions c for a given reward model R:
+
+Rca (xi, c) = 1
+
+N − 1
+
+X 
+
+> j̸=i
+
+σ (R(xi, c) − R(xj , c)) . (5) For an ensemble of L reward models, the calibrated reward is given by 
+
+Rca (x, c) = 1
+
+L
+
+> L
+
+X
+
+> j=1
+
+R(j)ca (x, c). (6) Even though Equation 5 and Equation 6 align the scales of different reward models, they ignore the differences in vari-ance. To this end, we revisit the Ensemble and reformulate it as 
+
+REn (xi, c ) = 1
+
+N − 1
+
+X 
+
+> j̸=i
+
+1{R(xi, c ) > R (xj , c )}, (7) where 1{·} denotes the indicator function. We further re-place the calibrated reward in CaPO with Equation 7 , which yields the CaEN loss: 
+
+REn (x, c) = 1
+
+L
+
+> L
+
+X
+
+> j=1
+
+R(j)En (x, c). (8) Equation 7 and Equation 8 not only account for scale align-ment, but also eliminate the influence of variance differences. 14 (a) Examples from models trained using BrushNet .       
+
+> (b) Examples from models trained using FLUX.1 Fill .
+> Figure 9. Qualitative results. In each sub-figure, the four images (from left to right) display: the masked image , followed by inpainting results from models trained using Ensemble (vanilla) ,CaPO , and CaEN . We omit text prompts for brevity. Zoom in to see details. Find more examples in the Appendix.
+
+Following CaPO, we obtain the CaEN objective: 
+
+LCaEN (θ) = Et, ϵw ,ϵl
+
+
+
+(REn (xw, c) − REn (xl, c)) 
+
+− (−β(( Lwθ − L w 
+
+> ref
+
+) − (Llθ − L l 
+
+> ref
+
+))) 
+
+2
+
+,
+
+(9) where we assign different noises ϵw, ϵ l ∼ N (0 , I )
+
+to (Lwθ , Lw 
+
+> ref
+
+) and (Llθ , Ll 
+
+> ref
+
+), following CaPO. We train FLUX.1 fill using a learning rate of 1e-5 and choose β by sweeping over {30, 50, 100 } for both CaPO and CaEN. For BrushNet, we use a learning rate of 1e-6 and choose 
+
+β by sweeping over {300, 500, 1000 } for both CaPO and CaEN, and we report the comparison among vanilla Ensem-ble, CaPO and CaEN in Table 15. Similar to the observations in section 4, we find that models trained on vanilla Ensemble-constructed data, including both BruPA and FluPA, outper-form those trained on CaPO-constructed data when evaluated by public reward models but fail under GPT-4 evaluation. On top of this, we posit that reward hacking still undermines En-semble while CaPO and CaEN further mitigate the hacking. To further understand the potential biases in Ensemble, we sample inpainting examples and present them in Figure 9 and the appendix. Empirically, we find that CaEN ampli-fies the biases shared across reward models, as discussed in section 4. To offset these biases, we assign higher weights to CLIPScore and Perception. Besides, compared with CaPO, CaEN attains the best results in 8 out of 10 evaluations and the second-best results in more than half of the cases. Both qualitative and quantitative results consistently demonstrate that both CaPO and CaEN mitigate the biases inherent in the vanilla Ensemble, with CaEN exhibiting better performance. 
+
+## 10. Application to Object Removal 
+
+In this section, we evaluate preference alignment with the proposed method on the task of object removal. 
+
+10.1. Experiment Setup 
+
+Training details . We generate preference data on the high-quality object removal dataset RORem [29]. Specifically, we generate 16 candidates for each image–mask pair and leave the text prompt empty. We train BruPA and FluPA for 800 steps, following the same training recipes. 
+
+Evaluation details . We construct the test set by randomly sampling 600 image–mask pairs from RORD-Val [29]. We evaluate the efficacy of our methods using three widely adopted metrics: PSNR, CLIPScore [20], and LPIPS [79]. 
+
+10.2. Comparison with the Baselines 
+
+To evaluate the efficacy of preference alignment, we report the results in Table 16. The results demonstrate that BruPA and FluPA significantly outperform their baseline models on the object-removal task. This observation suggests that our method may generalize to other image inpainting and editing tasks. We attribute this improvement to the fact that prefer-15 Figure 10. Qualitative results of ablations in object removal. In each sub-figure, the three images (from left to right) display: the masked image , followed by inpainting results from baseline models and baseline models + preference alignment .Table 16. Results for object removal. 
+
+inpainting model CLIPScore PSNR PSNR-BG LPIPS ↓
+
+BrushNet 87.640 0.116 43.445 0.082 BruPA 89.896 1.342 43.791 0.071 
+
+FLUX.1 Fill 92.736 3.615 43.820 0.051 FluPA 93.549 4.353 44.072 0.047 
+
+ence alignment training suppressing the model’s tendency to generate spurious or hallucinated content. 
+
+## 11. Conclusion and Discussion 
+
+We conduct extensive studies on image inpainting with pref-erence alignment and obtain key insights into the effective-ness, scalability, and challenges in achieving alignment. We find that a simple ensemble method mitigates biases and achieves non-trivial results in the conference version of this work. We further generalize preference alignment from creative image inpainting to object-removal inpainting, a more challenging setting that emphasizes coherent and visu-ally plausible background completion rather than open-ended generation. We provide a substantially more comprehensive investigation of the ensemble strategy by analyzing its lim-itations under reward hacking, studying weighting schemes across reward models, and examining the efficiency gains en-abled by filtering out invalid reward signals. Building upon the simple ensemble method, we find it still vulnerable to reward hacking, and we therefore propose a calibrated en-semble that mitigates bias-induced hacking and establishes a new state of the art. 
+
+## 12. Limitations and Potential Negative Social Impacts 
+
+Our work has the following limitations. First, our work is confined to image data, and we leave the extension of these findings to video and 3D data as future work. Second, our approach relies on off-the-shelf reward models to construct preference training data. As shown in our analysis, these reward models can exhibit biases and may induce reward hacking. While our ensemble and calibrated ensemble meth-ods improve robustness, they may not fully eliminate this is-sue. Finally, our evaluation still depends partly on automatic evaluators, including vision-language model-based judges, which cannot fully replace human judgments. Researchers should also be aware of the potential negative social impacts arising from the misuse of inpainting models. For example, such models can generate highly realistic content that may be indistinguishable from real photographs. 
+
+## References 
+
+[1] Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, et al. Gpt-4 technical report. arXiv preprint arXiv:2303.08774 , 2023. 5 [2] Omri Avrahami, Ohad Fried, and Dani Lischinski. Blended latent diffusion. ACM transactions on graphics , 2023. 2, 10 [3] Mohammad Gheshlaghi Azar, Zhaohan Daniel Guo, Bilal Piot, Remi Munos, Mark Rowland, Michal Valko, and Daniele Calandriello. A general theoretical paradigm to understand learning from human preferences. In International Confer-ence on Artificial Intelligence and Statistics , 2024. 2 [4] Yuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma, Dawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, et al. Training a helpful and harmless assistant with reinforcement learning from human feedback. arXiv preprint arXiv:2204.05862 , 2022. 3 [5] Marcelo Bertalmio, Guillermo Sapiro, Vincent Caselles, and Coloma Ballester. Image inpainting. In Proceedings of the 27th annual conference on Computer graphics and interactive techniques , 2000. 1, 2 [6] Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, and Sergey Levine. Training diffusion models with reinforcement learning. arXiv preprint arXiv:2305.13301 , 2023. 1, 3 [7] BlackForestLabs. Flux.1-dev. https://huggingface. co/black- forest- labs/FLUX.1- dev , 2024. Ac-cessed: 2025-07-12. 2 [8] BlackForestLabs. Flux.1-fill-dev. https : / / huggingface.co/black-forest-labs/FLUX.1-Fill-dev , 2024. Accessed: 2025-07-12. 1, 3, 10 
+
+16 [9] Daniel Bolya, Po-Yao Huang, Peize Sun, Jang Hyun Cho, An-drea Madotto, Chen Wei, Tengyu Ma, Jiale Zhi, Jathushan Ra-jasegaran, Hanoona Rasheed, et al. Perception encoder: The best visual embeddings are not at the output of the network. 
+
+arXiv preprint arXiv:2504.13181 , 2025. 5 [10] Tim Brooks, Aleksander Holynski, and Alexei A Efros. In-structpix2pix: Learning to follow image editing instructions. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2023. 3 [11] Qihua Chen, Yue Ma, Hongfa Wang, Junkun Yuan, Wenzhe Zhao, Qi Tian, Hongmei Wang, Shaobo Min, Qifeng Chen, and Wei Liu. Follow-your-canvas: Higher-resolution video outpainting with extensive content generation. arXiv preprint arXiv:2409.01055 , 2024. 2 [12] Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim En-tezari, Jonas M¨ uller, Harry Saini, Yam Levi, Dominik Lorenz, Axel Sauer, Frederic Boesel, et al. Scaling rectified flow trans-formers for high-resolution image synthesis. In International conference on machine learning , 2024. 2, 3 [13] Ying Fan, Olivia Watkins, Yuqing Du, Hao Liu, Moonkyung Ryu, Craig Boutilier, Pieter Abbeel, Mohammad Ghavamzadeh, Kangwook Lee, and Kimin Lee. Dpok: Reinforcement learning for fine-tuning text-to-image diffu-sion models. Advances in Neural Information Processing Systems , 2023. 1, 3 [14] Nicola Fanelli, Gennaro Vessio, and Giovanna Castellano. Idream my painting: Connecting mllms and diffusion models via prompt generation for text-guided multi-mask inpainting. In IEEE/CVF Winter Conference on Applications of Computer Vision , 2025. 9 [15] Kunyu Feng, Yue Ma, Bingyuan Wang, Chenyang Qi, Haozhe Chen, Qifeng Chen, and Zeyu Wang. Dit4edit: Diffusion transformer for image editing. In Proceedings of the AAAI Conference on Artificial Intelligence , pages 2969–2977, 2025. 2[16] Yu Gao, Lixue Gong, Qiushan Guo, Xiaoxia Hou, Zhichao Lai, Fanshi Li, Liang Li, Xiaochen Lian, Chao Liao, Liyang Liu, et al. Seedream 3.0 technical report. arXiv preprint arXiv:2504.11346 , 2025. 3 [17] Yu Gao, Haoyuan Guo, Tuyen Hoang, Weilin Huang, Lu Jiang, Fangyuan Kong, Huixia Li, Jiashi Li, Liang Li, Xiao-jie Li, et al. Seedance 1.0: Exploring the boundaries of video generation models. arXiv preprint arXiv:2506.09113 , 2025. 3 [18] Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Ruoyu Zhang, Runxin Xu, Qihao Zhu, Shirong Ma, Peiyi Wang, Xiao Bi, et al. Deepseek-r1: Incentivizing reasoning ca-pability in llms via reinforcement learning. arXiv preprint arXiv:2501.12948 , 2025. 3 [19] Amir Hertz, Ron Mokady, Jay Tenenbaum, Kfir Aberman, Yael Pritch, and Daniel Cohen-Or. Prompt-to-prompt im-age editing with cross attention control. arXiv preprint arXiv:2208.01626 , 2022. 3 [20] Jack Hessel, Ari Holtzman, Maxwell Forbes, Ronan Le Bras, and Yejin Choi. Clipscore: A reference-free evaluation metric for image captioning. arXiv preprint arXiv:2104.08718 , 2021. 5, 15 [21] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising dif-fusion probabilistic models. Advances in neural information processing systems , 2020. 1, 2, 3 [22] Zijing Hu, Junkun Yuan, Kairong Han, Yunze Tong, Shengyu Zhang, Fei Wu, and Kun Kuang. Reinforcement learning in generative multimodal ai: A survey. Authorea Preprints , 2026. 3[23] Xuan Ju, Xian Liu, Xintao Wang, Yuxuan Bian, Ying Shan, and Qiang Xu. Brushnet: A plug-and-play image inpainting model with decomposed dual-branch diffusion. In European Conference on Computer Vision , 2024. 1, 2, 3, 5, 9, 10 [24] Sora Kim, Sungho Suh, and Minsik Lee. Rad: Region-aware diffusion models for image inpainting. In IEEE/CVF Confer-ence on Computer Vision and Pattern Recognition , 2025. 3 [25] Yuval Kirstain, Adam Polyak, Uriel Singer, Shahbuland Ma-tiana, Joe Penna, and Omer Levy. Pick-a-pic: An open dataset of user preferences for text-to-image generation. Advances in neural information processing systems , 2023. 1, 5, 10 [26] Weijie Kong, Qi Tian, Zijian Zhang, Rox Min, Zuozhuo Dai, Jin Zhou, Jiangfeng Xiong, Xin Li, Bo Wu, Jianwei Zhang, et al. Hunyuanvideo: A systematic framework for large video generative models. arXiv preprint arXiv:2412.03603 , 2024. 3 [27] Kyungmin Lee, Xiahong Li, Qifei Wang, Junfeng He, Junjie Ke, Ming-Hsuan Yang, Irfan Essa, Jinwoo Shin, Feng Yang, and Yinxiao Li. Calibrated multi-preference optimization for aligning diffusion models. In IEEE/CVF Conference on Com-puter Vision and Pattern Recognition , 2025. 3, 4, 14 [28] Junnan Li, Dongxu Li, Caiming Xiong, and Steven Hoi. Blip: Bootstrapping language-image pre-training for unified vision-language understanding and generation. In International con-ference on machine learning , 2022. 5 [29] Ruibin Li, Tao Yang, Song Guo, and Lei Zhang. Rorem: Training a robust object remover with human-in-the-loop. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2025. 3, 15 [30] Jingyun Liang, Jiezhang Cao, Guolei Sun, Kai Zhang, Luc Van Gool, and Radu Timofte. Swinir: Image restoration us-ing swin transformer. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2021. 1 [31] Zhiqiu Lin, Deepak Pathak, Baiqi Li, Jiayao Li, Xide Xia, Graham Neubig, Pengchuan Zhang, and Deva Ramanan. Eval-uating text-to-visual generation with image-to-text generation. In European Conference on Computer Vision , 2024. 5 [32] Yaron Lipman, Ricky TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le. Flow matching for generative modeling. 
+
+arXiv preprint arXiv:2210.02747 , 2022. 1, 2, 3 [33] Haipeng Liu, Yang Wang, Biao Qian, Meng Wang, and Yong Rui. Structure matters: Tackling the semantic discrepancy in diffusion models for image inpainting. In IEEE/CVF Confer-ence on Computer Vision and Pattern Recognition , 2024. 10 [34] Jie Liu, Gongye Liu, Jiajun Liang, Ziyang Yuan, Xiaokun Liu, Mingwu Zheng, Xiele Wu, Qiulin Wang, Wenyu Qin, Meng-han Xia, et al. Improving video generation with human feed-back. arXiv preprint arXiv:2501.13918 , 2025. 1, 3 [35] Kendong Liu, Zhiyu Zhu, Chuanhao Li, Hui Liu, Huanqiang Zeng, and Junhui Hou. Prefpaint: Aligning image inpainting diffusion model with human preference. Advances in Neural Information Processing Systems , 2024. 3, 10 
+
+17 [36] Andreas Lugmayr, Martin Danelljan, Andres Romero, Fisher Yu, Radu Timofte, and Luc Van Gool. Repaint: Inpainting us-ing denoising diffusion probabilistic models. In IEEE/CVF Conference on Computer Vision and Pattern Recognition ,2022. 3 [37] Nanye Ma, Mark Goldstein, Michael S Albergo, Nicholas M Boffi, Eric Vanden-Eijnden, and Saining Xie. Sit: Exploring flow and diffusion-based generative models with scalable in-terpolant transformers. In European Conference on Computer Vision , 2024. 3 [38] Nanye Ma, Shangyuan Tong, Haolin Jia, Hexiang Hu, Yu-Chuan Su, Mingda Zhang, Xuan Yang, Yandong Li, Tommi Jaakkola, Xuhui Jia, et al. Scaling inference time compute for diffusion models. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2025. 5 [39] Yue Ma, Yingqing He, Xiaodong Cun, Xintao Wang, Siran Chen, Xiu Li, and Qifeng Chen. Follow your pose: Pose-guided text-to-video generation using pose-free videos. In 
+
+Proceedings of the AAAI Conference on Artificial Intelligence ,pages 4117–4125, 2024. 2 [40] Yue Ma, Hongyu Liu, Hongfa Wang, Heng Pan, Yingqing He, Junkun Yuan, Ailing Zeng, Chengfei Cai, Heung-Yeung Shum, Wei Liu, et al. Follow-your-emoji: Fine-controllable and expressive freestyle portrait animation. In SIGGRAPH Asia 2024 Conference Papers , 2024. [41] Yue Ma, Kunyu Feng, Zhongyuan Hu, Xinyu Wang, Yucheng Wang, Mingzhe Zheng, Xuanhua He, Chenyang Zhu, Hongyu Liu, Yingqing He, et al. Controllable video generation: A survey. arXiv preprint arXiv:2507.16869 , 2025. [42] Yue Ma, Kunyu Feng, Xinhua Zhang, Hongyu Liu, David Jun-hao Zhang, Jinbo Xing, Yinhan Zhang, Ayden Yang, Zeyu Wang, and Qifeng Chen. Follow-your-creation: Empow-ering 4d creation through video inpainting. arXiv preprint arXiv:2506.04590 , 2025. [43] Yue Ma, Yulong Liu, Qiyuan Zhu, Ayden Yang, Kunyu Feng, Xinhua Zhang, Zhifeng Li, Sirui Han, Chenyang Qi, and Qifeng Chen. Follow-your-motion: Video motion transfer via efficient spatial-temporal decoupled finetuning. arXiv preprint arXiv:2506.05207 , 2025. 2 [44] Yuhang Ma, Xiaoshi Wu, Keqiang Sun, and Hongsheng Li. Hpsv3: Towards wide-spectrum human preference score. 
+
+arXiv preprint arXiv:2508.03789 , 2025. 5 [45] Yue Ma, Xinyu Wang, Qianli Ma, Qinghe Wang, Mingzhe Zheng, Xiangpeng Yang, Hao Li, Chongbo Zhao, Jixuan Ying, Harry Yang, et al. Group editing: Edit multiple images in one go. arXiv preprint arXiv:2603.22883 , 2026. 2 [46] Yue Ma, Zhikai Wang, Tianhao Ren, Mingzhe Zheng, Hongyu Liu, Jiayi Guo, Mark Fong, Yuxuan Xue, Zixiang Zhao, Kon-rad Schindler, et al. Fastvmt: Eliminating redundancy in video motion transfer. arXiv preprint arXiv:2602.05551 , 2026. 2 [47] Hayk Manukyan, Andranik Sargsyan, Barsegh Atanyan, Zhangyang Wang, Shant Navasardyan, and Humphrey Shi. Hd-painter: high-resolution and prompt-faithful text-guided image inpainting with diffusion models. In International Con-ference on Learning Representations , 2023. 1, 2, 10 [48] Alexander Pan, Kush Bhatia, and Jacob Steinhardt. The ef-fects of reward misspecification: Mapping and mitigating mis-aligned models. arXiv preprint arXiv:2201.03544 , 2022. 1, 7 [49] QwenTeam. Qwen3-vl. https://qwen.ai/blog?id= qwen3-vl , 2025. Accessed: 2025-11-20. 11 [50] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual models from natural language supervision. In International conference on machine learning , 2021. 5 [51] Rafael Rafailov, Archit Sharma, Eric Mitchell, Christopher D Manning, Stefano Ermon, and Chelsea Finn. Direct preference optimization: Your language model is secretly a reward model. 
+
+Advances in neural information processing systems , 2023. 1, 3[52] Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj¨ orn Ommer. High-resolution image syn-thesis with latent diffusion models. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2022. 2, 10 [53] Olaf Ronneberger, Philipp Fischer, and Thomas Brox. U-net: Convolutional networks for biomedical image segmentation. In International Conference on Medical image computing and computer-assisted intervention , 2015. 1, 3 [54] Christoph Schuhmann, Romain Beaumont, Richard Vencu, Cade Gordon, Ross Wightman, Mehdi Cherti, Theo Coombes, Aarush Katta, Clayton Mullis, Mitchell Wortsman, et al. Laion-5b: An open large-scale dataset for training next gen-eration image-text models. Advances in neural information processing systems , 2022. 5 [55] John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Rad-ford, and Oleg Klimov. Proximal policy optimization algo-rithms. arXiv preprint arXiv:1707.06347 , 2017. 3, 4 [56] Yutao Shen, Junkun Yuan, Toru Aonishi, Hideki Nakayama, and Yue Ma. Follow-your-preference: Towards preference-aligned image inpainting. arXiv preprint arXiv:2509.23082 ,2025. 2 [57] Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli. Deep unsupervised learning using nonequilibrium thermodynamics. In International conference on machine learning , 2015. 3 [58] Jiaming Song, Chenlin Meng, and Stefano Ermon. Denoising diffusion implicit models. arXiv preprint arXiv:2010.02502 ,2020. 3 [59] Richard S Sutton, Andrew G Barto, et al. Reinforcement learn-ing: An introduction . MIT press Cambridge, 1998. 3 [60] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszko-reit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. Attention is all you need. Advances in neural information processing systems , 2017. 1, 3 [61] Bram Wallace, Meihua Dang, Rafael Rafailov, Linqi Zhou, Aaron Lou, Senthil Purushwalkam, Stefano Ermon, Caiming Xiong, Shafiq Joty, and Nikhil Naik. Diffusion model align-ment using direct preference optimization. In IEEE/CVF Con-ference on Computer Vision and Pattern Recognition , pages 8228–8238, 2024. 1, 3, 12 [62] Team Wan, Ang Wang, Baole Ai, Bin Wen, Chaojie Mao, Chen-Wei Xie, Di Chen, Feiwu Yu, Haiming Zhao, Jianxiao Yang, et al. Wan: Open and advanced large-scale video gen-erative models. arXiv preprint arXiv:2503.20314 , 2025. 3 
+
+18 [63] Jiangshan Wang, Junfu Pu, Zhongang Qi, Jiayi Guo, Yue Ma, Nisha Huang, Yuxin Chen, Xiu Li, and Ying Shan. Tam-ing rectified flow for inversion and editing. arXiv preprint arXiv:2411.04746 , 2024. 2 [64] Junke Wang, Zhi Tian, Xun Wang, Xinyu Zhang, Weilin Huang, Zuxuan Wu, and Yu-Gang Jiang. Simplear: Pushing the frontier of autoregressive visual generation through pre-training, sft, and rl. arXiv preprint arXiv:2504.11455 , 2025. 4[65] Peng Wang, Shuai Bai, Sinan Tan, Shijie Wang, Zhihao Fan, Jinze Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, et al. Qwen2-vl: Enhancing vision-language model’s perception of the world at any resolution. arXiv preprint arXiv:2409.12191 , 2024. 5 [66] Su Wang, Chitwan Saharia, Ceslee Montgomery, Jordi Pont-Tuset, Shai Noy, Stefano Pellegrini, Yasumasa Onoe, Sarah Laszlo, David J Fleet, Radu Soricut, et al. Imagen editor and editbench: Advancing and evaluating text-guided image in-painting. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2023. 1, 5 [67] Yikai Wang, Chenjie Cao, Junqiu Yu, Ke Fan, Xiangyang Xue, and Yanwei Fu. Towards enhanced image inpainting: Mit-igating unwanted object insertion and preserving color con-sistency. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2025. 2, 10 [68] Yibin Wang, Yuhang Zang, Hao Li, Cheng Jin, and Jiaqi Wang. Unified reward model for multimodal understanding and generation. arXiv preprint arXiv:2503.05236 , 2025. 4, 5 [69] Sihao Wu, Xiaonan Si, Chi Xing, Jianhong Wang, Gaojie Jin, Guangliang Cheng, Lijun Zhang, and Xiaowei Huang. Preference alignment on diffusion model: A comprehensive survey for image generation and editing. arXiv preprint arXiv:2502.07829 , 2025. 1 [70] Xiaoshi Wu, Yiming Hao, Keqiang Sun, Yixiong Chen, Feng Zhu, Rui Zhao, and Hongsheng Li. Human preference score v2: A solid benchmark for evaluating human preferences of text-to-image synthesis. arXiv preprint arXiv:2306.09341 ,2023. 1, 5, 10 [71] Jiazheng Xu, Xiao Liu, Yuchen Wu, Yuxuan Tong, Qinkai Li, Ming Ding, Jie Tang, and Yuxiao Dong. Imagereward: Learn-ing and evaluating human preferences for text-to-image gen-eration. Advances in Neural Information Processing Systems ,2023. 5 [72] Zeyue Xue, Jie Wu, Yu Gao, Fangyuan Kong, Lingting Zhu, Mengzhao Chen, Zhiheng Liu, Wei Liu, Qiushan Guo, Weilin Huang, et al. Dancegrpo: Unleashing grpo on visual genera-tion. arXiv preprint arXiv:2505.07818 , 2025. 1, 4 [73] Junkun Yuan, Xu Ma, Defang Chen, Kun Kuang, Fei Wu, and Lanfen Lin. Label-efficient domain generalization via col-laborative exploration and generalization. In Proceedings of the 30th ACM international conference on multimedia , pages 2361–2370, 2022. 3 [74] Junkun Yuan, Xu Ma, Defang Chen, Kun Kuang, Fei Wu, and Lanfen Lin. Domain-specific bias filtering for single labeled domain generalization. International Journal of Computer Vi-sion , 131(2):552–571, 2023. 2 [75] Junkun Yuan, Xu Ma, Defang Chen, Fei Wu, Lanfen Lin, and Kun Kuang. Collaborative semantic aggregation and calibra-tion for federated domain generalization. IEEE Transactions on Knowledge and Data Engineering , 35(12):12528–12541, 2023. 2 [76] Junkun Yuan, Xinyu Zhang, Hao Zhou, Jian Wang, Zhongwei Qiu, Zhiyin Shao, Shaofeng Zhang, Sifan Long, Kun Kuang, Kun Yao, et al. Hap: Structure-aware masked image modeling for human-centric perception. Advances in Neural Informa-tion Processing Systems , 2023. 2 [77] Kai Zhang, Lingbo Mo, Wenhu Chen, Huan Sun, and Yu Su. Magicbrush: A manually annotated dataset for instruction-guided image editing. Advances in Neural Information Pro-cessing Systems , 2023. 1 [78] Lvmin Zhang, Anyi Rao, and Maneesh Agrawala. Adding conditional control to text-to-image diffusion models. In 
+
+IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2023. 2, 10 [79] Richard Zhang, Phillip Isola, Alexei A Efros, Eli Shechtman, and Oliver Wang. The unreasonable effectiveness of deep fea-tures as a perceptual metric. In IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2018. 15 [80] Junhao Zhuang, Yanhong Zeng, Wenran Liu, Chun Yuan, and Kai Chen. A task is worth one word: Learning with task prompts for high-quality versatile image inpainting. In Eu-ropean Conference on Computer Vision , 2024. 1, 2, 10 
+
+19 Appendix 
+
+## A. More Results on Reward Model Bias Studies 
+
+(a) A cartoon drawing of a kitchen. (b) A pink lotus flower blooming with green leaves. 
+
+(c) A couch with pillows and a wall behind it. (d) A dog sitting on the beach. 
+
+(e) A house floating in the air over a lake. (f) Sunflowers in a vase with pears on a table. 
+
+(g) A vase filled with colorful flowers on a table. (h) A notebook, glasses and a camera on a map. 
+
+(i) A pigeon is sitting on the ground. (j) A purple chair with a black seat and back. 
+
+(k) A sheep with pink fur is standing. (l) A teacup and saucer with spoons. 
+
+(m) A lamb standing in a field of green grass. (n) A vase with blue flowers sitting on a table. 
+
+(o) A vase with some flowers in it. (p) A kitten is playing with a flower. 
+
+Figure 11. More results on reward model bias studies using BrushNet. In each sub-figure, the four images (from left to right) display: the masked image , followed by inpainting results from models trained using HPSv2 , PickScore , and Ensemble . For optimal detail, view figures zoomed in. 
+
+20 (a) A woman in white holding a bouquet of flowers. (b) A cartoon boy driving a car. 
+
+(c) Wolf howling at the moon. (d) A cat is shown in low polygonal style. 
+
+(e) A couch with a winged chair at a window. (f) A bright moon on the sea. 
+
+(g) A fruit bowl with a pink flower on top. (h) A small cabin in the snow near a lake. 
+
+(i) A girl with pink hair and flowers on her face. (j) Cartoon fox driving a car with a cute face. 
+
+(k) A lamp and a cup of tea on a table. (l) A person standing on a tile floor with a rug. 
+
+(m) A rabbit sitting on a hill with trees. (n) A red cabin sits on the shore of a lake. 
+
+(o) A teacup and saucer with spoons. (p) A vase with flowers in it on a dark background. 
+
+Figure 12. More results on reward model bias studies using FLUX.1 Fill. In each sub-figure, the four images (from left to right) display: the masked image , followed by inpainting results from models trained using HPSv2 , PickScore , and Ensemble . For optimal detail, view figures zoomed in. 
+
+21 (a) a cartoon giraffe sitting down and looking at the camera (b) a house in the middle of a foggy night 
+
+(c) a cup of tea sits on top of a wooden table (d) a fairy with a lantern in her hand 
+
+(e) a couch with pillows and a wall behind it (f) a cartoon drawing of a kitchen with a stove and oven 
+
+(g) a cat with headphones on its head (h) a close up of a cherry blossom with white flowers 
+
+(i) a chair in front of a wall with a floral pattern (j) wind turbines are seen in the ocean near a pier 
+
+(k) a white rabbit sitting on the ground in the grass (l) a lighthouse in the middle of a stormy sea 
+
+(m) a cup of coffee and a notebook on a table (n) a cartoon rabbit wearing a blue coat and hat 
+
+(o) a cup of coffee on a table next to a window with the moon and stars in the sky 
+
+(p) a woman standing in front of a large spaceship 
+
+Figure 13. More results on Ensemble bias studies using BrushNet. In each sub-figure, the four images (from left to right) display: the 
+
+masked image , followed by inpainting results from models trained using Ensemble , CaPO , and CaEN . For optimal detail, view figures zoomed in. 
+
+22 (a) cartoon fox driving a car with a cute face (b) a large wave crashing into the ocean with white clouds in the sky 
+
+(c) a white vase with purple tulips in it (d) a person holding a stopwatch with the words 2020 and 2021 
+
+(e) a blue butterfly with stars on it (f) a man and woman standing on rocks with a fish in the water 
+
+(g) a house floating in the air over a lake (h) a couch with a winged chair in front of a window 
+
+(i) a blue bird sitting on a branch with yellow flowers (j) the cover of the book, the girl and the dog 
+
+(k) a green velvet chaise with studded backrest on a dark background (l) a woman in a red hat and red dress 
+
+(m) a cute little rabbit with a bow on its back (n) a white shelf with books and other items on it 
+
+(o) a painting of a house with a full moon in the sky (p) anime girl 
+
+Figure 14. More results on Ensemble bias studies using FLUX.1 Fill. In each sub-figure, the four images (from left to right) display: the masked image , followed by inpainting results from models trained using Ensemble , CaPO , and CaEN . For optimal detail, view figures zoomed in. 
+
+23

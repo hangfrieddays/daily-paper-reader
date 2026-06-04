@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-04",
+  "date": "2026-06-04",
+  "generated_at": "2026-06-04T21:31:22",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/04/2606.02521v3-drifting-preference-optimization-for-one-step-generative-models",
+      "section": "deep",
+      "title_en": "Drifting Preference Optimization for One-Step Generative Models",
+      "authors": "Zhou Jiang, Yandong Wen, Zhen Liu",
+      "date": "2026-06-01",
+      "pdf": "https://arxiv.org/pdf/2606.02521v3",
+      "score": "8.0",
+      "evidence": "使用基于奖励的偏好优化改进一步文本到图像生成",
+      "tldr": "一步文生图模型（如SD-Turbo）部署高效，但偏好微调困难，现有方法依赖策略似然或可微奖励梯度。本文提出Drifting Preference Optimization (DrPO)，在线采样当前生成器候选，用目标奖励（如HPSv3）排序，合成非参数偶极偏好场与参考漂移，通过特征空间回归实现无梯度更新。在SD-Turbo和SDXL-Turbo上，DrPO在HPSv3和GenEval基准上提升对齐，且训练计算量降低3.51倍。该方法仅需奖励排序，支持黑盒不可微奖励，保持单步推理，为一步生成模型偏好对齐提供了高效新途径。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "One-step text-to-image generators are attractive for deployment because they generate an image with a single forward pass, but preference finetuning them remains difficult: standard alignment methods often rely on policy likelihoods, denoising trajectories, differentiable reward gradients, or test-time optimization. We propose Drifting Preference Optimization (DrPO), an online preference-finetuning method for deterministic one-step generators. For each prompt, DrPO samples candidates from the current generator, ranks them with a target reward, and uses high- and low-scoring samples to synthesize a feature-space update direction. The update is a non-parametric dipole preference field plus a reference drift estimated from the frozen base generator, and is optimized through a detached feature-space regression target. The target reward is used only for ranking, so DrPO can train with large, black-box, or non-differentiable rewards while inference remains a single generator call. We evaluate DrPO on SD-Turbo and SDXL-Turbo with multiple target rewards and benchmarks, including HPSv3 and GenEval. DrPO improves alignment over reward-gradient-free one-step preference baselines and reduces HPSv3 training computation by $3.51\\times$ under the matched effective-batch setting by removing reward-model backpropagation. Initial offline experiments suggest that sample-based gradient synthesis can also be used beyond online reward ranking.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/04/2606.03216v1-follow-your-preference-rethinking-preference-alignment-for-image-inpainting",
+      "section": "deep",
+      "title_en": "Follow-Your-Preference++: Rethinking Preference Alignment for Image Inpainting",
+      "authors": "Junkun Yuan, Yutao Shen, Toru Aonishi, Hideki Nakayama, Yue Ma",
+      "date": "2026-06-02",
+      "pdf": "https://arxiv.org/pdf/2606.03216v1",
+      "score": "8.0",
+      "evidence": "研究使用奖励模型进行图像修补的偏好对齐",
+      "tldr": "在图像修复中，偏好对齐面临奖励模型偏差和鲁棒性不足的挑战。本文采用直接偏好优化框架，利用多个公开奖励模型构建偏好数据，系统评估其有效性。研究发现奖励模型存在亮度、构图等系统性偏差，简单集成可有效缓解并提升泛化性。无需修改架构，模型在标准指标和人类评估上显著超越先前方法。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We study preference alignment for image inpainting. Rather than proposing yet another method, we revisit the problem from first principles and reassess its core challenges. We adopt the widely used direct preference optimization framework and construct preference training data with publicly available reward models. Our empirical study spans nine reward models, two benchmarks, and two baseline inpainting models that differ in architecture and generative mechanism. Our main findings are: (1) Most reward models provide valid signals for preference data construction, although some are unreliable as evaluators. (2) Across models and benchmarks, preference data exhibits consistent trends under both candidate and sample scaling. (3) Reward models display pronounced biases--particularly in brightness, composition, and color scheme--that make them prone to inducing reward hacking. (4) A simple ensemble of reward models mitigates such biases and yields robust, generalizable performance. {\\color{rebuttal_blue}(5) Preference alignment is transferable to the object removal task, where the goal shifts from open-ended creative generation to coherent background completion. (6) Further analysis reveals that a calibrated ensemble method further mitigates hacking and improves robustness.} Without modifying model architectures or introducing additional datasets, our models substantially outperform prior state-of-the-art models on standard metrics, large vision-language model evaluations, and human assessments. Our code is available at: https://github.com/shenytzzz/Follow-Your-Preference.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

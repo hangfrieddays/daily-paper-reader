@@ -1,0 +1,92 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-04T21:28:38.546055+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.02521v3",
+      "source": "arxiv",
+      "title": "Drifting Preference Optimization for One-Step Generative Models",
+      "abstract": "One-step text-to-image generators are attractive for deployment because they generate an image with a single forward pass, but preference finetuning them remains difficult: standard alignment methods often rely on policy likelihoods, denoising trajectories, differentiable reward gradients, or test-time optimization. We propose Drifting Preference Optimization (DrPO), an online preference-finetuning method for deterministic one-step generators. For each prompt, DrPO samples candidates from the current generator, ranks them with a target reward, and uses high- and low-scoring samples to synthesize a feature-space update direction. The update is a non-parametric dipole preference field plus a reference drift estimated from the frozen base generator, and is optimized through a detached feature-space regression target. The target reward is used only for ranking, so DrPO can train with large, black-box, or non-differentiable rewards while inference remains a single generator call. We evaluate DrPO on SD-Turbo and SDXL-Turbo with multiple target rewards and benchmarks, including HPSv3 and GenEval. DrPO improves alignment over reward-gradient-free one-step preference baselines and reduces HPSv3 training computation by $3.51\\times$ under the matched effective-batch setting by removing reward-model backpropagation. Initial offline experiments suggest that sample-based gradient synthesis can also be used beyond online reward ranking.",
+      "authors": [
+        "Zhou Jiang",
+        "Yandong Wen",
+        "Zhen Liu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-06-01T17:31:49+00:00",
+      "link": "https://arxiv.org/pdf/2606.02521v3",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses reward-based preference optimization to improve one-step text-to-image generation",
+      "llm_evidence_cn": "使用基于奖励的偏好优化改进一步文本到图像生成",
+      "llm_evidence": "使用基于奖励的偏好优化改进一步文本到图像生成",
+      "canonical_evidence": "使用基于奖励的偏好优化改进一步文本到图像生成",
+      "llm_tldr_en": "Drifting Preference Optimization (DrPO) finetunes one-step text-to-image generators online by sampling candidates, ranking them with a target reward, and synthesizing a feature-space update direction via a dipole preference field.",
+      "llm_tldr_cn": "该论文针对一步式文本到图像生成器的偏好微调难题，提出漂移偏好优化（DrPO）。在线采样当前生成器的候选结果，用目标奖励排序，然后构造特征空间更新方向（非参数偶极偏好场加参考漂移）。实验表明该方法有效提升图像质量，将强化学习中的奖励机制成功应用于图像生成优化。",
+      "llm_tldr": "该论文针对一步式文本到图像生成器的偏好微调难题，提出漂移偏好优化（DrPO）。在线采样当前生成器的候选结果，用目标奖励排序，然后构造特征空间更新方向（非参数偶极偏好场加参考漂移）。实验表明该方法有效提升图像质量，将强化学习中的奖励机制成功应用于图像生成优化。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.03216v1",
+      "source": "arxiv",
+      "title": "Follow-Your-Preference++: Rethinking Preference Alignment for Image Inpainting",
+      "abstract": "We study preference alignment for image inpainting. Rather than proposing yet another method, we revisit the problem from first principles and reassess its core challenges. We adopt the widely used direct preference optimization framework and construct preference training data with publicly available reward models. Our empirical study spans nine reward models, two benchmarks, and two baseline inpainting models that differ in architecture and generative mechanism. Our main findings are: (1) Most reward models provide valid signals for preference data construction, although some are unreliable as evaluators. (2) Across models and benchmarks, preference data exhibits consistent trends under both candidate and sample scaling. (3) Reward models display pronounced biases--particularly in brightness, composition, and color scheme--that make them prone to inducing reward hacking. (4) A simple ensemble of reward models mitigates such biases and yields robust, generalizable performance. {\\color{rebuttal_blue}(5) Preference alignment is transferable to the object removal task, where the goal shifts from open-ended creative generation to coherent background completion. (6) Further analysis reveals that a calibrated ensemble method further mitigates hacking and improves robustness.} Without modifying model architectures or introducing additional datasets, our models substantially outperform prior state-of-the-art models on standard metrics, large vision-language model evaluations, and human assessments. Our code is available at: https://github.com/shenytzzz/Follow-Your-Preference.",
+      "authors": [
+        "Junkun Yuan",
+        "Yutao Shen",
+        "Toru Aonishi",
+        "Hideki Nakayama",
+        "Yue Ma"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-02T06:22:07+00:00",
+      "link": "https://arxiv.org/pdf/2606.03216v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "studies preference alignment for image inpainting using reward models",
+      "llm_evidence_cn": "研究使用奖励模型进行图像修补的偏好对齐",
+      "llm_evidence": "研究使用奖励模型进行图像修补的偏好对齐",
+      "canonical_evidence": "研究使用奖励模型进行图像修补的偏好对齐",
+      "llm_tldr_en": "Follow-Your-Preference++ comprehensively analyzes reward model-based preference alignment for image inpainting, finding most reward models provide valid signals.",
+      "llm_tldr_cn": "该论文从第一性原理重新审视图像修补中的偏好对齐问题，基于直接偏好优化框架，利用九种公开奖励模型构建偏好训练数据。实验发现多数奖励模型能提供有效信号，但部分作为评估器不可靠。该方法通过奖励模型指导生成质量提升，为图像生成中的奖励设计提供了实证指导。",
+      "llm_tldr": "该论文从第一性原理重新审视图像修补中的偏好对齐问题，基于直接偏好优化框架，利用九种公开奖励模型构建偏好训练数据。实验发现多数奖励模型能提供有效信号，但部分作为评估器不可靠。该方法通过奖励模型指导生成质量提升，为图像生成中的奖励设计提供了实证指导。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

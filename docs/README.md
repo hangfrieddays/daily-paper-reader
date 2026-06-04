@@ -6,21 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-03
-- 运行时间：2026-06-03 21:55:45 UTC
+- 最新运行日期：2026-06-04
+- 运行时间：2026-06-04 21:31:15 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：1
+- 本次总论文数：2
+- 精读区：2
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读一篇高分论文，聚焦逆光刻加速新方法。论文提出结合GRPO强化流匹配，显著提升逆光刻速度。建议关注该技术对芯片制造效率与精度的潜在影响。
-- 详情：[/202606/03/README](/202606/03/README)
+今日精读两篇高分论文，聚焦生成模型偏好对齐新突破。  
+值得关注：一步生成模型的漂移偏好优化，以及图像修复的偏好对齐改进方法。  
+建议后续重点探索偏好对齐在扩散模型特定任务中的适配与应用。
+- 详情：[/202606/04/README](/202606/04/README)
 
 ### 精读区论文标签
-1. [LithoGRPO: Fast Inverse Lithography via GRPO Reinforced Flow Matching](/202606/03/2606.00228v1-lithogrpo-fast-inverse-lithography-via-grpo-reinforced-flow-matching)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：GRPO强化学习用于图像合成（逆光刻）
+1. [Drifting Preference Optimization for One-Step Generative Models](/202606/04/2606.02521v3-drifting-preference-optimization-for-one-step-generative-models)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：使用基于奖励的偏好优化改进一步文本到图像生成
+2. [Follow-Your-Preference++: Rethinking Preference Alignment for Image Inpainting](/202606/04/2606.03216v1-follow-your-preference-rethinking-preference-alignment-for-image-inpainting)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：研究使用奖励模型进行图像修补的偏好对齐
 
 ### 速读区论文标签
 - 本次无速读推荐。
