@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-06-05 <!--dpr-date:20260605-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/05/2606.05950v1-edit-r2-context-aware-reinforcement-learning-for-multi-turn-image-editing" data-sidebar-item="{&quot;title&quot;: &quot;Edit-R2: Context-Aware Reinforcement Learning for Multi-Turn Image Editing&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.05950v1-edit-r2-context-aware-reinforcement-learning-for-multi-turn-image-editing&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;强化学习用于多轮图像编辑&quot;}">Edit-R2: Context-Aware Reinforcement Learning for Multi-Turn Image Editing</a>
   * 2026-06-04 <!--dpr-date:20260604-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/04/2606.02521v3-drifting-preference-optimization-for-one-step-generative-models" data-sidebar-item="{&quot;title&quot;: &quot;Drifting Preference Optimization for One-Step Generative Models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.02521v3-drifting-preference-optimization-for-one-step-generative-models&quot;, &quot;score&quot;: &quot;8.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用基于奖励的偏好优化改进一步文本到图像生成&quot;}">Drifting Preference Optimization for One-Step Generative Models</a>

@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-05",
+  "date": "2026-06-05",
+  "generated_at": "2026-06-05T21:33:29",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/05/2606.05950v1-edit-r2-context-aware-reinforcement-learning-for-multi-turn-image-editing",
+      "section": "deep",
+      "title_en": "Edit-R2: Context-Aware Reinforcement Learning for Multi-Turn Image Editing",
+      "authors": "Yuxiao Ye, Haoran He, Fangyuan Kong, Xintao Wang, Pengfei Wan, Kun Gai, Ling Pan",
+      "date": "2026-06-04",
+      "pdf": "https://arxiv.org/pdf/2606.05950v1",
+      "score": "9.0",
+      "evidence": "强化学习用于多轮图像编辑",
+      "tldr": "现有文本引导图像编辑方法多局限于单轮交互，无法处理用户通过多轮指令逐步修正图像的真实场景。本文提出 Edit-R2，一种基于强化学习的后训练框架，通过重构会话意图来整合历史约束，并联合优化推理与生成的统一目标。在提出的多轮编辑基准 MICE-Bench 上，Edit-R2 显著提升了指令跟随、内容一致性和全局感知能力，超越了强基线模型。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Text-guided image editing has advanced rapidly with diffusion models and unified multimodal foundation models. However, most existing methods remain confined to single-turn settings, overlooking the more realistic scenario of multi-turn in-context editing, where users iteratively refine an image through a sequence of instructions. In this setting, a model must follow each new instruction while preserving accumulated session-level constraints, challenged by two coupled failure modes: long-context dilution, where sparse textual constraints become difficult to recover from growing interleaved image-text histories, and state contamination, where earlier editing mistakes degrade subsequent generations. We introduce Edit-R2, a novel reinforcement learning post-training framework for unified multimodal models. Edit-R2 reconstructs the operative session intent, which effectively consolidates scattered historical constraints into an explicit reasoning trace before each editing turn. It further enables multi-turn RL over both reasoning and generation through a unified objective that jointly optimizes intent reconstruction generation in discrete text space and flow-matching image generation in continuous latent space, while a trajectory filtering mechanism suppresses corrupted rollouts to stabilize training under state contamination. To support systematic evaluation, we introduce MICE-Bench, a large-scale benchmark for multi-turn in-context editing with automated metrics for instruction following (IF), content consistency (CC), and global awareness (GA) over accumulated session constraints. Experiments show that Edit-R2 substantially improves multi-turn in-context editing and achieves competitive performance compared against strong baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
