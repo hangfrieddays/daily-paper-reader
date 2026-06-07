@@ -1,0 +1,135 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-07T21:04:46.808213+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.01636v1",
+      "source": "arxiv",
+      "title": "Pave-GRPO: Beyond Instantaneous Guidance through Principled Average Velocity Decomposition",
+      "abstract": "Post-training via Group Relative Policy Optimization (GRPO) has emerged as a powerful paradigm for aligning flow-based generative models with human preferences. However, the iterative denoising nature of flow models incurs substantial costs when generating group rollouts for policy-gradient updates, compelling existing methods to train with extremely few denoising steps. This temporal sparsity severely restricts preference optimization: reward feedback can only reach a handful of stages per trajectory, leaving the vast majority of intermediate denoising steps without direct supervision and thus compromising alignment granularity. To address this, we propose Pave-GRPO, which reformulates the GRPO objective through Principled average velocity decomposition. Rather than generating expensive high-step rollouts, we maintain efficient few-step group sampling but decompose each coarse transition into an equivalent ensemble of finer sub-trajectories spanning multiple intermediate timesteps. This propagates reward feedback to a denser set of temporal stages for more comprehensive preference alignment without additional generation cost. This design offers two benefits: (i) zero-cost horizon expansion: through the direct reuse of piece-wise group samples and their associated rewards, Pave-GRPO significantly broadens the effective optimization scope under fixed sampling budgets; and (ii) comprehensive temporal supervision: by equivalently decomposing an instantaneous velocity target into a multi-timestep ensemble, it distributes reward signals across more intermediate stages of the denoising process, enabling finer-grained and more thorough preference optimization. Extensive experiments validate that Pave-GRPO effectively advances preference alignment across different reward settings, offering comprehensive performance enhancement.",
+      "authors": [
+        "Pengyang Ling",
+        "Jiazi Bu",
+        "Yujie Zhou",
+        "Yibin Wang",
+        "Zhenyu Hu",
+        "Zihan Zhang",
+        "Yi Jin",
+        "Huaian Chen",
+        "Yuhang Zang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-01T03:41:04+00:00",
+      "link": "https://arxiv.org/pdf/2606.01636v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Group Relative Policy Optimization for aligning flow-based generative models",
+      "llm_evidence_cn": "使用组相对策略优化对齐基于流的生成模型",
+      "llm_evidence": "使用组相对策略优化对齐基于流的生成模型",
+      "canonical_evidence": "使用组相对策略优化对齐基于流的生成模型",
+      "llm_tldr_en": "Pave-GRPO reformulates the GRPO objective with principled average velocity decomposition to provide denser reward supervision for aligning flow-based generative models, improving preference alignment granularity and image generation quality.",
+      "llm_tldr_cn": "现有GRPO方法在基于流的生成模型后训练中因奖励反馈稀疏而限制了对齐粒度。Pave-GRPO通过原则性的平均速度分解重新制定GRPO目标，为中间去噪步骤提供更密集的奖励监督。实验表明该方法在图像生成对齐任务上显著提升了偏好对齐效果，从而生成更符合人类偏好的高质量图像。这强调了RL在改进图像生成中的关键作用。",
+      "llm_tldr": "现有GRPO方法在基于流的生成模型后训练中因奖励反馈稀疏而限制了对齐粒度。Pave-GRPO通过原则性的平均速度分解重新制定GRPO目标，为中间去噪步骤提供更密集的奖励监督。实验表明该方法在图像生成对齐任务上显著提升了偏好对齐效果，从而生成更符合人类偏好的高质量图像。这强调了RL在改进图像生成中的关键作用。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.02884v1",
+      "source": "arxiv",
+      "title": "Are we really tilting? The mechanics of reward guidance in flow and diffusion models",
+      "abstract": "Reward guidance algorithms steer a learned generative process toward the reward-tilted measure at inference time. While empirically powerful, these methods are prone to reward hacking: the guided model over-optimizes the reward at the cost of fidelity to the learned distribution. Prior work has attributed this to the complexity of neural reward functions or implicit biases in diffusion training, but its fundamental origins remain poorly understood. We show that reward hacking arises from an approximation made in most practical implementations of reward-guided diffusion -- finite-particle plug-in estimation of the Doob h-function -- even in the simplest non-trivial settings of Gaussian and Gaussian mixture targets with quadratic rewards. In closed form, we isolate two distinct failure modes of the plug-in estimator: it leads to reward hacking within each mode and it cannot select high-reward modes. We propose a closed-form reward damping schedule that corrects the within-mode bias with no additional compute, and clarify the role of best-of-n sampling in compensating for the mode selection failure. Experiments on Gaussian mixture targets, a 2D checkerboard, and FLUX.1 text-to-image generation confirm that our theoretical insights carry over to practical settings.",
+      "authors": [
+        "Sanjit Dandapanthula",
+        "Nicholas M. Boffi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-01T20:56:24+00:00",
+      "link": "https://arxiv.org/pdf/2606.02884v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "analyzes reward hacking in diffusion models, directly relevant to reward design for image generation",
+      "llm_evidence_cn": "分析了扩散模型中的奖励黑客问题，直接相关于图像生成奖励函数设计",
+      "llm_evidence": "分析了扩散模型中的奖励黑客问题，直接相关于图像生成奖励函数设计",
+      "canonical_evidence": "分析了扩散模型中的奖励黑客问题，直接相关于图像生成奖励函数设计",
+      "llm_tldr_en": "Reveals that reward hacking in guided diffusion arises from finite-particle approximation of Doob h-function, even in simple Gaussian settings.",
+      "llm_tldr_cn": "现有奖励引导扩散模型常出现奖励黑客问题，即过度优化奖励而损害生成保真度。本文证明该问题的根源在于实际实现中对Doob h函数的有限粒子插件估计，即使在最简单的高斯和高斯混合目标下也会发生。这一发现为设计更稳健的奖励函数提供了理论基础，对图像生成中强化学习的应用具有重要指导意义。",
+      "llm_tldr": "现有奖励引导扩散模型常出现奖励黑客问题，即过度优化奖励而损害生成保真度。本文证明该问题的根源在于实际实现中对Doob h函数的有限粒子插件估计，即使在最简单的高斯和高斯混合目标下也会发生。这一发现为设计更稳健的奖励函数提供了理论基础，对图像生成中强化学习的应用具有重要指导意义。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.06060v1",
+      "source": "arxiv",
+      "title": "ReCache: Learning Budget-Aware Caching Schedules for Diffusion Models via REINFORCE",
+      "abstract": "Modern diffusion models generate high-quality images and videos, but their iterative denoising process makes inference expensive. Feature caching accelerates sampling by reusing or predicting intermediate activations across neighboring denoising steps, exploiting the redundancy of computations along the reverse trajectory. In this work, we focus on the caching schedule: selecting which denoising steps should be fully recomputed. Existing schedules are either fixed (e.g. uniform) or chosen adaptively from per-step error heuristics; in both cases, the actual compute cost is a side-effect of hand-tuned thresholds rather than a quantity the user can specify. We propose ReCache, which inverts this: given a target budget k, it learns the recomputation schedule that maximizes generation quality, turning compute into a directly controllable input. ReCache trains via policy gradients, sidestepping backpropagation through full diffusion inference, and uses no labelled data. Generations from uncached inference serve as matching targets, paired with a reward for generation quality. ReCache is compatible with any caching mechanism, including feature reuse and feature forecasting; for each mechanism, a single trained policy adapts across computational budgets at inference time. ReCache consistently outperforms scheduling baselines: under a $\\times5.04$ FLOPs reduction on FLUX, it reduces LPIPS by 31% (from 0.456 to 0.316) compared to DiCache; on Wan 2.1 at a $\\sim \\times2.6$ speedup, it drops LPIPS by 65% (from 0.480 to 0.169) and boosts the VBench score by 7% (5.6 points, from 70.4 to 76.0) over uniform HiCache. Code is available at https://github.com/thecrazymage/ReCache.",
+      "authors": [
+        "Mishan Aliev",
+        "Eva Neudachina",
+        "Ilya Bykov",
+        "Aleksandr Oganov",
+        "Kirill Struminsky",
+        "Aibek Alanov",
+        "Denis Rakitin"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-04T11:59:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.06060v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Reinforcement learning (REINFORCE) to optimize caching schedule for diffusion models",
+      "llm_evidence_cn": "使用强化学习（REINFORCE）优化扩散模型的缓存调度",
+      "llm_evidence": "使用强化学习（REINFORCE）优化扩散模型的缓存调度",
+      "canonical_evidence": "使用强化学习（REINFORCE）优化扩散模型的缓存调度",
+      "llm_tldr_en": "ReCache uses REINFORCE to learn a caching schedule for diffusion models that meets a target inference budget while minimizing quality degradation, enabling efficient and controlled image generation.",
+      "llm_tldr_cn": "针对扩散模型推理昂贵的问题，现有缓存调度需要手动调整阈值。本文提出ReCache，利用REINFORCE算法学习预算感知的缓存调度策略，用户指定计算预算后自动决定哪些去噪步骤需要完全重算。实验显示在保持图像质量的同时显著减少计算量，为图像生成模型的高效部署提供了基于RL的解决方案。",
+      "llm_tldr": "针对扩散模型推理昂贵的问题，现有缓存调度需要手动调整阈值。本文提出ReCache，利用REINFORCE算法学习预算感知的缓存调度策略，用户指定计算预算后自动决定哪些去噪步骤需要完全重算。实验显示在保持图像质量的同时显著减少计算量，为图像生成模型的高效部署提供了基于RL的解决方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

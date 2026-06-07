@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-07",
+  "date": "2026-06-07",
+  "generated_at": "2026-06-07T21:09:02",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/07/2606.01636v1-pave-grpo-beyond-instantaneous-guidance-through-principled-average-velocity-decomposition",
+      "section": "deep",
+      "title_en": "Pave-GRPO: Beyond Instantaneous Guidance through Principled Average Velocity Decomposition",
+      "authors": "Pengyang Ling, Jiazi Bu, Yujie Zhou, Yibin Wang, Zhenyu Hu, Zihan Zhang, Yi Jin, Huaian Chen, Yuhang Zang",
+      "date": "2026-06-01",
+      "pdf": "https://arxiv.org/pdf/2606.01636v1",
+      "score": "9.0",
+      "evidence": "使用组相对策略优化对齐基于流的生成模型",
+      "tldr": "现有GRPO后训练中，流模型因生成成本限制只能使用极少数去噪步数，导致奖励反馈仅覆盖少量阶段，偏好对齐不充分。本文提出Pave-GRPO，通过原则性平均速度分解，将每次粗步进等价拆解为多个中间时间步的细子轨迹，在不增加生成成本下使奖励信号传播到更密集的时间阶段。该方法实现零成本视界扩展与全面时间监督，显著提升偏好对齐效果。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Post-training via Group Relative Policy Optimization (GRPO) has emerged as a powerful paradigm for aligning flow-based generative models with human preferences. However, the iterative denoising nature of flow models incurs substantial costs when generating group rollouts for policy-gradient updates, compelling existing methods to train with extremely few denoising steps. This temporal sparsity severely restricts preference optimization: reward feedback can only reach a handful of stages per trajectory, leaving the vast majority of intermediate denoising steps without direct supervision and thus compromising alignment granularity. To address this, we propose Pave-GRPO, which reformulates the GRPO objective through Principled average velocity decomposition. Rather than generating expensive high-step rollouts, we maintain efficient few-step group sampling but decompose each coarse transition into an equivalent ensemble of finer sub-trajectories spanning multiple intermediate timesteps. This propagates reward feedback to a denser set of temporal stages for more comprehensive preference alignment without additional generation cost. This design offers two benefits: (i) zero-cost horizon expansion: through the direct reuse of piece-wise group samples and their associated rewards, Pave-GRPO significantly broadens the effective optimization scope under fixed sampling budgets; and (ii) comprehensive temporal supervision: by equivalently decomposing an instantaneous velocity target into a multi-timestep ensemble, it distributes reward signals across more intermediate stages of the denoising process, enabling finer-grained and more thorough preference optimization. Extensive experiments validate that Pave-GRPO effectively advances preference alignment across different reward settings, offering comprehensive performance enhancement.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/07/2606.02884v1-are-we-really-tilting-the-mechanics-of-reward-guidance-in-flow-and-diffusion-models",
+      "section": "deep",
+      "title_en": "Are we really tilting? The mechanics of reward guidance in flow and diffusion models",
+      "authors": "Sanjit Dandapanthula, Nicholas M. Boffi",
+      "date": "2026-06-01",
+      "pdf": "https://arxiv.org/pdf/2606.02884v1",
+      "score": "9.0",
+      "evidence": "分析了扩散模型中的奖励黑客问题，直接相关于图像生成奖励函数设计",
+      "tldr": "奖励引导算法通过Doob h函数倾斜生成分布，但常用有限粒子插件估计导致奖励黑客。本文在简单高斯混合场景下隔离出两种失败模式：模态内过优化和模态选择失败。提出封闭形式阻尼调度纠正模态内偏差，无需额外计算；阐明最佳-of-n采样补偿模态选择失败。实验验证了理论在扩散模型中的适用性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reward guidance algorithms steer a learned generative process toward the reward-tilted measure at inference time. While empirically powerful, these methods are prone to reward hacking: the guided model over-optimizes the reward at the cost of fidelity to the learned distribution. Prior work has attributed this to the complexity of neural reward functions or implicit biases in diffusion training, but its fundamental origins remain poorly understood. We show that reward hacking arises from an approximation made in most practical implementations of reward-guided diffusion -- finite-particle plug-in estimation of the Doob h-function -- even in the simplest non-trivial settings of Gaussian and Gaussian mixture targets with quadratic rewards. In closed form, we isolate two distinct failure modes of the plug-in estimator: it leads to reward hacking within each mode and it cannot select high-reward modes. We propose a closed-form reward damping schedule that corrects the within-mode bias with no additional compute, and clarify the role of best-of-n sampling in compensating for the mode selection failure. Experiments on Gaussian mixture targets, a 2D checkerboard, and FLUX.1 text-to-image generation confirm that our theoretical insights carry over to practical settings.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/07/2606.06060v1-recache-learning-budget-aware-caching-schedules-for-diffusion-models-via-reinforce",
+      "section": "deep",
+      "title_en": "ReCache: Learning Budget-Aware Caching Schedules for Diffusion Models via REINFORCE",
+      "authors": "Mishan Aliev, Eva Neudachina, Ilya Bykov, Aleksandr Oganov, Kirill Struminsky, Aibek Alanov, Denis Rakitin",
+      "date": "2026-06-04",
+      "pdf": "https://arxiv.org/pdf/2606.06060v1",
+      "score": "8.0",
+      "evidence": "使用强化学习（REINFORCE）优化扩散模型的缓存调度",
+      "tldr": "扩散模型的迭代去噪过程计算成本高，现有缓存调度要么固定要么基于启发式，用户无法直接控制计算预算。本文提出ReCache，利用REINFORCE策略梯度学习在给定预算下最大化生成质量的重新计算调度，无需标注数据，兼容多种缓存机制。在FLUX上实现5倍FLOPs降低时LPIPS下降31%，在Wan 2.1上约2.6倍加速时LPIPS下降65%且VBench提升7%。该方法将计算预算转化为直接可控输入，显著优于现有基线。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Modern diffusion models generate high-quality images and videos, but their iterative denoising process makes inference expensive. Feature caching accelerates sampling by reusing or predicting intermediate activations across neighboring denoising steps, exploiting the redundancy of computations along the reverse trajectory. In this work, we focus on the caching schedule: selecting which denoising steps should be fully recomputed. Existing schedules are either fixed (e.g. uniform) or chosen adaptively from per-step error heuristics; in both cases, the actual compute cost is a side-effect of hand-tuned thresholds rather than a quantity the user can specify. We propose ReCache, which inverts this: given a target budget k, it learns the recomputation schedule that maximizes generation quality, turning compute into a directly controllable input. ReCache trains via policy gradients, sidestepping backpropagation through full diffusion inference, and uses no labelled data. Generations from uncached inference serve as matching targets, paired with a reward for generation quality. ReCache is compatible with any caching mechanism, including feature reuse and feature forecasting; for each mechanism, a single trained policy adapts across computational budgets at inference time. ReCache consistently outperforms scheduling baselines: under a $\\times5.04$ FLOPs reduction on FLUX, it reduces LPIPS by 31% (from 0.456 to 0.316) compared to DiCache; on Wan 2.1 at a $\\sim \\times2.6$ speedup, it drops LPIPS by 65% (from 0.480 to 0.169) and boosts the VBench score by 7% (5.6 points, from 70.4 to 76.0) over uniform HiCache. Code is available at https://github.com/thecrazymage/ReCache.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

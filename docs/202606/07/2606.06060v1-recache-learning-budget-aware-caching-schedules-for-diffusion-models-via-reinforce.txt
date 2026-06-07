@@ -1,0 +1,710 @@
+Title: ReCache: Learning Budget-Aware Caching Schedules for Diffusion Models via REINFORCE
+
+URL Source: https://arxiv.org/pdf/2606.06060v1
+
+Published Time: Fri, 05 Jun 2026 01:19:59 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# ReCache: Learning Budget-Aware Caching Schedules for Diffusion Models via REINFORCE 
+
+Mishan Aliev ∗,1, Eva Neudachina ∗,1, Ilya Bykov ∗,1, Aleksandr Oganov 1,Kirill Struminsky 2,1, Aibek Alanov 1, Denis Rakitin 11HSE University, Russia 
+
+> 2
+
+Yandex Research, Russia 
+
+Abstract 
+
+Modern diffusion models generate high-quality images and videos, but their iter-ative denoising process makes inference expensive. Feature caching accelerates sampling by reusing or predicting intermediate activations across neighboring denoising steps, exploiting the redundancy of computations along the reverse tra-jectory. In this work, we focus on the caching schedule: selecting which denoising steps should be fully recomputed. Existing schedules are either fixed (e.g. uniform) or chosen adaptively from per-step error heuristics; in both cases, the actual com-pute cost is a side-effect of hand-tuned thresholds rather than a quantity the user can specify. We propose ReCache , which inverts this: given a target budget k, it learns the recomputation schedule that maximizes generation quality, turning compute into a directly controllable input. ReCache trains via policy gradients, sidestepping backpropagation through full diffusion inference, and uses no labelled data. Gener-ations from uncached inference serve as matching targets, paired with a reward for generation quality. ReCache is compatible with any caching mechanism, including feature reuse and feature forecasting; for each mechanism, a single trained pol-icy adapts across computational budgets at inference time. ReCache consistently outperforms scheduling baselines: under a ×5.04 FLOPs reduction on FLUX, it reduces LPIPS by 31% (from 0.456 to 0.316) compared to DiCache; on Wan 2.1 at a ∼ × 2.6 speedup, it drops LPIPS by 65% (from 0.480 to 0.169) and boosts the VBench score by 7% (5.6 points, from 70.4 to 76.0) over uniform HiCache. Code is available at https://github.com/thecrazymage/ReCache .
+
+1 Introduction 
+
+Diffusion models have become one of the dominant paradigms for high-fidelity image and video generation [ 22 , 50 , 4]. Recent transformer-based architectures, such as DiT [ 46 ], have further improved scalability and generation quality, enabling increasingly powerful text-to-image and text-to-video systems. However, these advances come at a substantial inference cost: generating a single sample requires repeatedly evaluating a large denoising network over many sampling steps. As model size, resolution, and video length continue to grow, reducing the cost of diffusion inference has become an important practical challenge. A prominent line of work accelerates diffusion sampling through feature caching . The key observation is that consecutive denoising steps often perform highly redundant computations: intermediate activations change smoothly along the reverse trajectory and can therefore be reused or approximated across nearby timesteps [ 44 , 58 ]. Existing caching methods typically differ along two axes: what to 
+
+> ∗Equal contribution. Correspondence: Mishan Aliev <maliev@hse.ru>, Eva Neudachina <eneudachina@hse.ru>, Ilya Bykov <philurame@gmail.com>. Preprint.
+> arXiv:2606.06060v1 [cs.CV] 4 Jun 2026
+
+Figure 1: ReCache preserves text and visual fidelity under high acceleration on FLUX.1-dev [ 3]. Under a 5.4× acceleration, heuristic baselines (TaylorSeer [ 37 ], DPCache [ 12 ]) fail to maintain image quality and corrupt text spelling. By framing scheduling as an RL problem, ReCache allocates computations to the most critical steps, closely matching Full inference at the same computational cost. cache and when to cache. While some approaches reuse selected model components according to a fixed schedule [ 44 , 58 , 11 ], others determine caching steps dynamically using error-based heuristics [ 35 ]. Furthermore, recent methods go beyond direct reuse by forecasting future features [ 37 , 17 ]. Despite these differences, most methods still rely on hand-crafted scheduling rules to decide at which denoising steps the expensive full computation should be performed. In this work, we focus on the scheduling problem, arguing that caching schedules should be learned rather than hand-crafted. Existing approaches, including both uniform spacing and adaptive heuristics, often aim to keep the accelerated sampling process close to the original full-inference trajectory at intermediate denoising steps. However, this objective can be suboptimal under a fixed computational budget: different denoising timesteps contribute unequally to the final generation, and the steps that best preserve intermediate trajectory consistency may not coincide with those most important for the final output. This suggests that schedule design should not only minimize local approximation errors along the denoising path, but should also account for how each recomputation decision affects the final sample. We therefore argue that caching schedules should be optimized directly for output consistency , i.e., for preserving the perceptual and semantic quality of the generated sample relative to full inference. To achieve this, we frame caching-schedule selection as a Reinforcement Learning (RL) problem. We propose ReCache , a budget-aware method that learns a scheduling policy for diffusion feature caching. Once a policy is trained for a specific model and caching setup, ReCache takes a target budget and predicts a schedule, determining exactly where full computation is necessary and where cached features are sufficient. The policy is optimized via a reward with two objectives: minimizing the distance to the full-inference samples and preserving the perceptual and semantic quality of the generated images. As shown in Figure 1, for a fixed computational budget, our learned policy produces outputs that more closely match the full-inference generations than those from uniform or heuristic-adaptive baselines. We evaluate ReCache on FLUX.1-dev [ 3], HunyuanVideo [ 28 ], and Wan2.1 [ 67 ], and combine it with recent caching mechanisms such as TaylorSeer [ 37 ] and HiCache [ 17 ]. A single trained policy (for a given caching mechanism) adapts to multiple FLOPs budgets at inference time, avoiding the need to design a separate schedule for each acceleration regime. Across all evaluated settings, ReCache consistently outperforms hand-crafted scheduling baselines at the same computational cost, demonstrating that learning budget-aware schedules is a simple and effective way to improve diffusion caching methods. In summary, our main contributions are: • We frame caching schedule selection as a budget-aware RL problem that directly optimizes output consistency under a fixed compute budget, instead of relying on hand-crafted trajectory-consistency heuristics. • We propose ReCache , a lightweight scheduling method compatible with diverse diffusion models and caching mechanisms. 2• We show that ReCache consistently improves over hand-crafted scheduling baselines across multiple budgets, caching strategies, and state-of-the-art image and video models, including FLUX, HunyuanVideo, and Wan2.1. 
+
+2 Preliminaries 
+
+Diffusion and Flow Matching models [ 59 , 22 , 62 , 34 , 38 , 1] generate samples by numerically integrating a learned ODE that transports a Gaussian latent z ∼ N (0 , I ) to a data sample. A diffusion model G produces a sample in N discrete inference steps, determined by a timestep schedule and an ODE solver. Each step evaluates a learned velocity v(xt, t ) parameterized as a neural network, and this evaluation dominates the per-step cost. In modern image and video models, this network is a diffusion transformer [ 46 , 15 , 3 , 67 , 28 ], whose forward pass through stacked attention and feedforward blocks is what caching methods aim to amortize. Since our method is agnostic to the specific timestep schedule, we index inference steps by their position {1, 2, . . . , N } throughout the paper. 
+
+Feature caching. Recent works observe that the intermediate activations of vθ change slowly between adjacent inference steps and propose to amortize the per-step cost by reusing them. The inference steps are split into two groups: cache steps , where the network is evaluated in full and selected activations are stored, and reuse steps , where the missing activations are reconstructed from the cache rather than recomputed. A caching schedule s is a subset s ⊆ { 1, . . . , N } of cache steps, while its size |s| = k is a caching budget — it controls the number of full model evaluations in the generation process. Apart from a problem of choosing a caching schedule, caching mechanisms M set a rule of how the reuse steps reconstruct activations that a full forward trajectory would have produced. Direct reuse mechanisms copy cached activations from the most recent cache step, either as block outputs (FORA [ 58 ]) or as residuals added to the current step’s input ( ∆-DiT [ 11 ]). Feature forecasting 
+
+mechanisms instead extrapolate the current activations from values cached at several previous cache steps: TaylorSeer [ 37 ] fits a Taylor polynomial to the trajectory of cached features, and HiCache [ 17 ]replaces the Taylor basis with one better suited to diffusion feature trajectories. Our experiments evaluate ReCache on top of both direct and forecasting methods, but ReCache is agnostic to the choice of M.
+
+Caching schedules. Existing methods predominantly propose policies of choosing caching sched-ules s via hand-crafted rules. Many works place cache steps at uniform intervals along the inference trajectory [ 11 , 58 , 37 , 17 ]; others select them adaptively per generation, e.g. by triggering a cache step whenever the activation error exceeds a threshold [ 35 , 6]. Both families either fix the budget implicitly or expose it only through threshold hyperparameters, motivating the budget-aware learned policy we develop in Section 3. An extended discussion of these prior approaches and broader related work is provided in Appendix A. 
+
+3 Method 
+
+We introduce ReCache , a framework that trains a schedule policy: given a target budget k, the policy selects k inference steps to recompute (Figure 2). We cast the training as a stochastic policy-optimization problem and parameterize the policy as a budget-conditioned distribution over k-subsets. 
+
+3.1 Policy Optimization 
+
+To evaluate a schedule’s quality, we combine two complementary signals. The first signal asks that the cached generation stay close to the full-inference one. This target provides strong supervision, since the full-inference output is a direct reference for what the model would have produced without caching. Under aggressive caching, however, exact agreement with the full-inference trajectory is difficult to achieve, and the policy may need to settle for an approximation. The second signal is a reward model [ 72 , 70 , 27 ] that scores generation quality directly, letting the policy fine-tune perceptual details that the distance term alone cannot recover. 3Figure 2: Overview of the ReCache method. Given a target computational budget k, a lightweight MLP policy network predicts importance logits to perform a top-k selection of inference steps for full computation. During the inference with caching, the selected steps are fully computed (green blocks), while the intermediate steps reuse or forecast features (red blocks). The policy is trained using the REINFORCE algorithm without backpropagating through the diffusion process. The reward formulation balances a Fidelity term (minimizing the distance to the xfull output from the full inference) and a Quality term (maximizing the perceptual quality of the generated xcache ). Concretely, let z ∼ N (0 , I ) and xfull = G(z), and denote by xcache = G(z | s, M) the output produced under schedule s and caching mechanism M. Given a distance d and a reward model R,
+
+Limage (s) = d (xcache , xfull ) − αiq R (xcache ) . (1) Direct minimization of Limage over schedules is infeasible: the loss is non-differentiable in s, and the search space contains  Nk
+
+ subsets. We instead lift the problem to a stochastic policy and train a distribution pθ over k-subsets to minimize the expected loss 
+
+min  
+
+> θ
+
+Es∼pθ Limage (s). (2) Without further care, the policy can collapse to a deterministic schedule that is locally good but globally suboptimal. We counter this with an entropy bonus −λentropy H(θ) that keeps the policy exploring during training, yielding the regularized loss 
+
+Lreg (s) = Limage (s) + λentropy log pθ (s). (3) The regularized expectation Epθ Lreg (s) can be optimized over θ with policy-gradient methods. We use REINFORCE [ 69 ] with a leave-one-out (LOO) baseline [ 29 , 49 ] for variance reduction: given n
+
+i.i.d. samples s(1) , . . . , s(n) ∼ pθ and their mean Lreg = 1
+
+> n
+
+P 
+
+> i
+
+Lreg (s(i)),
+
+∇θ Epθ (s) Lreg (s) ≈ 1
+
+n − 1
+
+> n
+
+X
+
+> i=1
+
+
+
+Lreg (s(i)) − L reg 
+
+
+
+∇θ log pθ (s(i)). (4) 
+
+3.2 Budget-conditioned Policy Over k-subsets 
+
+The policy must select a k-subset s ⊆ { 1, . . . , N }. We parameterize it with the Plackett-Luce distribution [ 47 ]: each step i is assigned an importance logit θi, and a sample is drawn by sampling without replacement from the corresponding categorical distribution k times. Applying the chain rule 4yields the closed-form log-probability 
+
+log pθ (s) = 
+
+> k
+
+X
+
+> i=1
+
+θsi − log X
+
+> j / ∈{ s1,..., si−1}
+
+exp( θj )
+
+ . (5) The relative importance of each step may in principle depend on the budget. At small k, only the most critical steps survive, and the policy must concentrate its mass on those steps. At larger k, the policy has more room to spread mass across the trajectory. We do not assume that the optimal step ranking is budget-invariant: we condition the logits on k through a lightweight MLP with parameters 
+
+ϕ, θ = MLP ϕ(k), and train a single budget-adaptive policy by sampling k ∼ q(k) at every training step, so that one trained model covers a range of inference budgets without retraining. Empirically (Section 4.3), the trained policy produces nested schedules across budgets: the (k+1) -schedule extends the k-schedule by a single step rather than reordering its existing selections. This suggests that under the caching objective the underlying step-importance ranking is largely budget-invariant. The MLP parameterization makes no architectural commitment to this; nestedness is discovered, not imposed, and a single set of k-independent logits would in retrospect suffice. In practice we never sample sequentially. The Gumbel-Top-k trick [ 30 , 19 , 64 ] produces a Plackett-Luce sample in one shot by perturbing each logit with independent Gumbel noise and returning the top-k indices: 
+
+gi = θi − log( − log ui), ui
+
+> i.i.d.
+
+∼ U (0 , 1) ,
+
+s = ( s1, . . . , sk) = argtopk( g1, . . . , gN ). (6) At inference we drop the noise and use the deterministic schedule s = argtopk( θ1, . . . , θ N ).
+
+3.3 Training Algorithm 
+
+Algorithm 1 summarizes ReCache training. Before training begins, we pre-sample a small dataset of (x1, xfull ) pairs, where each pair consists of an initial noise sample and the corresponding full-inference output of G. At each training step, we draw a target budget k ∼ q(k), obtain logits 
+
+θ = MLP ϕ(k), sample n schedules from the resulting Plackett-Luce distribution via the Gumbel-Top-k trick, and update ϕ with the LOO estimator (Eq. 4) of the regularized loss Lreg .
+
+Algorithm 1 ReCache schedule policy training Input: diffusion model G with N backbone steps, caching mechanism M, number of leave-one-out samples n, distance function d, reward function R, loss coefficient αiq , regularizer coefficient 
+
+λentropy ;
+
+repeat for all elements in batch do 
+
+z ∼ N (0 , I ), xfull = G(z) ▷ pre-sampled noise and full-inference image 
+
+k ∼ q(k) ▷ sample caching budget 
+
+θ = MLP ϕ(k) ▷ logits parameterized by MLP 
+
+for i = 1 to n do 
+
+Sample s(i) = ( s(i)1 , . . . , s(i) 
+
+> k
+
+) ∼ pθ ▷ via Eq. 6 
+
+x(i) 
+
+> cache
+
+= G(z | s(i), M) ▷ generate image with cached inference 
+
+Limage (s(i)) = d x(i)
+
+> cache
+
+, xfull 
+
+ − αiq R(x(i)
+
+> cache
+
+)
+
+Compute log pθ (s(i)) ▷ via Eq. 5 
+
+Lreg (s(i)) = Limage (s(i)) + λentropy log pθ (s(i))
+
+end for 
+
+Lreg = 1
+
+> n
+
+Pni=1 Lreg (s(i))
+
+L(s(i)) =  Lreg (s(i)) − L reg 
+
+.stopgrad() 
+
+∇θ L(s) = 1
+
+> n−1
+
+Pni=1 L(s(i)) ∇θ log pθ (s(i))
+
+end for 
+
+Accumulate gradients across batch elements and update ϕ via backprop through θ = MLP ϕ(k).
+
+until converged 54 Experiments 
+
+4.1 Experimental Setup 
+
+We evaluate ReCache on three widely used image and video generation backbones: FLUX.1-dev [ 3 ]for text-to-image generation, and HunyuanVideo [ 28 ] and Wan2.1 [ 67 ] for text-to-video generation. For FLUX.1-dev, we use N = 50 inference steps and generate images at 1024 × 1024 resolution. HunyuanVideo uses N = 50 steps and generates videos at 480 × 640 × 65 resolution, while Wan2.1 uses N = 25 steps and 480 × 832 × 81 .
+
+Baselines. ReCache is a scheduling policy and is agnostic to the underlying caching mechanism. We therefore evaluate it across several computational budgets—7, 9, and 13 full-computation steps— and combine it with state-of-the-art caching mechanisms. For feature-forecasting methods, including TaylorSeer [ 37 ] and HiCache [ 17 ], we compare ReCache with a uniform schedule. DiCache [ 6]introduces Dynamic Cache Trajectory Alignment as a caching mechanism and Online Probe Profiling as a scheduling strategy. DPCache [ 12 ] focuses on schedule selection and uses a modified TaylorSeer mechanism called Taylor-DP. For fair comparison with DiCache and DPCache, we keep the corre-sponding caching mechanism fixed and replace only the schedule with ReCache. We also include a naive step-reduction baseline, where the model is run with fewer denoising steps and no caching. All results are grouped by caching mechanism and budget. 
+
+Evaluation metrics. For text-to-image generation, we generate images for 1000 MS-COCO [ 33 ]prompts and report LPIPS [ 79 ] and HPSv2 [ 70 ]. LPIPS is computed against the corresponding full-inference output. We also report ImageReward [ 72 ] on 200 DrawBench [ 53 ] prompts (IR DB). For text-to-video generation, we report frame-level LPIPS and HPSv2 on 110 VBench [ 23 ] prompts, averaged over all frames and prompts. We additionally report the VBench score on the full VBench benchmark with 944 prompts. For all experiments, we report TFLOPs and acceleration rate to measure inference efficiency. 
+
+Training datasets and details. Each training sample contains a prompt, an initial noise sample, and the corresponding full-trajectory output. For text-to-image experiments, prompts are sampled from MS-COCO. For text-to-video experiments, we use stratified sampling over VBench dimensions and generate the corresponding full-inference videos. Each training set contains 64 samples. We use patch-wise LPIPS (PLPIPS) as the distance d and HPSv2 as the generation-quality reward 
+
+R. The entropy coefficient is annealed to zero during training. For FLUX.1-dev, we set αiq = 7 ,initialize λentropy = 0 .005 , and train the logit predictor for 50 epochs. For video models, we set 
+
+αiq = 7 , initialize λentropy = 0 .02 , and train the logit predictor for 120 epochs. To make ReCache budget-aware, we randomly sample the number of full-computation steps for each training sample, with most values concentrated in the range k ∈ [6 , 15] .More details about model configurations, baseline reproduction, training datasets, and hyperparame-ters are provided in Appendix B. 
+
+4.2 Main experimental results 
+
+Our experiments show that ReCache can obtain a more optimal caching schedule for any underlying caching mechanism for both image and video generation. The results show that it generally improves both LPIPS fidelity and generative quality considering HPS and VBench scores, which were specifi-cally constructed to be aligned with human perception. The improvements are especially pronounced under tight compute budgets. 
+
+Quantitative comparison. Tables 1, 2 and 3 report results across all combinations of caching mechanism and budgets k on FLUX.1-dev (image), Wan2.1 and HunyuanVideo (video). Within every (mechanism, budget) cell, ReCache improves over the corresponding hand-designed schedule on both LPIPS fidelity and the perceptual reward metrics (HPSv2 and ImageReward for images; HPSv2 and VBench for video), and the ranking is consistent across all three backbones without exception. Notably, the improvements on video models are also reflected in VBench, showing that ReCache preserves holistic video quality rather than only improving frame-wise metrics. Gains widen as the budget tightens: at k = 13 the improvements are modest, while at k = 7 —the most aggressive 6Table 1: ReCache caching schedule policy for FLUX.1-dev. Com-parison across caching mechanisms and inference budgets k. In most settings, ReCache achieves better full-inference trajectory fidelity and higher image quality under the same computational budget, with particularly strong gains in low-compute regimes. O denotes the fore-casting polynomial order. 
+
+Acceleration Metrics Method TFLOPs ↓ Speedup rate ↑ LPIPS ↓ HPS ↑ IR DB ↑
+
+50 steps 2991 ×1.00 0.000 0.306 1.008 
+
+7 steps 
+
+7 steps of full inference 431 ×6.93 0.556 0.277 0.675 DiCache 477 ×6.27 0.546 0.276 0.758 ReCache DiCache 477 ×6.27 0.413 0.296 0.990 
+
+uniform TaylorSeer ( O = 2 ) 433 ×6.91 0.557 0.281 0.767 ReCache TaylorSeer ( O = 2 ) 433 ×6.91 0.550 0.290 0.976 
+
+uniform HiCache ( O = 2 ) 433 ×6.91 0.557 0.278 0.689 ReCache HiCache ( O = 2 ) 433 ×6.91 0.498 0.299 1.015 
+
+DPCache 432 ×6.92 0.546 0.287 0.931 ReCache Taylor-DP ( O = 2 ) 432 ×6.92 0.490 0.299 1.012 9 steps 
+
+9 steps of full inference 550 ×5.43 0.530 0.288 0.855 DiCache 594 ×5.04 0.456 0.296 0.974 ReCache DiCache 594 ×5.04 0.316 0.302 1.014 
+
+uniform TaylorSeer ( O = 2 ) 552 ×5.42 0.520 0.293 0.915 ReCache TaylorSeer ( O = 2 ) 552 ×5.42 0.430 0.304 1.008 
+
+uniform HiCache ( O = 2 ) 552 ×5.42 0.521 0.290 0.886 ReCache HiCache ( O = 2 ) 552 ×5.42 0.331 0.300 0.994 
+
+DPCache 551 ×5.43 0.433 0.299 0.996 ReCache Taylor-DP ( O = 2 ) 551 ×5.43 0.410 0.305 1.004 13 steps 
+
+13 steps of full inference 789 ×3.79 0.484 0.295 0.931 DiCache 828 ×3.61 0.367 0.303 1.001 ReCache DiCache 828 ×3.61 0.197 0.303 1.026 
+
+uniform TaylorSeer ( O = 2 ) 790 ×3.79 0.469 0.300 1.001 ReCache TaylorSeer ( O = 2 ) 790 ×3.79 0.195 0.306 1.041 
+
+uniform HiCache ( O = 2 ) 790 ×3.79 0.471 0.299 0.967 ReCache HiCache ( O = 2 ) 790 ×3.79 0.212 0.303 1.045 
+
+DPCache 790 ×3.79 0.276 0.307 1.046 
+
+ReCache Taylor-DP ( O = 2 ) 789 ×3.79 0.244 0.306 1.034 0.1        
+
+> 0.2
+> 0.3
+> 0.4
+> 0.5
+> 0.6
+> LPIPS
+> 8 steps
+> 0.1
+> 0.2
+> 0.3
+> 0.4
+> 0.5
+> 0.6
+> LPIPS
+> 9 steps
+> 015710 HPS
+> only
+> iq value
+> 0.1
+> 0.2
+> 0.3
+> 0.4
+> 0.5
+> 0.6
+> LPIPS
+> 13 steps
+> 0.290
+> 0.295
+> 0.300
+> 0.305
+> 0.310
+> HPS
+> 0.290
+> 0.295
+> 0.300
+> 0.305
+> 0.310
+> HPS
+> 0.290
+> 0.295
+> 0.300
+> 0.305
+> 0.310
+> HPS
+> LPIPS HPS
+
+Figure 3: Impact of the qual-ity reward coefficient αiq . In-creasing αiq improves HPS but worsens LPIPS, reveal-ing a quality–fidelity trade-off. Optimizing only for HPS causes both metrics to col-lapse, highlighting the need for the LPIPS fidelity term. We use αiq = 7 as the best trade-off. regime, corresponding to roughly ×5–×7 acceleration—ReCache often closes most of the gap to the full-inference trajectory even where the underlying mechanism’s default schedule degrades sharply. This indicates that learning the schedule is a complementary improvement to the underlying caching mechanism rather than a model-specific tuning trick. 
+
+Qualitative comparison. Figure 4 shows that heuristic schedules can fail under aggressive caching, producing corrupted text, distorted object layouts, and missing fine-grained details. ReCache pre-serves these visual structures more reliably at the same compute budget, indicating that the learned schedule better identifies the denoising steps where full model evaluation is most critical. The same pattern extends to video generation, as shown in Figure 5. Under a tight k = 7 budget, ReCache improves both TaylorSeer and DPCache outputs, preserving sharper spatial details and reducing temporal artifacts across frames. 
+
+4.3 Ablation study 
+
+We next analyze the design choices of the proposed ReCache method. All of the ablation experiments are conducted on FLUX.1-dev using the TaylorSeer (O=1) caching mechanism. Table 4: Budget-aware ReCache versus per-budget logit predictors on FLUX.1-dev with TaylorSeer. 
+
+Method 9 steps 13 steps LPIPS ↓ HPS ↑ LPIPS ↓ HPS ↑
+
+single step 0.360 0.303 0.220 0.305 
+
+budget-aware 0.338 0.303 0.194 0.304 
+
+Budget-aware logit predictor and nested schedules. ReCache uses a single budget-conditioned MLP that produces logits θ =
+
+MLP ϕ(k), sharing parameters across budgets. 7Table 2: Text-to-video results on Wan2.1 across multiple caching budgets. O denotes the forecast-ing polynomial order.                                                                                                          
+
+> Method Acceleration Metrics TFLOPs ↓Speedup ↑LPIPS ↓HPS ↑VBENCH ↑
+> 25 steps 4139 ×1.00 0.000 0.234 77.717
+> 7 steps
+> 7 steps of full inference 1182 ×3.50 0.506 0.188 70.652 uniform TaylorSeer ( O= 1 )1184 ×3.50 0.499 0.185 70.430 ReCache TaylorSeer ( O= 1 )1184 ×3.50 0.263 0.228 76.041
+> uniform HiCache ( O= 1 )1184 ×3.50 0.514 0.181 69.996 ReCache HiCache ( O= 1 )1184 ×3.50 0.266 0.223 75.247
+> uniform Taylor-DP ( O= 1 )1183 ×3.50 0.503 0.184 70.005 DPCache ( O= 1 1183 ×3.50 0.420 0.201 69.643 ReCache Taylor-DP ( O= 1 )1183 ×3.50 0.287 0.229 75.541 13 steps
+> 13 steps of full inference 2168 ×1.90 0.410 0.217 74.974 uniform TaylorSeer ( O= 1 )2169 ×1.90 0.406 0.216 75.069 ReCache TaylorSeer ( O= 1 )2169 ×1.90 0.073 0.233 77.708
+> uniform HiCache ( O= 1 )2169 ×1.90 0.413 0.214 74.612 ReCache HiCache ( O= 1 )2169 ×1.90 0.084 0.232 77.677
+> uniform Taylor-DP ( O= 1 )2168 ×1.90 0.408 0.216 74.641 DPCache ( O= 1 )2168 ×1.90 0.074 0.233 77.816 ReCache Taylor-DP ( O= 1 )2168 ×1.90 0.085 0.234 77.893
+
+Table 3: Text-to-video results on HunyuanVideo across multiple caching budgets. O denotes the forecasting polynomial order.                                                                                                          
+
+> Method Acceleration Metrics TFLOPs ↓Speedup ↑LPIPS ↓HPS ↑VBENCH ↑
+> 50 steps 14050 ×1.00 00.248 79.309
+> 7 steps
+> 7 steps of full inference 1972 ×7.12 0.513 0.217 75.098 uniform TaylorSeer ( O= 1 )10696 ×1.31 0.508 0.217 76.077 ReCache TaylorSeer ( O= 1 )10696 ×1.31 0.390 0.229 76.264
+> uniform HiCache ( O= 1 )10696 ×1.31 0.512 0.212 75.383 ReCache HiCache ( O= 1 )10696 ×1.31 0.380 0.226 76.604
+> uniform Taylor-DP ( O= 1 )1977 ×7.10 0.507 0.216 76.094 DPCache ( O= 1 )1977 ×7.10 0.420 0.223 74.935 ReCache Taylor-DP ( O= 1 )1977 ×7.10 0.399 0.239 77.396 13 steps
+> 13 steps of full inference 3657 ×1.31 0.428 0.231 77.708 uniform TaylorSeer ( O= 1 )11164 ×1.26 0.417 0.236 78.219 ReCache TaylorSeer ( O= 1 )11164 ×1.26 0.171 0.241 78.525
+> uniform HiCache ( O= 1 )11164 ×1.26 0.425 0.233 77.734 ReCache HiCache ( O= 1 )11164 ×1.26 0.168 0.239 78.436
+> uniform Taylor-DP ( O= 1 )3662 ×1.31 0.424 0.236 78.501 DPCache ( O= 1 )3662 ×1.31 0.188 0.246 79.061
+> ReCache Taylor-DP ( O= 1 )3662 ×1.31 0.174 0.245 78.726
+
+Figure 4: Qualitative comparison on FLUX.1-dev. Under strict compute budgets, the best heuristic baseline schedules (uniform, DiCache, DPCache) fail to maintain image fidelity, corrupting text spelling (top row), object composition (middle row), and fine-grained details (bottom row). By learning an optimal budget-aware schedule, ReCache successfully preserves these critical visual structures at the exact same computational cost. A natural alternative is to train a separate logit predictor for each k. Table 4 shows that the budget-aware variant improves LPIPS at every evaluated budget and stays within 0.001 of the per-budget specialists on HPS, all with a single trained model instead of one per budget. We attribute this to joint training, which exposes the MLP to the full range of compute regimes and provides statistical context that a single-budget predictor lacks. Beyond these metric gains, inspecting the schedules learned by the budget-aware policy reveals a structural property: they are nested across all k ∈ { 6, . . . , 15 }, beyond the evaluated {7, 9, 13 }. The 
+
+(k+1) -schedule extends the k-schedule by adding a single step rather than reordering its existing selections. Uniform schedules lack this property entirely: their step indices all shift with k. This implies that, under the caching objective, the step-importance ranking is largely budget-invariant, and that a single set of logits, independent of k, would in principle suffice. Importantly, the optimization does not arrive at this configuration trivially: the MLP produces visibly k-dependent logits that sort the inference steps differently across budgets, yet the top-k extractions of those distinct rankings still agree as a nested family. The MLP parameterization does not impose nestedness: it is a property the optimization rediscovers independently at each budget, which we read as evidence that the learned ranking reflects intrinsic structure of the denoising trajectory rather than budget-specific overfitting. Schedule visualizations across budgets are provided in Appendix C.2. 8(a) Wan2.1 (b) HunyuanVideo 
+
+Figure 5: Qualitative comparison on Wan2.1 and HunyuanVideo for the prompt "a zebra bending down to drink water from a river". Under tight computational budgets, baseline scheduling strategies produce visible artifacts such as color degradation and structural blurring, while ReCache, using the same caching mechanism and budget, restores quality and more closely matches full inference. 
+
+Image-quality reward coefficient. The ReCache training objective combines a fidelity term, PLPIPS, with a quality reward, HPS. Figure 3 reports the effect of varying the coefficient αiq , which controls the relative strength of the latter. As shown, for k ∈ { 8, 9} steps, increasing αiq consistently improves HPS, while LPIPS degrades, suggesting that under strict computational budgets, faithfully replicating the full-inference trajectory becomes difficult, and the model instead learns to generate perceptually pleasing images that score well on human preference. For k = 13 , results remain largely stable across all coefficient values, as sufficient compute allows the predicted schedule to closely follow the full-inference trajectory, which already yields high-quality outputs. We use αiq = 7 as the best trade-off. Notably, optimizing for HPS alone degrades both metrics, which highlights the importance of the fidelity term: it provides strong regularization that anchors the schedule to the full-inference trajectory and prevents the predictor from collapsing to a degenerate solution. Additional extensive text-to-image results, ablation studies on entropy regularizer and Gumbel-Top-k
+
+selection, and analysis of ReCache additional properties like step nestedness of learned schedules and reduced number of the backbone steps can be found in the Appendix C. 
+
+5 Conclusion 
+
+In this work, we introduce ReCache , a framework designed to automate the selection of optimal caching schedules for a given inference budget. By framing schedule selection as a budget-aware reinforcement learning problem, we move beyond the limitations of hand-crafted heuristics and uniform spacing rules. Our approach directly optimizes for final output consistency, allowing the model to learn which denoising timesteps are most critical for preserving image and video quality. Extensive evaluations across state-of-the-art architectures — including FLUX.1-dev, HunyuanVideo, and Wan2.1 — demonstrate that ReCache consistently discovers schedules that provide a superior quality compared to modern baselines. 
+
+Limitations. Although ReCache improves existing caching schedules, all feature caching methods provide limited benefits in low-step regimes (1–4 steps), where large gaps between reuse points make cached features less informative. 
+
+Broader impacts. Faster sampling means cheaper generation, which is where most of a deployed diffusion model’s lifetime compute actually goes. The flip side of inference efficiency is dual-use: any speedup we give to legitimate users we also give to people generating non-consensual or misleading content. Our method changes the sampling procedure and nothing about the model’s safety properties, 9so it inherits whatever filtering, watermarking, or access controls the underlying model ships with — no better, no worse. We’d encourage anyone deploying it to pair it with provenance tooling appropriate to their setting. 
+
+References 
+
+[1] Michael S Albergo and Eric Vanden-Eijnden. Building normalizing flows with stochastic interpolants. arXiv preprint arXiv:2209.15571 , 2022. [2] Saleh Ashkboos, Amirkeivan Mohtashami, Maximilian L Croci, Bo Li, Pashmina Cameron, Martin Jaggi, Dan Alistarh, Torsten Hoefler, and James Hensman. Quarot: Outlier-free 4-bit inference in rotated llms. Advances in Neural Information Processing Systems , 37:100213– 100240, 2024. [3] Black Forest Labs. Flux. https://blackforestlabs.ai/ announcing-black-forest-labs , 2024. Accessed: 2024. [4] Andreas Blattmann, Tim Dockhorn, Sumith Kulal, Daniel Mendelevitch, Maciej Kilian, Do-minik Lorenz, Yam Levi, Zion English, Vikram Voleti, Adam Letts, et al. Stable video diffusion: Scaling latent video diffusion models to large datasets. arXiv preprint arXiv:2311.15127 , 2023. [5] Daniel Bolya and Judy Hoffman. Token merging for fast stable diffusion. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 4599–4603, 2023. [6] Jiazi Bu, Pengyang Ling, Yujie Zhou, Yibin Wang, Yuhang Zang, Dahua Lin, and Jiaqi Wang. Dicache: Let diffusion model determine its own cache. arXiv preprint arXiv:2508.17356 , 2025. [7] Jerry Chee, Yaohui Cai, Volodymyr Kuleshov, and Christopher M De Sa. Quip: 2-bit quanti-zation of large language models with guarantees. Advances in neural information processing systems , 36:4396–4429, 2023. [8] Junsong Chen, Chongjian Ge, Enze Xie, Yue Wu, Lewei Yao, Xiaozhe Ren, Zhongdao Wang, Ping Luo, Huchuan Lu, and Zhenguo Li. Pixart-σ: Weak-to-strong training of diffusion transformer for 4k text-to-image generation. In European Conference on Computer Vision ,pages 74–91. Springer, 2024. [9] Junsong Chen, Jincheng Yu, Chongjian Ge, Lewei Yao, Enze Xie, Yue Wu, Zhongdao Wang, James Kwok, Ping Luo, Huchuan Lu, et al. PixArt-α: Fast training of diffusion transformer for photorealistic text-to-image synthesis. arXiv preprint arXiv:2310.00426 , 2023. [10] Lei Chen, Yuan Meng, Chen Tang, Xinzhu Ma, Jingyan Jiang, Xin Wang, Zhi Wang, and Wenwu Zhu. Q-dit: Accurate post-training quantization for diffusion transformers. In Proceedings of the Computer Vision and Pattern Recognition Conference , pages 28306–28315, 2025. [11] Pengtao Chen, Mingzhu Shen, Peng Ye, Jianjian Cao, Chongjun Tu, Christos-Savvas Bouganis, Yiren Zhao, and Tao Chen. delta -dit: A training-free acceleration method tailored for diffusion transformers. arXiv preprint arXiv:2406.01125 , 2024. [12] Bowen Cui, Yuanbin Wang, Huajiang Xu, Biaolong Chen, Aixi Zhang, Hao Jiang, Zhengzheng Jin, Xu Liu, and Pipei Huang. Denoising as path planning: Training-free acceleration of diffusion models with dpcache. arXiv preprint arXiv:2602.22654 , 2026. [13] Tri Dao, Dan Fu, Stefano Ermon, Atri Rudra, and Christopher Ré. Flashattention: Fast and memory-efficient exact attention with io-awareness. Advances in neural information processing systems , 35:16344–16359, 2022. [14] Tim Dettmers, Ruslan Svirschevski, Vage Egiazarian, Denis Kuznedelev, Elias Frantar, Saleh Ashkboos, Alexander Borzunov, Torsten Hoefler, and Dan Alistarh. Spqr: A sparse-quantized representation for near-lossless llm weight compression. arXiv preprint arXiv:2306.03078 ,2023. 10 [15] Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas Müller, Harry Saini, Yam Levi, Dominik Lorenz, Axel Sauer, Frederic Boesel, et al. Scaling rectified flow trans-formers for high-resolution image synthesis. In Forty-first international conference on machine learning , 2024. [16] Gongfan Fang, Xinyin Ma, and Xinchao Wang. Structural pruning for diffusion models, 2023. [17] Liang Feng, Shikang Zheng, Jiacheng Liu, Yuqi Lin, Qinming Zhou, Peiliang Cai, Xinyu Wang, Junjie Chen, Chang Zou, Yue Ma, et al. Hicache: Training-free acceleration of diffusion models via hermite polynomial-based feature caching. arXiv preprint arXiv:2508.16984 , 2025. [18] Elias Frantar, Saleh Ashkboos, Torsten Hoefler, and Dan Alistarh. Gptq: Accurate post-training quantization for generative pre-trained transformers. arXiv preprint arXiv:2210.17323 , 2022. [19] Artyom Gadetsky, Kirill Struminsky, Christopher Robinson, Novi Quadrianto, and Dmitry Vetrov. Low-variance black-box gradient estimates for the plackett-luce distribution. In 
+
+Proceedings of the AAAI Conference on Artificial Intelligence , volume 34, pages 10126–10135, 2020. [20] Shuyang Gu, Dong Chen, Jianmin Bao, Fang Wen, Bo Zhang, Dongdong Chen, Lu Yuan, and Baining Guo. Vector quantized diffusion model for text-to-image synthesis. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 10696–10706, 2022. [21] Jack Hessel, Ari Holtzman, Maxwell Forbes, Ronan Le Bras, and Yejin Choi. Clipscore: A reference-free evaluation metric for image captioning. In Proceedings of the 2021 conference on empirical methods in natural language processing , pages 7514–7528, 2021. [22] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. Advances in neural information processing systems , 33:6840–6851, 2020. [23] Ziqi Huang, Yinan He, Jiashuo Yu, Fan Zhang, Chenyang Si, Yuming Jiang, Yuanhan Zhang, Tianxing Wu, Qingyang Jin, Nattapol Chanpaisit, et al. Vbench: Comprehensive benchmark suite for video generative models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 21807–21818, 2024. [24] Kumara Kahatapitiya, Haozhe Liu, Sen He, Ding Liu, Menglin Jia, Chenyang Zhang, Michael S Ryoo, and Tian Xie. Adaptive caching for faster video generation with diffusion transformers. In Proceedings of the IEEE/CVF International Conference on Computer Vision , pages 15240– 15252, 2025. [25] Tero Karras, Miika Aittala, Timo Aila, and Samuli Laine. Elucidating the design space of diffusion-based generative models. Advances in neural information processing systems ,35:26565–26577, 2022. [26] Minchul Kim, Shangqian Gao, Yen-Chang Hsu, Yilin Shen, and Hongxia Jin. Token fusion: Bridging the gap between token pruning and token merging. In Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision , pages 1383–1392, 2024. [27] Yuval Kirstain, Adam Polyak, Uriel Singer, Shahbuland Matiana, Joe Penna, and Omer Levy. Pick-a-pic: An open dataset of user preferences for text-to-image generation. Advances in neural information processing systems , 36:36652–36663, 2023. [28] Weijie Kong, Qi Tian, Zijian Zhang, Rox Min, Zuozhuo Dai, Jin Zhou, Jiangfeng Xiong, Xin Li, Bo Wu, Jianwei Zhang, et al. Hunyuanvideo: A systematic framework for large video generative models. arXiv preprint arXiv:2412.03603 , 2024. [29] Wouter Kool, Herke van Hoof, and Max Welling. Buy 4 reinforce samples, get a baseline for free! 2019. [30] Wouter Kool, Herke Van Hoof, and Max Welling. Stochastic beams and where to find them: The gumbel-top-k trick for sampling sequences without replacement. In International conference on machine learning , pages 3499–3508. PMLR, 2019. 11 [31] Muyang Li, Yujun Lin, Zhekai Zhang, Tianle Cai, Xiuyu Li, Junxian Guo, Enze Xie, Chenlin Meng, Jun-Yan Zhu, and Song Han. Svdquant: Absorbing outliers by low-rank components for 4-bit diffusion models. arXiv preprint arXiv:2411.05007 , 2024. [32] Xiuyu Li, Yijiang Liu, Long Lian, Huanrui Yang, Zhen Dong, Daniel Kang, Shanghang Zhang, and Kurt Keutzer. Q-diffusion: Quantizing diffusion models. In Proceedings of the IEEE/CVF International Conference on Computer Vision , pages 17535–17545, 2023. [33] Tsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Dollár, and C Lawrence Zitnick. Microsoft coco: Common objects in context. In European conference on computer vision , pages 740–755. Springer, 2014. [34] Yaron Lipman, Ricky TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le. Flow matching for generative modeling. arXiv preprint arXiv:2210.02747 , 2022. [35] Feng Liu, Shiwei Zhang, Xiaofeng Wang, Yujie Wei, Haonan Qiu, Yuzhong Zhao, Yingya Zhang, Qixiang Ye, and Fang Wan. Timestep embedding tells: It’s time to cache for video diffusion model. In Proceedings of the Computer Vision and Pattern Recognition Conference ,pages 7353–7363, 2025. [36] Haozhe Liu, Wentian Zhang, Jinheng Xie, Francesco Faccio, Mengmeng Xu, Tao Xiang, Mike Zheng Shou, Juan-Manuel Perez-Rua, and Jürgen Schmidhuber. Faster diffusion via temporal attention decomposition. arXiv preprint arXiv:2404.02747 , 2024. [37] Jiacheng Liu, Chang Zou, Yuanhuiyi Lyu, Junjie Chen, and Linfeng Zhang. From reusing to forecasting: Accelerating diffusion models with TaylorSeers. In Proceedings of the IEEE/CVF International Conference on Computer Vision , pages 15853–15863, 2025. [38] Xingchao Liu, Chengyue Gong, and Qiang Liu. Flow straight and fast: Learning to generate and transfer data with rectified flow. arXiv preprint arXiv:2209.03003 , 2022. [39] Cheng Lu, Yuhao Zhou, Fan Bao, Jianfei Chen, Chongxuan Li, and Jun Zhu. Dpm-solver: A fast ode solver for diffusion probabilistic model sampling in around 10 steps. Advances in neural information processing systems , 35:5775–5787, 2022. [40] Cheng Lu, Yuhao Zhou, Fan Bao, Jianfei Chen, Chongxuan Li, and Jun Zhu. Dpm-solver++: Fast solver for guided sampling of diffusion probabilistic models. Machine Intelligence Re-search , 22(4):730–751, 2025. [41] Simian Luo, Yiqin Tan, Longbo Huang, Jian Li, and Hang Zhao. Latent consistency models: Synthesizing high-resolution images with few-step inference. arXiv preprint arXiv:2310.04378 ,2023. [42] Zhengyao Lv, Chenyang Si, Junhao Song, Zhenyu Yang, Yu Qiao, Ziwei Liu, and Kwan-Yee K Wong. Fastercache: Training-free video diffusion model acceleration with high quality. arXiv preprint arXiv:2410.19355 , 2024. [43] Xin Ma, Yaohui Wang, Xinyuan Chen, Gengyun Jia, Ziwei Liu, Yuan-Fang Li, Cunjian Chen, and Yu Qiao. Latte: Latent diffusion transformer for video generation. arXiv preprint arXiv:2401.03048 , 2024. [44] Xinyin Ma, Gongfan Fang, and Xinchao Wang. Deepcache: Accelerating diffusion models for free. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition ,pages 15762–15772, 2024. [45] Chenlin Meng, Robin Rombach, Ruiqi Gao, Diederik Kingma, Stefano Ermon, Jonathan Ho, and Tim Salimans. On distillation of guided diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 14297–14306, 2023. [46] William Peebles and Saining Xie. Scalable diffusion models with transformers. In Proceedings of the IEEE/CVF international conference on computer vision , pages 4195–4205, 2023. [47] Robin L Plackett. The analysis of permutations. Journal of the Royal Statistical Society Series C: Applied Statistics , 24(2):193–202, 1975. 12 [48] Dustin Podell, Zion English, Kyle Lacey, Andreas Blattmann, Tim Dockhorn, Jonas Müller, Joe Penna, and Robin Rombach. Sdxl: Improving latent diffusion models for high-resolution image synthesis. arXiv preprint arXiv:2307.01952 , 2023. [49] Lorenz Richter, Ayman Boustati, Nikolas Nüsken, Francisco Ruiz, and Omer Deniz Akyildiz. Vargrad: a low-variance gradient estimator for variational inference. Advances in Neural Information Processing Systems , 33:13481–13492, 2020. [50] Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Björn Ommer. High-resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 10684–10695, 2022. [51] Olaf Ronneberger, Philipp Fischer, and Thomas Brox. U-net: Convolutional networks for biomedical image segmentation. In International Conference on Medical image computing and computer-assisted intervention , pages 234–241. Springer, 2015. [52] Omid Saghatchian, Atiyeh Gh Moghadam, and Ahmad Nickabadi. Cached adaptive token merging: Dynamic token reduction and redundant computation elimination in diffusion model. 
+
+arXiv preprint arXiv:2501.00946 , 2025. [53] Chitwan Saharia, William Chan, Saurabh Saxena, Lala Li, Jay Whang, Emily L Denton, Kamyar Ghasemipour, Raphael Gontijo Lopes, Burcu Karagol Ayan, Tim Salimans, et al. Photorealistic text-to-image diffusion models with deep language understanding. Advances in neural information processing systems , 35:36479–36494, 2022. [54] Tim Salimans and Jonathan Ho. Progressive distillation for fast sampling of diffusion models. 
+
+arXiv preprint arXiv:2202.00512 , 2022. [55] Axel Sauer, Frederic Boesel, Tim Dockhorn, Andreas Blattmann, Patrick Esser, and Robin Rombach. Fast high-resolution image synthesis with latent adversarial diffusion distillation. In 
+
+SIGGRAPH Asia 2024 Conference Papers , pages 1–11, 2024. [56] Axel Sauer, Dominik Lorenz, Andreas Blattmann, and Robin Rombach. Adversarial diffusion distillation. In European Conference on Computer Vision , pages 87–103. Springer, 2024. [57] Christoph Schuhmann, Romain Beaumont, Richard Vencu, Cade Gordon, Ross Wightman, Mehdi Cherti, Theo Coombes, Aarush Katta, Clayton Mullis, Mitchell Wortsman, et al. Laion-5b: An open large-scale dataset for training next generation image-text models. Advances in neural information processing systems , 35:25278–25294, 2022. [58] Pratheba Selvaraju, Tianyu Ding, Tianyi Chen, Ilya Zharkov, and Luming Liang. Fora: Fast-forward caching in diffusion transformer acceleration. arXiv preprint arXiv:2407.01425 , 2024. [59] Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli. Deep unsuper-vised learning using nonequilibrium thermodynamics. In International conference on machine learning , pages 2256–2265. pmlr, 2015. [60] Jiaming Song, Chenlin Meng, and Stefano Ermon. Denoising diffusion implicit models. arXiv preprint arXiv:2010.02502 , 2020. [61] Yang Song, Prafulla Dhariwal, Mark Chen, and Ilya Sutskever. Consistency models. 2023. [62] Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole. Score-based generative modeling through stochastic differential equations. arXiv preprint arXiv:2011.13456 , 2020. [63] Nikita Starodubcev, Ilya Drobyshevskiy, Denis Kuznedelev, Artem Babenko, and Dmitry Baranchuk. Scale-wise distillation of diffusion models. arXiv preprint arXiv:2503.16397 , 2025. [64] Kirill Struminsky, Artyom Gadetsky, Denis Rakitin, Danil Karpushkin, and Dmitry P Vetrov. Leveraging recursive gumbel-max trick for approximate inference in combinatorial spaces. 
+
+Advances in Neural Information Processing Systems , 34:10999–11011, 2021. 13 [65] Albert Tseng, Jerry Chee, Qingyao Sun, Volodymyr Kuleshov, and Christopher De Sa. Quip#: Even better llm quantization with hadamard incoherence and lattice codebooks. Proceedings of machine learning research , 235:48630, 2024. [66] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. Attention is all you need. Advances in neural information processing systems , 30, 2017. [67] Team Wan, Ang Wang, Baole Ai, Bin Wen, Chaojie Mao, Chen-Wei Xie, Di Chen, Feiwu Yu, Haiming Zhao, Jianxiao Yang, et al. Wan: Open and advanced large-scale video generative models. arXiv preprint arXiv:2503.20314 , 2025. [68] Zhou Wang, A.C. Bovik, H.R. Sheikh, and E.P. Simoncelli. Image quality assessment: from error visibility to structural similarity. volume 13, pages 600–612, 2004. [69] Ronald J Williams. Simple statistical gradient-following algorithms for connectionist reinforce-ment learning. Machine learning , 8(3):229–256, 1992. [70] Xiaoshi Wu, Yiming Hao, Keqiang Sun, Yixiong Chen, Feng Zhu, Rui Zhao, and Hongsheng Li. Human preference score v2: A solid benchmark for evaluating human preferences of text-to-image synthesis. arXiv preprint arXiv:2306.09341 , 2023. [71] Guangxuan Xiao, Ji Lin, Mickael Seznec, Hao Wu, Julien Demouth, and Song Han. Smoothquant: Accurate and efficient post-training quantization for large language models. In International conference on machine learning , pages 38087–38099. PMLR, 2023. [72] Jiazheng Xu, Xiao Liu, Yuchen Wu, Yuxuan Tong, Qinkai Li, Ming Ding, Jie Tang, and Yuxiao Dong. Imagereward: Learning and evaluating human preferences for text-to-image generation. 
+
+Advances in Neural Information Processing Systems , 36:15903–15935, 2023. [73] Zhuoyi Yang, Jiayan Teng, Wendi Zheng, Ming Ding, Shiyu Huang, Jiazheng Xu, Yuanming Yang, Wenyi Hong, Xiaohan Zhang, Guanyu Feng, et al. Cogvideox: Text-to-video diffusion models with an expert transformer. arXiv preprint arXiv:2408.06072 , 2024. [74] Tianwei Yin, Michaël Gharbi, Taesung Park, Richard Zhang, Eli Shechtman, Fredo Durand, and William T Freeman. Improved distribution matching distillation for fast image synthesis. 
+
+Advances in neural information processing systems , 37:47455–47487, 2024. [75] Tianwei Yin, Michaël Gharbi, Richard Zhang, Eli Shechtman, Fredo Durand, William T Freeman, and Taesung Park. One-step diffusion with distribution matching distillation. In 
+
+Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 6613–6623, 2024. [76] Zhihang Yuan, Hanling Zhang, Pu Lu, Xuefei Ning, Linfeng Zhang, Tianchen Zhao, Shengen Yan, Guohao Dai, and Yu Wang. Ditfastattn: Attention compression for diffusion transformer models. Advances in Neural Information Processing Systems , 37:1196–1219, 2024. [77] Evelyn Zhang, Jiayi Tang, Xuefei Ning, and Linfeng Zhang. Training-free and hardware-friendly acceleration for diffusion models via similarity-based token pruning. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 39, pages 9878–9886, 2025. [78] Hui Zhang, Tingwei Gao, Jie Shao, and Zuxuan Wu. Blockdance: Reuse structurally similar spatio-temporal features to accelerate diffusion transformers. In Proceedings of the Computer Vision and Pattern Recognition Conference , pages 12891–12900, 2025. [79] Richard Zhang, Phillip Isola, Alexei A Efros, Eli Shechtman, and Oliver Wang. The unreason-able effectiveness of deep features as a perceptual metric. In CVPR , 2018. [80] Richard Zhang, Phillip Isola, Alexei A Efros, Eli Shechtman, and Oliver Wang. The unrea-sonable effectiveness of deep features as a perceptual metric. In Proceedings of the IEEE conference on computer vision and pattern recognition , pages 586–595, 2018. 14 [81] Tianchen Zhao, Tongcheng Fang, Haofeng Huang, Enshu Liu, Rui Wan, Widyadewi Soedar-madji, Shiyao Li, Zinan Lin, Guohao Dai, Shengen Yan, et al. Vidit-q: Efficient and accu-rate quantization of diffusion transformers for image and video generation. arXiv preprint arXiv:2406.02540 , 2024. [82] Wenliang Zhao, Lujia Bai, Yongming Rao, Jie Zhou, and Jiwen Lu. Unipc: A unified predictor-corrector framework for fast sampling of diffusion models. Advances in Neural Information Processing Systems , 36:49842–49869, 2023. [83] Kaiwen Zheng, Cheng Lu, Jianfei Chen, and Jun Zhu. Dpm-solver-v3: Improved diffusion ode solver with empirical model statistics. Advances in Neural Information Processing Systems ,36:55502–55542, 2023. [84] Zangwei Zheng, Xiangyu Peng, Tianji Yang, Chenhui Shen, Shenggui Li, Hongxin Liu, Yukun Zhou, Tianyi Li, and Yang You. Open-sora: Democratizing efficient video production for all. 
+
+arXiv preprint arXiv:2412.20404 , 2024. [85] Xin Zhou, Dingkang Liang, Kaijin Chen, Tianrui Feng, Xiwu Chen, Hongkai Lin, Yikang Ding, Feiyang Tan, Hengshuang Zhao, and Xiang Bai. Less is enough: Training-free video diffusion acceleration via runtime-adaptive caching. arXiv preprint arXiv:2507.02860 , 2025. 15 A Related Work 
+
+Acceleration of diffusion models Diffusion models often require a lot of computationally de-manding denoising model evaluations. There are several ways to alleviate the heavy inference cost and speed up the generative process: one can either make each step faster or reduce the to-tal number of function evaluations. The former approach includes pruning [ 16 ] and quantization techniques [ 18 , 7, 71 , 2, 65 , 14 ], which are popular in large language modeling and can be adapted for diffusion generation [ 31 , 81 , 32 , 10 , 20 ]. Moreover, computationally heavy attention layers can be sped up using efficient attention [ 13 , 76 ] and token merging [ 5 , 52 ] or pruning [ 26 , 77 ]techniques. Other papers focus on reducing the number of inference steps to accelerate the generative process by creating an efficient solver [ 60 , 25 , 39 , 40 , 82 , 83 ] or proposing knowledge distilla-tion [ 54 , 45 ], consistency-based distillation [ 61 , 41 ] and different implementations of distribution matching [ 56 , 55 , 75 , 74 , 63 ]. While these architectural and solver-based methods successfully accel-erate generation, they are largely orthogonal to caching techniques (such as our proposed method), which focus on avoiding redundant computations inside denoising steps. 
+
+Diffusion caching Recently, it has been observed that the consequent denoising steps share a lot of similar features, and can therefore be cached and reused in the following steps. Early papers investigate U-Net [ 51 ] diffusion model architectures [ 50 , 48 , 53 ] and reuse the high-level [ 59 ], encoder [ 55 ], or attention [ 36 ] features at certain adjacent timesteps. With the increasing popularity of diffusion transformer-based [ 66 ] architectures (DiTs) [ 46 ] in both image [ 9 , 8, 3] and video [ 43 ,73 , 67 , 84 , 28 ] domains, research has focused on proposing novel “What-to-Cache” strategies [ 11 ,58 , 42 ]. [ 58 ] stores and reuses intermediate outputs from the most computationally demanding layers, while [ 11 ] caches the deviations between the outputs of the whole transformer blocks. Other papers focused on the “How-to-Use-the-Cache” question: [ 6] proposes the dynamic cache trajectory alignment, while [ 37 ] and [ 17 ] incorporate the cache-and-forecast strategy based on the approximation of the higher-order derivatives to better predict the features in future timesteps. Unlike these approaches that largely rely on fixed heuristic assumptions for caching schedules, ReCache formulates a learned caching policy. 
+
+Adaptive caching Instead of relying on heuristic assumptions in creating “When-to-Cache” sched-ules, [ 35 , 6, 24 , 85 ] create adaptive models that can automatically decide whether the current timestep differs from the cached features and is crucial to recalculate. To estimate the caching error in real-time and decide whether we should recalculate the current timestep, [ 24 ] investigates the residual connections, [ 85 ] uses the layer inputs, [ 6 ] profiles shallow-layer features, while [ 35 ] uses a cali-brated polynomial. [ 78 ] proposes training the lightweight decision-making network to cache the structure-focused blocks of the transformer. Such adaptive methods show significantly better results, but mostly require inference-time hyperparameter tuning and lack explicit budget control. 
+
+ReCache positioning To address the limitations of prior work that rely on static schedules and adaptive baselines that require inference-time hyperparameter tuning, ReCache introduces an offline-trained, budget-conditioned paradigm. By utilizing learned schedule selection, ReCache maximizes generation quality under explicit computational constraints without needing manual real-time adjust-ments. 
+
+B Experimental details 
+
+B.1 Modified MS-COCO dataset 
+
+As a base dataset of prompts for our text-to-image experiments we created a modified MS-COCO version, where for each of the images we utilized only one caption, which has the biggest length. This ensured we use long and informative prompts with a lot of details to train and evaluate our model on. 
+
+B.2 Baselines implementation 
+
+FORA [ 58 ] is a caching mechanism that caches attention and feedforward layers (FF) in each of the transformer blocks and changes the output to the cached values straightforwardly in the reuse timesteps. ∆-DiT [11] caches the difference between the cache timestep input and the output of the 16 i-th transformer block, on the reuse timestep adds this deviation to the current input and evaluates the rest of the blocks as is. DiCache [ 6 ] consists of an Online Probe Profiling Scheme that estimates the caching error in real-time and creates the cache schedule for each sample, and a Dynamic Cache Trajectory Alignment which is a caching mechanism that adaptively approximates the output based on the probe feature trajectory. By a ReCache DiCache we denote that we utilize ReCache policy on the Dynamic Cache Trajectory Alignment. TaylorSeer and HiCache both cache the outputs of the attention and feedforward layers during the cache steps and then predict the current values of a reuse step using the Taylor or Hermite polynomial respectively. DPCache formulates the choice of a caching schedule as a dynamic programming task, it utilizes the TaylorSeer caching mechanism of predicting the values but caches the whole-block outputs instead of separate layers and is called Taylor-DP in its implementation code. In our HunyuanVideo experiments, we adapt the TaylorSeer baseline to follow the Hugging Face implementation by caching only the attention modules and recomputing the feed-forward layers. This modification is necessary because the original full-cache variant leads to out-of-memory errors in our setting. We use the same feasible TaylorSeer implementation for both the baseline and ReCache TaylorSeer, ensuring a fair comparison. Moreover, the second-order TaylorSeer variant ( O = 2 )remains out-of-memory even with attention-only caching; therefore, all video experiments use the first-order variant ( O = 1 ). This configuration still provides a substantial speed-up, as shown in Table 3. 
+
+B.3 ReCache training overview Policy parameterization. We parameterize the schedule logits with a lightweight MLP, θ =
+
+MLP ϕ(k), that takes the target budget k as input and outputs N logits, one per backbone step. The MLP has approximately 100 K parameters, making its overhead negligible relative to the diffusion backbone G. Per-model architecture details (input embedding and hidden dimensions) are reported in the subsections below. 
+
+Loss instantiation. We instantiate the distance term as patch-wise LPIPS [ 80 ] and the reward as HPSv2 [ 70 ]. The two terms are weighted by αiq . Entropy regularization uses coefficient λentropy .Each REINFORCE-LOO update draws n schedules per training example; budgets are sampled from a fixed distribution q(k).
+
+Pre-sampled training set. Before training, we generate a fixed dataset of triples—prompt, initial latent x(i)1 , and the corresponding full-inference output x(i) 
+
+> full
+
+of G. This pre-computation avoids running full inference inside the training loop — the policy uses the cached x(i) 
+
+> full
+
+as supervision targets and only pays for cached inference G(x(i)1 | s, M) at each step. We re-generate the dataset once per (model, caching mechanism) pair. 
+
+B.4 Text-to-image with FLUX-1.dev [3] implementation details 
+
+• Diffusion model: 
+
+– Number of inference steps = 50; 
+
+– Flow Matching Euler Discrete Scheduler; 
+
+– Image resolution 1024 × 1024 ;
+
+– Guidance scale: 3.5; • Logit predictor model: 
+
+– Input embedding dimension = 128; 
+
+– Hidden dimension = [256, 256, 128]; • Dataset: 
+
+– Training dataset: 64 prompts from modified MS-COCO; 
+
+– Test dataset: 1000 prompts from modified MS-COCO; 
+
+– DrawBench ImageReward dataset: 200 prompts from DrawBench benchmark; • Training configurations: 17 – Batch size = 1, gradient accumulation = 8; 
+
+– Number of samples for REINFORCE leave-one-out = 6; 
+
+– HPS metric in loss with αiq = 7 ;
+
+– Linear decreasing each gradient step entropy regularizer λentropy = 0 .005 ;
+
+– Number of full inference steps in training is sampled from a weighted distribution with base weight = 0.5, where (6 , 15) steps are sampled with weight 1.0; 
+
+– 50 epochs of training; 
+
+– Adam optimizer, learning rate = 0.0005 , betas = (0 .9, 0.999) , weight decay = 0.0;
+
+B.5 Text-to-video with HunyuanVideo [28] implementation details 
+
+• Diffusion model: 
+
+– Number of inference steps = 50; 
+
+– Flow Matching Euler Discrete Scheduler; 
+
+– Video resolution 480 × 640 × 65 ;
+
+– Guidance scale: 6.0; • Dataset: 
+
+– Training dataset: 64 prompts from VBench prompts dataset obtained with stratified sampling from 11 VBench dimensions; 
+
+– Test dataset: one video for each of 944 prompts from VBench dataset; • Logit predictor model: 
+
+– Input embedding dimension = 128; 
+
+– Hidden dimension = [256, 256, 128]; • Training configurations: 
+
+– Batch size = 1, gradient accumulation = 8; 
+
+– Number of samples for REINFORCE leave-one-out = 6; 
+
+– HPS metric in loss with αiq = 7 ;
+
+– Linear decreasing each gradient step entropy regularizer λentropy = 0 .01 ;
+
+– Number of full inference steps in training is sampled from a weighted distribution with base weight = 0.5, where (6 , 15) steps are sampled with weight 1.0; 
+
+– 120 epochs of training; 
+
+– Adam optimizer, learning rate = 0.03 , betas = (0 .9, 0.999) , weight decay = 0.0;
+
+B.6 Text-to-video with Wan2.1 [67] implementation details 
+
+• Diffusion model: 
+
+– Number of inference steps = 25; 
+
+– Flow Matching Euler Discrete Scheduler; 
+
+– Video resolution 480 × 832 × 81 ;
+
+– Guidance scale: 5.0; • Logit predictor model: 
+
+– Input embedding dimension = 128; 
+
+– Hidden dimension = [256, 256, 128]; • Dataset: 
+
+– Training dataset: 64 prompts from VBench prompts dataset obtained with stratified sampling from 11 VBench dimensions; 
+
+– Test dataset: one video for each of 944 prompts from VBench dataset; • Training configurations: 
+
+– Batch size = 1, gradient accumulation = 8; 
+
+– Number of samples for REINFORCE leave-one-out = 6; 
+
+– HPS metric in loss with αiq = 7 ;18 k=7 
+
+> k=9
+> k=13
+> Uniform
+> (k=13)
+
+TaylorSeer ( O = 2)                                                  
+
+> 12345678910 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+> k=7
+> k=9
+> k=13
+> Uniform
+> (k=13)
+
+Taylor-DP ( O = 2)   
+
+> Cached steps k=7 Additional for k=9 Additional for k=13
+
+Figure 6: Comparison of cache steps for FLUX.1-dev with the caching mechanisms TaylorSeer ( O =2) and Taylor-DP ( O = 2 )
+
+– Linear decrease for each gradient step entropy regularizer λentropy = 0 .02 ;
+
+– Number of full inference steps in training is sampled from a weighted distribution with base weight = 0.5, where (6 , 15) steps are sampled with weight 1.0; 
+
+– 120 epochs of training; 
+
+– Adam optimizer, learning rate = 0.03 , betas = (0 .9, 0.999) , weight decay = 0.0;
+
+C Extended experimental results 
+
+In this section, we present additional experimental results, including extended metric evaluations, further analysis of ReCache properties, and additional ablation studies. 
+
+C.1 Extended text-to-image results 
+
+Table 5 present extended experiments evaluating ReCache on FLUX-1.dev across different caching mechanisms. We compare with both uniform and previously proposed adaptive baseline schedules, where applicable. ImageReward DrawBench (IR DB) metric stand for an ImageReward [ 72 ] score calculated over 200 DrawBench [ 53 ] prompts. The rest of the metrics – LPIPS [ 79 ], patch-wise LPIPS (PLPIPS), L1, PSNR, SSIM [ 68 ], HPSv2 [ 70 ], CLIP [ 21 ], Aesthetic Quality (AQ) [ 57 ], Image Quality (IQ) and ImageReward (IR) – are computed on 1000 MS-COCO prompts. 
+
+C.2 Further analysis 
+
+The following experiments analyze additional properties of ReCache, including the nested structure of learned schedules, transferability across backbones, and the interaction between caching budgets and the number of backbone inference steps. Unless otherwise stated, all experiments are conducted on the text-to-image generative model FLUX.1-dev with the TaylorSeer (O = 1 ) caching strategy. 
+
+Nestedness of learned schedules. Figure 6 plots the specific cache steps assigned by our budget-aware policy across different target budgets. We illustrate this for FLUX.1-dev using both TaylorSeer 
+
+(O = 2) and Taylor-DP (O = 2) mechanisms at k ∈ { 7, 9, 13 }. As the figure shows, the selected steps are strictly additive: the anchor steps identified at the tightest budget ( k = 7 ) remain completely fixed when the budget is expanded to k = 9 and k = 13 . The expanded budgets simply activate new steps in the intermediate gaps without shifting the previously selected ones. 19 Table 5: Extended experimental results on FLUX-1.dev text-to-image model. ReCache is evaluated across different caching mechanisms and is compared to uniform and adaptive baselines. The results are grouped based on a computational budget and underlying caching mechanism. 
+
+Acceleration Metrics Method Latency(s) ↓ Speed ↑ FLOPs(T) ↓ Speed ↑ LPIPS ↓ PLPIPS ↓ L1 ↓ PSNR ↑ SSIM ↑ HPS ↑ CLIP ↑ AQ ↑ IQ ↑ IR ↑ IR DB ↑
+
+50 steps 10.92 1 2990.80 1 0.0000 0.0000 0.0000 ∞ 1.0000 0.3063 26.98 6.49 71.21 1.1195 1.0076 
+
+7 steps 
+
+7 steps of full inference 1.62 6.74 431.42 6.93 0.556 0.544 0.160 13.58 0.594 0.277 27.09 6.43 65.71 0.884 0.675 uniform FORA ( N = 7 ) 2.63 4.15 432.54 6.91 0.567 0.555 0.162 13.54 0.588 0.270 27.17 6.28 66.26 0.808 0.628 ReCache FORA 2.63 4.15 432.54 6.91 0.492 0.474 0.080 18.32 0.665 0.292 27.88 6.38 70.99 1.025 0.981 
+
+uniform ∆-DiT ( N = 7 ) 4.87 2.24 1285.13 2.33 0.589 0.577 0.180 12.71 0.593 0.226 25.80 5.55 45.97 0.161 0.185 TeaCache 4.87 2.24 1285.13 2.33 0.542 0.530 0.142 14.49 0.613 0.270 26.90 6.28 65.52 0.779 0.763 ReCache ∆-DiT 4.87 2.24 1285.13 2.33 0.452 0.436 0.085 17.74 0.699 0.284 26.96 6.48 67.41 0.964 0.896 
+
+uniform DiCache 1.82 6.00 477.02 6.27 0.553 0.541 0.160 13.58 0.597 0.277 27.05 6.34 65.92 0.889 0.658 DiCache 1.82 6.00 477.02 6.27 0.546 0.535 0.143 14.33 0.610 0.276 27.04 6.37 67.26 0.871 0.758 ReCache DiCache 1.82 6.00 477.02 6.27 0.413 0.396 0.069 19.15 0.724 0.296 27.29 6.41 69.90 1.059 0.990 
+
+uniform TaylorSeer ( O = 1 , N = 7 ) 2.93 3.73 432.58 6.91 0.555 0.544 0.160 13.56 0.581 0.282 27.30 6.38 68.39 0.934 0.780 ReCache TaylorSeer ( O = 1 ) 2.93 3.73 432.58 6.91 0.499 0.483 0.126 15.07 0.629 0.296 27.54 6.34 70.01 1.057 0.972 
+
+uniform TaylorSeer ( O = 2 , N = 7 ) 3.09 3.53 432.61 6.91 0.557 0.546 0.161 13.54 0.579 0.281 27.28 6.38 68.48 0.933 0.767 ReCache TaylorSeer ( O = 2 ) 3.09 3.53 432.61 6.91 0.550 0.539 0.146 14.19 0.560 0.290 27.25 6.31 69.67 1.022 0.976 
+
+uniform HiCache ( O = 1 , N = 7 ) 3.25 3.36 432.54 6.91 0.557 0.545 0.160 13.58 0.589 0.278 27.28 6.34 67.57 0.888 0.688 ReCache HiCache ( O = 1 ) 3.25 3.36 432.54 6.91 0.441 0.423 0.080 18.27 0.697 0.298 27.64 6.41 70.68 1.052 0.973 
+
+uniform HiCache ( O = 2 , N = 7 ) 3.47 3.15 432.54 6.91 0.557 0.545 0.161 13.57 0.589 0.278 27.29 6.33 67.60 0.890 0.689 ReCache HiCache ( O = 2 ) 3.47 3.15 432.54 6.91 0.498 0.481 0.106 16.23 0.639 0.299 27.75 6.42 71.02 1.065 1.015 
+
+uniform Taylor-DP ( O = 2 , N = 7 ) 1.66 6.58 432.12 6.92 0.554 0.543 0.160 13.56 0.591 0.280 27.08 6.36 67.08 0.925 0.727 DPCache ( O = 2 , K = 7 ) 1.66 6.58 432.12 6.92 0.546 0.533 0.132 14.96 0.594 0.287 27.88 6.22 69.09 1.014 0.931 ReCache Taylor-DP ( O = 2 ) 1.66 6.58 432.12 6.92 0.490 0.477 0.125 15.25 0.630 0.299 27.26 6.47 70.31 1.092 1.012 8 steps 
+
+8 steps of full inference 1.84 5.93 490.94 6.09 0.541 0.529 0.155 13.77 0.602 0.283 27.11 6.44 67.21 0.940 0.754 uniform FORA ( N = 6 ) 2.82 3.87 492.03 6.08 0.550 0.538 0.158 13.68 0.596 0.278 27.28 6.31 67.96 0.904 0.711 ReCache FORA 2.82 3.87 492.03 6.08 0.439 0.420 0.076 18.64 0.699 0.297 27.47 6.43 70.83 1.041 0.991 
+
+uniform ∆-DiT ( N = 6 ) 5.00 2.18 1324.80 2.26 0.575 0.563 0.175 12.89 0.599 0.241 26.11 5.82 50.58 0.374 0.333 TeaCache 5.00 2.18 1324.80 2.26 0.519 0.507 0.135 14.78 0.627 0.279 27.00 6.34 67.47 0.893 0.829 ReCache ∆-DiT 5.00 2.18 1324.80 2.26 0.400 0.384 0.067 19.42 0.743 0.289 27.01 6.54 67.79 1.003 0.934 
+
+uniform DiCache 2.03 5.38 535.48 5.59 0.537 0.526 0.157 13.70 0.603 0.284 27.11 6.40 67.63 0.953 0.734 DiCache 2.03 5.38 535.48 5.59 0.494 0.482 0.131 14.86 0.638 0.290 26.98 6.48 69.60 1.012 0.897 ReCache DiCache 2.03 5.38 535.48 5.59 0.392 0.376 0.067 19.28 0.732 0.302 27.24 6.45 70.70 1.093 1.005 
+
+uniform TaylorSeer ( O = 1 , N = 6 ) 3.11 3.51 492.07 6.08 0.539 0.528 0.156 13.71 0.591 0.288 27.24 6.41 69.47 1.002 0.825 ReCache TaylorSeer ( O = 1 ) 3.11 3.51 492.07 6.08 0.419 0.403 0.087 17.55 0.693 0.302 27.47 6.36 70.88 1.113 0.986 
+
+uniform TaylorSeer ( O = 2 , N = 6 ) 3.28 3.33 492.10 6.08 0.542 0.531 0.157 13.69 0.588 0.288 27.26 6.43 69.45 1.002 0.831 ReCache TaylorSeer ( O = 2 ) 3.28 3.33 492.10 6.08 0.515 0.502 0.139 14.50 0.601 0.297 27.15 6.44 69.89 1.058 0.975 
+
+uniform HiCache ( O = 1 , N = 6 ) 3.44 3.17 492.03 6.08 0.540 0.529 0.157 13.71 0.597 0.285 27.33 6.37 68.86 0.966 0.776 ReCache HiCache ( O = 1 ) 3.44 3.17 492.03 6.08 0.352 0.339 0.075 18.65 0.738 0.297 27.36 6.37 70.52 1.049 0.984 
+
+uniform HiCache ( O = 2 , N = 6 ) 3.70 2.95 492.03 6.08 0.540 0.529 0.157 13.71 0.597 0.285 27.31 6.36 68.85 0.966 0.773 ReCache HiCache ( O = 2 ) 3.70 2.95 492.03 6.08 0.432 0.414 0.076 18.61 0.705 0.301 27.81 6.39 70.89 1.081 0.989 
+
+uniform Taylor-DP ( O = 2 , N = 6 ) 1.87 5.84 491.63 6.08 0.539 0.528 0.157 13.70 0.598 0.286 27.11 6.44 68.39 0.988 0.797 DPCache ( O = 2 , K = 8 ) 1.87 5.84 491.63 6.08 0.440 0.425 0.098 16.90 0.678 0.300 27.36 6.41 70.35 1.102 1.030 ReCache Taylor-DP ( O = 2 ) 1.87 5.84 491.63 6.08 0.418 0.405 0.091 17.42 0.688 0.305 27.19 6.50 70.59 1.126 1.045 9 steps 
+
+9 steps of full inference 2.06 5.30 550.47 5.43 0.530 0.518 0.150 13.98 0.609 0.288 27.05 6.47 68.11 0.983 0.855 uniform FORA ( N = 5 ) 3.01 3.63 551.53 5.42 0.530 0.519 0.153 13.89 0.605 0.285 27.28 6.32 69.06 0.968 0.826 ReCache FORA 3.01 3.63 551.53 5.42 0.370 0.355 0.073 18.91 0.729 0.297 27.10 6.40 70.45 1.037 0.987 
+
+uniform ∆-DiT ( N = 5 ) 5.15 2.12 1364.46 2.19 0.555 0.543 0.169 13.15 0.607 0.256 26.45 6.03 56.42 0.573 0.519 TeaCache 5.15 2.12 1364.46 2.19 0.489 0.477 0.126 15.25 0.646 0.288 27.02 6.39 68.98 0.984 0.876 ReCache ∆-DiT 5.15 2.12 1364.46 2.19 0.385 0.369 0.067 19.44 0.748 0.292 26.99 6.54 68.52 1.019 0.940 
+
+uniform DiCache 2.25 4.85 593.94 5.04 0.519 0.508 0.151 13.93 0.613 0.289 27.04 6.41 68.84 0.998 0.845 DiCache 2.25 4.85 593.94 5.04 0.456 0.445 0.117 15.56 0.663 0.296 26.92 6.46 70.55 1.050 0.974 ReCache DiCache 2.25 4.85 593.94 5.04 0.316 0.304 0.064 19.61 0.770 0.302 27.08 6.45 70.88 1.102 1.014 
+
+uniform TaylorSeer ( O = 1 , N = 5 ) 3.30 3.31 551.57 5.42 0.518 0.507 0.150 13.94 0.605 0.293 27.12 6.44 70.34 1.044 0.921 ReCache TaylorSeer ( O = 1 ) 3.30 3.31 551.57 5.42 0.338 0.327 0.082 17.99 0.735 0.303 27.18 6.40 71.07 1.117 0.997 
+
+uniform TaylorSeer ( O = 2 , N = 5 ) 3.49 3.13 551.60 5.42 0.520 0.509 0.151 13.92 0.602 0.293 27.10 6.44 70.46 1.046 0.915 ReCache TaylorSeer ( O = 2 ) 3.49 3.13 551.60 5.42 0.430 0.417 0.099 16.90 0.667 0.304 27.06 6.45 71.09 1.106 1.008 
+
+uniform HiCache ( O = 1 , N = 5 ) 3.64 3.00 551.53 5.42 0.520 0.509 0.151 13.94 0.608 0.290 27.22 6.38 69.68 1.019 0.887 ReCache HiCache ( O = 1 ) 3.64 3.00 551.53 5.42 0.322 0.308 0.062 19.83 0.765 0.296 27.32 6.37 70.44 1.055 0.987 
+
+uniform HiCache ( O = 2 , N = 5 ) 3.89 2.81 551.53 5.42 0.521 0.510 0.151 13.93 0.607 0.290 27.22 6.38 69.69 1.018 0.886 ReCache HiCache ( O = 2 ) 3.89 2.81 551.53 5.42 0.331 0.318 0.072 19.04 0.750 0.300 27.35 6.34 70.69 1.080 0.994 
+
+uniform Taylor-DP ( O = 2 , N = 5 ) 2.09 5.22 551.13 5.43 0.519 0.508 0.151 13.92 0.608 0.291 27.00 6.43 69.52 1.023 0.867 DPCache ( O = 2 , K = 9 ) 2.09 5.22 551.13 5.43 0.433 0.417 0.091 17.36 0.693 0.299 27.58 6.37 70.21 1.112 0.996 ReCache Taylor-DP ( O = 2 ) 2.09 5.22 551.13 5.43 0.410 0.398 0.091 17.52 0.692 0.305 27.20 6.49 70.85 1.133 1.004 13 steps 
+
+13 steps of full inference 2.91 3.75 788.55 3.79 0.484 0.472 0.135 14.67 0.640 0.295 27.08 6.48 69.35 1.027 0.931 uniform FORA ( N = 3 ) 3.77 2.90 789.51 3.79 0.479 0.468 0.135 14.68 0.639 0.296 27.19 6.38 70.12 1.055 0.940 ReCache FORA 3.77 2.90 789.51 3.79 0.256 0.242 0.045 22.32 0.817 0.302 27.13 6.40 70.83 1.088 0.994 
+
+uniform ∆-DiT ( N = 3 ) 5.72 1.91 1523.13 1.96 0.505 0.493 0.149 14.00 0.634 0.283 26.91 6.39 64.83 0.925 0.790 TeaCache 5.72 1.91 1523.13 1.96 0.409 0.398 0.100 16.70 0.697 0.299 27.07 6.43 70.45 1.065 0.996 
+
+ReCache ∆-DiT 5.72 1.91 1523.13 1.96 0.273 0.260 0.046 22.09 0.818 0.295 26.82 6.53 69.46 1.046 0.975 uniform DiCache 3.08 3.55 827.78 3.61 0.471 0.461 0.134 14.72 0.645 0.298 27.01 6.47 70.09 1.065 0.965 DiCache 3.08 3.55 827.78 3.61 0.367 0.357 0.090 17.37 0.726 0.303 26.98 6.48 71.02 1.102 1.001 ReCache DiCache 3.08 3.55 827.78 3.61 0.197 0.185 0.031 24.50 0.866 0.303 27.08 6.44 70.92 1.097 1.026 
+
+uniform TaylorSeer ( O = 1 , N = 3 ) 4.06 2.69 789.54 3.79 0.468 0.457 0.131 14.82 0.643 0.300 27.03 6.47 70.62 1.093 0.991 ReCache TaylorSeer ( O = 1 ) 4.06 2.69 789.54 3.79 0.194 0.184 0.038 23.43 0.854 0.304 27.13 6.38 71.24 1.115 1.029 
+
+uniform TaylorSeer ( O = 2 , N = 3 ) 4.21 2.59 789.58 3.79 0.469 0.459 0.132 14.79 0.642 0.300 26.98 6.48 70.63 1.092 1.001 ReCache TaylorSeer ( O = 2 ) 4.21 2.59 789.58 3.79 0.195 0.186 0.040 22.95 0.853 0.306 27.10 6.47 71.34 1.126 1.041 
+
+uniform HiCache ( O = 1 , N = 3 ) 4.53 2.41 789.51 3.79 0.470 0.460 0.133 14.77 0.643 0.299 27.13 6.43 70.44 1.073 0.964 ReCache HiCache ( O = 1 ) 4.53 2.41 789.51 3.79 0.206 0.196 0.040 22.83 0.847 0.303 27.19 6.39 71.03 1.097 1.027 
+
+uniform HiCache ( O = 2 , N = 3 ) 4.64 2.35 789.51 3.79 0.471 0.460 0.133 14.76 0.642 0.299 27.12 6.44 70.43 1.077 0.967 ReCache HiCache ( O = 2 ) 4.64 2.35 789.51 3.79 0.212 0.201 0.041 22.63 0.843 0.303 27.22 6.39 71.03 1.096 1.045 
+
+uniform Taylor-DP ( O = 2 , N = 3 ) 2.92 3.74 789.15 3.79 0.470 0.459 0.133 14.75 0.643 0.300 27.02 6.49 70.41 1.079 0.987 DPCache ( O = 2 , K = 13 ) 2.92 3.74 789.15 3.79 0.276 0.264 0.053 21.03 0.804 0.307 27.00 6.50 71.13 1.117 1.046 
+
+ReCache Taylor-DP ( O = 2 , N = 3 ) 2.92 3.74 789.15 3.79 0.244 0.230 0.036 23.92 0.845 0.306 27.08 6.48 71.16 1.123 1.034 
+
+Cross-model schedule transfer. A practical question is whether learned caching schedules are specific to a single diffusion backbone or they capture more general structure of the denoising 20 Table 6: Cross-model transfer from Wan2.1 to HunyuanVideo. The ReCache schedule for TaylorSeer is learned on Wan2.1 and applied to HunyuanVideo with a 25-step backbone trajectory without retraining. 
+
+Method Metrics LPIPS ↓ PSNR ↑ SSIM ↑ HPS ↑ VBENCH ↑
+
+25 steps 0 ∞ 1 0.242 78.860 
+
+7 steps 
+
+7 steps of full inference 0.462 17.75 0.690 0.211 75.098 uniform ( O = 1 , N = 6 ) 0.451 17.64 0.684 0.219 76.131 ReCache ( O = 1 ) 0.337 22.93 0.789 0.231 76.807 9 steps 
+
+9 steps of full inference 0.422 18.47 0.708 0.222 75.715 uniform ( O = 1 , N = 5 ) 0.414 18.23 0.698 0.229 77.795 
+
+ReCache ( O = 1 ) 0.201 25.06 0.852 0.238 77.736 
+
+13 steps 
+
+13 steps of full inference 0.359 19.77 0.738 0.231 77.708 uniform ( O = 1 , N = 3 ) 0.349 19.66 0.753 0.237 78.435 ReCache ( O = 1 ) 0.078 32.89 0.950 0.242 78.595 
+
+Table 7: Impact of reducing the number of backbone steps. Results show that ReCache can be applied on both N = 50 and N = 25 to find an optimal schedule.                                                                                                          
+
+> Metrics Method LPIPS ↓L1 ↓PSNR ↑SSIM ↑HPS ↑IR ↑IR DB ↑
+> 50 steps 0.000 0.000 ∞1.000 0.306 1.120 1.008 25 steps 0.000 0.000 ∞1.000 0.304 1.092 1.016
+> 8 steps
+> uniform (25 steps) 0.611 0.146 14.58 0.543 0.224 0.046 0.015 uniform (50 steps) 0.539 0.156 13.71 0.591 0.288 1.002 0.825 ReCache (25 steps) 0.326 0.065 19.84 0.767 0.295 1.048 0.983 ReCache (50 steps) 0.419 0.087 17.55 0.693 0.302 1.113 0.986
+> 9 steps
+> uniform (25 steps) 0.564 0.142 14.72 0.590 0.246 0.496 0.328 uniform (50 steps) 0.518 0.150 13.94 0.605 0.293 1.044 0.921 ReCache (25 steps) 0.231 0.042 22.51 0.833 0.301 1.082 0.994 ReCache (50 steps) 0.338 0.082 17.99 0.735 0.303 1.117 0.997
+> 13 steps
+> uniform (25 steps) 0.512 0.130 15.18 0.628 0.281 0.922 0.730 uniform (50 steps) 0.468 0.131 14.82 0.643 0.300 1.093 0.991 ReCache (25 steps) 0.106 0.020 27.86 0.924 0.303 1.087 1.011 ReCache (50 steps) 0.194 0.038 23.43 0.854 0.304 1.115 1.029
+
+trajectory. To study this, we take a schedule learned by ReCache on Wan2.1 and apply it directly to HunyuanVideo without retraining. Table 6 shows that the transferred schedule remains competitive on HunyuanVideo and substantially improves over standard uniform scheduling. This suggests that effective caching patterns are not purely model-specific. Instead, ReCache appears to identify structural properties of the denoising trajectory that are shared across DiT-based video generation models. 
+
+Reducing the number of backbone inference steps. So far, the main experiments fix the un-derlying denoising trajectory length N and reduce the number of full model evaluations k through caching. However, ReCache can also be combined with a shorter backbone trajectory. For example, one can select K = 13 full evaluations from a N =25-step trajectory rather than from a 50-step trajectory. Table 7 shows that ReCache still remains effective even with fewer backbone steps. This setting further reduces latency because both cache and reuse evaluations are performed over a shorter denoising trajectory. 21 Table 8: Comparison of Gumbel-Top-k and Bernoulli selection on FLUX.1-dev for TaylorSeer (O = 1 ). Cells where |s|̸ = k are highlighted in red . k=7 k=9 k=13                                                      
+
+> |s|HPS LPIPS |s|HPS LPIPS |s|HPS LPIPS Bernoulli λbern = 1 15 0.306 0.150 15 0.306 0.150 15 0.306 0.150 Bernoulli λbern = 10 80.294 0.427 90.304 0.347 13 0.303 0.242 Gumbel-Top-k 70.296 0.499 90.303 0.338 13 0.304 0.194 10 310 210 110 0
+> entropy
+> 0.2
+> 0.3
+> 0.4
+> 0.5
+> 0.6
+> 0.7
+> LPIPS
+> 10 310 210 110 0
+> entropy
+> 0.22
+> 0.24
+> 0.26
+> 0.28
+> 0.30
+> HPS
+> 8 steps 9 steps 13 steps
+
+Figure 7: Effect of the entropy regularization coefficient λentropy on ReCache. Increasing entropy encourages the discovery of more optimal schedules and is particularly beneficial under looser budget constraints; however, excessively high values can slow convergence. 
+
+C.3 Additional ablations 
+
+This section provides extended ablation study on the design choices of ReCache. 
+
+Gumbel-Top-k vs. Bernoulli schedule selection. ReCache uses Gumbel-Top-k to draw a sample of exactly k inference steps, which strictly respects the budget without any auxiliary penalty. An alternative is to use a Bernoulli distribution: each step i is included independently with probability 
+
+pi = σ(θi) (similar to [ 78 ]), and at inference we keep i if pi ≥ 0.5. Because this does not guarantee a fixed budget, we add a penalty   |s| − k  /N to the training objective Lreg with coefficient λbern .Table 8 shows that the Bernoulli alternative either violates the target budget or requires tuning of λbern to approximately meet it (e.g., λbern = 1 still violates it). When the budget is roughly matched ( λbern = 10 ), Gumbel-Top-k is more reliable and performs better for k = 9 and k = 13 .ReCache achieves both strict budget compliance and high-quality results without introducing any budget-related hyperparameter. 
+
+Entropy regularization. The entropy regularizer encourages the policy to explore a broader set of caching schedules during training. Figure 7 ablates the coefficient λentropy . It is especially helpful for looser budget constraints like k = 13 , where the space of possible schedules is broader and benefits from exploration. The benefit has limits: too-large coefficients slow convergence. In our main experiments we set λentropy = 0 .005 and anneal it to zero, which lets the policy explore freely early in training and converge to a high-quality schedule afterwards. 
+
+Image reward loss coefficient. We also provide extended results of the αiq values, which controls the relative importance of the HPS term in the training loss. An extensive discussion can be found in Section 4.3. 22 Table 9: Loss coefficient αiq ablation. The experiments are conducted on FLUX-1.dev with TaylorSeer (O = 1) caching mechanisms. αiq =7 stands for an optimal trade-off between image quality and full-inference fidelity. 
+
+Method Metrics LPIPS ↓ L1 ↓ PSNR ↑ SSIM ↑ HPS ↑ IR ↑ IR DB ↑
+
+8 steps 
+
+uniform 0.539 0.156 13.71 0.591 0.288 1.002 0.825 ReCache ( αiq = 0 ) 0.391 0.086 17.28 0.700 0.291 1.065 0.973 ReCache ( αiq = 1 ) 0.398 0.099 16.73 0.691 0.294 1.075 0.974 ReCache ( αiq = 5 ) 0.419 0.087 17.55 0.693 0.302 1.113 0.986 ReCache ( αiq = 7 ) 0.419 0.087 17.55 0.693 0.302 1.113 0.986 ReCache ( αiq = 10 ) 0.419 0.087 17.55 0.693 0.302 1.113 0.986 ReCache (only HPS) 0.535 0.127 14.99 0.603 0.295 1.062 0.968 
+
+9 steps 
+
+uniform 0.518 0.150 13.94 0.605 0.293 1.044 0.921 ReCache ( αiq = 0 ) 0.341 0.077 18.15 0.739 0.303 1.117 1.016 ReCache ( αiq = 1 ) 0.366 0.093 17.23 0.715 0.302 1.099 1.000 ReCache ( αiq = 5 ) 0.338 0.082 17.99 0.735 0.303 1.117 0.997 ReCache ( αiq = 7 ) 0.338 0.082 17.99 0.735 0.303 1.117 0.997 ReCache ( αiq = 10 ) 0.378 0.082 17.99 0.718 0.307 1.131 0.992 ReCache (only HPS) 0.504 0.124 15.19 0.619 0.300 1.072 0.982 
+
+13 steps 
+
+uniform 0.468 0.131 14.82 0.643 0.300 1.093 0.991 ReCache ( αiq = 0 ) 0.187 0.035 23.94 0.864 0.305 1.115 1.031 ReCache ( αiq = 1 ) 0.200 0.040 22.67 0.847 0.305 1.113 1.028 ReCache ( αiq = 5 ) 0.194 0.038 23.43 0.854 0.304 1.115 1.029 ReCache ( αiq = 7 ) 0.194 0.038 23.43 0.854 0.304 1.115 1.029 ReCache ( αiq = 10 ) 0.203 0.042 22.71 0.847 0.306 1.127 1.054 ReCache (HPS only) 0.448 0.101 16.67 0.675 0.302 1.115 0.999 Table 10: Training time of our ReCache method across different caching mecha-nisms for both text-to-image and text-to-video models. All our experiments were conducted on H100 GPU. 
+
+Caching Method GPU hours FLUX-1.dev 
+
+FORA 20 
+
+∆-DiT 31 DiCache 16 TaylorSeer ( O = 1 ) 22 TaylorSeer ( O = 2 ) 23 HiCache ( O = 1 ) 24 HiCache ( O = 2 ) 25 DPTaylorSeer ( O = 2 ) 16 
+
+Wan2.1 
+
+FORA 603 TaylorSeer ( O = 1 ) 610 HiCache ( O = 1 ) 613 DPTaylorSeer ( O = 2 ) 588 
+
+HunyuanVideo 
+
+TaylorSeer ( O = 1 ) 1110 HiCache ( O = 1 ) 1112 DPTaylorSeer ( O = 2 ) 937 
+
+D Computational resources 
+
+In Table 10 we report the training time of ReCache across different caching mechanisms. FLUX.1-dev is trained for 50 epochs, while the text-to-video models Wan2.1 and HunyuanVideo are trained for 120 epochs. Training time is reported in GPU hours on H100 hardware. 23
