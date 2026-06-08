@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-06-08 <!--dpr-date:20260608-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/08/2606.01599v1-tron-targeted-rule-verifiable-online-environments-for-visual-reasoning-rl" data-sidebar-item="{&quot;title&quot;: &quot;TRON: Targeted Rule-Verifiable Online Environments for Visual Reasoning RL&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.01599v1-tron-targeted-rule-verifiable-online-environments-for-visual-reasoning-rl&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;提供在线环境为RL训练生成图像，可应用于图像生成&quot;}">TRON: Targeted Rule-Verifiable Online Environments for Visual Reasoning RL</a>
   * 2026-06-07 <!--dpr-date:20260607-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/07/2606.01636v1-pave-grpo-beyond-instantaneous-guidance-through-principled-average-velocity-decomposition" data-sidebar-item="{&quot;title&quot;: &quot;Pave-GRPO: Beyond Instantaneous Guidance through Principled Average Velocity Decomposition&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.01636v1-pave-grpo-beyond-instantaneous-guidance-through-principled-average-velocity-decomposition&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用组相对策略优化对齐基于流的生成模型&quot;}">Pave-GRPO: Beyond Instantaneous Guidance through Principled Average Velocity Decomposition</a>

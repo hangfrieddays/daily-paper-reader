@@ -1,0 +1,57 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-08T21:32:54.414665+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.01599v1",
+      "source": "arxiv",
+      "title": "TRON: Targeted Rule-Verifiable Online Environments for Visual Reasoning RL",
+      "abstract": "Reinforcement learning (RL) for visual reasoning needs scalable, verifiable, and controllable training signals. Existing visual RL post-training trains on static curated datasets, with fixed image-question-answer samples bounded by their collection budget. In this work, we introduce TRON (Targeted, Rule-verifiable Online eNvironments), an online environment substrate: a training rollout is generated on demand by a controllable generator-verifier program that samples a fresh latent visual state, renders an image, asks a question, and exactly verifies the answer. A single run can therefore draw an unbounded stream of fresh instances at the difficulty level required by the current curriculum. The current TRON suite contains 520 environments organized into five ability buckets (spatial, mathematical, diagram, pattern/logic, and counting); the same substrate supports both a single full model trained on all buckets and per-bucket ability-specialist models, with no additional data collection. We also introduce a substrate analysis covering generation reliability, instance and level diversity, cross-environment near-duplicates, and base-model pass rate by difficulty level. RL post-training with METHOD consistently improves performance on ten external multimodal reasoning benchmarks across Qwen3-VL-4B, Qwen2.5-VL-7B, and MiMo-VL-7B-SFT.",
+      "authors": [
+        "Tianze Yang",
+        "Yucheng Shi",
+        "Ruitong Sun",
+        "Jingyuan Huang",
+        "Ninghao Liu",
+        "Jin Sun"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-01T02:52:49+00:00",
+      "link": "https://arxiv.org/pdf/2606.01599v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "provides online environment that generates images for RL training, applicable to image generation",
+      "llm_evidence_cn": "提供在线环境为RL训练生成图像，可应用于图像生成",
+      "llm_evidence": "提供在线环境为RL训练生成图像，可应用于图像生成",
+      "canonical_evidence": "提供在线环境为RL训练生成图像，可应用于图像生成",
+      "llm_tldr_en": "TRON proposes an online rule-verifiable environment for visual reasoning RL, generating images on demand for scalable training, which can be adapted for image generation RL.",
+      "llm_tldr_cn": "现有视觉推理强化学习依赖静态数据集，限制了训练规模。TRON提出一种在线环境框架，通过可控生成器实时渲染图像并验证答案，提供无限训练样本。该方法在多个推理任务上提升了样本效率，为RL在视觉领域的应用提供了可扩展的测试平台，其图像生成机制可直接用于图像生成RL任务。",
+      "llm_tldr": "现有视觉推理强化学习依赖静态数据集，限制了训练规模。TRON提出一种在线环境框架，通过可控生成器实时渲染图像并验证答案，提供无限训练样本。该方法在多个推理任务上提升了样本效率，为RL在视觉领域的应用提供了可扩展的测试平台，其图像生成机制可直接用于图像生成RL任务。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

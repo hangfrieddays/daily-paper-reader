@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-08",
+  "date": "2026-06-08",
+  "generated_at": "2026-06-08T21:33:58",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/08/2606.01599v1-tron-targeted-rule-verifiable-online-environments-for-visual-reasoning-rl",
+      "section": "quick",
+      "title_en": "TRON: Targeted Rule-Verifiable Online Environments for Visual Reasoning RL",
+      "authors": "Tianze Yang, Yucheng Shi, Ruitong Sun, Jingyuan Huang, Ninghao Liu, Jin Sun",
+      "date": "2026-06-01",
+      "pdf": "https://arxiv.org/pdf/2606.01599v1",
+      "score": "6.0",
+      "evidence": "提供在线环境为RL训练生成图像，可应用于图像生成",
+      "tldr": "现有视觉推理强化学习依赖静态数据集，受限于样本采集预算。TRON提出在线环境，通过可控生成器-验证器程序按需生成无限训练样本，并支持按难度课程调整。在包含520个环境的五类能力桶上训练后，TRON在Qwen3-VL-4B等三个模型上显著提升十个外部多模态推理基准的性能。该方法提供了可扩展、可验证的在线训练信号。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning (RL) for visual reasoning needs scalable, verifiable, and controllable training signals. Existing visual RL post-training trains on static curated datasets, with fixed image-question-answer samples bounded by their collection budget. In this work, we introduce TRON (Targeted, Rule-verifiable Online eNvironments), an online environment substrate: a training rollout is generated on demand by a controllable generator-verifier program that samples a fresh latent visual state, renders an image, asks a question, and exactly verifies the answer. A single run can therefore draw an unbounded stream of fresh instances at the difficulty level required by the current curriculum. The current TRON suite contains 520 environments organized into five ability buckets (spatial, mathematical, diagram, pattern/logic, and counting); the same substrate supports both a single full model trained on all buckets and per-bucket ability-specialist models, with no additional data collection. We also introduce a substrate analysis covering generation reliability, instance and level diversity, cross-environment near-duplicates, and base-model pass rate by difficulty level. RL post-training with METHOD consistently improves performance on ten external multimodal reasoning benchmarks across Qwen3-VL-4B, Qwen2.5-VL-7B, and MiMo-VL-7B-SFT.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
