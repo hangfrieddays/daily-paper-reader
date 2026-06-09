@@ -6,24 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-08
-- 运行时间：2026-06-08 21:33:52 UTC
+- 最新运行日期：2026-06-09
+- 运行时间：2026-06-09 20:39:39 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：0
 - 精读区：0
-- 速读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日精选1篇速读论文，聚焦视觉推理强化学习的可验证在线环境构建。值得关注的方向是TRON框架提出通过目标规则验证来提升模型在复杂视觉任务中的推理可靠性。建议研究者关注规则驱动的在线环境设计，或可结合自身任务尝试部署类似验证机制。
-- 详情：[/202606/08/README](/202606/08/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202606/09/README](/202606/09/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [TRON: Targeted Rule-Verifiable Online Environments for Visual Reasoning RL](/202606/08/2606.01599v1-tron-targeted-rule-verifiable-online-environments-for-visual-reasoning-rl)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：提供在线环境为RL训练生成图像，可应用于图像生成
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
