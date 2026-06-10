@@ -1,0 +1,95 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-10T21:55:37.011425+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.11075v1",
+      "source": "arxiv",
+      "title": "Exploring the Design Space of Reward Backpropagation for Flow Matching",
+      "abstract": "Aligning text-to-image flow matching models with human preferences via direct reward backpropagation is sample-efficient but hampered by two well-known pathologies: activations cannot be stored across the full sampling trajectory at modern model scale, and chained Jacobian products across steps inflate the reward gradient as it travels back to early indices. Connector-based methods, such as LeapAlign, address these issues by replacing the full backward trajectory with a short pinned path, highlighting a useful decoupling between sampling and optimization. However, the quality of the resulting gradient depends on how accurately this short path approximates the full rollout, especially over long intervals. We propose FlowBP, a unified surrogate-trajectory framework that treats the backward trajectory itself as the design object. FlowBP keeps a no-gradient cached rollout for sampling, then builds a lightweight backward surrogate from cached and selectively re-forwarded velocities. This view separates four choices: the reward-model input, active set, integration weights, and bridge coupling, and recovers prior direct-gradient methods as particular settings. Within this framework, we instantiate three variants: FlowBP-Sparse uses sparse Euler reconstruction, FlowBP-Bridge adds controlled bridge coupling, and FlowBP-Lagrange raises the order of leap quadrature. All three bound memory by the active-set size and limit gradient chaining to at most one Jacobian factor. Across SD3.5-M, FLUX.1-dev, and FLUX.2-Klein-base on preference, quality, and compositional metrics, the three variants improve over direct-gradient baselines on most metrics.",
+      "authors": [
+        "Ruoyu Wang",
+        "Boye Niu",
+        "Xiangxin Zhou",
+        "Yushi Huang",
+        "Tongliang Liu",
+        "Chi Zhang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-09T16:36:54+00:00",
+      "link": "https://arxiv.org/pdf/2606.11075v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "reward backpropagation for text-to-image flow matching",
+      "llm_evidence_cn": "奖励反向传播用于文本到图像流匹配",
+      "llm_evidence": "奖励反向传播用于文本到图像流匹配",
+      "canonical_evidence": "奖励反向传播用于文本到图像流匹配",
+      "llm_tldr_en": "FlowBP proposes a unified surrogate-trajectory method for stable reward backpropagation in text-to-image flow matching, addressing memory and gradient pathology to align with human preferences.",
+      "llm_tldr_cn": "针对文本到图像流匹配模型在直接奖励反向传播中遇到的激活存储和梯度膨胀问题，本文提出FlowBP框架，通过统一代理轨迹策略实现稳定高效的奖励梯度计算。实验证明该方法在保持样本效率的同时显著提升了图像对齐质量，为基于人类偏好的图像生成优化提供了实用方案。",
+      "llm_tldr": "针对文本到图像流匹配模型在直接奖励反向传播中遇到的激活存储和梯度膨胀问题，本文提出FlowBP框架，通过统一代理轨迹策略实现稳定高效的奖励梯度计算。实验证明该方法在保持样本效率的同时显著提升了图像对齐质量，为基于人类偏好的图像生成优化提供了实用方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.11025v1",
+      "source": "arxiv",
+      "title": "Flow-DPPO: Divergence Proximal Policy Optimization for Flow Matching Models",
+      "abstract": "Recent work has demonstrated that online reinforcement learning (RL) can substantially improve the quality and alignment of flow matching models for image and video generation. Methods such as Flow-GRPO and CPS cast the denoising process as a Markov Decision Process and apply PPO-style ratio clipping to enforce a trust region. However, we argue that ratio clipping is structurally ill-suited for flow models: the probability ratio between new and old policies is a noisy, single-sample estimate of the true policy divergence, leading to over-constraining in some regions of the trajectory and under-constraining in others. We propose Flow-DPPO (Flow Divergence Proximal Policy Optimization), which replaces ratio clipping with a divergence proximal constraint. A key observation is that the per-step policy in flow models is Gaussian, enabling exact and cheap computation of the KL divergence between old and new policies. Flow-DPPO employs an asymmetric divergence mask that blocks gradient updates only when they simultaneously move away from the trusted region and violate the divergence threshold. Experiments show that Flow-DPPO achieves higher rewards with better KL-proximal efficiency, alleviates catastrophic forgetting, promotes balanced multi-objective optimization, and enables stable multi-epoch training where ratio clipping degrades. Code and models are available at https://github.com/Tencent-Hunyuan/UniRL/tree/main/FlowDPPO.",
+      "authors": [
+        "Bowen Ping",
+        "Xiangxin Zhou",
+        "Penghui Qi",
+        "Minnan Luo",
+        "Liefeng Bo",
+        "Tianyu Pang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-09T15:59:57+00:00",
+      "link": "https://arxiv.org/pdf/2606.11025v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "RL for flow matching image generation",
+      "llm_evidence_cn": "强化学习用于流匹配图像生成",
+      "llm_evidence": "强化学习用于流匹配图像生成",
+      "canonical_evidence": "强化学习用于流匹配图像生成",
+      "llm_tldr_en": "Flow-DPPO replaces ratio clipping with divergence proximal optimization for online RL finetuning of flow matching models, improving image generation quality and alignment.",
+      "llm_tldr_cn": "现有流匹配模型的在线强化学习方法使用PPO风格的比率裁剪，但该机制不适于流模型，导致约束不均匀。本文提出Flow-DPPO，用散度近端约束替代比率裁剪，在保持信任区域的同时避免过约束或欠约束。在图像和视频生成任务上的实验表明，该方法显著提升生成质量和指令对齐效果。该工作为利用强化学习优化生成模型提供了更稳定的算法框架。",
+      "llm_tldr": "现有流匹配模型的在线强化学习方法使用PPO风格的比率裁剪，但该机制不适于流模型，导致约束不均匀。本文提出Flow-DPPO，用散度近端约束替代比率裁剪，在保持信任区域的同时避免过约束或欠约束。在图像和视频生成任务上的实验表明，该方法显著提升生成质量和指令对齐效果。该工作为利用强化学习优化生成模型提供了更稳定的算法框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
