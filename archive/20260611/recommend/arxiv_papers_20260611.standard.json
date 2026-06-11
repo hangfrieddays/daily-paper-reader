@@ -1,0 +1,233 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-11T21:52:12.126240+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2606.09076v1",
+      "source": "arxiv",
+      "title": "Beyond Scalar Rewards by Internalizing Reasoning into Score Distributions",
+      "abstract": "Reward models are central to text-to-image post-training, but visual preference is subjective and better represented as a distribution over rubric scores than as a deterministic scalar. Existing scalar, score-token, and pairwise reward models over-compress uncertainty and fine-grained score differences, while reasoning-based generative rewards provide stronger judgments but are costly to deploy and difficult to use as direct optimization signals. We propose Z-Reward, a teacher-student reward modeling framework that decouples reasoning-heavy judgment from efficient reward deployment. The teacher is a large VLM that uses reasoning to infer rubric-aligned score distributions, and is trained with Group-wise Direct Score Optimization (GDSO), which combines policy-gradient rewards from distribution expectations with direct pointwise and pairwise supervision on score distributions and score gaps. The student is trained with Reasoning-Internalized Score Distillation (RISD), which transfers the teacher's reasoning-conditioned score distribution into a compact VLM without requiring explicit reasoning chains at inference time. On our internally annotated evaluation set, the 27B GDSO teacher reaches 89.6% human preference accuracy, outperforming SFT, RewardDance, and GRPO, while the 9B RISD student reaches 88.6%, outperforming the OPD baseline and closely matching the larger teacher. We further show that Z-Reward can serve as a differentiable reward signal for text-to-image optimization, yielding a 41.3% net human-preference improvement over the SFT baseline.",
+      "authors": [
+        "Xin Jin",
+        "Huanqia Cai",
+        "Zhen Li",
+        "Zechao Zhan",
+        "Dengyang Jiang",
+        "Aiming Hao",
+        "Yuming Jiang",
+        "Chunle Guo",
+        "Peng Gao",
+        "Ming-Ming Cheng",
+        "Steven C. H. Hoi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-08T06:20:12+00:00",
+      "link": "https://arxiv.org/pdf/2606.09076v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "proposes reward modeling framework for text-to-image post-training",
+      "llm_evidence_cn": "提出面向文本到图像后训练的奖励建模框架，核心解决奖励函数设计",
+      "llm_evidence": "提出面向文本到图像后训练的奖励建模框架，核心解决奖励函数设计",
+      "canonical_evidence": "提出面向文本到图像后训练的奖励建模框架，核心解决奖励函数设计",
+      "llm_tldr_en": "Z-Reward introduces a teacher-student reward framework that outputs score distributions via reasoning, improving text-to-image alignment.",
+      "llm_tldr_cn": "文本到图像后训练中，现有奖励模型过度压缩不确定性且部署成本高。本文提出Z-Reward教师-学生框架，教师大VLM通过推理生成符合评分标准的分面分布，学生模型高效部署。组别直接分数优化策略结合分布对齐和偏好排序损失，在图像生成奖励建模上达到最优，为图像生成奖励函数设计提供了新范式。",
+      "llm_tldr": "文本到图像后训练中，现有奖励模型过度压缩不确定性且部署成本高。本文提出Z-Reward教师-学生框架，教师大VLM通过推理生成符合评分标准的分面分布，学生模型高效部署。组别直接分数优化策略结合分布对齐和偏好排序损失，在图像生成奖励建模上达到最优，为图像生成奖励函数设计提供了新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.12072v1",
+      "source": "arxiv",
+      "title": "World Model Self-Distillation: Training World Models to Solve General Tasks",
+      "abstract": "Pretrained video generators are promising visual world models that exhibit emergent task-solving abilities; however, their reliance on detailed textual descriptions limits their direct use for planning and decision-making. Existing approaches either outsource this reasoning to language or vision-language models, or rely on supervised fine-tuning with paired task-execution videos, which are costly to collect and difficult to scale. We propose a scalable framework that elicits task-solving ability in such models by combining self-distillation with reinforcement learning. Given an unlabeled scene image, a vision-language model generates a candidate task and a detailed step-by-step solution. The solution conditions a pretrained video diffusion model, the Demonstrator; we distill its behavior into an Executor conditioned only on the image and a short task prompt. This transfers execution knowledge from caption-guided generation to instruction-conditioned task solving without curated task-video supervision. We further improve the Executor with reinforcement learning from VLM feedback, exploiting the asymmetry between judging whether a sampled video satisfies a task and generating the solution. Experiments on our proposed WorldTasks-Benchmark and the DreamGen robotics benchmark show that the Executor surpasses the Demonstrator under our VLM-based evaluation protocol and transfers competitively to robotic tasks.",
+      "authors": [
+        "Sebastian Stapf",
+        "Pablo Acuaviva Huertos",
+        "Aram Davtyan",
+        "Paolo Favaro"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-10T13:40:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.12072v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses reinforcement learning with world model and diffusion for task solving",
+      "llm_evidence_cn": "将强化学习与扩散世界模型结合以解决通用任务",
+      "llm_evidence": "将强化学习与扩散世界模型结合以解决通用任务",
+      "canonical_evidence": "将强化学习与扩散世界模型结合以解决通用任务",
+      "llm_tldr_en": "World Model Self-Distillation combines self-distillation and reinforcement learning to elicit task-solving ability in pretrained video diffusion models, enabling planning without paired task videos.",
+      "llm_tldr_cn": "现有视频扩散模型作为世界模型虽有任务解决潜力，但依赖详细文本描述或监督微调。本文提出可扩展框架，通过自蒸馏与强化学习结合，利用视觉语言模型生成任务和步骤，再以扩散模型生成视频用于RL训练。实验表明该方法能有效激发模型规划能力，无需配对数据。",
+      "llm_tldr": "现有视频扩散模型作为世界模型虽有任务解决潜力，但依赖详细文本描述或监督微调。本文提出可扩展框架，通过自蒸馏与强化学习结合，利用视觉语言模型生成任务和步骤，再以扩散模型生成视频用于RL训练。实验表明该方法能有效激发模型规划能力，无需配对数据。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.08016v1",
+      "source": "arxiv",
+      "title": "IEA: Amateur-Friendly Conversational Image Editing Agent via Three Stages of Multitask Alignment",
+      "abstract": "Current image editing software often hinges on fixed filters or expert tuning, leaving a gap between amateur users' intent and outcomes. Creations by generative models may contain artifacts, implausible details, or stylistic drift away from photorealism and offer little insight into why an edit was made. We propose IEA, a conversational Image Editing Agent that learns to operate parameterized tools in an explicit, interpretable action space. IEA is trained via a three-stage multitask pipeline: (1) SFT on distilled expert edits, (2) GRPO with rewards for likeness improvement, tool usefulness, and intent summarization, and (3) large-scale synthetic fine-tuning to jointly master image editing, refinement, and user intent summarization. By manipulating 16 editing tools step by step, IEA produces transparent edit traces that can be inspected and debugged. In quantitative experiments, it attains a lower pixel distance on the edit task and a higher ROUGE-L on the summary task than strong baselines. In user studies, it ranks best among tool-calling methods for instruction following while surpassing generative methods in overall perceptual quality. Our results validate interpretable, tool-centric VLMs as a reliable path to human instruction-guided image retouching.",
+      "authors": [
+        "Zichen Zhu",
+        "Yuheng Sun",
+        "Mingxuan Zhu",
+        "Wenjie Ma",
+        "Situo Zhang",
+        "Zhexiang Wang",
+        "Ziyue Yang",
+        "Danyang Zhang",
+        "Kunyao Lan",
+        "Zihan Zhao",
+        "Dingye Liu",
+        "Siqi Xiang",
+        "Lu Chen",
+        "Kai Yu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-06T07:11:08+00:00",
+      "link": "https://arxiv.org/pdf/2606.08016v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses GRPO with rewards for image editing tasks",
+      "llm_evidence_cn": "使用GRPO强化学习，设计奖励改进图像编辑效果",
+      "llm_evidence": "使用GRPO强化学习，设计奖励改进图像编辑效果",
+      "canonical_evidence": "使用GRPO强化学习，设计奖励改进图像编辑效果",
+      "llm_tldr_en": "IEA uses multi-stage training including GRPO reinforcement learning with reward functions for image editing improvement.",
+      "llm_tldr_cn": "现有图像编辑软件难以满足业余用户需求，生成模型常出现伪影和不自然细节。本文提出IEA对话式图像编辑代理，通过三阶段多任务训练，其中第二阶段采用GRPO强化学习，设计相似度改善、工具有用性和意图总结奖励。实验表明IEA能有效提升编辑质量和用户意图对齐，为图像编辑引入可解释的强化学习奖励设计。",
+      "llm_tldr": "现有图像编辑软件难以满足业余用户需求，生成模型常出现伪影和不自然细节。本文提出IEA对话式图像编辑代理，通过三阶段多任务训练，其中第二阶段采用GRPO强化学习，设计相似度改善、工具有用性和意图总结奖励。实验表明IEA能有效提升编辑质量和用户意图对齐，为图像编辑引入可解释的强化学习奖励设计。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.11838v1",
+      "source": "arxiv",
+      "title": "Plan-and-Verify Video Reward Reasoning with Spatio-Temporal Scene Graph Grounding",
+      "abstract": "Reward models for text-to-video (T2V) generation guide post-training but often fail at fine-grained semantic alignment. We trace this to two structural weaknesses in existing reasoning-based reward models: they do not systematically verify every condition described in the prompt, and the visual evidence supporting each judgment remains implicit in their free-form reasoning. We propose SG-PVR, a video reward model that addresses these limitations through plan-and-verify reasoning grounded in spatio-temporal scene graphs. The verification plan decomposes the prompt into atomic claims, ensuring every requirement is checked. The spatio-temporal scene graph, encoding entities, attributes, and temporally-grounded relations, is extracted from the video and maintained as a persistent structured visual reference throughout reasoning. Each claim is verified against both the video and the scene graph, anchoring judgments in explicit visual evidence. SG-PVR achieves strong performance on semantic alignment, including fine-grained temporal semantics. As a test-time reranker, it further enhances compositional alignment in T2V generation.",
+      "authors": [
+        "Hyomin Kim",
+        "Junghye Kim",
+        "Joanie Hayoun Chung",
+        "Yoonjin Oh",
+        "Kyungjae Lee",
+        "Sungbin Lim",
+        "Sungwoong Kim"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-10T09:18:14+00:00",
+      "link": "https://arxiv.org/pdf/2606.11838v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "designs reward reasoning for video generation with grounding",
+      "llm_evidence_cn": "为视频生成设计奖励推理模型，可迁移到图像生成",
+      "llm_evidence": "为视频生成设计奖励推理模型，可迁移到图像生成",
+      "canonical_evidence": "为视频生成设计奖励推理模型，可迁移到图像生成",
+      "llm_tldr_en": "SG-PVR proposes a plan-and-verify video reward model using scene graphs for fine-grained semantic alignment in T2V generation.",
+      "llm_tldr_cn": "文本到视频生成中的奖励模型常缺乏细粒度语义对齐。本文提出SG-PVR奖励模型，通过规划-验证推理和时空场景图对提示条件进行原子化分解与检查，确保每项要求被验证。该方法可泛化到图像生成奖励设计，为生成任务提供可解释、结构化的奖励信号。",
+      "llm_tldr": "文本到视频生成中的奖励模型常缺乏细粒度语义对齐。本文提出SG-PVR奖励模型，通过规划-验证推理和时空场景图对提示条件进行原子化分解与检查，确保每项要求被验证。该方法可泛化到图像生成奖励设计，为生成任务提供可解释、结构化的奖励信号。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.11982v1",
+      "source": "arxiv",
+      "title": "PAWS: Preference Learning with Advantage-Weighted Segments",
+      "abstract": "Preference-based reinforcement learning (PbRL) learns policies from human trajectory-level comparisons, avoiding explicit reward design and expert demonstrations. Existing methods typically train utility functions on trajectory or segment-level preferences while relying on per-step utility estimates during policy optimization. This training and inference mismatch induces a distribution shift that severely degrades temporal credit assignment and limits policy learning. We analyze this issue and propose PAWS, a segment-based preference learning method that performs policy updates directly using segment-level advantage functions. By aligning utility training with policy optimization, PAWS preserves trajectory-level preference information and avoids unreliable per-step learning signals. Experiments on simulated robotic manipulation and locomotion tasks demonstrate that PAWS consistently outperforms existing PbRL approaches, highlighting the importance of distribution-consistent preference learning.",
+      "authors": [
+        "Aleksandar Taranovic",
+        "Onur Celik",
+        "Niklas Freymuth",
+        "Ge Li",
+        "Serge Thilges",
+        "Huy Le",
+        "Tai Hoang",
+        "Rania Rayyes",
+        "Gerhard Neumann"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-10T12:00:17+00:00",
+      "link": "https://arxiv.org/pdf/2606.11982v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Preference learning method applicable to reward design for image generation",
+      "llm_evidence_cn": "偏好学习方法可应用于图像生成的奖励函数设计",
+      "llm_evidence": "偏好学习方法可应用于图像生成的奖励函数设计",
+      "canonical_evidence": "偏好学习方法可应用于图像生成的奖励函数设计",
+      "llm_tldr_en": "PAWS proposes a segment-based preference learning RL method using advantage-weighted segments, aligning utility training with policy optimization to improve credit assignment. Its general framework can be adapted to design reward functions for image generation tasks by learning from human preferences on generated images.",
+      "llm_tldr_cn": "现有偏好强化学习方法在训练和推理之间存在分布偏移，导致时序信用分配不佳。PAWS提出一种基于片段的偏好学习方法，直接利用片段级优势函数进行策略更新，从而保持了轨迹级偏好信息。该方法避免了逐步效用估计的不稳定性，提升了策略学习性能。由于其通用性，PAWS可用于图像生成任务中，通过人类对生成图像的偏好来隐式设计奖励函数，从而无需手工定义奖励。",
+      "llm_tldr": "现有偏好强化学习方法在训练和推理之间存在分布偏移，导致时序信用分配不佳。PAWS提出一种基于片段的偏好学习方法，直接利用片段级优势函数进行策略更新，从而保持了轨迹级偏好信息。该方法避免了逐步效用估计的不稳定性，提升了策略学习性能。由于其通用性，PAWS可用于图像生成任务中，通过人类对生成图像的偏好来隐式设计奖励函数，从而无需手工定义奖励。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
