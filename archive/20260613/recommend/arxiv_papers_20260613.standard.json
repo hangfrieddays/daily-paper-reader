@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-13T20:26:51.769782+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.11838v1",
+      "source": "arxiv",
+      "title": "Plan-and-Verify Video Reward Reasoning with Spatio-Temporal Scene Graph Grounding",
+      "abstract": "Reward models for text-to-video (T2V) generation guide post-training but often fail at fine-grained semantic alignment. We trace this to two structural weaknesses in existing reasoning-based reward models: they do not systematically verify every condition described in the prompt, and the visual evidence supporting each judgment remains implicit in their free-form reasoning. We propose SG-PVR, a video reward model that addresses these limitations through plan-and-verify reasoning grounded in spatio-temporal scene graphs. The verification plan decomposes the prompt into atomic claims, ensuring every requirement is checked. The spatio-temporal scene graph, encoding entities, attributes, and temporally-grounded relations, is extracted from the video and maintained as a persistent structured visual reference throughout reasoning. Each claim is verified against both the video and the scene graph, anchoring judgments in explicit visual evidence. SG-PVR achieves strong performance on semantic alignment, including fine-grained temporal semantics. As a test-time reranker, it further enhances compositional alignment in T2V generation.",
+      "authors": [
+        "Hyomin Kim",
+        "Junghye Kim",
+        "Joanie Hayoun Chung",
+        "Yoonjin Oh",
+        "Kyungjae Lee",
+        "Sungbin Lim",
+        "Sungwoong Kim"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-10T09:18:14+00:00",
+      "link": "https://arxiv.org/pdf/2606.11838v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "video reward model for text-to-video generation, directly relevant to reward design for image generation",
+      "llm_evidence_cn": "用于文本到视频生成的视频奖励模型，与图像生成奖励设计直接相关",
+      "llm_evidence": "用于文本到视频生成的视频奖励模型，与图像生成奖励设计直接相关",
+      "canonical_evidence": "用于文本到视频生成的视频奖励模型，与图像生成奖励设计直接相关",
+      "llm_tldr_en": "Proposes SG-PVR, a video reward model that uses plan-and-verify reasoning grounded in spatio-temporal scene graphs, enabling fine-grained semantic alignment for text-to-video generation.",
+      "llm_tldr_cn": "现有文本到视频生成的后训练奖励模型在细粒度语义对齐上存在不足，原因是缺乏系统验证和视觉证据不明确。本文提出SG-PVR，一种基于时空场景图的规划验证视频奖励模型，通过将提示分解为原子声明并提取包含实体、属性和时序关系的场景图进行验证，确保每个条件都被检查。实验表明该方法显著提升了视频文本对齐效果，为生成任务的奖励函数设计提供了新范式。",
+      "llm_tldr": "现有文本到视频生成的后训练奖励模型在细粒度语义对齐上存在不足，原因是缺乏系统验证和视觉证据不明确。本文提出SG-PVR，一种基于时空场景图的规划验证视频奖励模型，通过将提示分解为原子声明并提取包含实体、属性和时序关系的场景图进行验证，确保每个条件都被检查。实验表明该方法显著提升了视频文本对齐效果，为生成任务的奖励函数设计提供了新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.08015v1",
+      "source": "arxiv",
+      "title": "Q-VGM: Q-Guided Value-Gradient Matching for Flow-Matching VLA Policies",
+      "abstract": "We propose Q-Guided Value-Gradient Matching (Q-VGM), an off-policy reinforcement learning (RL) method that tackles a long-standing challenge in fine-tuning flow-matching vision-language-action (VLA) policies: efficiently improving an expressive flow-matching action expert with respect to a learned Q-function. Effective improvement must exploit the first-order (gradient) information of the critic, but this is difficult for flow policies, because directly back-propagating the value through their multi-step denoising process is numerically unstable at VLA scale, while the tractable action likelihoods required by policy-gradient methods are unavailable under iterative denoising. Existing value-based methods either backpropagate through the full denoising chain, use the critic only at test time without updating the policy, or distill critic-improved actions as terminal labels without supervising the velocity field. Q-VGM sidesteps these issues by leveraging VGG-Flow, a value-gradient view of flow alignment in generative modeling that transforms value gradient into a denoising-time value-gradient field rather than an unstable end-to-end objective. This requires no action likelihoods and no backpropagation through the denoising chain, and operates on a fixed replay buffer. The critic is an action-sensitive Cal-QL ensemble over compact RLT features with per-layer action injection. Q-VGM enables a practical few-shot initialization then learn-from-experience paradigm: starting from a few-shot-SFT pi0.5 VLA, the method leverages self-generated rollout data to substantially improve task performance without additional expert supervision. On LIBERO, Q-VGM raises the average success rate from 75.0% to 92.5%; on RoboTwin 2.0, from 76.4% to 87.2%; and on two real-robot tabletop tasks, from 40.0% to 67.5%, outperforming all same-backbone, same-critic baselines across all three settings.",
+      "authors": [
+        "Ziqian Wang",
+        "Jiayu Sun",
+        "Xingjian Mao",
+        "Minqian Wang",
+        "Yao Mu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-06T07:10:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.08015v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "off-policy RL method for fine-tuning flow-matching policies, applicable to image generation",
+      "llm_evidence_cn": "用于微调流匹配策略的离策略强化学习方法，可应用于图像生成",
+      "llm_evidence": "用于微调流匹配策略的离策略强化学习方法，可应用于图像生成",
+      "canonical_evidence": "用于微调流匹配策略的离策略强化学习方法，可应用于图像生成",
+      "llm_tldr_en": "Q-VGM proposes off-policy RL for flow-matching policies by leveraging gradient information from a critic, enabling efficient improvement of generative models like those used in image synthesis.",
+      "llm_tldr_cn": "针对流匹配视觉-语言-动作策略在强化学习微调中面临的数值不稳定问题，本文提出Q-VGM，一种基于Q值引导的价值梯度匹配离策略RL方法。该方法通过利用评论家的一阶梯度信息，避免直接反向传播通过完整去噪过程，从而有效提升流匹配策略的性能。实验表明其在多个控制任务上取得显著改进。该方法可迁移至基于流的图像生成模型的RL微调。",
+      "llm_tldr": "针对流匹配视觉-语言-动作策略在强化学习微调中面临的数值不稳定问题，本文提出Q-VGM，一种基于Q值引导的价值梯度匹配离策略RL方法。该方法通过利用评论家的一阶梯度信息，避免直接反向传播通过完整去噪过程，从而有效提升流匹配策略的性能。实验表明其在多个控制任务上取得显著改进。该方法可迁移至基于流的图像生成模型的RL微调。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

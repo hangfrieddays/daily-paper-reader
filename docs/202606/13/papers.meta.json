@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-13",
+  "date": "2026-06-13",
+  "generated_at": "2026-06-13T20:28:48",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/13/2606.11838v1-plan-and-verify-video-reward-reasoning-with-spatio-temporal-scene-graph-grounding",
+      "section": "deep",
+      "title_en": "Plan-and-Verify Video Reward Reasoning with Spatio-Temporal Scene Graph Grounding",
+      "authors": "Hyomin Kim, Junghye Kim, Joanie Hayoun Chung, Yoonjin Oh, Kyungjae Lee, Sungbin Lim, Sungwoong Kim",
+      "date": "2026-06-10",
+      "pdf": "https://arxiv.org/pdf/2606.11838v1",
+      "score": "8.0",
+      "evidence": "用于文本到视频生成的视频奖励模型，与图像生成奖励设计直接相关",
+      "tldr": "针对文本到视频生成中奖励模型细粒度语义对齐不足的问题，提出SG-PVR模型。该方法将提示分解为原子声明，并提取时空场景图作为结构化视觉证据，通过计划验证推理确保每个条件都被检查。实验表明，SG-PVR在语义对齐，尤其是时间语义上表现优异，作为测试时重排序器能提升组合对齐。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reward models for text-to-video (T2V) generation guide post-training but often fail at fine-grained semantic alignment. We trace this to two structural weaknesses in existing reasoning-based reward models: they do not systematically verify every condition described in the prompt, and the visual evidence supporting each judgment remains implicit in their free-form reasoning. We propose SG-PVR, a video reward model that addresses these limitations through plan-and-verify reasoning grounded in spatio-temporal scene graphs. The verification plan decomposes the prompt into atomic claims, ensuring every requirement is checked. The spatio-temporal scene graph, encoding entities, attributes, and temporally-grounded relations, is extracted from the video and maintained as a persistent structured visual reference throughout reasoning. Each claim is verified against both the video and the scene graph, anchoring judgments in explicit visual evidence. SG-PVR achieves strong performance on semantic alignment, including fine-grained temporal semantics. As a test-time reranker, it further enhances compositional alignment in T2V generation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/13/2606.08015v1-q-vgm-q-guided-value-gradient-matching-for-flow-matching-vla-policies",
+      "section": "quick",
+      "title_en": "Q-VGM: Q-Guided Value-Gradient Matching for Flow-Matching VLA Policies",
+      "authors": "Ziqian Wang, Jiayu Sun, Xingjian Mao, Minqian Wang, Yao Mu",
+      "date": "2026-06-06",
+      "pdf": "https://arxiv.org/pdf/2606.08015v1",
+      "score": "7.0",
+      "evidence": "用于微调流匹配策略的离策略强化学习方法，可应用于图像生成",
+      "tldr": "针对流匹配VLA策略微调中直接反向传播价值函数不稳定、且无法利用动作似然的问题，提出Q-VGM方法，通过VGG-Flow将价值梯度转化为去噪时间梯度场，无需反向传播去噪链和动作似然。在LIBERO、RoboTwin及真实机器人任务上成功率分别从75.0%提升至92.5%、从76.4%提升至87.2%及从40.0%提升至67.5%，超越了同骨干网络与同评价器的基线方法。该方法实现了从少样本初始化到自主学习的实用范式，显著提升了任务性能。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We propose Q-Guided Value-Gradient Matching (Q-VGM), an off-policy reinforcement learning (RL) method that tackles a long-standing challenge in fine-tuning flow-matching vision-language-action (VLA) policies: efficiently improving an expressive flow-matching action expert with respect to a learned Q-function. Effective improvement must exploit the first-order (gradient) information of the critic, but this is difficult for flow policies, because directly back-propagating the value through their multi-step denoising process is numerically unstable at VLA scale, while the tractable action likelihoods required by policy-gradient methods are unavailable under iterative denoising. Existing value-based methods either backpropagate through the full denoising chain, use the critic only at test time without updating the policy, or distill critic-improved actions as terminal labels without supervising the velocity field. Q-VGM sidesteps these issues by leveraging VGG-Flow, a value-gradient view of flow alignment in generative modeling that transforms value gradient into a denoising-time value-gradient field rather than an unstable end-to-end objective. This requires no action likelihoods and no backpropagation through the denoising chain, and operates on a fixed replay buffer. The critic is an action-sensitive Cal-QL ensemble over compact RLT features with per-layer action injection. Q-VGM enables a practical few-shot initialization then learn-from-experience paradigm: starting from a few-shot-SFT pi0.5 VLA, the method leverages self-generated rollout data to substantially improve task performance without additional expert supervision. On LIBERO, Q-VGM raises the average success rate from 75.0% to 92.5%; on RoboTwin 2.0, from 76.4% to 87.2%; and on two real-robot tabletop tasks, from 40.0% to 67.5%, outperforming all same-backbone, same-critic baselines across all three settings.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
