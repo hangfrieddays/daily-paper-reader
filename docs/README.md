@@ -6,28 +6,31 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-13
-- 运行时间：2026-06-13 20:28:39 UTC
+- 最新运行日期：2026-06-14
+- 运行时间：2026-06-14 21:04:50 UTC
 - 运行状态：成功
-- 本次总论文数：2
+- 本次总论文数：3
 - 精读区：1
-- 速读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-1) 今日精读与速读共2篇，聚焦视频奖励推理和VLA策略两大方向。  
-2) 值得关注精读论文《Plan-and-Verify Video Reward Reasoning with Spatio-Temporal Scene Graph Grounding》（8.0/10），其提出用时空场景图增强视频奖励模型的推理与验证能力。  
-3) 下一步可重点探索场景图对视频奖励模型的具体改进机制，并评估其在实际任务中的迁移效果。
-- 详情：[/202606/13/README](/202606/13/README)
+1) 今日聚焦强化学习在视觉生成中的突破：无奖励强化学习实现逼真语音同步视频生成，以及可信图像/视频描述与超分辨率的偏好优化。  
+2) 最值得关注的方向：ReFree利用多层语音引导与奖赏无关强化学习生成高真实度唇形视频；FoA-SR提出忠实与美学双重偏好的超分辨率优化，平衡感知质量与细节保真。  
+3) 建议读者优先关注ReFree在语音-视频生成中的免写奖励函数设计，以及FoA-SR如何解决真实场景下超分辨率“忠实vs美观”的权衡问题。
+- 详情：[/202606/14/README](/202606/14/README)
 
 ### 精读区论文标签
-1. [Plan-and-Verify Video Reward Reasoning with Spatio-Temporal Scene Graph Grounding](/202606/13/2606.11838v1-plan-and-verify-video-reward-reasoning-with-spatio-temporal-scene-graph-grounding)  
+1. [ReFree: Towards Realistic Co-Speech Video Generation via Reward-Free RL and Multilevel Speech Guidance](/202606/14/2606.13304v1-refree-towards-realistic-co-speech-video-generation-via-reward-free-rl-and-multilevel-speech-guidance)  
    标签：评分：8.0/10、query:image-gen-rl
-   evidence：用于文本到视频生成的视频奖励模型，与图像生成奖励设计直接相关
+   evidence：使用强化学习进行视频生成，无奖励强化学习方法
 
 ### 速读区论文标签
-1. [Q-VGM: Q-Guided Value-Gradient Matching for Flow-Matching VLA Policies](/202606/13/2606.08015v1-q-vgm-q-guided-value-gradient-matching-for-flow-matching-vla-policies)  
+1. [CapRL++: Unified Reinforcement Learning with Verifiable Rewards for Dense Image and Video Captioning](/202606/14/2606.09393v1-caprl-unified-reinforcement-learning-with-verifiable-rewards-for-dense-image-and-video-captioning)  
    标签：评分：7.0/10、query:image-gen-rl
-   evidence：用于微调流匹配策略的离策略强化学习方法，可应用于图像生成
+   evidence：将可验证奖励强化学习应用于图像/视频字幕，与生成任务中奖励设计相关
+2. [FoA-SR: Faithful or Aesthetic? Profile-Aware Preference Optimization for Real-World Image Super-Resolution](/202606/14/2606.10275v1-foa-sr-faithful-or-aesthetic-profile-aware-preference-optimization-for-real-world-image-super-resolution)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：偏好优化用于图像超分辨率
 
 
 <div class="dpr-home-promo-card">

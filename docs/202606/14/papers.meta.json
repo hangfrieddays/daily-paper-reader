@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-14",
+  "date": "2026-06-14",
+  "generated_at": "2026-06-14T21:04:58",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/14/2606.13304v1-refree-towards-realistic-co-speech-video-generation-via-reward-free-rl-and-multilevel-speech-guidance",
+      "section": "deep",
+      "title_en": "ReFree: Towards Realistic Co-Speech Video Generation via Reward-Free RL and Multilevel Speech Guidance",
+      "authors": "Salaheldin Mohamed, M. Hamza Mughal, Rishabh Dabral, Christian Theobalt",
+      "date": "2026-06-11",
+      "pdf": "https://arxiv.org/pdf/2606.13304v1",
+      "score": "8.0",
+      "evidence": "使用强化学习进行视频生成，无奖励强化学习方法",
+      "tldr": "语音驱动说话动画在唇同步和自然表情间难以平衡。ReFree-S2V提出多级语音表示分别捕捉音素和韵律信息，通过可学习层级选择器注入Transformer，并引入无奖励强化学习训练自然头部运动。该方法在定量唇同步精度和定性自然度上均达到当前最优，实现了精准唇同步与丰富表情的统一。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Speech-driven talking character animation seeks to generate life-like portrait videos that convey natural conversation behavior, aligning facial motion with spoken audio. Although recent advances in video generation have substantially improved realism in video-based animation, achieving both accurate lip articulation and expressive behavior remains challenging. Existing approaches typically trade off precise phoneme-to-lip synchronization against dynamic facial expressions and head motion, yielding animations that are either accurate yet rigid, or expressive but poorly synchronized. We address this challenge by proposing ReFree-S2V, a flow-matching speech-to-portrait animation framework that builds upon a pretrained video generation model to achieve fine-grained speech articulation and high-level expressive cues in speech-driven portrait animation. This model introduces a multi-level speech representation capturing phonetic and prosodic information at both local and global granularities. These representations are selectively injected into transformer blocks via learnable level selectors, enabling both accurate lip synchronization and natural expressive motion. To achieve natural head movements, we further introduce a novel reward-free reinforcement learning scheme into flow-matching training to discourage perceptually implausible motion without relying on handcrafted synchronization metrics or reward models, or the high cost of human preference annotation. Extensive experiments demonstrate that ReFree-S2V achieves state-of-the-art performance, significantly outperforming existing methods in both quantitative lip-sync accuracy and qualitative human evaluations of naturalness and expressivity.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/14/2606.09393v1-caprl-unified-reinforcement-learning-with-verifiable-rewards-for-dense-image-and-video-captioning",
+      "section": "quick",
+      "title_en": "CapRL++: Unified Reinforcement Learning with Verifiable Rewards for Dense Image and Video Captioning",
+      "authors": "Penghui Yang, Long Xing, Xiaoyi Dong, Yuhang Zang, Yuhang Cao, Yibin Wang, Yujie Zhou, Jiazi Bu, Jianze Liang, Qidong Huang, Jiaqi Wang, Feng Wu, Dahua Lin",
+      "date": "2026-06-08",
+      "pdf": "https://arxiv.org/pdf/2606.09393v1",
+      "score": "7.0",
+      "evidence": "将可验证奖励强化学习应用于图像/视频字幕，与生成任务中奖励设计相关",
+      "tldr": "现有图像视频描述依赖监督微调(SFT)，受限于昂贵标注和泛化不足，模型易记忆标准答案。本文CapRL++将可验证奖励强化学习(RLVR)引入多模态描述，重新定义描述质量为其效用：高质量描述应使无视觉大语言模型能准确回答相关问题。采用解耦两阶段：LVLM生成描述，视觉无关LLM基于描述回答多项选择题，以准确率作为奖励。在20+图像视频基准上，密集描述质量显著提升，小模型达到Qwen2.5-VL-72B等大模型水平。CapRL++有效训练模型生成泛化高保真描述，建立超越传统SFT的鲁棒基础。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Image and video captioning are fundamental tasks that bridge the visual and linguistic domains, playing a critical role in pre-training Large Vision-Language Models (LVLMs). Current state-of-the-art captioning models are typically trained with Supervised Fine-Tuning (SFT), a paradigm that relies on expensive, non-scalable annotations and often causes models to memorize specific ground-truth answers, limiting their generality and ability to generate diverse, creative descriptions. To overcome these limitations, we propose applying Reinforcement Learning with Verifiable Rewards (RLVR) to the open-ended task of multimodal captioning. We introduce Captioning Reinforcement Learning++ (CapRL++), a novel reference-free training framework that redefines caption quality through its utility: a high-quality caption should enable a non-visual language model to accurately answer questions about the corresponding visual content. CapRL++ employs a decoupled two-stage pipeline where an LVLM generates a caption, and the objective reward is derived from the accuracy of a separate, vision-free LLM answering Multiple-Choice Questions based solely on that caption. Evaluations on more than 20 image and video benchmarks show that CapRL++ improves dense caption quality and strengthens caption-based pretraining across tasks such as spatial and temporal understanding. Pretraining on scalable image and video caption datasets annotated by CapRL++ yields substantial downstream gains. Furthermore, within the Prism Framework for caption quality evaluation, compact models trained with CapRL++ achieve dense captioning performance comparable to substantially larger models such as Qwen2.5-VL-72B and Qwen3-VL-235B-A22B. These results validate that CapRL++ effectively trains models to produce generalizable, high-fidelity descriptions, establishing a robust foundation beyond the limitations of traditional SFT.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/14/2606.10275v1-foa-sr-faithful-or-aesthetic-profile-aware-preference-optimization-for-real-world-image-super-resolution",
+      "section": "quick",
+      "title_en": "FoA-SR: Faithful or Aesthetic? Profile-Aware Preference Optimization for Real-World Image Super-Resolution",
+      "authors": "Amjad Mahdi Alqarni, Peizhong Ju",
+      "date": "2026-06-09",
+      "pdf": "https://arxiv.org/pdf/2606.10275v1",
+      "score": "7.0",
+      "evidence": "偏好优化用于图像超分辨率",
+      "tldr": "真实世界超分辨率通常采用单一恢复目标，但生成模型可产生多种高质量结果，最佳策略依赖于用户偏好。本文提出FoA-SR方法，先训练基于FLUX.2的基座SR适配器，再分别用忠实和美观奖励对候选池排序，微调两个LoRA适配器。在RealSR和DIV2K上，忠实适配器提升参考一致指标（如LPIPS），美观适配器提升无参考感知质量（如NIQE）。该方法实现了对同一基础模型进行显式的画像控制，避免了隐式折中，为个性化超分辨率提供了新思路。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Real-world image super-resolution (SR) is often designed with a single restoration objective, despite the current capacity of generative models to produce multiple high-quality reconstructions for the same input. In this paper, we argue that the best restoration strategy is subject to the specific restoration profile: a Faithful restoration prioritizes reference consistency, structure preservation, and hallucination suppression, whereas an Aesthetic restoration prioritizes visually pleasing and natural-looking details. We propose FoA-SR, a novel preference optimization approach to real-world SR based on profiles. To achieve this goal, FoA-SR starts with our supervised FLUX.2-based SR adapter (Flux2SR) trained with LR latent conditioning, flow matching, and image-space reconstruction losses for paired LR-to-HR image super-resolution. Following the development of the shared supervised super-resolution adapter, FoA-SR generates a shared stochastic candidate pool for each input image and ranks the same candidates using profile-specific Faithful and Aesthetic rewards to mine winner-loser pairs. These pairs are used to fine-tune separate LoRA adapters while keeping the base model frozen. Experiments on RealSR and DIV2K show that FoA-SR can steer the same SR adapter towards distinct restoration objectives: a Faithful adapter improves reference-consistent metrics while an Aesthetic adapter boosts metrics that measure perceptual quality without reference. Our candidate-pool analysis shows that Faithful and Aesthetic rewards frequently select different winners, and a Hybrid-LoRA ablation shows that collapsing both profiles into one reward yields an implicit compromise rather than explicit profile control.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

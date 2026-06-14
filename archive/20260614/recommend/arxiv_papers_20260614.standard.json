@@ -1,0 +1,138 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-14T21:01:40.680428+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2606.13304v1",
+      "source": "arxiv",
+      "title": "ReFree: Towards Realistic Co-Speech Video Generation via Reward-Free RL and Multilevel Speech Guidance",
+      "abstract": "Speech-driven talking character animation seeks to generate life-like portrait videos that convey natural conversation behavior, aligning facial motion with spoken audio. Although recent advances in video generation have substantially improved realism in video-based animation, achieving both accurate lip articulation and expressive behavior remains challenging. Existing approaches typically trade off precise phoneme-to-lip synchronization against dynamic facial expressions and head motion, yielding animations that are either accurate yet rigid, or expressive but poorly synchronized. We address this challenge by proposing ReFree-S2V, a flow-matching speech-to-portrait animation framework that builds upon a pretrained video generation model to achieve fine-grained speech articulation and high-level expressive cues in speech-driven portrait animation. This model introduces a multi-level speech representation capturing phonetic and prosodic information at both local and global granularities. These representations are selectively injected into transformer blocks via learnable level selectors, enabling both accurate lip synchronization and natural expressive motion. To achieve natural head movements, we further introduce a novel reward-free reinforcement learning scheme into flow-matching training to discourage perceptually implausible motion without relying on handcrafted synchronization metrics or reward models, or the high cost of human preference annotation. Extensive experiments demonstrate that ReFree-S2V achieves state-of-the-art performance, significantly outperforming existing methods in both quantitative lip-sync accuracy and qualitative human evaluations of naturalness and expressivity.",
+      "authors": [
+        "Salaheldin Mohamed",
+        "M. Hamza Mughal",
+        "Rishabh Dabral",
+        "Christian Theobalt"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-11T13:00:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.13304v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses RL for video generation, reward-free RL approach",
+      "llm_evidence_cn": "使用强化学习进行视频生成，无奖励强化学习方法",
+      "llm_evidence": "使用强化学习进行视频生成，无奖励强化学习方法",
+      "canonical_evidence": "使用强化学习进行视频生成，无奖励强化学习方法",
+      "llm_tldr_en": "ReFree uses reward-free reinforcement learning and multilevel speech guidance to improve co-speech video generation, achieving expressive and accurate lip synchronization.",
+      "llm_tldr_cn": "针对语音驱动动画中唇形同步与表情表达难以兼顾的问题，作者提出ReFree-S2V框架，采用无奖励强化学习与流匹配方法，结合多级语音指导，无需人工设计奖励函数。实验证明该方法在唇形同步准确性和表情自然度上均显著优于已有技术，为语音驱动视频生成提供了新的范式。",
+      "llm_tldr": "针对语音驱动动画中唇形同步与表情表达难以兼顾的问题，作者提出ReFree-S2V框架，采用无奖励强化学习与流匹配方法，结合多级语音指导，无需人工设计奖励函数。实验证明该方法在唇形同步准确性和表情自然度上均显著优于已有技术，为语音驱动视频生成提供了新的范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.09393v1",
+      "source": "arxiv",
+      "title": "CapRL++: Unified Reinforcement Learning with Verifiable Rewards for Dense Image and Video Captioning",
+      "abstract": "Image and video captioning are fundamental tasks that bridge the visual and linguistic domains, playing a critical role in pre-training Large Vision-Language Models (LVLMs). Current state-of-the-art captioning models are typically trained with Supervised Fine-Tuning (SFT), a paradigm that relies on expensive, non-scalable annotations and often causes models to memorize specific ground-truth answers, limiting their generality and ability to generate diverse, creative descriptions. To overcome these limitations, we propose applying Reinforcement Learning with Verifiable Rewards (RLVR) to the open-ended task of multimodal captioning. We introduce Captioning Reinforcement Learning++ (CapRL++), a novel reference-free training framework that redefines caption quality through its utility: a high-quality caption should enable a non-visual language model to accurately answer questions about the corresponding visual content. CapRL++ employs a decoupled two-stage pipeline where an LVLM generates a caption, and the objective reward is derived from the accuracy of a separate, vision-free LLM answering Multiple-Choice Questions based solely on that caption. Evaluations on more than 20 image and video benchmarks show that CapRL++ improves dense caption quality and strengthens caption-based pretraining across tasks such as spatial and temporal understanding. Pretraining on scalable image and video caption datasets annotated by CapRL++ yields substantial downstream gains. Furthermore, within the Prism Framework for caption quality evaluation, compact models trained with CapRL++ achieve dense captioning performance comparable to substantially larger models such as Qwen2.5-VL-72B and Qwen3-VL-235B-A22B. These results validate that CapRL++ effectively trains models to produce generalizable, high-fidelity descriptions, establishing a robust foundation beyond the limitations of traditional SFT.",
+      "authors": [
+        "Penghui Yang",
+        "Long Xing",
+        "Xiaoyi Dong",
+        "Yuhang Zang",
+        "Yuhang Cao",
+        "Yibin Wang",
+        "Yujie Zhou",
+        "Jiazi Bu",
+        "Jianze Liang",
+        "Qidong Huang",
+        "Jiaqi Wang",
+        "Feng Wu",
+        "Dahua Lin"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-08T12:09:20+00:00",
+      "link": "https://arxiv.org/pdf/2606.09393v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "applies RL with verifiable rewards to image/video captioning, relevant to reward design in generative tasks",
+      "llm_evidence_cn": "将可验证奖励强化学习应用于图像/视频字幕，与生成任务中奖励设计相关",
+      "llm_evidence": "将可验证奖励强化学习应用于图像/视频字幕，与生成任务中奖励设计相关",
+      "canonical_evidence": "将可验证奖励强化学习应用于图像/视频字幕，与生成任务中奖励设计相关",
+      "llm_tldr_en": "CapRL++ applies Reinforcement Learning with Verifiable Rewards (RLVR) to image and video captioning, overcoming limitations of supervised fine-tuning and enabling diverse descriptions.",
+      "llm_tldr_cn": "该论文将可验证奖励强化学习引入图像和视频字幕任务，替代传统的监督微调。它设计了参考自由的奖励函数，鼓励生成多样且准确的描述。实验表明在多个字幕基准上提高了性能和多样性。虽然面向字幕而非图像生成，但其RLVR框架和奖励设计思想可直接转移至图像生成任务。",
+      "llm_tldr": "该论文将可验证奖励强化学习引入图像和视频字幕任务，替代传统的监督微调。它设计了参考自由的奖励函数，鼓励生成多样且准确的描述。实验表明在多个字幕基准上提高了性能和多样性。虽然面向字幕而非图像生成，但其RLVR框架和奖励设计思想可直接转移至图像生成任务。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.10275v1",
+      "source": "arxiv",
+      "title": "FoA-SR: Faithful or Aesthetic? Profile-Aware Preference Optimization for Real-World Image Super-Resolution",
+      "abstract": "Real-world image super-resolution (SR) is often designed with a single restoration objective, despite the current capacity of generative models to produce multiple high-quality reconstructions for the same input. In this paper, we argue that the best restoration strategy is subject to the specific restoration profile: a Faithful restoration prioritizes reference consistency, structure preservation, and hallucination suppression, whereas an Aesthetic restoration prioritizes visually pleasing and natural-looking details. We propose FoA-SR, a novel preference optimization approach to real-world SR based on profiles. To achieve this goal, FoA-SR starts with our supervised FLUX.2-based SR adapter (Flux2SR) trained with LR latent conditioning, flow matching, and image-space reconstruction losses for paired LR-to-HR image super-resolution. Following the development of the shared supervised super-resolution adapter, FoA-SR generates a shared stochastic candidate pool for each input image and ranks the same candidates using profile-specific Faithful and Aesthetic rewards to mine winner-loser pairs. These pairs are used to fine-tune separate LoRA adapters while keeping the base model frozen. Experiments on RealSR and DIV2K show that FoA-SR can steer the same SR adapter towards distinct restoration objectives: a Faithful adapter improves reference-consistent metrics while an Aesthetic adapter boosts metrics that measure perceptual quality without reference. Our candidate-pool analysis shows that Faithful and Aesthetic rewards frequently select different winners, and a Hybrid-LoRA ablation shows that collapsing both profiles into one reward yields an implicit compromise rather than explicit profile control.",
+      "authors": [
+        "Amjad Mahdi Alqarni",
+        "Peizhong Ju"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-09T00:44:59+00:00",
+      "link": "https://arxiv.org/pdf/2606.10275v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "preference optimization for image super-resolution",
+      "llm_evidence_cn": "偏好优化用于图像超分辨率",
+      "llm_evidence": "偏好优化用于图像超分辨率",
+      "canonical_evidence": "偏好优化用于图像超分辨率",
+      "llm_tldr_en": "Proposes FoA-SR, a profile-aware preference optimization approach for real-world image super-resolution, using FLUX.2-based adapter and preference learning to balance faithful and aesthetic restoration.",
+      "llm_tldr_cn": "针对真实世界图像超分辨率中单一目标无法同时满足忠实（结构保持）和美观（自然细节）需求的问题，本文提出FoA-SR方法，通过引入画像感知的偏好优化，基于FLUX.2预训练适配器，分别对忠实和美观两个画像进行强化学习式微调。实验在多个数据集上表明，FoA-SR可根据用户偏好配置动态调整还原策略，在保持结构一致性的同时生成更自然的高频细节，为个性化图像复原提供了有效框架。",
+      "llm_tldr": "针对真实世界图像超分辨率中单一目标无法同时满足忠实（结构保持）和美观（自然细节）需求的问题，本文提出FoA-SR方法，通过引入画像感知的偏好优化，基于FLUX.2预训练适配器，分别对忠实和美观两个画像进行强化学习式微调。实验在多个数据集上表明，FoA-SR可根据用户偏好配置动态调整还原策略，在保持结构一致性的同时生成更自然的高频细节，为个性化图像复原提供了有效框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
