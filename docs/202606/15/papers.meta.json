@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-15",
+  "date": "2026-06-15",
+  "generated_at": "2026-06-15T21:42:03",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/15/2606.14351v1-forceforget-reinforcement-concept-removal-for-enhancing-safety-in-text-to-image-models",
+      "section": "deep",
+      "title_en": "ForceForget: Reinforcement Concept Removal for Enhancing Safety in Text-to-Image Models",
+      "authors": "Dong Han, Yong Li",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14351v1",
+      "score": "8.0",
+      "evidence": "使用强化学习优化概念擦除奖励以增强文本到图像模型安全性",
+      "tldr": "现有T2I模型概念擦除方法过度抑制不安全内容，损害良性语义理解。本文提出ForceForget，通过强化学习优化概念擦除奖励（CER），并引入Safe Adapter在交叉注意力层高效调节文本嵌入。实验表明该方法在减少不安全内容生成的同时保持高保真度，鲁棒性优于现有方法，且在I2I场景和一般概念擦除中表现良好。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "With the advance of generative AI, the text-to-image (T2I) model has the ability to generate various contents. However, T2I models still can generate unsafe contents. To alleviate this issue, various concept erasing methods are proposed. However, existing methods tend to excessively erase unsafe concepts and suppress benign concepts contained in harmful prompts, which can negatively affect model utility. In this paper, we focus on eliminating unsafe content while maintaining model capability in safe semantic meaning interpretation by optimizing the concept erasing reward (CER) with reinforcement learning. To avoid overly content erasure, we introduce the Safe Adapter to project partial text embedding for efficient concept regulation in cross-attention layers. Extensive experiments conducted on different datasets demonstrate the effectiveness of the proposed method in alleviating unsafe content generation while preserving the high fidelity of benign images compared with existing state-of-the-art (SOTA) concept erasing methods. In terms of robustness, our method outperforms counterparts against red-teaming tools. Moreover, we showcase the proposed approach is more effective in emerging image-to-image (I2I) scenarios compared with others. Lastly, we extend our method to erase general concepts, such as artistic styles and objects. Disclaimer: This paper includes discussions of sexually explicit content that may be offensive to certain readers. All images used in this work are synthesized or from public datasets.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/15/2606.14657v1-hpsv3-scaling-reward-models-across-the-full-spectrum-of-diffusion-model-capabilities",
+      "section": "deep",
+      "title_en": "HPSv3++: Scaling Reward Models Across the Full Spectrum of Diffusion Model Capabilities",
+      "authors": "Yijun Liu, Jie Huang, Zeyue Xue, Yuming Li, Ruizhe He, Haoran Li, Shijia Ge, Siming Fu",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14657v1",
+      "score": "8.0",
+      "evidence": "提出用于文本到图像生成的奖励模型，直接相关于图像生成奖励函数设计",
+      "tldr": "现有奖励模型如HPSv3受限于预标注数据和无法适应模型能力进化。提出HPSv3++，构建HPDv3++双维度偏好数据集，设计两阶段训练框架：第一阶段用正交梯度投影注入新感知同时保留原始知识，第二阶段用联合条件信号和无监督引导增强泛化。在多个基准上超越HPSv3，用于RL训练持续提升GenEval分数，实现跨全能力-迭代谱的奖励模型缩放。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reward models guide text-to-image (T2I) systems toward outputs aligned with human preferences. However, typical reward models such as HPSv3 are trained on pre-annotated data from earlier T2I models, without accounting for quality discriminative shifts arising from evolving model capabilities and reinforcement learning (RL) iterations, limiting their broader applicability. In this work, we propose HPSv3++, a reward model framework that elevates the HPSv3 model for varying T2I model capabilities and their RL iteration changes across the full capability-iteration spectrum. Specifically, we first introduce HPDv3++, a 212K dual-dimension preference dataset annotated for text fidelity and aesthetic quality using a recent high-capability (Qwen-Image) model with human supervision. We then propose a two-stage training framework. Stage 1 employs data-aware orthogonal gradient projection to incorporate diverse aesthetic perception from HPDv3++ while preserving the original effective human preference knowledge in HPSv3. Stage 2 further leverages unlabeled data from T2I models spanning different capability levels and RL iterations, and introduces a joint capability-iterations conditioned signal for the reward model together with a standard deviation-driven unsupervised guidance mechanism, strengthening reward model across the capability-iteration spectrum. HPSv3++ achieves state-of-the-art preference prediction, outperforming HPSv3 9.8% on HPDv3, 5.5% on GenAI-Bench, while achieving 79.1%/88.1% on our proposed HPDv3++. When used for T2I RL training, it consistently improves GenEval scores across diverse T2I models, demonstrating its wide-range capabilities. The code is available at https://github.com/PlantPotatoOnMoon/HPSv3-PlusPlus.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/15/2606.11770v1-svot-state-aware-visualization-of-thought-for-spatial-reasoning-via-reinforcement-learning",
+      "section": "quick",
+      "title_en": "SVoT: State-aware Visualization-of-Thought for Spatial Reasoning via Reinforcement Learning",
+      "authors": "Chao Lei, Yanbei Jiang, Markus Hiller, Zhijian Zhou, Xunye Tian, Krista A. Ehinger, Nir Lipovetzky",
+      "date": "2026-06-10",
+      "pdf": "https://arxiv.org/pdf/2606.11770v1",
+      "score": "6.0",
+      "evidence": "使用强化学习生成空间推理的视觉中间状态",
+      "tldr": "多模态大模型在空间推理中因中间状态未验证和状态转换隐式而可靠性不足。提出SVoT框架，通过强化学习（GRPO）生成可验证的交错文本和视觉推理链，显式建模状态转换。在五个领域（含Pacman和Gather）上实现SOTA，最高提升65%绝对准确率。SVoT为多跳空间推理提供了可验证的中间状态与转换推理新范式。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Spatial reasoning remains a challenge for Multimodal Large Language Models (MLLMs), as it requires reliable multi-hop inference over both intermediate states and state transitions. Current studies often leave intermediate states unverified and treat state transitions as implicit processes, which limits reliability in multi-hop spatial reasoning. To address this, we propose State-aware Visualization-of-Thought (SVoT), a reinforcement learning framework that generates interleaved, verifiable intermediate states and visualizations. SVoT integrates transition reasoning chains into the generation processes, enabling the model to verify action preconditions and effects through interleaved textual and visual reasoning. We train SVoT via Group Relative Policy Optimization (GRPO), instantiating verification through reward design and evaluating the efficacy of different fine-grained rewards. As existing benchmarks reduce state transitions to single-variable updates, substantially simplifying the problems, we establish five domains by extending classical environments and introducing two novel domains, Pacman and Gather, that require multi-object interactions and numerical reasoning. These domains support systematic evaluation of multi-hop spatial reasoning with quantitative verification of generated intermediate states and transition reasoning. SVoT with transition-aware supervision achieves state-of-the-art performance across the introduced domains, yielding up to a 65% absolute accuracy gain on out-of-distribution test sets.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

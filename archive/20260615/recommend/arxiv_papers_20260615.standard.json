@@ -1,0 +1,135 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-15T21:38:50.867519+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.14351v1",
+      "source": "arxiv",
+      "title": "ForceForget: Reinforcement Concept Removal for Enhancing Safety in Text-to-Image Models",
+      "abstract": "With the advance of generative AI, the text-to-image (T2I) model has the ability to generate various contents. However, T2I models still can generate unsafe contents. To alleviate this issue, various concept erasing methods are proposed. However, existing methods tend to excessively erase unsafe concepts and suppress benign concepts contained in harmful prompts, which can negatively affect model utility. In this paper, we focus on eliminating unsafe content while maintaining model capability in safe semantic meaning interpretation by optimizing the concept erasing reward (CER) with reinforcement learning. To avoid overly content erasure, we introduce the Safe Adapter to project partial text embedding for efficient concept regulation in cross-attention layers. Extensive experiments conducted on different datasets demonstrate the effectiveness of the proposed method in alleviating unsafe content generation while preserving the high fidelity of benign images compared with existing state-of-the-art (SOTA) concept erasing methods. In terms of robustness, our method outperforms counterparts against red-teaming tools. Moreover, we showcase the proposed approach is more effective in emerging image-to-image (I2I) scenarios compared with others. Lastly, we extend our method to erase general concepts, such as artistic styles and objects. Disclaimer: This paper includes discussions of sexually explicit content that may be offensive to certain readers. All images used in this work are synthesized or from public datasets.",
+      "authors": [
+        "Dong Han",
+        "Yong Li"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-12T11:12:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.14351v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "optimizes concept erasing reward with RL for text-to-image safety",
+      "llm_evidence_cn": "使用强化学习优化概念擦除奖励以增强文本到图像模型安全性",
+      "llm_evidence": "使用强化学习优化概念擦除奖励以增强文本到图像模型安全性",
+      "canonical_evidence": "使用强化学习优化概念擦除奖励以增强文本到图像模型安全性",
+      "llm_tldr_en": "Uses reinforcement learning to optimize a concept erasing reward (CER) for safe text-to-image generation, balancing safety and utility via a Safe Adapter.",
+      "llm_tldr_cn": "本文针对文本到图像模型生成不安全内容的问题，提出ForceForget方法，通过强化学习优化概念擦除奖励（CER），并引入Safe Adapter避免过度擦除。实验表明，该方法在有效去除不安全概念的同时保持了模型在安全语义上的生成能力，为图像生成中的RL应用提供了新视角。",
+      "llm_tldr": "本文针对文本到图像模型生成不安全内容的问题，提出ForceForget方法，通过强化学习优化概念擦除奖励（CER），并引入Safe Adapter避免过度擦除。实验表明，该方法在有效去除不安全概念的同时保持了模型在安全语义上的生成能力，为图像生成中的RL应用提供了新视角。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.14657v1",
+      "source": "arxiv",
+      "title": "HPSv3++: Scaling Reward Models Across the Full Spectrum of Diffusion Model Capabilities",
+      "abstract": "Reward models guide text-to-image (T2I) systems toward outputs aligned with human preferences. However, typical reward models such as HPSv3 are trained on pre-annotated data from earlier T2I models, without accounting for quality discriminative shifts arising from evolving model capabilities and reinforcement learning (RL) iterations, limiting their broader applicability. In this work, we propose HPSv3++, a reward model framework that elevates the HPSv3 model for varying T2I model capabilities and their RL iteration changes across the full capability-iteration spectrum. Specifically, we first introduce HPDv3++, a 212K dual-dimension preference dataset annotated for text fidelity and aesthetic quality using a recent high-capability (Qwen-Image) model with human supervision. We then propose a two-stage training framework. Stage 1 employs data-aware orthogonal gradient projection to incorporate diverse aesthetic perception from HPDv3++ while preserving the original effective human preference knowledge in HPSv3. Stage 2 further leverages unlabeled data from T2I models spanning different capability levels and RL iterations, and introduces a joint capability-iterations conditioned signal for the reward model together with a standard deviation-driven unsupervised guidance mechanism, strengthening reward model across the capability-iteration spectrum. HPSv3++ achieves state-of-the-art preference prediction, outperforming HPSv3 9.8% on HPDv3, 5.5% on GenAI-Bench, while achieving 79.1%/88.1% on our proposed HPDv3++. When used for T2I RL training, it consistently improves GenEval scores across diverse T2I models, demonstrating its wide-range capabilities. The code is available at https://github.com/PlantPotatoOnMoon/HPSv3-PlusPlus.",
+      "authors": [
+        "Yijun Liu",
+        "Jie Huang",
+        "Zeyue Xue",
+        "Yuming Li",
+        "Ruizhe He",
+        "Haoran Li",
+        "Shijia Ge",
+        "Siming Fu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-12T17:22:04+00:00",
+      "link": "https://arxiv.org/pdf/2606.14657v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "proposes a reward model for text-to-image generation, directly relevant to designing reward functions for image generation",
+      "llm_evidence_cn": "提出用于文本到图像生成的奖励模型，直接相关于图像生成奖励函数设计",
+      "llm_evidence": "提出用于文本到图像生成的奖励模型，直接相关于图像生成奖励函数设计",
+      "canonical_evidence": "提出用于文本到图像生成的奖励模型，直接相关于图像生成奖励函数设计",
+      "llm_tldr_en": "HPSv3++ scales reward models across diffusion model capabilities and RL iterations, improving human preference alignment for text-to-image generation.",
+      "llm_tldr_cn": "HPSv3++针对文本到图像生成中奖励模型因模型能力和强化学习迭代变化而性能下降的问题，提出跨越全能力-迭代谱的奖励模型框架。通过构建包含212K双维度偏好数据的数据集HPDv3++，并设计适应不同模型阶段的训练策略，使得奖励模型能够持续有效地指导图像生成。实验表明HPSv3++在多种T2I模型上显著提升与人类偏好的对齐，为强化学习在图像生成中的应用提供了可靠的奖励信号。",
+      "llm_tldr": "HPSv3++针对文本到图像生成中奖励模型因模型能力和强化学习迭代变化而性能下降的问题，提出跨越全能力-迭代谱的奖励模型框架。通过构建包含212K双维度偏好数据的数据集HPDv3++，并设计适应不同模型阶段的训练策略，使得奖励模型能够持续有效地指导图像生成。实验表明HPSv3++在多种T2I模型上显著提升与人类偏好的对齐，为强化学习在图像生成中的应用提供了可靠的奖励信号。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.11770v1",
+      "source": "arxiv",
+      "title": "SVoT: State-aware Visualization-of-Thought for Spatial Reasoning via Reinforcement Learning",
+      "abstract": "Spatial reasoning remains a challenge for Multimodal Large Language Models (MLLMs), as it requires reliable multi-hop inference over both intermediate states and state transitions. Current studies often leave intermediate states unverified and treat state transitions as implicit processes, which limits reliability in multi-hop spatial reasoning. To address this, we propose State-aware Visualization-of-Thought (SVoT), a reinforcement learning framework that generates interleaved, verifiable intermediate states and visualizations. SVoT integrates transition reasoning chains into the generation processes, enabling the model to verify action preconditions and effects through interleaved textual and visual reasoning. We train SVoT via Group Relative Policy Optimization (GRPO), instantiating verification through reward design and evaluating the efficacy of different fine-grained rewards. As existing benchmarks reduce state transitions to single-variable updates, substantially simplifying the problems, we establish five domains by extending classical environments and introducing two novel domains, Pacman and Gather, that require multi-object interactions and numerical reasoning. These domains support systematic evaluation of multi-hop spatial reasoning with quantitative verification of generated intermediate states and transition reasoning. SVoT with transition-aware supervision achieves state-of-the-art performance across the introduced domains, yielding up to a 65% absolute accuracy gain on out-of-distribution test sets.",
+      "authors": [
+        "Chao Lei",
+        "Yanbei Jiang",
+        "Markus Hiller",
+        "Zhijian Zhou",
+        "Xunye Tian",
+        "Krista A. Ehinger",
+        "Nir Lipovetzky"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-10T07:54:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.11770v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uses reinforcement learning to generate visual intermediate states for spatial reasoning",
+      "llm_evidence_cn": "使用强化学习生成空间推理的视觉中间状态",
+      "llm_evidence": "使用强化学习生成空间推理的视觉中间状态",
+      "canonical_evidence": "使用强化学习生成空间推理的视觉中间状态",
+      "llm_tldr_en": "Proposes SVoT, a reinforcement learning framework that generates verifiable intermediate visualizations for spatial reasoning in MLLMs, improving multi-hop inference reliability.",
+      "llm_tldr_cn": "针对多模态大模型在空间推理中中间状态不可验证的问题，本文提出SVoT，一个基于强化学习的框架，通过生成可验证的中间可视化状态和过渡推理链，使模型能够基于文本和视觉推理验证动作前提与效果。在相关任务上，SVoT显著提升了多跳推理的可靠性和准确性，为将RL用于结构化视觉生成提供了新思路。",
+      "llm_tldr": "针对多模态大模型在空间推理中中间状态不可验证的问题，本文提出SVoT，一个基于强化学习的框架，通过生成可验证的中间可视化状态和过渡推理链，使模型能够基于文本和视觉推理验证动作前提与效果。在相关任务上，SVoT显著提升了多跳推理的可靠性和准确性，为将RL用于结构化视觉生成提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

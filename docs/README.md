@@ -6,31 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-14
-- 运行时间：2026-06-14 21:04:50 UTC
+- 最新运行日期：2026-06-15
+- 运行时间：2026-06-15 21:41:57 UTC
 - 运行状态：成功
 - 本次总论文数：3
-- 精读区：1
-- 速读区：2
+- 精读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-1) 今日聚焦强化学习在视觉生成中的突破：无奖励强化学习实现逼真语音同步视频生成，以及可信图像/视频描述与超分辨率的偏好优化。  
-2) 最值得关注的方向：ReFree利用多层语音引导与奖赏无关强化学习生成高真实度唇形视频；FoA-SR提出忠实与美学双重偏好的超分辨率优化，平衡感知质量与细节保真。  
-3) 建议读者优先关注ReFree在语音-视频生成中的免写奖励函数设计，以及FoA-SR如何解决真实场景下超分辨率“忠实vs美观”的权衡问题。
-- 详情：[/202606/14/README](/202606/14/README)
+今天精选两篇高分论文，分别聚焦文本到图像模型的安全概念移除与奖励模型规模化。最值得关注的是ForceForget通过强化学习移除模型不安全概念的方法，以及HPSv3++在扩散模型性能评估上的完整方案。建议优先精读这两篇，理解其思路后再结合自身方向尝试应用。
+- 详情：[/202606/15/README](/202606/15/README)
 
 ### 精读区论文标签
-1. [ReFree: Towards Realistic Co-Speech Video Generation via Reward-Free RL and Multilevel Speech Guidance](/202606/14/2606.13304v1-refree-towards-realistic-co-speech-video-generation-via-reward-free-rl-and-multilevel-speech-guidance)  
+1. [ForceForget: Reinforcement Concept Removal for Enhancing Safety in Text-to-Image Models](/202606/15/2606.14351v1-forceforget-reinforcement-concept-removal-for-enhancing-safety-in-text-to-image-models)  
    标签：评分：8.0/10、query:image-gen-rl
-   evidence：使用强化学习进行视频生成，无奖励强化学习方法
+   evidence：使用强化学习优化概念擦除奖励以增强文本到图像模型安全性
+2. [HPSv3++: Scaling Reward Models Across the Full Spectrum of Diffusion Model Capabilities](/202606/15/2606.14657v1-hpsv3-scaling-reward-models-across-the-full-spectrum-of-diffusion-model-capabilities)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：提出用于文本到图像生成的奖励模型，直接相关于图像生成奖励函数设计
 
 ### 速读区论文标签
-1. [CapRL++: Unified Reinforcement Learning with Verifiable Rewards for Dense Image and Video Captioning](/202606/14/2606.09393v1-caprl-unified-reinforcement-learning-with-verifiable-rewards-for-dense-image-and-video-captioning)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：将可验证奖励强化学习应用于图像/视频字幕，与生成任务中奖励设计相关
-2. [FoA-SR: Faithful or Aesthetic? Profile-Aware Preference Optimization for Real-World Image Super-Resolution](/202606/14/2606.10275v1-foa-sr-faithful-or-aesthetic-profile-aware-preference-optimization-for-real-world-image-super-resolution)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：偏好优化用于图像超分辨率
+1. [SVoT: State-aware Visualization-of-Thought for Spatial Reasoning via Reinforcement Learning](/202606/15/2606.11770v1-svot-state-aware-visualization-of-thought-for-spatial-reasoning-via-reinforcement-learning)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：使用强化学习生成空间推理的视觉中间状态
 
 
 <div class="dpr-home-promo-card">
