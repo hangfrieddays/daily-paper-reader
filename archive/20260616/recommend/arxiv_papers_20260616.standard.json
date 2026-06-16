@@ -1,0 +1,147 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-16T21:30:09.642280+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.14792v1",
+      "source": "arxiv",
+      "title": "Efficient Reinforcement for Visual-Textual Thinking with Discrete Diffusion Model",
+      "abstract": "RL-based post-training has been widely adopted to enable interleaved visual and textual reasoning in unified multimodal models capable of both text and image generation. However, most existing approaches are built upon autoregressive (AR) unified models, which require full image regeneration during visual reasoning. In this work, we demonstrate that multimodal discrete diffusion models are effective alternatives to AR models for reinforcement learning in interleaved reasoning, owing to their ability to perform efficient visual rollouts via localized visual editing rather than full image-token regeneration. This reduces rollout computation during GRPO by 26.9\\% compared to AR baselines, with minimal performance drop. Despite the improved efficiency, we find that joint reward assignment, which employs a shared reward signal across modalities, introduces cross-modal interference between unrelated image and text token sequences during RL updates. To address this issue, we propose factorized reward assignment, a strategy that assigns rewards independently to text and vision segments. With factorized reward assignment, our RL approach achieves an 11.2% improvement over joint reward assignment and a 38.04% improvement over the base model.",
+      "authors": [
+        "Yoonjeon Kim",
+        "Yuhta Takida",
+        "Chieh-Hsin Lai",
+        "Eunho Yang",
+        "Yuki Mitsufuji"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-06-11T07:33:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.14792v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "RL with discrete diffusion for image generation reasoning",
+      "llm_evidence_cn": "用强化学习和离散扩散模型进行图像生成推理",
+      "llm_evidence": "用强化学习和离散扩散模型进行图像生成推理",
+      "canonical_evidence": "用强化学习和离散扩散模型进行图像生成推理",
+      "llm_tldr_en": "Applies GRPO to multimodal discrete diffusion models for interleaved visual-textual reasoning, achieving 26.9% rollout computation reduction compared to AR baselines.",
+      "llm_tldr_cn": "多模态视觉文本推理中，自回归模型需要全图再生，效率低。本文采用离散扩散模型进行局部图像编辑，结合GRPO强化学习训练，在保证性能的同时将推理阶段的计算量降低26.9%。这表明扩散模型是RL后处理的有效替代方案。",
+      "llm_tldr": "多模态视觉文本推理中，自回归模型需要全图再生，效率低。本文采用离散扩散模型进行局部图像编辑，结合GRPO强化学习训练，在保证性能的同时将推理阶段的计算量降低26.9%。这表明扩散模型是RL后处理的有效替代方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.09076v2",
+      "source": "arxiv",
+      "title": "Beyond Scalar Rewards by Internalizing Reasoning into Score Distributions",
+      "abstract": "Reward models are central to text-to-image post-training, but visual preference is subjective and better represented as a distribution over rubric scores than as a deterministic scalar. Existing scalar, score-token, and pairwise reward models over-compress uncertainty and fine-grained score differences, while reasoning-based generative rewards provide stronger judgments but are costly to deploy and difficult to use as direct optimization signals. We propose Z-Reward, a teacher-student reward modeling framework that decouples reasoning-heavy judgment from efficient reward deployment. The teacher is a large VLM that uses reasoning to infer rubric-aligned score distributions, and is trained with Group-wise Direct Score Optimization (GDSO), which combines policy-gradient rewards from distribution expectations with direct pointwise and pairwise supervision on score distributions and score gaps. The student is trained with Reasoning-Internalized Score Distillation (RISD), which transfers the teacher's reasoning-conditioned score distribution into a compact VLM without requiring explicit reasoning chains at inference time. On our internally annotated evaluation set, the 27B GDSO teacher reaches 89.6% human preference accuracy, outperforming SFT, RewardDance, and GRPO, while the 9B RISD student reaches 88.6%, outperforming the OPD baseline and closely matching the larger teacher. We further show that Z-Reward can serve as a differentiable reward signal for text-to-image optimization, yielding a 41.3% net human-preference improvement over the SFT baseline.",
+      "authors": [
+        "Xin Jin",
+        "Huanqia Cai",
+        "Zhen Li",
+        "Zechao Zhan",
+        "Dengyang Jiang",
+        "Aiming Hao",
+        "Yuming Jiang",
+        "Chunle Guo",
+        "Peng Gao",
+        "Ming-Ming Cheng",
+        "Steven C. H. Hoi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-08T06:20:12+00:00",
+      "link": "https://arxiv.org/pdf/2606.09076v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reward design for text-to-image generation",
+      "llm_evidence_cn": "为文本到图像生成设计奖励函数",
+      "llm_evidence": "为文本到图像生成设计奖励函数",
+      "canonical_evidence": "为文本到图像生成设计奖励函数",
+      "llm_tldr_en": "Proposes Z-Reward, a teacher-student framework that produces rubric-aligned score distributions for text-to-image reward, enabling efficient and nuanced reward signals.",
+      "llm_tldr_cn": "文本到图像后训练中，标量奖励模型无法捕捉主观评分分布。本文提出Z-Reward，用大VLM教师推理得到评分分布，学生模型蒸馏后高效部署。实验表明该方法比现有奖励模型更准确地反映人类偏好，有效提升了图像生成质量。",
+      "llm_tldr": "文本到图像后训练中，标量奖励模型无法捕捉主观评分分布。本文提出Z-Reward，用大VLM教师推理得到评分分布，学生模型蒸馏后高效部署。实验表明该方法比现有奖励模型更准确地反映人类偏好，有效提升了图像生成质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.14801v1",
+      "source": "arxiv",
+      "title": "QPILOTS: Efficient Test-Time Q-Steering for Flow Policies",
+      "abstract": "Flow-matching and diffusion policies are expressive action generators, but optimizing them with temporal-difference reinforcement learning (RL) remains difficult. Effective policy extraction requires exploiting the critic's action gradient, yet directly backpropagating this signal through a multi-step denoising process can be numerically unstable. Existing methods work around this either by discarding gradient information, distilling the policy into a simpler one-step actor, or repeatedly fine-tuning the denoising policy as the critic improves. We propose QPILOTS, a method that leaves the original policy unmodified and steers the denoising process at inference time. At each denoising step, instead of evaluating the critic on the noisy intermediate action where critic predictions are unreliable, we first project that intermediate state to an estimate of the final clean action and compute the critic gradient there. We introduce two variants: QPILOTS-U uses a fast single-point approximation, while QPILOTS-M draws differentiable posterior samples via a learned auxiliary network. On a standard offline-to-online RL benchmark, QPILOTS achieves the best aggregate performance, reaching an average success rate of 90% across 50 tasks. We also apply QPILOTS to steer a large, frozen, pretrained Vision-Language Action (VLA) foundation model, outperforming or matching prior inference-time approaches across six manipulation tasks in simulation.",
+      "authors": [
+        "Yifan Ruan",
+        "Chenyang Cao",
+        "Andreas Burger",
+        "Ali Pesaranghader",
+        "Kaveh Kamali",
+        "Jaehong Kim",
+        "Nandita Vijaykumar",
+        "Alan Aspuru-Guzik",
+        "Igor Gilitschenski",
+        "Nicholas Rhinehart"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-06-11T18:22:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.14801v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL method for flow policies applicable to generation",
+      "llm_evidence_cn": "提出用于流策略的RL方法，可用于生成模型",
+      "llm_evidence": "提出用于流策略的RL方法，可用于生成模型",
+      "canonical_evidence": "提出用于流策略的RL方法，可用于生成模型",
+      "llm_tldr_en": "Proposes QPILOTS, a test-time Q-steering method for flow policies that avoids unstable backpropagation through denoising, applicable to generation.",
+      "llm_tldr_cn": "针对流匹配策略的强化学习优化存在数值不稳定性问题。本文提出QPILOTS，在推理时通过Q值引导去噪过程，无需修改策略或反向传播。该方法可推广至图像生成等任务，为生成模型的RL优化提供了轻量级替代方案。",
+      "llm_tldr": "针对流匹配策略的强化学习优化存在数值不稳定性问题。本文提出QPILOTS，在推理时通过Q值引导去噪过程，无需修改策略或反向传播。该方法可推广至图像生成等任务，为生成模型的RL优化提供了轻量级替代方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
