@@ -1,0 +1,392 @@
+Title: STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training
+
+URL Source: https://arxiv.org/pdf/2606.17979v1
+
+Published Time: Wed, 17 Jun 2026 01:07:49 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training 
+
+Jinjie Shen, Wei Deng, Xian Hu, Daiguo Zhou, Jian Luan 
+
+## Abstract 
+
+Existing RL post-training methods for text-to-image generation usually con-vert the final-image reward into a single scalar advantage and apply it with the same strength to the entire generative trajectory. However, text-to-image generation naturally has temporal and spatial structure: different denoising steps are responsible for different generation stages, and the content that truly determines text alignment often appears only in part of the image. This granu-larity mismatch makes it difficult for policy updates to focus on the generative components that actually affect the reward. To address this issue, we propose 
+
+SpatioTemporal Adaptive Reward (STAR) Allocation for RL post-training of text-to-image diffusion and flow models. STAR uses text-image attention inside the generative model and starts from the core content that the user truly cares about in the prompt. It constructs spatial allocation maps that dynamically vary across denoising steps and rollouts, and allocates the same group-relative advan-tage to more relevant latent regions with almost no additional computational overhead. STAR then applies stronger policy updates to these regions through a spatially resolved policy objective. We use Stable Diffusion 3.5 Medium as the base model and evaluate on three tasks: GenEval, OCR text rendering, and PickScore. Experimental results show that STAR improves compositional seman-tic alignment, text rendering, and preference optimization without changing the external reward source, achieving 0.9759 , 0.9757 , and 23 .60 on GenEval, OCR, and PickScore, respectively. 
+
+## 1 Introduction 
+
+Diffusion models have become mainstream frameworks for high-fidelity text-to-image genera-tion [ 1– 5]. Recent text-to-image systems further improve resolution and language understanding through latent diffusion, rectified-flow transformers, and large-scale prompt-image training [ 6– 8]. Although these models have made substantial progress in visual quality, compositional general-ization under complex prompts remains a major weakness: models often make errors in object counting, attribute binding, and spatial relations. Since such errors can usually only be judged on the completed image by automatic evaluators, preference models [ 9, 10 ], or human feedback, RL-style post-training provides an effective path for directly optimizing image-level objectives. A key limitation of existing RL post-training for text-to-image generation lies in the granularity of credit assignment. The final reward is usually an image-level scalar, whereas the diffusion/flow generative trajectory has explicit temporal and spatial structure: sampling spans multiple de-noising/flow steps, and each step contains many latent spatial tokens. However, an image-level 
+
+> arXiv:2606.17979v1 [cs.AI] 16 Jun 2026
+
+STAR 
+
+Figure 1 Overview of STAR (SpatioTemporal Adaptive Reward Allocation). Given the same image-level group-relative advantage, STAR extracts text-image attention maps from the gen-erative backbone and constructs timestep-specific spatial allocation maps that highlight latent regions corresponding to key prompt components. These maps route the scalar advantage into spatially resolved training signals, so policy updates selectively focus on the generative regions that determine text alignment. reward does not mean that the entire image bears equal responsibility for the reward. Even for a simple prompt such as “a bicycle,” text alignment is mainly determined by the region containing the bicycle itself, rather than by background regions such as the sky or the road. When the prompt further contains colors, counts, and spatial relations, the reward depends more strongly on whether a small number of semantically relevant regions are generated correctly. This issue is particularly visible in online diffusion/flow RL post-training methods, including Flow-GRPO [ 11 ], where a group-relative reward is still converted into a scalar advantage for policy optimization. Existing policy-gradient training usually applies this advantage with the same strength to all timesteps and spatial locations, making it difficult to distinguish the reward responsibility of subject regions from that of background regions. This mismatch stems from the spatiotemporal structure of diffusion and flow generative tra-jectories [ 12 , 13 ]. Different denoising stages affect global layout, object formation, and detail refinement, respectively; within each stage, only a subset of latent regions is directly related to the subjects, attributes, and relations in the current prompt. We study spatiotemporal credit assignment in this structured process: given the same image-level outcome feedback, we allocate it over denoising time × latent space so that policy updates focus on the generative components that truly determine text alignment. We propose SpatioTemporal Adaptive Reward (STAR) Allocation , a framework for attention-based T2I diffusion and flow post-training. STAR uses text-image interactions inside the generative model to construct timestep-specific routing maps and converts them into latent-space allocation maps. Given the same scalar advantage, STAR distributes its training strength across denoising steps and latent regions. Combined with a spatially resolved likelihood-ratio objective, regions corresponding to key prompt components receive stronger updates, while background and weakly related regions maintain weaker influence. We instantiate STAR in compositional T2I RL post-training and compare it with scalar-allocation baselines under the same external reward source. Experimental results show that STAR achieves 
+
+0.9759 , 23 .60 , and 0.9757 on GenEval, PickScore, and OCR, respectively. Our contributions are as follows: 
+
+2STAR 
+
+• We propose SpatioTemporal Adaptive Reward (STAR) Allocation , a method for T2I diffusion/flow RL post-training. STAR converts image-level rewards into training signals over denoising time and latent space, allowing updates to focus on the generative regions corresponding to key objects, attributes, and relations in the prompt. 
+
+• We use text-image interactions inside the model to construct timestep-specific spatial al-location maps, extend existing RL post-training objectives into a spatially resolved policy objective, and provide a unified reward-routing interface for attention-based T2I diffu-sion/flow models. 
+
+• We validate STAR on GenEval, PickScore, and OCR, where it achieves 0.9759 , 23 .60 , and 
+
+0.9757 , respectively, showing that SpatioTemporal Adaptive Reward (STAR) Allocation can simultaneously improve compositional semantic alignment, preference optimization, and text rendering. 
+
+## 2 Related Work 
+
+RL post-training for T2I. In recent years, directly optimizing downstream rewards has become an important direction for improving diffusion and flow-based T2I models, following the broader policy-gradient view of reinforcement learning [ 14 , 15 ]. DDPO [ 16 ] formulates the denoising process as a multi-step decision-making problem and optimizes diffusion models with policy-gradient methods. DPOK [ 17 ] further introduces online RL and KL regularization into T2I diffusion fine-tuning. Diffusion-DPO [ 18 ] builds on direct preference optimization [ 19 ], while AlignProp [ 20 ] optimizes human preferences through differentiable reward backpropagation. More recently, Flow-GRPO [ 11 ] extends online policy-gradient training to flow matching models and enables efficient post-training through stochastic sampling and denoising reduction. These methods demonstrate the effectiveness of RL-style post-training for T2I models, but they usually treat the final reward as a scalar signal applied to the whole image or the entire trajectory. STAR studies how the same reward signal should be allocated within a structured denoising trajectory. 
+
+Fine-grained rewards and credit assignment. Existing work has begun to recognize that image-level scalar rewards provide overly coarse feedback for diffusion alignment. A Dense Reward View [ 21 ] revisits preference alignment from a sequential decision-making perspective and derives a dense objective that emphasizes early denoising steps. B 2-DiffuRL addresses sparse terminal rewards by estimating the contributions of intermediate denoising actions through backward progressive training and branch-based sampling. Another line of work improves the reward source itself. ImageReward [ 9 ] learns a general T2I human preference reward model; ImageDoctor further provides multi-aspect scores and grounded heatmaps for diagnosing local errors in generated images. SpatialReward builds verifiable reward modeling for spatial consistency. These methods highlight the value of fine-grained feedback in T2I post-training, while leaving a complementary direction: given an existing outcome reward, how can we use the generative model’s own text-image interactions to allocate this signal within the spatiotemporal structure? 
+
+## 3 Method 
+
+STAR reallocates an existing image-level reward to the structured generative process of diffu-sion/flow models. Given a prompt 𝑐 , the model generates a latent trajectory  
+
+> 𝜏
+
+= (𝑧 𝑇 , 𝑧 𝑇 −1, . . . , 𝑧 0), 𝑧 𝑡 ∈ R𝐶 ×ℎ𝑡 ×𝑤 𝑡 , (1) 
+
+3STAR 
+
+where 𝑧 0 corresponds to the final image. Let Ω𝑡 = {1, . . . , ℎ 𝑡 } × { 1, . . . , 𝑤 𝑡 } denote the set of spatial locations in the latent feature map at step 𝑡 . The external reward source provides scalar feedback only on the final sample, denoted as 
+
+𝑅 𝑖 = 𝑅 (𝑧 𝑖 
+
+> 0
+
+, 𝑐 ), 𝐴 𝑖 = B( 𝑅 𝑖 , 𝑐 ), (2) where 𝑖 denotes the 𝑖 -th rollout under the same prompt, and 𝐴 𝑖 is the sample-level advantage obtained by group-relative normalization or baseline subtraction. A standard RL-style objective uses 𝐴 𝑖 as a trajectory-level weight, as in group-relative policy optimization [ 22 ]; STAR routes 𝐴 𝑖 
+
+to denoising steps and latent regions. 
+
+3.1 Attention-Guided Allocation 
+
+STAR represents each prompt as a set of reward-relevant text units: 
+
+K ( 𝑐 ) = {𝑞 1, . . . , 𝑞 𝐾 }, (3) where 𝑞 𝑘 denotes a core component in the prompt. These components are the conditions that the final image needs to satisfy, including subjects, styles, attributes, counts, and spatial relations. For example, for the prompt “generate a futuristic-style building,” K ( 𝑐 ) contains the subject “building” and the visual style requirement “futuristic style.” Dataset-specific extraction rules and prompt templates for text-unit extraction are provided in Appendix A. Suppose the full prompt 𝑐 is converted by the text encoder tokenizer into 𝐿 𝑐 tokens. Each text unit 𝑞 𝑘 corresponds to several text tokens, whose token indices are denoted as 
+
+T𝑘 ⊆ { 1, . . . , 𝐿 𝑐 }. (4) STAR reads routing signals from a selected set of text-image attention layers L. When generating rollout 𝑖 , attention-based T2I backbones establish interactions between image latent tokens and text tokens at each denoising step 𝑡 . For any ℓ ∈ L , this layer provides an attention map 
+
+𝛼 𝑖,ℓ 𝑡 ∈ Rℎ𝑡 ×𝑤 𝑡 ×𝐿 𝑐 ; the attention weight from latent position 𝑢 to text token 𝑗 is denoted as 
+
+𝛼 𝑖,ℓ 𝑡 (𝑢, 𝑗 ). (5) Here 𝑢 ∈ Ω𝑡 is a latent spatial position and 𝑗 is a text token index. In joint-attention backbones (e.g., Stable Diffusion 3.5, Qwen-Image), this value corresponds to the image-to-text block of the full attention matrix; in cross-attention backbones (e.g., Stable Diffusion XL), it corresponds to the cross-attention weights from image queries to text keys. STAR takes the maximum image-to-text attention weight over the selected layers: 
+
+𝛼 𝑖 𝑡 (𝑢, 𝑗 ) = max  
+
+> ℓ∈ L
+
+𝛼 𝑖,ℓ 𝑡 (𝑢, 𝑗 ), (6) which gives the timestep-specific text-image routing map 𝛼 𝑖 𝑡 ∈ Rℎ𝑡 ×𝑤 𝑡 ×𝐿 𝑐 for rollout 𝑖 at step 𝑡 .Next, STAR extracts where each text unit appears in the current trajectory. Given the token set T𝑘 
+
+of text unit 𝑞 𝑘 , STAR constructs its spatial map 𝑀 𝑖,𝑘 𝑡 ∈ Rℎ𝑡 ×𝑤 𝑡 , where the routing strength at latent position 𝑢 is 
+
+𝑀 𝑖,𝑘 𝑡 (𝑢 ) = 1
+
+|T 𝑘 |∑︁ 𝑗 ∈ T 𝑘 
+
+𝛼 𝑖 𝑡 (𝑢, 𝑗 ). (7) STAR aggregates these key components into a trajectory-timestep specific heatmap 𝐻 𝑖 𝑡 ∈ Rℎ𝑡 ×𝑤 𝑡 :
+
+𝐻 𝑖 𝑡 (𝑢 ) = 1
+
+𝐾 
+
+> 𝐾
+
+∑︁ 
+
+> 𝑘 =1
+
+𝑀 𝑖,𝑘 𝑡 (𝑢 ). (8) 
+
+4STAR 
+
+This heatmap specifies where the prompt-relevant content is most active. To turn it into a normalized reward-allocation map, STAR maps it to bounded coefficients 𝐶 𝑖 𝑡 ∈ Rℎ𝑡 ×𝑤 𝑡 :
+
+𝐶 𝑖 𝑡 (𝑢 ) = 1 + ( 𝜆 − 1) 𝐻 𝑖 𝑡 (𝑢 ) − min 𝑣 ∈Ω𝑡 𝐻 𝑖 𝑡 (𝑣 )
+
+max 𝑣 ∈Ω𝑡 𝐻 𝑖 𝑡 (𝑣 ) − min 𝑣 ∈Ω𝑡 𝐻 𝑖 𝑡 (𝑣 ) + 𝜖 . (9) Here 𝜆 ≥ 1 controls the allocation strength, and 𝜖 ensures numerical stability. Larger 𝐶 𝑖 𝑡 (𝑢 )
+
+strengthens updates on prompt-relevant regions; smaller but nonzero coefficients preserve the influence of background, composition, and overall quality on the final reward. 
+
+3.2 Spatially Resolved Policy Objective 
+
+STAR uses the allocation map to convert the sample-level advantage into a spatialized training signal. For the 𝑖 -th rollout and denoising step 𝑡 , we define the spatial advantage map as 
+
+𝐴 𝑖 𝑡 (𝑢 ) = 𝐴 𝑖 𝐶 𝑖 𝑡 (𝑢 ), 𝐴 𝑖 𝑡 ∈ Rℎ𝑡 ×𝑤 𝑡 . (10) This mapping preserves the sign of 𝐴 𝑖 and increases the update magnitude for prompt-relevant regions through 𝐶 𝑖 𝑡 (𝑢 ).The policy update acts on spatial log-probability contributions. Let 
+
+ℓ𝑖 𝜃,𝑡 ∈ Rℎ𝑡 ×𝑤 𝑡 , ¯ℓ𝑖 𝜃,𝑡 = 1
+
+|Ω𝑡 |∑︁ 𝑢 ∈Ω𝑡 
+
+ℓ𝑖 𝜃,𝑡 (𝑢 ), (11) where ℓ𝑖 𝜃,𝑡 (𝑢 ) denotes the log-probability contribution at latent position 𝑢 , and ¯ℓ𝑖 𝜃,𝑡 corresponds to the scalar transition log-probability used in standard policy-gradient training. STAR uses a normalized spatial ratio: 
+
+𝜌 𝑖 𝜃,𝑡 (𝑢 ) = sg 
+
+h
+
+exp 
+
+¯ℓ𝑖 𝜃,𝑡 − ¯ℓ𝑖 
+
+> old ,𝑡
+
+i exp (ℓ𝑖 𝜃,𝑡 (𝑢 )) 
+
+sg 
+
+h
+
+exp (ℓ𝑖 𝜃,𝑡 (𝑢 )) 
+
+i , (12) where ¯ℓ𝑖  
+
+> old ,𝑡
+
+is the rollout log-probability stored during sampling, and sg [·] denotes stop-gradient. This ratio preserves the overall scale of the scalar likelihood ratio while assigning gradients over spatial locations. Finally, STAR optimizes the clipped spatial objective, following the clipped-ratio policy update used in PPO-style training [23]: 
+
+JSTAR (𝜃 ) = E
+
+"
+
+1
+
+𝑇 
+
+> 𝑇
+
+∑︁ 
+
+> 𝑡 =1
+
+1
+
+|Ω𝑡 |∑︁ 𝑢 ∈Ω𝑡 
+
+min 
+
+
+
+𝜌 𝑖 𝜃,𝑡 (𝑢 ) 𝐴 𝑖 𝑡 (𝑢 ), clip (𝜌 𝑖 𝜃,𝑡 (𝑢 ), 1 − 𝜀, 1 + 𝜀 ) 𝐴 𝑖 𝑡 (𝑢 )
+
+#
+
+− 𝛽 DKL . (13) Here DKL is the KL regularization term between the current policy and the frozen reference policy over denoising transitions, which constrains the update magnitude and reduces the risk of reward hacking. 
+
+## 4 Experiments 
+
+4.1 Implementation Details 
+
+Evaluation tasks. The experiments include three T2I post-training tasks: GenEval, OCR text rendering, and PickScore. GenEval evaluates compositional generation ability, including object 
+
+5STAR 
+
+Table 1 GenEval results. We report the overall score and six compositional sub-tasks. Obj. denotes object, and Attr. denotes attribute. Blue indicates the best result, and green indicates the second-best result.                                                                                                                        
+
+> Model Overall Single Obj. Two Obj. Counting Colors Position Attr. Binding
+> Diffusion Models
+> LDM 0.37 0.92 0.29 0.23 0.70 0.02 0.05 SD1.5 0.43 0.97 0.38 0.35 0.76 0.04 0.06 SD2.1 0.50 0.98 0.51 0.44 0.85 0.07 0.17 SD-XL 0.55 0.98 0.74 0.39 0.85 0.15 0.23 DALLE-2 0.52 0.94 0.66 0.49 0.77 0.10 0.19 DALLE-3 0.67 0.96 0.87 0.47 0.83 0.43 0.45
+> Autoregressive Models
+> Show-o 0.53 0.95 0.52 0.49 0.82 0.11 0.28 Emu3-Gen 0.54 0.98 0.71 0.34 0.81 0.17 0.21 JanusFlow 0.63 0.97 0.59 0.45 0.83 0.53 0.42 Janus-Pro-7B 0.80 0.99 0.89 0.59 0.90 0.79 0.66
+> Diffusion / Flow Models
+> FLUX.1 Dev 0.66 0.98 0.81 0.74 0.79 0.22 0.45 SD3.5-L 0.71 0.98 0.89 0.73 0.83 0.34 0.47 SANA-1.5 4.8B 0.81 0.99 0.93 0.86 0.84 0.59 0.65 SD3.5-M 0.63 0.98 0.78 0.50 0.81 0.24 0.52 SD3.5-M+Flow-GRPO 0.95 1.00 0.99 0.95 0.92 0.99 0.86
+> SD3.5-M+Flow-GRPO+STAR 0.9759 1.00 1.00 0.98 0.96 0.98 0.94
+
+counting, attribute binding, colors, and spatial relations [ 24 , 25 ]; training prompts are generated from the official GenEval templates, and rewards are computed by the official rule-based evaluation pipeline. OCR text rendering requires the model to generate a specified text string in the image, and the reward is computed from the edit distance between the rendered text and the target text. PickScore uses a learned preference reward model to score each prompt-image pair. 
+
+Baselines. We compare against multiple representative T2I baselines, including diffusion models (LDM, SD1.5, SD2.1, SD-XL [ 6 ], DALLE-2 [ 26 ], DALLE-3 [ 27 ]), autoregressive models (Show-o [ 28 ], Emu3-Gen [ 29 ], JanusFlow [ 30 ], Janus-Pro-7B [ 31 ]), and recent diffusion/flow models (FLUX.1 Dev [32], SD3.5-L, SANA-1.5 4.8B [33], SD3.5-M [8], SD3.5-M+Flow-GRPO [11]). 
+
+Experimental setup. We implement STAR based on the Flow-GRPO [ 11 ] training pipeline and use Stable Diffusion 3.5 Medium (SD3.5-M) as the base model. Training uses ODE-to-SDE rollouts for online sampling, with the number of sampling steps set to 𝑇 = 10 , the SDE noise level set to 𝑎 = 0.7, and the image resolution set to 512 × 512 ; evaluation uses 𝑇 = 40 steps. For each prompt, we sample 𝐺 = 24 images to form a group, and update the model with a group-relative policy-gradient objective, clipped ratio, and KL regularization. The KL coefficient is set to 𝛽 = 0.04 
+
+for GenEval and OCR text rendering, and 𝛽 = 0.01 for PickScore. We train the model with LoRA [ 34 ], using rank 𝑟 = 32 and scaling factor 𝛼 = 64 . STAR records text-image attention during rollout and uses the spatial objective in Section 3 to allocate group-relative advantages. Attention routing uses the joint attention of SD3.5-M, reads the attention layers from transformer blocks 10–15, and sets the allocation strength to 𝜆 = 1.5.
+
+6STAR Flow-GRPO + STAR 
+
+> 0.94
+> 0.95
+> 0.96
+> 0.97
+> 0.98
+> 0.99
+> Score
+> 0.95
+> 0.9759
+
+GenEval  
+
+> Flow-GRPO + STAR
+> 0.92
+> 0.94
+> 0.96
+> 0.98
+> 0.92
+> 0.9757
+
+OCR Acc.  
+
+> Flow-GRPO + STAR
+> 23.0
+> 23.2
+> 23.4
+> 23.6
+> 23.31
+> 23.60
+
+PickScore  
+
+> Flow-GRPO Flow-GRPO + STAR
+
+Figure 2 Main results on three T2I post-training benchmarks. STAR consistently improves over the Flow-GRPO baseline on compositional generation, text rendering, and preference optimization. 
+
+4.2 Main Results 
+
+GenEval results. Table 1 presents the main results on GenEval [ 24 ]. STAR achieves an overall score of 0.9759 , outperforming SD3.5-M at 0.63 and Flow-GRPO [ 11 ] at 0.95 . This improvement mainly comes from more fine-grained compositional semantic constraints: on counting, colors, and attribute binding, STAR reaches 0.98 , 0.96 , and 0.94 , respectively, clearly improving over 
+
+0.95 , 0.92 , and 0.86 . Two-object generation further reaches 1.00 . On single-object generation and position, two sub-tasks that are already close to saturation, STAR still maintains near-optimal performance, reaching 1.00 and 0.98 , respectively. These results show that the gains of STAR come from more accurate spatiotemporal credit assignment. By allocating the same image-level advantage to prompt-relevant latent regions, STAR can more selectively update the generative regions that affect object counts, colors, and attribute binding, thereby improving compositional generation performance. 
+
+Results across benchmarks. Figure 2 further compares Flow-GRPO [ 11 ] and STAR on the three post-training tasks. STAR achieves 0.9759 on GenEval [ 24 ], 0.9757 on OCR text rendering [ 35 ], and 23 .60 on PickScore [ 10 ], all outperforming the corresponding Flow-GRPO baselines. The improvements on GenEval and OCR indicate that spatiotemporal adaptive reward allocation can more effectively optimize verifiable text-alignment objectives; the improvement on PickScore shows that this allocation scheme can also be used with continuous rewards provided by a preference model. Overall, without changing the form of the task reward, STAR allocates the same sample-level feedback to more relevant generative regions and thus obtains consistent gains in compositional generation, text rendering, and preference optimization. 
+
+4.3 Ablation Study 
+
+4.3.1 Prompt Heatmap Construction 
+
+We compare two ways of constructing prompt heatmaps. The single-heatmap variant first aggre-gates the attention of multiple key components in the prompt into one heatmap and then obtains reward allocation coefficients; the component-wise heatmaps variant first generates a heatmap for each key component separately and then stacks and normalizes them. Both experiments use the same PickScore reward, training setting, and evaluation interval. 
+
+7STAR 0 1k 2k 3k 4k 5k 6k 7k 
+
+> Training steps
+> 0.83
+> 0.84
+> 0.85
+> 0.86
+> 0.87
+> 0.88
+> 0.89
+> 0.90
+> 0.91
+> PickScore reward
+> Single heatmap
+> Component-wise heatmaps
+
+(a) Prompt heatmap construction. 0 1k 2k 3k 4k  
+
+> Training steps
+> 0.65
+> 0.70
+> 0.75
+> 0.80
+> 0.85
+> 0.90
+> 0.95
+> GenEval score
+> Attention Layer Selection
+> Front layers (0--9)
+> STAR layers (10--15)
+> Back layers (16--23)
+> All layers
+
+(b) Attention layer selection. Training time Peak memory 
+
+> 0.0
+> 0.5
+> 1.0
+> 1.5
+> 2.0
+> Overhead vs. Flow-GRPO (%)
+> < 2%
+> +1.56%
+> Flow-GRPO+STAR overhead
+
+(c) Computational overhead. 
+
+Figure 3 Ablation and efficiency analysis for STAR, covering reward routing design choices and additional training overhead. Figure 3a shows that the training curves of the two variants are overall very close, with the single heatmap showing a slight advantage in the later stage of training. This result indicates that directly aggregating multiple components that the user cares about in the prompt into a shared heatmap already provides a stable routing signal. Generating heatmaps component by component and then stacking them does not bring additional gains and increases implementation complexity; therefore, we use single-heatmap construction in the main experiments. 
+
+4.3.2 Attention Layer Selection 
+
+We further analyze the choice of text-image attention layers in STAR. We compare four settings: front layers use transformer blocks 0–9, STAR layers use blocks 10 –15 , back layers use blocks 
+
+16 –23 , and all layers use all attention layers. Figure 3b shows that layer selection affects the stability of attention routing. Front layers and back layers both bring effective improvements, but their later-stage curves are slightly lower; all layers reach the highest level in the final stage, but require reading more attention maps. STAR layers remain in the best-performing group for most of training and are overall close to all layers, while using only a small number of middle blocks. This indicates that blocks 10 –15 
+
+already contain sufficiently clear text-image alignment signals. Therefore, we use this layer set in the main experiments to achieve a better balance between effectiveness and implementation overhead. 
+
+8STAR 
+
+Figure 4 Qualitative comparison between the original SD3.5-M and SD3.5-M after Flow-GRPO+STAR post-training. Within every prompt pair, the left image is produced by SD3.5-M and the right image by SD3.5-M+Flow-GRPO+STAR.  
+
+> 4.3.3 Computational Overhead
+
+We further compare the training overhead of Flow-GRPO [ 11 ] and Flow-GRPO+STAR. STAR reuses the text-image attention from the forward pass of the generative model and only performs heatmap aggregation and advantage rescaling on the selected layers; it does not require training an additional reward model or adding new image evaluation steps. Figure 3c shows that STAR introduces less than 2% additional training time overhead, and increases peak memory by only 1.56% . This result shows that the main computation of STAR still comes from the original diffusion/flow rollout and GRPO update; attention-based allocation is only a lightweight reward-routing step. Therefore, we can obtain more fine-grained spatiotemporal credit assignment with almost no change in training cost. 
+
+4.4 Qualitative Comparison 
+
+To qualitatively examine the effect of post-training with STAR, we compare the original SD3.5-M base model with SD3.5-M after Flow-GRPO+STAR post-training on a diverse set of prompts. As shown in Figure 4, both models generate images that capture the main concepts in the prompts. Across the displayed examples, Flow-GRPO+STAR post-training changes how the requested subjects, attributes, and surrounding scenes are realized. For example, the post-trained model depicts the black square building, reflective stainless-steel Bitcoin logo, blue windmill, and compact starship with more complete prompt-related elements and more coherent scene composition. These qualitative results complement the quantitative evaluations and illustrate the effect of applying Flow-GRPO+STAR post-training to SD3.5-M across different types of prompts. By 
+
+9STAR 
+
+allocating the reward signal to prompt-relevant latent regions, STAR encourages the model to better incorporate the textual conditions during generation. 
+
+## 5 Conclusion 
+
+We propose SpatioTemporal Adaptive Reward (STAR) Allocation , a spatiotemporal adaptive reward allocation method for RL post-training of T2I diffusion and flow models. STAR extracts prompt-related spatiotemporal signals from text-image interactions inside the generative model and uses them to allocate image-level feedback more selectively to key regions of the generative trajectory, focusing policy updates on the parts that truly affect text alignment and generation quality. Experimental results show that, without changing the external reward source and with almost no additional training cost, STAR stably improves existing RL post-training methods, especially in scenarios requiring fine-grained semantic understanding, local content control, and preference alignment. Overall, STAR provides a simple, lightweight, and effective interface for allocating image-level feedback to structured diffusion/flow trajectories. 
+
+## Statements 
+
+Stable Diffusion 3.5 Medium is used under the Stability AI Community License for academic research purposes. The authors confirm that the use of this model is limited to academic research purposes and has not been used for any commercial activities. 
+
+## References 
+
+[1] J. Ho, A. Jain, and P. Abbeel, “Denoising diffusion probabilistic models,” Advances in neural information processing systems , vol. 33, pp. 6840–6851, 2020. [2] P. Dhariwal and A. Nichol, “Diffusion models beat gans on image synthesis,” Advances in neural information processing systems , vol. 34, pp. 8780–8794, 2021. [3] Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, and B. Poole, “Score-based gen-erative modeling through stochastic differential equations,” in 9th International Conference on Learning Representations, ICLR 2021, Virtual Event, Austria, May 3-7, 2021 , 2021. [4] J. Song, C. Meng, and S. Ermon, “Denoising diffusion implicit models,” in 9th International Conference on Learning Representations, ICLR 2021, Virtual Event, Austria, May 3-7, 2021 ,2021. [5] R. Rombach, A. Blattmann, D. Lorenz, P. Esser, and B. Ommer, “High-resolution image synthesis with latent diffusion models,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , 2022, pp. 10 684–10 695. [6] D. Podell, Z. English, K. Lacey, A. Blattmann, T. Dockhorn, J. Müller, J. Penna, and R. Rom-bach, “SDXL: improving latent diffusion models for high-resolution image synthesis,” in The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024 , 2024. [7] C. Saharia, W. Chan, S. Saxena, L. Li, J. Whang, E. L. Denton, K. Ghasemipour, R. Gon-tijo Lopes, B. Karagol Ayan, T. Salimans et al. , “Photorealistic text-to-image diffusion models with deep language understanding,” Advances in neural information processing systems ,vol. 35, pp. 36 479–36 494, 2022. 
+
+10 STAR 
+
+[8] P. Esser, S. Kulal, A. Blattmann, R. Entezari, J. Müller, H. Saini, Y. Levi, D. Lorenz, A. Sauer, F. Boesel et al. , “Scaling rectified flow transformers for high-resolution image synthesis,” in 
+
+Forty-first international conference on machine learning , 2024. [9] J. Xu, X. Liu, Y. Wu, Y. Tong, Q. Li, M. Ding, J. Tang, and Y. Dong, “Imagereward: Learning and evaluating human preferences for text-to-image generation,” Advances in Neural Information Processing Systems , vol. 36, 2024. [10] Y. Kirstain, A. Polyak, U. Singer, S. Matiana, J. Penna, and O. Levy, “Pick-a-pic: An open dataset of user preferences for text-to-image generation,” Advances in Neural Information Processing Systems , vol. 36, pp. 36 652–36 663, 2023. [11] J. Liu, G. Liu, J. Liang, Y. Li, J. Liu, X. Wang, P. Wan, D. Zhang, and W. Ouyang, “Flow-GRPO: Training flow matching models via online RL,” in Advances in Neural Information Processing Systems , 2025. [12] Y. Lipman, R. T. Q. Chen, H. Ben-Hamu, M. Nickel, and M. Le, “Flow matching for generative modeling,” in The Eleventh International Conference on Learning Representations, ICLR 2023, Kigali, Rwanda, May 1-5, 2023 . OpenReview.net, 2023. [13] X. Liu, C. Gong, and Q. Liu, “Flow straight and fast: Learning to generate and transfer data with rectified flow,” in The Eleventh International Conference on Learning Representations, ICLR 2023, Kigali, Rwanda, May 1-5, 2023 , 2023. [14] R. S. Sutton, A. G. Barto et al. , Reinforcement learning: An introduction . MIT press Cambridge, 1998, vol. 1. [15] R. J. Williams, “Simple statistical gradient-following algorithms for connectionist reinforce-ment learning,” Machine learning , vol. 8, pp. 229–256, 1992. [16] K. Black, M. Janner, Y. Du, I. Kostrikov, and S. Levine, “Training diffusion models with reinforcement learning,” in The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024 , 2024. [17] Y. Fan, O. Watkins, Y. Du, H. Liu, M. Ryu, C. Boutilier, P. Abbeel, M. Ghavamzadeh, K. Lee, and K. Lee, “Reinforcement learning for fine-tuning text-to-image diffusion models,” Advances in Neural Information Processing Systems , vol. 36, 2024. [18] B. Wallace, M. Dang, R. Rafailov, L. Zhou, A. Lou, S. Purushwalkam, S. Ermon, C. Xiong, S. Joty, and N. Naik, “Diffusion model alignment using direct preference optimization,” in 
+
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2024, pp. 8228–8238. [19] R. Rafailov, A. Sharma, E. Mitchell, C. D. Manning, S. Ermon, and C. Finn, “Direct prefer-ence optimization: Your language model is secretly a reward model,” Advances in Neural Information Processing Systems , vol. 36, pp. 53 728–53 741, 2023. [20] M. Prabhudesai, A. Goyal, D. Pathak, and K. Fragkiadaki, “Aligning text-to-image diffusion models with reward backpropagation,” arXiv preprint arXiv:2310.03739 , 2023. [21] S. Yang, T. Chen, and M. Zhou, “A dense reward view on aligning text-to-image diffusion with preference,” in Forty-first International Conference on Machine Learning, ICML 2024, Vienna, Austria, July 21-27, 2024 , 2024, pp. 55 998–56 032. 
+
+11 STAR 
+
+[22] Z. Shao, P. Wang, Q. Zhu, R. Xu, J. Song, X. Bi, H. Zhang, M. Zhang, Y. Li, Y. Wu et al. ,“Deepseekmath: Pushing the limits of mathematical reasoning in open language models,” 
+
+arXiv preprint arXiv:2402.03300 , 2024. [23] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov, “Proximal policy optimization algorithms,” arXiv preprint arXiv:1707.06347 , 2017. [24] D. Ghosh, H. Hajishirzi, and L. Schmidt, “Geneval: An object-focused framework for evaluat-ing text-to-image alignment,” Advances in Neural Information Processing Systems , vol. 36, pp. 52 132–52 152, 2023. [25] K. Huang, K. Sun, E. Xie, Z. Li, and X. Liu, “T2i-compbench: A comprehensive benchmark for open-world compositional text-to-image generation,” Advances in Neural Information Processing Systems , vol. 36, pp. 78 723–78 747, 2023. [26] A. Ramesh, P. Dhariwal, A. Nichol, C. Chu, and M. Chen, “Hierarchical text-conditional image generation with clip latents,” arXiv preprint arXiv:2204.06125 , vol. 1, no. 2, p. 3, 2022. [27] J. Betker, G. Goh, L. Jing, T. Brooks, J. Wang, L. Li, L. Ouyang, J. Zhuang, J. Lee, Y. Guo 
+
+et al. , “Improving image generation with better captions,” Computer Science. https://cdn. openai. com/papers/dall-e-3. pdf , vol. 2, no. 3, p. 8, 2023. [28] J. Xie, W. Mao, Z. Bai, D. J. Zhang, W. Wang, K. Q. Lin, Y. Gu, Z. Chen, Z. Yang, and M. Z. Shou, “Show-o: One single transformer to unify multimodal understanding and generation,” in The Thirteenth International Conference on Learning Representations, ICLR 2025, Singapore, April 24-28, 2025 , 2025. [29] X. Wang, X. Zhang, Z. Luo, Q. Sun, Y. Cui, J. Wang, F. Zhang, Y. Wang, Z. Li, Q. Yu et al. ,“Emu3: Next-token prediction is all you need,” arXiv preprint arXiv:2409.18869 , 2024. [30] Y. Ma, X. Liu, X. Chen, W. Liu, C. Wu, Z. Wu, Z. Pan, Z. Xie, H. Zhang, X. Yu, L. Zhao, Y. Wang, J. Liu, and C. Ruan, “Janusflow: Harmonizing autoregression and rectified flow for unified multimodal understanding and generation,” in IEEE/CVF Conference on Computer Vision and Pattern Recognition, CVPR 2025, Nashville, TN, USA, June 11-15, 2025 , 2025, pp. 7739–7751. [31] X. Chen, Z. Wu, X. Liu, Z. Pan, W. Liu, Z. Xie, X. Yu, and C. Ruan, “Janus-pro: Unified multimodal understanding and generation with data and model scaling,” arXiv preprint arXiv:2501.17811 , 2025. [32] B. F. Labs, “Flux,” https://github.com/black-forest-labs/flux, 2024. [33] E. Xie, J. Chen, Y. Zhao, J. Yu, L. Zhu, Y. Lin, Z. Zhang, M. Li, J. Chen, H. Cai, B. Liu, D. Zhou, and S. Han, “SANA 1.5: Efficient scaling of training-time and inference-time compute in linear diffusion transformer,” in Forty-second International Conference on Machine Learning, ICML 2025, Vancouver, BC, Canada, July 13-19, 2025 , 2025. [34] E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, and W. Chen, “Lora: Low-rank adaptation of large language models,” in The Tenth International Conference on Learning Representations, ICLR 2022, Virtual Event, April 25-29, 2022 , 2022. [35] J. Chen, Y. Huang, T. Lv, L. Cui, Q. Chen, and F. Wei, “Textdiffuser: Diffusion models as text painters,” Advances in Neural Information Processing Systems , vol. 36, pp. 9353–9387, 2023. 
+
+12 STAR 
+
+## A Text-Unit Extraction Prompts 
+
+This appendix reports the task-specific text-unit extraction procedures used by STAR. These text units are used only to locate the corresponding text-token indices and aggregate text-image attention maps; the external image-level reward for each task remains unchanged. 
+
+A.1 GenEval Text Units 
+
+For GenEval, STAR does not require an LLM for text-unit extraction. Instead, it applies a determin-istic focus-span rule: remove a boilerplate image prefix such as “a photo of ”, “an image of ”, or “a painting of ”, and use the remaining phrase as a single text unit. This matches the GenEval prompt format, where the suffix already contains the objects, attributes, counts, and spatial relations to be grounded.      
+
+> GenEval structured-phrase extraction Input: c = original GenEval prompt Rule: remove prefix matching ^(?:a|an|the)?\s*(?:photo|picture|image|painting|drawing)\s+of\s+ Output: K(c) = [remaining focus span] Examples: Input: "a photo of a blue book" Output: ["a blue book"] Input: "a photo of a bus below a cat" Output: ["a bus below a cat"] Input: "a photo of a yellow bus and an orange handbag" Output: ["a yellow bus and an orange handbag"]
+
+A.2 PickScore Text Units 
+
+For PickScore, STAR uses the same deterministic focus-span rule by default. We additionally consider component-level decomposition, in which a vision-language model extracts concise semantic units describing objects, attributes, quantities, and spatial relations. The decomposition prompt is provided below. 
+
+> You are a precise text analyzer. Given an image generation prompt, decompose it into semantic components. Rules: - Extract each distinct object with its attributes (e.g., "red cat", "wooden table") - Extract spatial relationships (e.g., "sitting on", "next to", "above") - Extract quantities if specified (e.g., "two cups", "three dogs") - Each component should be a short phrase (1-4 words) - Return ONLY a JSON list of strings, no explanation Example: Input: "a photo of a red cat sitting on a wooden table" Output: ["red cat", "wooden table", "sitting on"] Example:
+
+13 STAR 
+
+Input: "a photo of two blue cups on a white shelf" Output: ["two blue cups", "white shelf", "on"] Example: Input: "a photo of a black car parked next to a red bicycle" Output: ["black car", "red bicycle", "parked next to"] Now decompose: Input: "{prompt}" Output: 
+
+A.3 OCR Text Units 
+
+OCR prompts contain exact quoted strings that must be rendered in the image. We therefore extract visually localizable text units in advance and associate them with the corresponding training prompts. These units include the exact rendered text, its carrier or surface, visible text attributes, and other concrete scene elements. When pre-extracted units are unavailable, STAR falls back to the deterministic focus-span rule described above. The extraction prompt is shown below. 
+
+You are an expert at analyzing OCR/text-to-image prompts. Extract only the important, visually localizable semantic components that should correspond to concrete image regions and cross-attention heatmaps. Priority for OCR/text-rendering prompts: 1. Exact rendered text: every quoted word/phrase that must appear legibly in the image. Preserve spelling and capitalization. 2. Text carrier/surface: the object or region that contains the text (label, billboard, screen, sign, page, ribbon, poster, display, book cover). 3. Text style/appearance: concrete visible style/color/layout of the rendered text or carrier (red warning label, bold letters, glowing green text). 4. Main objects/subjects: entities that must appear (medicine bottle, robot chest panel, spellbook , astronaut boot print). 5. Concrete scene/background: visually localizable environment (industrial background, Martian surface, neutral background). 6. Composition/viewpoint/style only when visually important and concise (close-up, textbook diagram, realistic photograph). Include: - Objects/subjects and their key visible attributes. - Actions/interactions only when they create a visible region. - Exact quoted OCR text as a standalone component. - Text carrier + text content as separate components when both exist. - Short phrases that can plausibly map to a region in the image. Exclude: - Abstract intent/emotion/judgment with no clear visual region: urgency, achievement, accomplishment, vibe, feeling, mood, intrigued, dismissive. - Generic filler: a photo of, a picture of, an image of, featuring, set against, that reads, clearly reading, prominently displayed. - Standalone connectors/prepositions: in, on, with, of, that are, a couple of. - Quality tags: 8k, UHD, highly detailed, masterpiece, trending on Artstation. - Artist-name modifiers. - The full prompt itself. Output format: 
+
+14 STAR 
+
+Return a JSON array of strings. Each string is one important component, as a short phrase (1-7 words). Prefer 3-7 components per prompt. Keep the original wording when possible. For OCR/ text-rendering prompts, include every exact quoted text as one component. Do NOT include the full prompt as a component. Examples: Prompt: "A close-up of a medicine bottle with a clear, red warning label that reads \"Take With Food\" prominently displayed, set against a neutral background." -> ["close-up", "medicine bottle", "clear red warning label", "Take With Food", "neutral background"] Prompt: "A close-up of a robot’s chest panel, with a digital display blinking \"System Override Active\" in red, set against a dimly lit industrial background." -> ["close-up", "robot’s chest panel", "digital display", "System Override Active", "red blinking text", "dimly lit industrial background"] Batch-format instruction: Extract the important semantic components from each of the following prompts. Return a JSON array for each prompt, in order. Format: return a JSON array of JSON arrays, one inner array per prompt. Prompts: 1. {prompt_1} 2. {prompt_2} ... Return ONLY a JSON array of arrays, e.g.: [["comp1", "comp2"], ["comp3"], ...] 
+
+15

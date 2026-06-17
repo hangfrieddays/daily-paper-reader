@@ -6,31 +6,36 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-16
-- 运行时间：2026-06-16 21:33:48 UTC
+- 最新运行日期：2026-06-17
+- 运行时间：2026-06-17 21:53:43 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：4
 - 精读区：2
-- 速读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-今日共推荐3篇论文，精读2篇（最高分9.0/10），方向聚焦于离散扩散模型的视觉文本推理强化与标量奖励的推理内化。  
-最值得关注方向：基于离散扩散模型的高效强化学习（9.0分）和将推理内化为得分分布的新奖励范式（8.0分）。  
-建议普通读者优先精读前两篇，理解如何用离散扩散强化视觉-文本推理，以及超越传统标量奖励的推理分布设计。
-- 详情：[/202606/16/README](/202606/16/README)
+1) 今日精读两篇高分论文：一篇针对文生图RL后训练提出时空自适应奖励分配（9.0），一篇通过世界模型自蒸馏解决通用任务（8.0），另有速读涉及知识蒸馏与离线偏好强化学习。
+
+2) 最值得关注的方向：**STAR** 的时空奖励分配机制可显著提升文生图RL效果；**世界模型自蒸馏**方法展现通用任务求解潜力。
+
+3) 建议优先精读STAR论文，把握时空奖励分配核心思路；速读的两篇可作为对比或扩展，关注知识蒸馏与离线偏好学习的实际应用。
+- 详情：[/202606/17/README](/202606/17/README)
 
 ### 精读区论文标签
-1. [Efficient Reinforcement for Visual-Textual Thinking with Discrete Diffusion Model](/202606/16/2606.14792v1-efficient-reinforcement-for-visual-textual-thinking-with-discrete-diffusion-model)  
+1. [STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training](/202606/17/2606.17979v1-star-spatiotemporal-adaptive-reward-allocation-for-text-to-image-rl-post-training)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：用强化学习和离散扩散模型进行图像生成推理
-2. [Beyond Scalar Rewards by Internalizing Reasoning into Score Distributions](/202606/16/2606.09076v2-beyond-scalar-rewards-by-internalizing-reasoning-into-score-distributions)  
+   evidence：面向文生图的强化学习后训练，提出时空自适应奖励分配
+2. [World Model Self-Distillation: Training World Models to Solve General Tasks](/202606/17/2606.12072v1-world-model-self-distillation-training-world-models-to-solve-general-tasks)  
    标签：评分：8.0/10、query:image-gen-rl
-   evidence：为文本到图像生成设计奖励函数
+   evidence：使用强化学习训练世界模型用于视频生成，可推广至图像生成
 
 ### 速读区论文标签
-1. [QPILOTS: Efficient Test-Time Q-Steering for Flow Policies](/202606/16/2606.14801v1-qpilots-efficient-test-time-q-steering-for-flow-policies)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：提出用于流策略的RL方法，可用于生成模型
+1. [SPARK: Spatial Policy-driven Adaptive Reinforcement learning for Knowledge distillation](/202606/17/2606.15243v1-spark-spatial-policy-driven-adaptive-reinforcement-learning-for-knowledge-distillation)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：基于强化学习的自适应知识蒸馏用于图像恢复，提升图像质量
+2. [Video-Based Optimal Transport for Feedback-Efficient Offline Preference-Based Reinforcement Learning](/202606/17/2606.16856v1-video-based-optimal-transport-for-feedback-efficient-offline-preference-based-reinforcement-learning)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：提出基于最优传输从少量标签学习奖励函数，可应用于图像生成任务的奖励设计
 
 
 <div class="dpr-home-promo-card">

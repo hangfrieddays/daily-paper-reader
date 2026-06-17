@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-17",
+  "date": "2026-06-17",
+  "generated_at": "2026-06-17T21:53:50",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/17/2606.17979v1-star-spatiotemporal-adaptive-reward-allocation-for-text-to-image-rl-post-training",
+      "section": "deep",
+      "title_en": "STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training",
+      "authors": "Jinjie Shen, Wei Deng, Xian Hu, Daiguo Zhou, Jian Luan",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.17979v1",
+      "score": "9.0",
+      "evidence": "面向文生图的强化学习后训练，提出时空自适应奖励分配",
+      "tldr": "文本到图像生成的强化学习后训练通常将最终奖励均匀作用于整个生成轨迹，忽略了去噪步骤和空间区域的重要性差异。本文提出STAR（时空自适应奖励分配），利用文图注意力机制动态构建空间分配图，对相关潜在区域施加强度更大的策略更新。在Stable Diffusion 3.5 Medium上评估，STAR在GenEval、OCR和PickScore上分别达到0.9759、0.9757和23.60。该方法在不增加额外计算开销的情况下显著提升了语义对齐和文本渲染能力。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Existing RL post-training methods for text-to-image generation usually convert the final-image reward into a single scalar advantage and apply it with the same strength to the entire generative trajectory. However, text-to-image generation naturally has temporal and spatial structure: different denoising steps are responsible for different generation stages, and the content that truly determines text alignment often appears only in part of the image. This granularity mismatch makes it difficult for policy updates to focus on the generative components that actually affect the reward. To address this issue, we propose \\textbf{SpatioTemporal Adaptive Reward (STAR) Allocation} for RL post-training of text-to-image diffusion and flow models. STAR uses text-image attention inside the generative model and starts from the core content that the user truly cares about in the prompt. It constructs spatial allocation maps that dynamically vary across denoising steps and rollouts, and allocates the same group-relative advantage to more relevant latent regions with almost no additional computational overhead. STAR then applies stronger policy updates to these regions through a spatially resolved policy objective. We use Stable Diffusion 3.5 Medium as the base model and evaluate on three tasks: GenEval, OCR text rendering, and PickScore. Experimental results show that STAR improves compositional semantic alignment, text rendering, and preference optimization without changing the external reward source, achieving $\\mathbf{0.9759}$, $\\mathbf{0.9757}$, and $\\mathbf{23.60}$ on GenEval, OCR, and PickScore, respectively.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/17/2606.12072v1-world-model-self-distillation-training-world-models-to-solve-general-tasks",
+      "section": "deep",
+      "title_en": "World Model Self-Distillation: Training World Models to Solve General Tasks",
+      "authors": "Sebastian Stapf, Pablo Acuaviva Huertos, Aram Davtyan, Paolo Favaro",
+      "date": "2026-06-10",
+      "pdf": "https://arxiv.org/pdf/2606.12072v1",
+      "score": "8.0",
+      "evidence": "使用强化学习训练世界模型用于视频生成，可推广至图像生成",
+      "tldr": "预训练视频生成器作为世界模型有潜力，但依赖详细文本描述限制了任务解决。现有方法需要配对任务视频或外部模型，成本高。本文提出自蒸馏与强化学习框架：VLM生成任务方案引导Demonstrator，蒸馏为仅需图像和短提示的Executor，并用VLM反馈强化学习优化。在多个基准上Executor超越Demonstrator并迁移到机器人任务，展示了可扩展的无监督任务学习能力。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Pretrained video generators are promising visual world models that exhibit emergent task-solving abilities; however, their reliance on detailed textual descriptions limits their direct use for planning and decision-making. Existing approaches either outsource this reasoning to language or vision-language models, or rely on supervised fine-tuning with paired task-execution videos, which are costly to collect and difficult to scale. We propose a scalable framework that elicits task-solving ability in such models by combining self-distillation with reinforcement learning. Given an unlabeled scene image, a vision-language model generates a candidate task and a detailed step-by-step solution. The solution conditions a pretrained video diffusion model, the Demonstrator; we distill its behavior into an Executor conditioned only on the image and a short task prompt. This transfers execution knowledge from caption-guided generation to instruction-conditioned task solving without curated task-video supervision. We further improve the Executor with reinforcement learning from VLM feedback, exploiting the asymmetry between judging whether a sampled video satisfies a task and generating the solution. Experiments on our proposed WorldTasks-Benchmark and the DreamGen robotics benchmark show that the Executor surpasses the Demonstrator under our VLM-based evaluation protocol and transfers competitively to robotic tasks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/17/2606.15243v1-spark-spatial-policy-driven-adaptive-reinforcement-learning-for-knowledge-distillation",
+      "section": "quick",
+      "title_en": "SPARK: Spatial Policy-driven Adaptive Reinforcement learning for Knowledge distillation",
+      "authors": "Mohamed Jismy Aashik Rasool, Shabir Ahmad, Gisong Oh, Teag Kuen Whangbo",
+      "date": "2026-06-13",
+      "pdf": "https://arxiv.org/pdf/2606.15243v1",
+      "score": "7.0",
+      "evidence": "基于强化学习的自适应知识蒸馏用于图像恢复，提升图像质量",
+      "tldr": "低比特量化部署图像恢复网络时，均匀蒸馏信号忽略空间差异导致高频区域恢复不佳。本文提出SPARK框架，利用轻量级强化学习策略网络，基于拉普拉斯方差、像素方差、学生误差和师生差距等特征，动态生成空间权重图调制蒸馏损失。实验表明，SPARK在多个基准数据集上超越PTQ、QAT及现有知识蒸馏方法，接近全精度教师性能，且无需推理开销、兼容任意量化训练流程。该工作首次将空间自适应强化学习引入知识蒸馏，为高效低比特量化图像恢复提供新范式。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Low-bit quantization enables deployment of image restoration (IR) networks on resource-constrained devices, but introduces rounding noise that disproportionately degrades high-frequency regions such as edges and fine textures. Existing knowledge distillation (KD) methods apply distillation signals uniformly across all spatial locations, overlooking the varying reconstruction difficulty across image regions. To address this, we propose SPARK (Spatial Policy-driven Adaptive Reinforcement Learning for Knowledge Distillation), a framework that adaptively allocates distillation effort using a lightweight reinforcement learning (RL) policy network. At each training step, a difficulty feature extractor computes four signals, namely Laplacian variance, pixel variance, student reconstruction error, and teacher-student knowledge gap, which are fed into a compact policy CNN that produces a stochastic spatial weight map to modulate the KD loss during quantization-aware training (QAT). SPARK is IR task-agnostic, adds no inference cost, and integrates into any existing QAT pipeline without architectural changes. Experiments on benchmark datasets demonstrate that SPARK consistently outperforms PTQ, QAT, and state-of-the-art (SOTA) KD approaches across multiple student architectures, achieving reconstruction quality closest to the full-precision teacher under significant computational constraints.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/17/2606.16856v1-video-based-optimal-transport-for-feedback-efficient-offline-preference-based-reinforcement-learning",
+      "section": "quick",
+      "title_en": "Video-Based Optimal Transport for Feedback-Efficient Offline Preference-Based Reinforcement Learning",
+      "authors": "Tung M. Luu, Hwanhee Kim, Younghwan Lee, Chang D. Yoo",
+      "date": "2026-06-15",
+      "pdf": "https://arxiv.org/pdf/2606.16856v1",
+      "score": "7.0",
+      "evidence": "提出基于最优传输从少量标签学习奖励函数，可应用于图像生成任务的奖励设计",
+      "tldr": "离线偏好强化学习因依赖大量人类反馈而标注成本高昂。本文提出VOTP框架，利用视频基础模型（ViFMs）提取视觉轨迹特征，通过最优轨迹对齐生成高保真伪标签，仅需少量人工标注即可学习有效奖励函数。在运动控制和操作基准上，VOTP在有限反馈预算下显著超越现有方法，且对视觉干扰具鲁棒性。在真实机器人任务中实现最小人工干预下的有效奖励学习，展示了实用性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Conveying complex objectives to reinforcement learning (RL) agents often requires meticulous reward engineering. Preference-based RL (PbRL) offers a promising alternative by learning reward functions from human feedback, but its scalability is hindered by high labeling costs. Inspired by advances in Video Foundation Models (ViFMs), we present Video-based Optimal Transport Preference (VOTP), a semi-supervised framework that learns effective reward functions from only a handful of labels. By leveraging optimal transport to align visual trajectories within the rich representation space of ViFMs, VOTP effectively generates high-fidelity pseudo-labels for large amounts of unlabeled data, substantially reducing human supervision. Extensive experiments across locomotion and manipulation benchmarks demonstrate the superiority of VOTP, which outperforms state-of-the-art offline PbRL methods under limited feedback budgets. We also showcase the robustness of VOTP in the presence of visual distractors and validate its utility on real robotic tasks, where it learns meaningful rewards with minimal human input.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
