@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-18",
+  "date": "2026-06-18",
+  "generated_at": "2026-06-18T21:16:23",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/18/2606.19004v1-spotlight-synergizing-seed-exploration-and-spot-gpus-for-dit-rl-post-training",
+      "section": "deep",
+      "title_en": "Spotlight: Synergizing Seed Exploration and Spot GPUs for DiT RL Post-Training",
+      "authors": "Ruiqi Lai, Dakai An, Wei Gao, Ju Huang, Siran Yang, Jiamang Wang, Lin Qu, Dmitrii Ustiugov, Wei Wang",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19004v1",
+      "score": "9.0",
+      "evidence": "扩散变换器的强化学习后训练",
+      "tldr": "Diffusion Transformers强化学习后训练成本高昂，现有种子探索增加计算负担，而spot GPU因同步执行和抢占问题利用率低。Spotlight利用容忍过时权重的探索在空闲spot GPU上运行，并设计弹性序列并行和抢占感知调度。在Qwen-Image上达到相同验证分数快4倍，总成本降低1.4-6.4倍。这是首个高效利用spot GPU进行DiT后训练的系统。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning (RL) post-training of Diffusion Transformers (DiTs) is prohibitively expensive, requiring thousands of high-end GPUs. Existing works explore two directions to reduce cost: seed exploration improves training convergence by selecting high-contrast samples, yet adds compute to the critical path; spot GPUs offer 69--77\\% lower cost, yet sit idle during training because DiT rollouts finish nearly simultaneously, which prevents LLM-style pipelining of rollout with training. Spot preemptions further break Sequence Parallelism (SP) groups, fragmenting GPU topology.   We present Spotlight, the first system that harvests spot GPUs for DiT RL post-training. Spotlight rests on two key insights we devise: (1)~we show that exploration can tolerate stale model weights because exploration that uses the model weights from the previous iteration preserves the relative ranking of random seeds, allowing exploration to run on idle spot GPUs during training. (2)~SP reconfiguration can reuse on-node state, reducing group recovery from minutes to sub-second launches. Built on these insights, Spotlight introduces three techniques: a bandit-based exploration planner that maximizes reward variance within the training time budget, elastic sequence parallelism that reconfigures SP groups on the fly via persistent schedulers and intra-node weight copying, and a preemption-aware pull-based request scheduler that balances load and commits in-flight state upon preemption. We implement Spotlight on the open-source RL platform ROLL and evaluate it on Qwen-Image post-training. Spotlight reaches the same target validation score $4\\times$ faster than baselines, reducing total cost by $1.4$-$6.4\\times$ while achieving superior image quality on DeepSeek-OCR and Geneval datasets with resolution $512\\times512$ and $1280\\times1280$.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/18/2606.19103v1-productconsistency-improving-product-identity-preservation-in-instruction-based-image-editing-via-sft-and-rl",
+      "section": "deep",
+      "title_en": "ProductConsistency: Improving Product Identity Preservation in Instruction-Based Image Editing via SFT and RL",
+      "authors": "Mukund Khanna, Raj Singh Yadav, Kunal Singh",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19103v1",
+      "score": "8.0",
+      "evidence": "使用强化学习改进图像编辑中的产品身份保持",
+      "tldr": "产品级指令式图像编辑中，现有模型难以保持产品身份（特征、品牌和文本）。本文构建ProductConsistency数据集，包含87k SFT样本和869个独特产品图像的RL数据，并设计循环一致性奖励以强化语义保持。微调Qwen-Image-Edit-2511和Flux.1-Kontext-dev后，OCR和感知指标显著提升，其中Qwen模型字符错误率降低5倍。该工作为产品图像编辑提供了标准化评估基准和有效训练方法。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Recent advances in instruction-based image editing have enabled models to perform complex visual edits from natural language instructions. However, in product-centric scenarios where preserving product features, branding, and textual elements are critical, current open and closed source models often struggle to maintain this fine-grained object identity. This issue is further compounded by the lack of datasets for instruction-based product image editing with text fidelity constraints, leaving it largely treated as an implicit capability of instruction-based image editing models.   In this work, we introduce the ProductConsistency dataset which is designed to improve product-centric image editing. Our approach includes a supervised fine-tuning (SFT) dataset of 87k samples for product editing, a reinforcement learning (RL) dataset with 869 unique product images, and a new benchmark dataset, the ProductConsistency Benchmark, to allow rigorous and standardized evaluation of editing models. To guide RL training, we propose a Cyclic Consistency reward that enforces semantic preservation of product identity by using caption similarity between the original product description and captions generated from the edited image. We fine-tune both Qwen-Image-Edit-2511 and Flux.1-Kontext-dev using our dataset and demonstrate consistent improvements over baseline models in OCR and Perceptual metrics, and MLLM-based evaluations as well, indicating stronger product consistency, text rendering, and overall visual quality; with the Qwen-Image-Edit-2511 model achieving a 5x reduction in the character error rate. The code and pipeline is available at https://anonymous.4open.science/r/ProductConsistency-6FCC/README.md",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

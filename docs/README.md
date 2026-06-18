@@ -6,36 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-17
-- 运行时间：2026-06-17 21:53:43 UTC
+- 最新运行日期：2026-06-18
+- 运行时间：2026-06-18 21:16:17 UTC
 - 运行状态：成功
-- 本次总论文数：4
+- 本次总论文数：2
 - 精读区：2
-- 速读区：2
+- 速读区：0
 
 ### 今日简报（AI）
-1) 今日精读两篇高分论文：一篇针对文生图RL后训练提出时空自适应奖励分配（9.0），一篇通过世界模型自蒸馏解决通用任务（8.0），另有速读涉及知识蒸馏与离线偏好强化学习。
-
-2) 最值得关注的方向：**STAR** 的时空奖励分配机制可显著提升文生图RL效果；**世界模型自蒸馏**方法展现通用任务求解潜力。
-
-3) 建议优先精读STAR论文，把握时空奖励分配核心思路；速读的两篇可作为对比或扩展，关注知识蒸馏与离线偏好学习的实际应用。
-- 详情：[/202606/17/README](/202606/17/README)
+1) 今日精读2篇高分离散扩散模型强化学习训练与指令式图像编辑中的产品一致性保持研究。  
+2) 最值得关注的是《Spotlight》中结合种子探索与Spot GPU的DiT强化学习方法（9.0分），以及《ProductConsistency》通过SFT+RL提升图像编辑的产品身份保留（8.0分）。  
+3) 建议优先阅读第一篇，了解如何高效利用GPU资源进行扩散模型后训练，对提升生成质量有帮助。
+- 详情：[/202606/18/README](/202606/18/README)
 
 ### 精读区论文标签
-1. [STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training](/202606/17/2606.17979v1-star-spatiotemporal-adaptive-reward-allocation-for-text-to-image-rl-post-training)  
+1. [Spotlight: Synergizing Seed Exploration and Spot GPUs for DiT RL Post-Training](/202606/18/2606.19004v1-spotlight-synergizing-seed-exploration-and-spot-gpus-for-dit-rl-post-training)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：面向文生图的强化学习后训练，提出时空自适应奖励分配
-2. [World Model Self-Distillation: Training World Models to Solve General Tasks](/202606/17/2606.12072v1-world-model-self-distillation-training-world-models-to-solve-general-tasks)  
+   evidence：扩散变换器的强化学习后训练
+2. [ProductConsistency: Improving Product Identity Preservation in Instruction-Based Image Editing via SFT and RL](/202606/18/2606.19103v1-productconsistency-improving-product-identity-preservation-in-instruction-based-image-editing-via-sft-and-rl)  
    标签：评分：8.0/10、query:image-gen-rl
-   evidence：使用强化学习训练世界模型用于视频生成，可推广至图像生成
+   evidence：使用强化学习改进图像编辑中的产品身份保持
 
 ### 速读区论文标签
-1. [SPARK: Spatial Policy-driven Adaptive Reinforcement learning for Knowledge distillation](/202606/17/2606.15243v1-spark-spatial-policy-driven-adaptive-reinforcement-learning-for-knowledge-distillation)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：基于强化学习的自适应知识蒸馏用于图像恢复，提升图像质量
-2. [Video-Based Optimal Transport for Feedback-Efficient Offline Preference-Based Reinforcement Learning](/202606/17/2606.16856v1-video-based-optimal-transport-for-feedback-efficient-offline-preference-based-reinforcement-learning)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：提出基于最优传输从少量标签学习奖励函数，可应用于图像生成任务的奖励设计
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
