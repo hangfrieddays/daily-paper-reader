@@ -1,0 +1,96 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-19T20:19:40.098278+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.17979v2",
+      "source": "arxiv",
+      "title": "STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training",
+      "abstract": "Existing RL post-training methods for text-to-image generation usually convert the final-image reward into a single scalar advantage and apply it with the same strength to the entire generative trajectory. However, text-to-image generation naturally has temporal and spatial structure: different denoising steps are responsible for different generation stages, and the content that truly determines text alignment often appears only in part of the image. This granularity mismatch makes it difficult for policy updates to focus on the generative components that actually affect the reward. To address this issue, we propose \\textbf{SpatioTemporal Adaptive Reward (STAR) Allocation} for RL post-training of text-to-image diffusion and flow models. STAR uses text-image attention inside the generative model and starts from the core content that the user truly cares about in the prompt. It constructs spatial allocation maps that dynamically vary across denoising steps and rollouts, and allocates the same group-relative advantage to more relevant latent regions with almost no additional computational overhead. STAR then applies stronger policy updates to these regions through a spatially resolved policy objective. We use Stable Diffusion 3.5 Medium as the base model and evaluate on three tasks: GenEval, OCR text rendering, and PickScore. Experimental results show that STAR improves compositional semantic alignment, text rendering, and preference optimization without changing the external reward source, achieving $\\mathbf{0.9759}$, $\\mathbf{0.9757}$, and $\\mathbf{23.60}$ on GenEval, OCR, and PickScore, respectively.",
+      "authors": [
+        "Jinjie Shen",
+        "Wei Deng",
+        "Xian Hu",
+        "Daiguo Zhou",
+        "Jian Luan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-16T14:30:12+00:00",
+      "link": "https://arxiv.org/pdf/2606.17979v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "adaptive reward allocation for text-to-image RL post-training",
+      "llm_evidence_cn": "文本到图像强化学习后训练的自适应奖励分配",
+      "llm_evidence": "文本到图像强化学习后训练的自适应奖励分配",
+      "canonical_evidence": "文本到图像强化学习后训练的自适应奖励分配",
+      "llm_tldr_en": "STAR proposes spatiotemporal adaptive reward allocation for text-to-image RL post-training, enabling fine-grained policy updates.",
+      "llm_tldr_cn": "针对文本到图像生成RL后训练中奖励分配粒度不足的问题，该工作提出时空自适应奖励分配（STAR）方法。根据去噪步骤和空间区域的重要性动态分配奖励信号，使策略更新聚焦于真正影响文本对齐的生成组件。实验证明STAR显著提升了生成图像与文本的对齐质量，为扩散模型的RL后训练提供了更精细的奖励设计范式。",
+      "llm_tldr": "针对文本到图像生成RL后训练中奖励分配粒度不足的问题，该工作提出时空自适应奖励分配（STAR）方法。根据去噪步骤和空间区域的重要性动态分配奖励信号，使策略更新聚焦于真正影响文本对齐的生成组件。实验证明STAR显著提升了生成图像与文本的对齐质量，为扩散模型的RL后训练提供了更精细的奖励设计范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.20310v1",
+      "source": "arxiv",
+      "title": "Through the PRISM: Preference Representation in Intermediate States of Video Diffusion Models",
+      "abstract": "Evaluating video generation with clean, pixel-based reward models disconnects evaluation from the noisy diffusion process and incurs massive VAE decoding costs. In this paper, we challenge this paradigm by asking a fundamental question: Can a powerful video generator inherently discriminate preferences directly from noisy latents? To answer this, we introduce \\textbf{PRISM} (\\textbf{P}reference \\textbf{R}epresentation in \\textbf{I}ntermediate \\textbf{S}tates of Diffusion \\textbf{M}odels). PRISM employs a lightweight Query-based Aggregation head with a frozen video diffusion backbone to decode preference signals from noisy latents. Surprisingly, PRISM not only achieves SOTA preference accuracy but also unlocks strong noise-robustness, which enables early-stage Best-of-$N$ sampling. This allows for filtering suboptimal candidates at the very beginning of denoising, drastically reducing computation while boosting video quality. We also reveal a strong positive correlation between a backbone's generative performance and its inherent evaluative power, enabling self-improving video backbones.",
+      "authors": [
+        "Haoxuan Wu",
+        "Lai Man Po",
+        "Mengyang Liu",
+        "Kun Li",
+        "Hongzheng Yang",
+        "Wei Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-18T14:44:02+00:00",
+      "link": "https://arxiv.org/pdf/2606.20310v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "preference reward for video diffusion models",
+      "llm_evidence_cn": "针对视频扩散模型的偏好奖励设计",
+      "llm_evidence": "针对视频扩散模型的偏好奖励设计",
+      "canonical_evidence": "针对视频扩散模型的偏好奖励设计",
+      "llm_tldr_en": "PRISM learns preference rewards directly from noisy latents of video diffusion models, enabling efficient evaluation without VAE decoding.",
+      "llm_tldr_cn": "针对视频扩散模型评估需要昂贵VAE解码的问题，该工作提出PRISM，通过轻量级查询聚合头在噪声潜在空间中直接学习偏好信号。无需完整解码即可准确评估生成质量，同时展现出强大的噪声鲁棒性。该方法为扩散模型的奖励函数设计提供了新思路，可迁移至图像生成任务。",
+      "llm_tldr": "针对视频扩散模型评估需要昂贵VAE解码的问题，该工作提出PRISM，通过轻量级查询聚合头在噪声潜在空间中直接学习偏好信号。无需完整解码即可准确评估生成质量，同时展现出强大的噪声鲁棒性。该方法为扩散模型的奖励函数设计提供了新思路，可迁移至图像生成任务。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
