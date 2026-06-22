@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-22",
+  "date": "2026-06-22",
+  "generated_at": "2026-06-22T21:43:42",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/22/2606.16154v1-a-gradient-perspective-on-rlvr-stability-and-winner-advantage-policy-optimization",
+      "section": "quick",
+      "title_en": "A Gradient Perspective on RLVR Stability and Winner Advantage Policy Optimization",
+      "authors": "Prasanth YSS, Zhichen Ren, Rasa Hosseinzadeh, Ilan Gofman, Yuqi Chen, Zhaoyan Liu, Guangwei Yu, Jesse C. Cresswell, Satya Krishna Gorti",
+      "date": "2026-06-15",
+      "pdf": "https://arxiv.org/pdf/2606.16154v1",
+      "score": "6.0",
+      "evidence": "分析了RLVR中的梯度动力学并提出WAPO，一种可迁移至图像生成强化学习的稳定策略梯度方法",
+      "tldr": "分析强化学习可验证奖励中GRPO优化的不稳定性，从token级梯度动态出发，发现稳定性取决于优势符号与当前策略token分布。提出胜者优势策略优化，仅对正优势完成进行裁剪更新。在数学推理和多跳问答中，WAPO提升了训练稳定性，性能匹配或超越多种模型族。该工作提供了优化稳定性的理论视角与实用方法。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning with verifiable rewards (RLVR) improves language-model reasoning, but GRPO-style optimization remains prone to collapse. We analyse this instability through token-level gradient dynamics, deriving a taxonomy that predicts how updates affect next-token probabilities and entropy. The taxonomy shows that stability depends jointly on the advantage sign and token distribution under the current policy. Motivated by this finding, we propose Winner Advantage Policy Optimization (WAPO), a simple online clipped policy-gradient objective that updates only on positive-advantage completions. Across mathematical reasoning and multi-hop QA benchmarks, WAPO improves training stability and matches or outperforms baselines across multiple model families. Full code can be found at https://github.com/layer6ai-labs/wapo.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-06-22 <!--dpr-date:20260622-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/22/2606.16154v1-a-gradient-perspective-on-rlvr-stability-and-winner-advantage-policy-optimization" data-sidebar-item="{&quot;title&quot;: &quot;A Gradient Perspective on RLVR Stability and Winner Advantage Policy Optimization&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.16154v1-a-gradient-perspective-on-rlvr-stability-and-winner-advantage-policy-optimization&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;分析了RLVR中的梯度动力学并提出WAPO，一种可迁移至图像生成强化学习的稳定策略梯度方法&quot;}">A Gradient Perspective on RLVR Stability and Winner Advantage Policy Optimization</a>
   * 2026-06-19 <!--dpr-date:20260619-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/19/2606.17979v2-star-spatiotemporal-adaptive-reward-allocation-for-text-to-image-rl-post-training" data-sidebar-item="{&quot;title&quot;: &quot;STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.17979v2-star-spatiotemporal-adaptive-reward-allocation-for-text-to-image-rl-post-training&quot;, &quot;score&quot;: &quot;10.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;文本到图像强化学习后训练的自适应奖励分配&quot;}">STAR: SpatioTemporal Adaptive Reward Allocation for Text-to-Image RL Post-Training</a>
