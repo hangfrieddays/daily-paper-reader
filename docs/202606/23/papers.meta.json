@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-23",
+  "date": "2026-06-23",
+  "generated_at": "2026-06-23T20:37:09",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/23/2606.21304v1-a-test-time-actor-critic-approach-to-news-images-generation",
+      "section": "deep",
+      "title_en": "A Test-time Actor-Critic Approach to News Images Generation",
+      "authors": "Damianos Galanopoulos, Vasileios Mezaris",
+      "date": "2026-06-19",
+      "pdf": "https://arxiv.org/pdf/2606.21304v1",
+      "score": "9.0",
+      "evidence": "采用Actor-Critic强化学习方法在测试时生成新闻图片",
+      "tldr": "新闻标题自动配图面临生成结果与标题相关性不足的问题。本文提出ACIG，一种基于Actor-Critic的测试时图像生成方法，通过Actor生成提示词并产生图像，Critic评估图像质量并反馈优化提示词，形成闭环迭代。在MediaEval NewsImages 2026挑战中，ACIG取得了排行榜最佳成绩，证明了其有效性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "This paper introduces the CERTH-ITI solution for the MediaEval NewsImages 2026 challenge, which focuses on generating images related to news headlines. Inspired by the Actor-Critic paradigm in reinforcement learning, we present a test-time, model-agnostic Actor-Critic Image Generation approach (ACIG). ACIG generates prompts for image creation, produces the images, evaluates the generated results, and if needed refines the image generation prompts accordingly in a feedback loop. ACIG achieved the best results in the NewsImages 2026 challenge, according to the challenge's leaderboard.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/23/2606.21498v1-balancing-performance-and-diversity-in-grpo-autoregressive-text-to-image-post-training",
+      "section": "deep",
+      "title_en": "Balancing Performance and Diversity in GRPO Autoregressive Text-to-Image Post-Training",
+      "authors": "Yuanhao Chiang, Hongbo Duan, Chunru Yang, Jiahua Pei, Yi Liu, Xueqian Wang",
+      "date": "2026-06-19",
+      "pdf": "https://arxiv.org/pdf/2606.21498v1",
+      "score": "9.0",
+      "evidence": "GRPO在线强化学习用于自回归文本到图像对齐",
+      "tldr": "自回归文本到图像生成中，GRPO风格的在线强化学习常将参考策略散度固定，但其对策略优化影响显著。本文在统一f-散度框架下研究前向KL、反向KL和JS散度，理论揭示不同散度重塑token级更新的方式。JS正则化能缓解均匀偏差并抑制大偏差，在LlamaGen和Janus-7B上多数指标最优，且保持生成多样性。该工作揭示了散度选择的关键作用，为平衡性能与多样性提供了实用方案。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Autoregressive text-to-image (T2I) generation has recently advanced rapidly, yet aligning generated images with human preferences remains challenging. GRPO-style online reinforcement learning provides an effective framework; however, existing methods typically treat reference-policy divergence as fixed, despite its direct impact on policy optimization. We study this overlooked factor within a unified f-divergence framework, encompassing forward KL, reverse KL, and JS divergence, for GRPO-style autoregressive T2I alignment. Our systematic theoretical analysis reveals that different divergences reshape token-level updates in distinct ways. In particular, under the sampled-token shaping form used, JS regularization achieves a favorable trade-off by mitigating uniform bias relative to the reference policy while still discouraging large deviations. Extensive experiments on LlamaGen and Janus-7B show that JS divergence achieves the strongest or highly competitive optimization performance on most evaluation metrics while maintaining favorable generation diversity. The code is available at https://github.com/tuoyou-hao/BPD-GRPO.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/23/2606.23626v1-dit-reward-generative-representations-for-text-to-image-reward-modeling",
+      "section": "deep",
+      "title_en": "DiT-Reward: Generative Representations for Text-to-Image Reward Modeling",
+      "authors": "Yuanming Yang, Guoqing Ma, Bo Wang, Yuan Zhang, Wei Tang, Chenyi Li, Haoyang Huang, Nan Duan",
+      "date": "2026-06-22",
+      "pdf": "https://arxiv.org/pdf/2606.23626v1",
+      "score": "9.0",
+      "evidence": "使用扩散变压器作为文本到图像生成的奖励模型",
+      "tldr": "文本到图像生成中，奖励模型对生成结果评估至关重要。本文提出DiT-Reward，利用预训练扩散Transformer的生成表示进行偏好预测，通过处理近干净潜变量并跨层聚合条件表示实现。在多个偏好基准上取得最佳，如HPDv2达85.6%，超越HPSv3。该方法还可加速推理，并有效优化生成模型，证明了生成式表示在奖励建模中的可迁移性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Can representations learned for image generation also support the evaluation of generated images? We study text-to-image reward prediction as a downstream task of generative representation learning. To this end, we introduce DiT-Reward, which converts a pretrained text-to-image Diffusion Transformer into a reward model by processing near-clean image latents and aggregating text-conditioned image representations across transformer layers. Under the same training data mixture as HPSv3, DiT-Reward outperforms HPSv3 on all four evaluated preference benchmarks, reaching 85.6% on HPDv2 and 77.6% on HPDv3. When the generative backbone is frozen, a lightweight learned head can still extract meaningful preference predictions from its representations. Probing across depth further reveals that downstream reward performance is strongest in the middle-to-late layers and benefits from combining representations across different stages. We also observe consistent positive scaling with generative backbone capacity. Finally, when used to optimize Stable Diffusion 3.5 Large with Flow-GRPO, DiT-Reward outperforms HPSv3 along the matched training trajectory, with particularly clear gains in realism. Direct latent scoring also achieves a 1.65x inference speedup over HPSv3 with comparable peak memory. These results show that pretrained generative DiTs provide transferable representations for reward modeling and policy optimization.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/23/2606.22958v1-pg-map-joint-map-optimization-for-inference-time-alignment-of-diffusion-and-flow-matching-models",
+      "section": "quick",
+      "title_en": "PG-MAP: Joint MAP Optimization for Inference-Time Alignment of Diffusion and Flow-Matching Models",
+      "authors": "Ruolan Sun, Pawel Polak",
+      "date": "2026-06-22",
+      "pdf": "https://arxiv.org/pdf/2606.22958v1",
+      "score": "7.0",
+      "evidence": "利用冻结偏好奖励进行推理时对齐以改进图像生成",
+      "tldr": "当前推理时对齐方法局限于单一控制轴，无法建模条件和潜变量的联合依赖。本文提出无训练框架PG-MAP，将推理时对齐公式化为轨迹级吉布斯MAP优化，通过前向一致性耦合联合更新条件与潜变量，兼容扩散与流匹配模型。实验表明，该方法显著提升PickScore和Aesthetic等对齐指标，与调谐CFG结合达最优，流匹配模型上达91.9% PickScore和75.7% HPS胜率，人类评估确认偏好优势。提示类型影响优化侧重，揭示了进一步改进空间。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Inference-time alignment of pretrained text-to-image models is typically performed along a single control axis, such as classifier-free guidance, attention editing, or reward-based latent perturbations. This limitation prevents modeling joint dependencies between conditioning and latent variables and hinders transfer across generative transports. We propose PG-MAP, a training-free framework that formulates inference-time alignment as a trajectory-level Gibbs-MAP / proximal energy optimization over the conditioning $c$ and latent state $z_t$ via a forward-consistency coupling, optionally guided by a frozen preference reward. This joint formulation enables coordinated updates across modalities while remaining compatible with both diffusion and flow-matching models through transport-specific adaptations. Across diffusion backbones (SD~1.5, SDXL), PG-MAP consistently improves alignment metrics such as PickScore and Aesthetic, and can be effectively combined with tuned classifier-free guidance to achieve the strongest overall performance. On flow-matching models (SD3.5-medium), the framework reduces to a latent-only variant, achieving $\\mathbf{91.9\\%}$ PickScore and $75.7\\%$ HPS win rates against a static baseline, with controlled experiments ruling out noise-related artifacts. Human evaluations further confirm consistent preference over strong baselines, including tuned CFG and compute-matched universal guidance. Finally, an oracle-routing analysis shows that the relative importance of conditioning and latent optimization depends on prompt types, surfacing further headroom that a per-prompt selector could exploit.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

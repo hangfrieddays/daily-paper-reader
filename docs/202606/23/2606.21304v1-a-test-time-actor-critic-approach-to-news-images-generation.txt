@@ -1,0 +1,284 @@
+Title: A Test-time Actor-Critic Approach to News Images Generation
+
+URL Source: https://arxiv.org/pdf/2606.21304v1
+
+Published Time: Tue, 23 Jun 2026 00:47:41 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# A Test-time Actor-Critic Approach to News Images Generation 
+
+Damianos Galanopoulos 1, Vasileios Mezaris 1
+
+> 1
+
+Information Technologies Institute (ITI), Centre of Research and Technology Hellas (CERTH), Thessaloniki, Greece 
+
+Abstract 
+
+This paper introduces the CERTH-ITI solution for the NewsImages 2026 challenge, which focuses on generating images related to news headlines. Inspired by the Actor-Critic paradigm in reinforcement learning, we present a test-time, model-agnostic Actor-Critic Image Generation approach (ACIG). ACIG generates prompts for image creation, produces the images, evaluates the generated results, and if needed refines the image generation prompts accordingly in a feedback loop. 
+
+# 1. Introduction 
+
+The MediaEval NewsImages 2026 challenge [ 1 , 2 , 3 ] focuses on generating and/or retrieving images that appropriately illustrate a news item, based only on the news item’s headline. Contrary to our previous efforts [ 4 , 5 ], which were in the direction of image retrieval, this year we tackle the image generation task. For NewsImages 2026, we, the CERTH-ITI team 1
+
+propose Actor-Critic Image Generation (ACIG), a training-free pipeline for generating images from article headlines. Inspired by the Actor-Critic paradigm in reinforcement learning, ACIG iteratively produces, evaluates, and refines image generation prompts through a closed feedback loop, requiring no gradient updates or fine-tuning of any component model. 
+
+# 2. Related Work 
+
+Our ACIG approach leverages test-time optimization to address the challenges of the MediaEval 2026 NewsImages task, particularly the alignment between visual outputs and news headlines. The paradigm of agentic methods, in which models autonomously iterate and complete tasks through self-correction, has gained significant momentum. Recent research [ 6, 7 ] demonstrates that Vision-Language Models (VLMs) can serve as effective “critics” to refine text-to-image alignment in real time by analyzing visual-textual correspondence. In contrast to previous approaches that rely on heavy reinforcement learning (RL) training cycles, the ACIG pipeline adopts a test-time optimization strategy. Moreover, effective prompt engineering is increasingly viewed as a creative, iterative process rather than a single instruction [ 8 ]. This iterative philoso-phy is further supported by the PACE framework [ 9], which demonstrates the effectiveness of Actor-Critic editing in refining prompts for large language models and ensuring that generated outputs remain faithful to intended semantic constraints. This modular, agent-led workflow represents a significant advancement in bridging the gap between abstract headline narratives and the concrete visual representations required in modern newsrooms [7]. 
+
+MediaEval’26: Multimedia Evaluation Workshop, June 15-16, co-located with ACM ICMR 2026, Amsterdam, The Netherlands 
+
+$ dgalanop@iti.gr (D. Galanopoulos); bmezaris@iti.gr (V. Mezaris)  
+
+> ©2026 Copyright for this paper by its authors. Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0). CEUR
+> Workshop
+> Proceedings
+> http://ceur-ws.org
+> ISSN 1613-0073
+
+CEUR Workshop Proceedings (CEUR-WS.org) 
+
+> 1
+
+The code is available at https://github.com/IDT-ITI/actor-critic-image-generation. 3. Approach 
+
+3.1. Pipeline Overview 
+
+Given a set of news article headlines 𝒜 = {𝑎 1, 𝑎 2, . . . , 𝑎 𝑁 }, ACIG processes each article independently over up to 𝑇 iterations. At each iteration 𝑡 , the pipeline goes through three sequential stages: prompt generation (Actor), image synthesis (Image Generator), and quality assessment (Critic). In the latter stage, if an image’s critic score meets or exceeds a quality threshold 𝑄 , the generation process for the corresponding article is marked as complete, and no further iterations are performed. If 𝑇 iterations are completed without meeting quality threshold 𝑄 , the final output is the generated image that received the highest critic score across all iterations. 
+
+3.2. Actor: Prompt Generation 
+
+The Actor is a large vision-language model (VLM), i.e., Qwen3-VL-8B-Instruct [ 10 , 11 ], re-sponsible for transforming a headline into a descriptive prompt suitable for image-generation models. At iteration 𝑡 = 0 , the Actor receives the article headline 𝑎 𝑖 as context and is prompted to produce a single image generation prompt 𝑝 (0)  
+
+> 𝑖
+
+, with an explicit instruction to emphasise a non-photorealistic visual style. At subsequent iterations 𝑡 > 0, the Actor is additionally provided with the full scoring history from all prior attempts: 
+
+ℋ(𝑡 ) 
+
+> 𝑖
+
+={︂(︂ 𝑝 (𝑗 ) 
+
+> 𝑖
+
+,{︁ 𝑠 (𝑗,𝑘 )
+
+> 𝑖
+
+}︁ 
+
+> 𝐾 𝑘 =1
+
+)︂}︂ 
+
+> 𝑡 −1
+> 𝑗 =0
+
+(1) where 𝑠 (𝑗,𝑘 ) 
+
+> 𝑖
+
+denotes the critic score assigned to the image produced by the 𝑘 -th generation model at attempt 𝑗 , and 𝐾 is the total number of image generators active in the run. This history is formatted as a structured string and passed to the Actor, which is instructed to generate an improved prompt with awareness of previous failures. 
+
+3.3. Image Generator: Candidate Images Synthesis 
+
+Each Actor-generated prompt is forwarded to one or more diffusion-based image generation models. ACIG is designed to be model-agnostic at this stage; in our experiments, we evaluate three generators: Z-Image-Turbo [ 12 , 13 ], Qwen-Image (SDNQ uint4 quantised), and Qwen-Image-2512 [ 14 ]. For brevity, in Table 1 we refer to these models as ZT, SDNQ, and 2512, respectively. All generators produce images in a 16:9 aspect ratio, and a shared base seed is used across runs. As all of these generators support negative prompting, a fixed negative prompt is also supplied to suppress common artifacts such as low resolution, anatomical distortions, and AI-characteristic over-smoothness. 
+
+3.4. Critic: Image Quality Assessment 
+
+The Critic is a separate VLM, Qwen3.5-9B [ 15 ], tasked with evaluating the relevance of each generated image with respect to its source headline. For each image in the current iteration 𝑡 ,the Critic is queried to rate the generated images on a Likert [1-5] scale on how accurately the image captures the article’s headline. The model is constrained to return a single integer. The resulting scores {𝑠 (𝑡,𝑘 ) 
+
+> 𝑖
+
+} - one per image per article - are stored in the corresponding prompt entry, and the maximum score across all images of a given attempt, Table 1 
+
+Configuration of submitted runs; Results (Average ratings) from the official collaborative online evalua-tion event and our internal experiments. The best / second-best results are in bold / underline; higher rating values are better; and, per-run computational efficiency statistics are also reported. Column 
+
+ℋ(𝑡 ) indicates whether the critic scoring history is passed to the Actor for prompt refinement; in the contrastive runs where this is disabled (“—”), the Actor is asked to re-generate a prompt from the headline alone at each iteration. 𝑇 = 0 denotes one-shot generation, without any Actor-Critic iterations.                                                                                               
+
+> Run Image Generator(s) Qual. Thres.
+> 𝑄
+> Iter.
+> 𝑇
+> Hist.
+> ℋ(𝑡 )
+> AVG rating ↑# of iter. /article
+> ↓
+> Time (sec.) /iter.
+> ↓
+> Total time (sec.) /article
+> ↓
+> Int. Offic.
+> #1 ZT/2512/SDNQ 45✓4.86 3.429 1.22 91.8 + 3.2 115.9 #2 ZT/2512/SDNQ 55✓4.84 3.517 3.60 91.8 + 3.2 342 #3 ZT/2512/SDNQ 55—4.74 3.362 3.57 91.8 + 0.9 330.9 #4 ZT/2512/SDNQ —0—4.68 3.431 191.8 91.8 #5 ZT 45✓4.72 3.379 1.64 1.2 + 1.9 5.1 #6 ZT 55✓4.80 3.616 4.60 1.2 + 1.9 14.3 #7 ZT 55—4.70 3.300 4.54 1.2 + 0.3 6.8 #8 SDNQ —0—4.53 3.197 155.3 55.3 #9 2512 —0—4.60 3.355 135.3 35.3 #10 ZT —0—4.51 3.350 11.2 1.2
+
+𝑠 (𝑡 ) 
+
+> 𝑖
+
+= max  
+
+> 𝑘
+
+𝑠 (𝑡,𝑘 ) 
+
+> 𝑖
+
+, (2) is used to determine if the iterative process should be concluded ( 𝑠 (𝑡 ) 
+
+> 𝑖
+
+≥ 𝑄 ) or continued. 
+
+3.5. Duplicates 
+
+In order to fully comply with the task rules, after the final image per article headline is generated, we compute the MD5 hashes of all image and identify duplicate images for the same article across runs. For these duplicates, starting from run #10, we re-run the procedure for the affected articles by altering the seed on the generation models. This process continues sequentially through the remaining runs down to run #2, ensuring that all submitted images are globally unique across the full set of articles. 
+
+# 4. Submitted Runs and Results 
+
+In Table 1 we present the configuration of the ten submitted runs and whether prompt history and scoring were used during generation. We also report the results from both the official NewsImages 2026 evaluation, and an internal evaluation that we ran. For the latter, we utilized the NewsImages 2025 SMALL test dataset [ 2 ], and we assessed in-house each generated image similarly to the official evaluation protocol, on a Likert [1-5] scale. Moreover, to assess computa-tional efficiency, we report: the average number of iterations per input article, the average time per iteration (in sec., for image generator + Actor-Critic; the latency of the Actor when ℋ(𝑡 ) is disabled is negligible), and the total generation time per input article on a Nvidia RTX4090 GPU. The results show that enabling critic scoring history ℋ(𝑡 ) consistently improves performance across both evaluation settings. The two best-performing runs overall (#2 and #6) both use 
+
+𝑄 = 5 with history enabled. Disabling critic scoring history yields a noticeable performance (a) Official results (b) Internal results    
+
+> Figure 1: Pairwise Wilcoxon signed-rank test 𝑝 -values, for all pairwise comparisons between the 10 evaluated runs. Yellow borders in a cell indicate a pair of runs whose performance difference is statistically significant ( 𝑝 < 0.05 ).
+
+drop in both internal and official ratings. The non-ACIG single-shot baselines (#4, #8, #9, #10) are generally outperformed by the iterative runs with active feedback, though #4 remains relatively competitive on the official metric. Overall, using a single well-performing image generation model (ZT) within the proposed ACIG approach (run #6) yields the best results, both among our runs and among all NewsImages 2026 challenge submissions, according to the leaderboard, while also achieving very competitive computational efficiency. In Figure 1, we present the pairwise Wilcoxon signed-rank test p-values [ 16 ], comparing human evaluation scores across runs. For each pair of runs (𝑥, 𝑦 ), let 𝑑 (𝑥,𝑦 ) 
+
+> 𝑖
+
+= 𝑟 (𝑥 ) 
+
+> 𝑖
+
+− 𝑟 (𝑦 ) 
+
+> 𝑖
+
+denote the difference in ratings for article 𝑖 . The test statistic is 𝑊 (𝑥,𝑦 ) =∑︀ 𝑁 𝑖 =1 (sgn (𝑑 (𝑥,𝑦 ) 
+
+> 𝑖
+
+) · 𝑅 (𝑥,𝑦 ) 
+
+> 𝑖
+
+),where 𝑅 (𝑥,𝑦 ) 
+
+> 𝑖
+
+is the rank of |𝑑 (𝑥,𝑦 ) 
+
+> 𝑖
+
+| among all non-zero differences (in ascending order), and sgn (·) is the sign function. The p-value is derived from the distribution of 𝑊 (𝑥,𝑦 ) under the null hypothesis of no difference; 𝑝 (𝑥,𝑦 ) < 0.05 indicates a statistically significant difference. Although most p-values in Fig. 1 exceed 0.05 , due to the small number of evaluated images, our core finding that ACIG runs #6 and #2 outperform the non-ACIG single-shot baselines (runs #8, #9, #10) is supported by, in most cases, statistically significant differences. 
+
+# 5. Conclusion 
+
+In this paper we presented a test-time, model-agnostic Actor-Critic Image Generation approach. We showed the effectiveness of iterative refinement over single-pass generation, demonstrating that the proposed ACIG Actor-Critic approach yields images that match considerably better the provided textual prompt (article headline). Within ACIG, a single lightweight image generator (ZT) can exceed the performance of much more computationally expensive alternatives. 
+
+# Acknowledgements 
+
+This work was supported by the EU’s Horizon Europe programme under grant agreement 101214398 ELLIOT. Declaration on Generative AI 
+
+During the preparation of this work, the authors used Grammarly to Perform Grammar and spelling checks. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the publication’s content. 
+
+# References 
+
+[1] L. Heitz, B. N. Sotic, A. A. Katamjani, Q. Bi, B. Bakker, L. Rossetto, J. Kamps, NewsImages in MediaEval 2026 - Automated Image Recommendations with Retrieval and Generation Techniques for News Articles Thumbnails, in: Working Notes Proceedings of the MediaEval 2026 Workshop, 2026. [2] L. Heitz, L. Rossetto, B. Kille, A. Lommatzsch, M. Elahi, D.-T. Dang-Nguyen, NewsImages in MediaEval 2025 – Comparing Image Retrieval and Generation for News Articles, in: Working Notes Proceedings of the MediaEval 2025 Workshop, 2025. [3] L. Heitz, L. Rossetto, A. Bernstein, An Empirical Exploration of Perceived Similarity between News Article Texts and Images, in: Working Notes Proceedings of the MediaEval 2023 Workshop, 2024. [4] D. Galanopoulos, A. Goulas, V. Mezaris, Cross-modal Image Recommendation for News Articles by Multimodal Foundation Models-based Retrieval-Reranking, in: Working Notes Proceedings of the MediaEval 2025 Workshop, 2025. [5] A. Leventakis, D. Galanopoulos, V. Mezaris, Cross-modal Networks, Fine-Tuning, Data Augmenta-tion and Dual Softmax Operation for MediaEval NewsImages 2023., in: Working Notes Proceedings of the MediaEval 2023 Workshop, 2024. [6] H. Jang, J. Jeon, J.-W. Hwang, K. Lee, Improving Calibration in Test-Time Prompt Tuning for Vision-Language Models via Data-Free Flatness-Aware Prompt Pretraining, in: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2026, pp. 24300–24309. [7] W. Ye, Z. Liu, Y. Gui, T. Yuan, Y. Su, B. Fang, C. Zhao, Q. Liu, L. Wang, GenPilot: A Multi-Agent System for Test-Time Prompt Optimization in Image Generation, in: EMNLP (Findings), 2025, pp. 929–958. URL: https://aclanthology.org/2025.findings-emnlp.49/. [8] J. Oppenlaender, R. Linder, J. Silvennoinen, Prompting ai art: An investigation into the creative skill of prompt engineering, International Journal of Human–Computer Interaction 41 (2025) 10207–10229. doi: 10.1080/10447318.2024.2431761 .[9] Y. Dong, K. Luo, X. Jiang, Z. Jin, G. Li, Pace: Improving prompt with actor-critic editing for large language model, in: Findings of the Association for Computational Linguistics: ACL 2024, 2024, pp. 7304–7323. [10] Qwen Team, Qwen3 Technical Report, 2025. URL: h t t p s : / / a r x i v. o r g / a b s / 2 5 0 5 . 0 9 3 88. 
+
+> arXiv:2505.09388
+
+.[11] Qwen Team, Qwen2.5-VL Technical Report, arXiv preprint arXiv:2502.13923 (2025). [12] D. Jiang, D. Liu, Z. Wang, Q. Wu, X. Jin, D. Liu, Z. Li, M. Wang, P. Gao, H. Yang, Distribution Matching Distillation Meets Reinforcement Learning, arXiv preprint arXiv:2511.13649 (2025). [13] Z-Image Team, Z-Image: An Efficient Image Generation Foundation Model with Single-Stream Diffusion Transformer, arXiv preprint arXiv:2511.22699 (2025). [14] Qwen Team, Qwen-Image Technical Report, 2025. URL: https://arxiv.org/abs/2508.02324. 
+
+> arXiv:2508.02324
+
+.[15] Qwen Team, Qwen3.5: Towards native multimodal agents, 2026. URL: https://qwen.ai/blog?id=qw en3.5. [16] F. Wilcoxon, Individual Comparisons by Ranking Methods, Biometrics Bulletin 1 (1945) 80–83. doi: 10.2307/3001968 .A. Appendix 
+
+A.1. Image Generation Prompts 
+
+Initial Prompt ( 𝑡 = 0 )
+
+“Using this article title ‘ 𝑎𝑟𝑡𝑖𝑐𝑙𝑒 _𝑡𝑖𝑡𝑙𝑒 ’ create a prompt for an image generation model to create a relevant to the article image. Return ONLY the prompts. Stress that the image should be non-photorealistic.” 
+
+Negative Prompts 
+
+“Low resolution, low image quality, limb deformities, finger deformities, oversat-urated image, wax figure appearance, lack of facial detail, excessive smoothing, AI-like appearance. Chaotic composition. Blurry and distorted text.” 
+
+Refinement Prompt 
+
+“You are a prompt optimization expert. Your goal is to generate an image generation prompt that best captures the news article with title ‘ 𝑎𝑟𝑡𝑖𝑐𝑙𝑒 _𝑡𝑖𝑡𝑙𝑒 ’. Here is the history of previous attempts and their scores (1–5, higher is better): ‘ ℎ𝑖𝑠𝑡𝑜𝑟𝑦 _𝑠𝑡𝑟 ’. Analyze what made higher-scoring prompts better and lower-scoring ones worse. Generate a new prompt that improves on these attempts. Output only the prompt, with no explanation or additional text.” 
+
+Example of History ℋ(𝑡 )
+
+An example of the history ℋ(𝑡 ), denoted as ‘ ℎ𝑖𝑠𝑡𝑜𝑟𝑦 _𝑠𝑡𝑟 ’ in the refinement prompt provided in the previous paragraph, for 𝑡 = 2 , is given below. The original article headline 𝑎 𝑖 that this example corresponds to is: “US Dollar Outlook: GBP/USD May Fall as USD/CAD Rises Amid Changes in Retail Exposure”. “Attempt 1: Prompt: ‘Non-photorealistic illustration of a financial chart with fluc-tuating lines representing GBP/USD and USD/CAD exchange rates, surrounded by stylized currency symbols, digital circuit patterns, and abstract market indicators, conveying dynamic currency movement and retail exposure shifts — vibrant, modern, and symbolic, not photorealistic.’ | Score: 2 Attempt 2: Prompt: ‘Dynamic financial dashboard visualization showing GBP/USD trending downward and USD/CAD trending upward, with glowing data streams and interactive chart elements, surrounded by stylized retail investors and currency icons, conveying real-time market shifts due to retail exposure changes — sleek, high-tech, data-driven, and visually engaging, optimized for clarity and economic storytelling.’ |Score: 3” 
+
+A.2. Image Quality Assessment 
+
+“Rate 1–5 how accurately this image captures the key attributes of the text article without depicting any important elements not present in the article given the headline: ‘ 𝑎𝑟𝑡𝑖𝑐𝑙𝑒 _𝑡𝑖𝑡𝑙𝑒 ’. Reply with a single integer between 1 and 5. Do not explain. Do not add any other text. Your entire response must be exactly one digit. Provide your rate using a single score.” A.3. Model URLs 
+
+Table 2 
+
+LLMs and image generation models used in ACIG 
+
+Model URL / HuggingFace ID 
+
+Qwen3-VL-8B-Instruct https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct 
+
+Qwen3.5-9B https://huggingface.co/Qwen/Qwen3.5-9B 
+
+Z-Image-Turbo https://huggingface.co/Tongyi-MAI/Z-Image-Turbo 
+
+Qwen-Image (SDNQ uint4 quantised) https://huggingface.co/Disty0/Qwen-Image-SDNQ-uint4-svd-r32 
+
+Qwen-Image-2512 https://huggingface.co/Qwen/Qwen-Image-2512 
+
+A.4. Qualitative Results 
+
+Table 3 
+
+Iterative Actor-Critic image generation for the headline “Surfers Share Waves With Blue Whale in Dana Point.” 
+
+𝑡 Actor-produced prompt Generated image Critic’s score 
+
+0
+
+Non-photorealistic illustration of surfers riding waves alongside a massive blue whale in Dana Point, stylized with vibrant colors, dynamic motion lines, and whimsical oceanic atmosphere — blend-ing realism with fantasy art style, no photographic detail, painterly brushwork, cartoonish exaggeration of scale, serene yet adventur-ous mood. 
+
+41
+
+Realistic cinematic photograph of surfers riding powerful ocean waves beside a massive blue whale in Dana Point, California — dramatic natural lighting, misty coastal atmosphere, awe-inspiring scale contrast, detailed ocean textures, authentic surf gear, whale’s sleek blue-gray skin glistening, dynamic motion blur, documentary-style realism, high-resolution, 8K, environmental storytelling, cap-turing the surreal moment with emotional intensity and photo-graphic accuracy. 
+
+22
+
+Stylized cinematic illustration of surfers riding waves beside a colossal blue whale in Dana Point, California — vibrant, dream-like atmosphere with dynamic motion, painterly brushwork, exag-gerated scale for dramatic effect, whale’s glowing blue-gray skin contrasting with sunlit surfers, whimsical yet awe-inspiring mood, blending fantasy and realism, no photographic detail, high-detail ocean textures, environmental storytelling, emotional intensity, 8K resolution, dramatic coastal lighting, surreal harmony between humans and nature. 
+
+5Table 4 
+
+Iterative Actor-Critic image generation for the headline “13 Popular Foods People Hated Eating 100 Years Ago.” 
+
+𝑡 Actor-produced prompt Generated image Critic’s score 
+
+0
+
+Non-photorealistic illustration of a vintage 1920s-1930s kitchen scene with exaggerated, cartoonish expressions of disgust on peo-ple’s faces as they react to bizarre or unappetizing foods like canned spinach, raw egg yolks, or processed meats — surrounded by old-fashioned kitchenware and newspaper headlines reading "13 Foods Hated 100 Years Ago," with a whimsical, retro-futuristic art style. 
+
+31
+
+Illustrative collage of 13 bizarre, unappetizing foods from 1920s-1930s, each depicted with exaggerated cartoonish disgust reactions from people in period clothing, set against a vintage newspaper background with headlines "13 Popular Foods Hated 100 Years Ago," rendered in a whimsical, retro-futuristic comic style with bold colors and playful, exaggerated expressions. 
+
+42
+
+Illustrative collage featuring 13 historically unappetizing foods from the 1920s-1930s, each accompanied by exaggerated cartoon-ish expressions of disgust from period-dressed people, set against a vintage newspaper backdrop with the headline "13 Popular Foods Hated 100 Years Ago," rendered in a whimsical, retro-futuristic comic style with bold, saturated colors, playful exaggerated expres-sions, and a dynamic, eye-catching composition that emphasizes historical contrast and humor. 
+
+43
+
+Illustrative collage of 13 historically unappetizing foods from the 1920s-1930s, each depicted with exaggerated, cartoonish expres-sions of disgust from people in period clothing, set against a vintage newspaper background with the bold headline "13 Popular Foods Hated 100 Years Ago," rendered in a whimsical, retro-futuristic comic style with vibrant, saturated colors, dynamic composition, playful exaggerated expressions, and a strong sense of historical humor contrasting modern palates — evoking nostalgia and amuse-ment through visual storytelling. 
+
+44
+
+Illustrative collage of 13 historically unappetizing foods from the 1920s-1930s, each paired with exaggerated, cartoonish expressions of disgust from people in authentic period attire, set against a vin-tage newspaper background boldly proclaiming "13 Popular Foods Hated 100 Years Ago," rendered in a whimsical, retro-futuristic comic style with vibrant, saturated colors, dynamic composition, playful exaggerated expressions, and a strong sense of historical humor contrasting modern palates — evoking nostalgia and amuse-ment through visual storytelling, with a touch of vintage illustration charm and bold graphic design flair. 
+
+5
