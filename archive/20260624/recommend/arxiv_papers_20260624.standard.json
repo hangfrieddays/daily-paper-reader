@@ -1,0 +1,99 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-24T21:26:36.208590+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.24369v1",
+      "source": "arxiv",
+      "title": "Accelerating Disaggregated RL for Visual Generative LLMs with Diffusion-Based Parallelism and Trainer-Assisted Generation",
+      "abstract": "Reinforcement learning (RL) has become a dominant post-training paradigm, driving the emergence of high-performance RL systems such as veRL for autoregressive large language models (LLMs). In parallel, diffusion-oriented RL algorithms, e.g., DanceGRPO and FlowGRPO, have rapidly expanded the scope of RL from language reasoning to diffusion-based visual and flow-based generation. However, efficient RL systems for diffusion generative LLMs remain underexplored. Existing implementations, e.g., veRL-Omni, still rely on colocated execution, which simplifies synchronization but couples rollout and training resources, limits heterogeneous deployment, and constrains independent scaling.   To this end, we introduce DigenRL, a disaggregated RL framework for diffusion-based generative LLMs that supports flexible resource allocation, accommodates heterogeneous GPUs, and facilitates efficient task scheduling. To maximally reduce the execution bubbles in the disaggregated architecture, we propose: 1) a generation-axis pipeline (GAP) and time-step parallelism (TSP) in the diffusion architecture to enable finer-grained pipelining between rollout and training; 2) an elastic trainer-assisted generation (TAG) approach to enable the trainer GPU resources to dynamically assist in executing rollout generations; and 3) a tightly one-step constrained asynchronous strategy to further utilize the tail bubble in the pipeline. Extensive experiments are conducted on three hardware testbeds with 16-32 GPUs using HunyuanVideo-13B, Wan2.1-14B, FLUX.1-12B, and QwenImage-20B generative models. Experimental results show that DigenRL achieves 1.56-2.10x throughput improvements over state-of-the-art diffusion RL systems, veRL-Omni and GenRL.",
+      "authors": [
+        "Sijie Wang",
+        "Zhengyu Qing",
+        "Zhiqiang Tan",
+        "Yiming Yin",
+        "Yeqing Zhang",
+        "Yaoyuan Wang",
+        "Qiang Wang",
+        "Xiaowen Chu",
+        "Shaohuai Shi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.DC",
+        "cs.NI",
+        "cs.PF"
+      ],
+      "published": "2026-06-23T09:59:35+00:00",
+      "link": "https://arxiv.org/pdf/2606.24369v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "RL system for diffusion-based visual generative LLMs with disaggregated architecture",
+      "llm_evidence_cn": "面向扩散视觉生成大语言模型的解耦强化学习系统",
+      "llm_evidence": "面向扩散视觉生成大语言模型的解耦强化学习系统",
+      "canonical_evidence": "面向扩散视觉生成大语言模型的解耦强化学习系统",
+      "llm_tldr_en": "Proposes a disaggregated RL system for diffusion generative LLMs, separating rollout and training for independent scaling, with diffusion-based parallelism and trainer-assisted generation to accelerate RL post-training.",
+      "llm_tldr_cn": "针对视觉生成大语言模型（如扩散模型）强化学习后训练中效率低下问题，提出一种解耦式强化学习系统，将生成（rollout）和训练资源分离，支持异构部署和独立扩缩。结合基于扩散的并行性和训练器辅助生成，大幅提升训练吞吐量。实验显示，该方法显著降低训练时间与成本，为大规模图像生成模型的RL后训练提供了高效解决方案。",
+      "llm_tldr": "针对视觉生成大语言模型（如扩散模型）强化学习后训练中效率低下问题，提出一种解耦式强化学习系统，将生成（rollout）和训练资源分离，支持异构部署和独立扩缩。结合基于扩散的并行性和训练器辅助生成，大幅提升训练吞吐量。实验显示，该方法显著降低训练时间与成本，为大规模图像生成模型的RL后训练提供了高效解决方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.23950v1",
+      "source": "arxiv",
+      "title": "DivRL: Disentangled Self-Similarity Rewards for Diverse Subject-Driven Generation",
+      "abstract": "Subject-driven image generation faces an \"Identity-Diversity Paradox\", where strong identity preservation often leads to rigid and low-diversity outputs. We propose a post-training framework called DivRL that jointly optimizes identity consistency and structural diversity simultaneously by leveraging disentangled visual features from a robust similarity model. Specifically, we introduce a Negative Self-Similarity Measure (nSSM) to quantify structural diversity, and Visual Semantic Matching (VSM) to evaluate identity consistency. We propose an \"Explore-and-Suppress\" strategy that treats VSM as a gated constraint: the model freely explores structurally diverse configurations, and only samples that violate the identity threshold are penalized via a quadratic hinge loss. This converts identity preservation from a competing objective into a feasibility constraint, allowing nSSM and VSM to improve jointly. Experiments demonstrate that our method effectively pushes the model to generate both consistent and diverse images and improves structural diversity while maintaining comparable identity consistency through a gated optimization formulation.",
+      "authors": [
+        "Qian Wang",
+        "Zhenyu Li",
+        "Abdelrahman Eldesokey",
+        "Peter Wonka"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-22T21:22:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.23950v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses RL with disentangled rewards for subject-driven image generation",
+      "llm_evidence_cn": "使用强化学习和解耦奖励进行主题驱动图像生成",
+      "llm_evidence": "使用强化学习和解耦奖励进行主题驱动图像生成",
+      "canonical_evidence": "使用强化学习和解耦奖励进行主题驱动图像生成",
+      "llm_tldr_en": "DivRL proposes a post-training RL framework with disentangled self-similarity rewards to optimize identity and diversity in subject-driven image generation.",
+      "llm_tldr_cn": "针对主题驱动图像生成中的身份-多样性悖论，提出DivRL后训练框架，通过解耦视觉特征引入负自相似度量（nSSM）和视觉语义匹配（VSM）作为奖励，采用探索-抑制策略同时优化身份一致性和结构多样性，实验证明能有效提升生成图像的多样性和身份保持。",
+      "llm_tldr": "针对主题驱动图像生成中的身份-多样性悖论，提出DivRL后训练框架，通过解耦视觉特征引入负自相似度量（nSSM）和视觉语义匹配（VSM）作为奖励，采用探索-抑制策略同时优化身份一致性和结构多样性，实验证明能有效提升生成图像的多样性和身份保持。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

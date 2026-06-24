@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-24",
+  "date": "2026-06-24",
+  "generated_at": "2026-06-24T21:28:30",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/24/2606.24369v1-accelerating-disaggregated-rl-for-visual-generative-llms-with-diffusion-based-parallelism-and-trainer-assisted-generation",
+      "section": "deep",
+      "title_en": "Accelerating Disaggregated RL for Visual Generative LLMs with Diffusion-Based Parallelism and Trainer-Assisted Generation",
+      "authors": "Sijie Wang, Zhengyu Qing, Zhiqiang Tan, Yiming Yin, Yeqing Zhang, Yaoyuan Wang, Qiang Wang, Xiaowen Chu, Shaohuai Shi",
+      "date": "2026-06-23",
+      "pdf": "https://arxiv.org/pdf/2606.24369v1",
+      "score": "10.0",
+      "evidence": "面向扩散视觉生成大语言模型的解耦强化学习系统",
+      "tldr": "现有扩散强化学习系统共置执行限制了异构部署与独立扩展。DigenRL提出解耦框架，采用生成轴流水线(GAP)和时间步并行(TSP)细化流水线，结合弹性训练器辅助生成(TAG)动态利用训练GPU执行生成，并设计一步紧约束异步策略消除气泡。在16-32 GPU上评估HunyuanVideo等模型，吞吐量较SOTA系统提升1.56-2.10倍，为扩散生成LLM的高效解耦RL提供了新范式。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning (RL) has become a dominant post-training paradigm, driving the emergence of high-performance RL systems such as veRL for autoregressive large language models (LLMs). In parallel, diffusion-oriented RL algorithms, e.g., DanceGRPO and FlowGRPO, have rapidly expanded the scope of RL from language reasoning to diffusion-based visual and flow-based generation. However, efficient RL systems for diffusion generative LLMs remain underexplored. Existing implementations, e.g., veRL-Omni, still rely on colocated execution, which simplifies synchronization but couples rollout and training resources, limits heterogeneous deployment, and constrains independent scaling.   To this end, we introduce DigenRL, a disaggregated RL framework for diffusion-based generative LLMs that supports flexible resource allocation, accommodates heterogeneous GPUs, and facilitates efficient task scheduling. To maximally reduce the execution bubbles in the disaggregated architecture, we propose: 1) a generation-axis pipeline (GAP) and time-step parallelism (TSP) in the diffusion architecture to enable finer-grained pipelining between rollout and training; 2) an elastic trainer-assisted generation (TAG) approach to enable the trainer GPU resources to dynamically assist in executing rollout generations; and 3) a tightly one-step constrained asynchronous strategy to further utilize the tail bubble in the pipeline. Extensive experiments are conducted on three hardware testbeds with 16-32 GPUs using HunyuanVideo-13B, Wan2.1-14B, FLUX.1-12B, and QwenImage-20B generative models. Experimental results show that DigenRL achieves 1.56-2.10x throughput improvements over state-of-the-art diffusion RL systems, veRL-Omni and GenRL.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/24/2606.23950v1-divrl-disentangled-self-similarity-rewards-for-diverse-subject-driven-generation",
+      "section": "deep",
+      "title_en": "DivRL: Disentangled Self-Similarity Rewards for Diverse Subject-Driven Generation",
+      "authors": "Qian Wang, Zhenyu Li, Abdelrahman Eldesokey, Peter Wonka",
+      "date": "2026-06-22",
+      "pdf": "https://arxiv.org/pdf/2606.23950v1",
+      "score": "9.0",
+      "evidence": "使用强化学习和解耦奖励进行主题驱动图像生成",
+      "tldr": "主题驱动图像生成面临身份一致性与多样性的矛盾。提出DivRL后训练框架，引入负自相似性度量（nSSM）衡量结构多样性，视觉语义匹配（VSM）评估身份一致性，并采用“探索-抑制”策略，将VSM作为门控约束，仅对违反身份阈值的样本施加二次铰链损失。该方法有效提升了生成图像的结构多样性，同时保持可比的身份一致性，将身份保持从竞争目标转化为可行性约束。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Subject-driven image generation faces an \"Identity-Diversity Paradox\", where strong identity preservation often leads to rigid and low-diversity outputs. We propose a post-training framework called DivRL that jointly optimizes identity consistency and structural diversity simultaneously by leveraging disentangled visual features from a robust similarity model. Specifically, we introduce a Negative Self-Similarity Measure (nSSM) to quantify structural diversity, and Visual Semantic Matching (VSM) to evaluate identity consistency. We propose an \"Explore-and-Suppress\" strategy that treats VSM as a gated constraint: the model freely explores structurally diverse configurations, and only samples that violate the identity threshold are penalized via a quadratic hinge loss. This converts identity preservation from a competing objective into a feasibility constraint, allowing nSSM and VSM to improve jointly. Experiments demonstrate that our method effectively pushes the model to generate both consistent and diverse images and improves structural diversity while maintaining comparable identity consistency through a gated optimization formulation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
