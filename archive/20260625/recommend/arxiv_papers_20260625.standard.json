@@ -1,0 +1,108 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-25T21:08:02.953773+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.24369v2",
+      "source": "arxiv",
+      "title": "Accelerating Disaggregated RL for Visual Generative LLMs with Diffusion-Based Parallelism and Trainer-Assisted Generation",
+      "abstract": "Reinforcement learning (RL) has become a dominant post-training paradigm, driving the emergence of high-performance RL systems such as veRL for autoregressive large language models (LLMs). In parallel, diffusion-oriented RL algorithms, e.g., DanceGRPO and FlowGRPO, have rapidly expanded the scope of RL from language reasoning to diffusion-based visual and flow-based generation. However, efficient RL systems for diffusion generative LLMs remain underexplored. Existing implementations, e.g., veRL-Omni, still rely on colocated execution, which simplifies synchronization but couples rollout and training resources, limits heterogeneous deployment, and constrains independent scaling.   To this end, we introduce DigenRL, a disaggregated RL framework for diffusion-based generative LLMs that supports flexible resource allocation, accommodates heterogeneous GPUs, and facilitates efficient task scheduling. To maximally reduce the execution bubbles in the disaggregated architecture, we propose: 1) a generation-axis pipeline (GAP) and time-step parallelism (TSP) in the diffusion architecture to enable finer-grained pipelining between rollout and training; 2) an elastic trainer-assisted generation (TAG) approach to enable the trainer GPU resources to dynamically assist in executing rollout generations; and 3) a tightly one-step constrained asynchronous strategy to further utilize the tail bubble in the pipeline. Extensive experiments are conducted on three hardware testbeds with 16-32 GPUs using HunyuanVideo-13B, Wan2.1-14B, FLUX.1-12B, and QwenImage-20B generative models. Experimental results show that DigenRL achieves 1.56-2.10x throughput improvements over state-of-the-art diffusion RL systems, veRL-Omni and GenRL.",
+      "authors": [
+        "Sijie Wang",
+        "Zhengyu Qing",
+        "Zhiqiang Tan",
+        "Yiming Yin",
+        "Yeqing Zhang",
+        "Yaoyuan Wang",
+        "Qiang Wang",
+        "Xiaowen Chu",
+        "Shaohuai Shi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.DC",
+        "cs.NI",
+        "cs.PF"
+      ],
+      "published": "2026-06-23T09:59:35+00:00",
+      "link": "https://arxiv.org/pdf/2606.24369v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "directly applies RL to diffusion-based image generation",
+      "llm_evidence_cn": "直接将强化学习应用于扩散图像生成",
+      "llm_evidence": "直接将强化学习应用于扩散图像生成",
+      "canonical_evidence": "直接将强化学习应用于扩散图像生成",
+      "llm_tldr_en": "Proposes disaggregated RL system for diffusion-based visual generative LLMs, using diffusion parallelism and trainer-assisted generation to improve efficiency and scalability, enabling RL fine-tuning for image generation models.",
+      "llm_tldr_cn": "现有扩散生成大语言模型的强化学习系统多采用共置执行，限制异构部署和独立扩展。本文提出解耦的RL系统，利用扩散并行和训练器辅助生成加速视觉生成模型的RL训练。该方法解耦了rollout和训练资源，实现独立缩放，实验表明显著提升训练速度并保持生成质量。为扩散图像生成模型的RL微调提供了高效系统解决方案。",
+      "llm_tldr": "现有扩散生成大语言模型的强化学习系统多采用共置执行，限制异构部署和独立扩展。本文提出解耦的RL系统，利用扩散并行和训练器辅助生成加速视觉生成模型的RL训练。该方法解耦了rollout和训练资源，实现独立缩放，实验表明显著提升训练速度并保持生成质量。为扩散图像生成模型的RL微调提供了高效系统解决方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.21086v1",
+      "source": "arxiv",
+      "title": "ReFPO: Reflow Regularization for Flow Matching Policy Gradients",
+      "abstract": "We present Reflow-regularized Flow Matching Policy Gradients (ReFPO), a simple online RL method that adds explicit Reflow regularization to FPO for efficient flow-based control. We uncover a key structural property: the gradient updates in Flow Matching Policy Gradients (FPO) can be interpreted as an implicit advantage-weighted Reflow process, providing a new geometric perspective on flow-based policy gradients. Building on this insight, ReFPO introduces an explicit geometric regularizer that can be implemented with a single line of code change without incurring additional computational overhead or auxiliary distillation stages. By synergizing advantage-guided updates with path rectification, our method reduces CFM proxy-ratio spikes, stabilizes PPO-style training, and enables high-fidelity one-step inference that often matches or exceeds multi-step performance. We experimentally demonstrate that ReFPO improves average performance and discretization robustness across GridWorld, MuJoCo Playground, and high-dimensional Humanoid Control tasks, providing a scalable and stable approach for generative policies in complex physical simulations.",
+      "authors": [
+        "Ge Wang",
+        "Yibo Peng",
+        "Fan Feng",
+        "Shenhao Yan",
+        "Chengsi Yao",
+        "Jiahao Yang",
+        "Honghao Cai",
+        "Yiming Zhao",
+        "Xi Li",
+        "Jinke Ren",
+        "Shuguang Cui",
+        "Yatong Han",
+        "Zhen Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-19T04:23:10+00:00",
+      "link": "https://arxiv.org/pdf/2606.21086v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "presents an online RL method for flow-based generation models",
+      "llm_evidence_cn": "提出面向流生成模型的在线强化学习方法",
+      "llm_evidence": "提出面向流生成模型的在线强化学习方法",
+      "canonical_evidence": "提出面向流生成模型的在线强化学习方法",
+      "llm_tldr_en": "ReFPO introduces Reflow regularization to flow matching policy gradients, providing a geometric perspective and stabilizing PPO-style training for efficient online RL in flow-based generative models.",
+      "llm_tldr_cn": "流匹配策略梯度（FPO）的梯度更新可解释为隐式优势加权重流过程。本文在此基础上提出显式重流正则化（ReFPO），仅需一行代码修改，无需额外计算开销。该方法通过优势引导更新与路径整流协同，减少CFM代理比率尖峰，稳定PPO风格训练。实验表明在流生成控制任务中显著提升样本效率和最终性能，为图像生成等流模型RL提供简洁有效的方法。",
+      "llm_tldr": "流匹配策略梯度（FPO）的梯度更新可解释为隐式优势加权重流过程。本文在此基础上提出显式重流正则化（ReFPO），仅需一行代码修改，无需额外计算开销。该方法通过优势引导更新与路径整流协同，减少CFM代理比率尖峰，稳定PPO风格训练。实验表明在流生成控制任务中显著提升样本效率和最终性能，为图像生成等流模型RL提供简洁有效的方法。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

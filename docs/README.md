@@ -6,26 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-24
-- 运行时间：2026-06-24 21:28:22 UTC
+- 最新运行日期：2026-06-25
+- 运行时间：2026-06-25 21:09:30 UTC
 - 运行状态：成功
 - 本次总论文数：2
 - 精读区：2
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读两篇高分论文，聚焦视觉生成大语言模型的加速训练与多样化主题驱动生成。  
-最值得关注的是《Accelerating Disaggregated RL》提出的扩散并行+训练器辅助方案（10分满分），以及《DivRL》通过解耦自相似性奖励实现多样生成（9分）。  
-建议重点研读第一篇中的“解耦强化学习加速”思路，该方法对提升视觉生成效率有直接借鉴价值。
-- 详情：[/202606/24/README](/202606/24/README)
+今天精读了两篇高分论文，分别聚焦视觉生成式LLM的强化学习加速与流匹配策略梯度的正则化改进。最值得关注的方向是扩散模型并行化与生成器辅助训练的协同设计，以及ReFPO正则化方法如何稳定流匹配策略学习。建议关注视觉生成与强化学习的交叉领域，可尝试将扩散模型与策略优化结合以提升推理效率。
+- 详情：[/202606/25/README](/202606/25/README)
 
 ### 精读区论文标签
-1. [Accelerating Disaggregated RL for Visual Generative LLMs with Diffusion-Based Parallelism and Trainer-Assisted Generation](/202606/24/2606.24369v1-accelerating-disaggregated-rl-for-visual-generative-llms-with-diffusion-based-parallelism-and-trainer-assisted-generation)  
-   标签：评分：10.0/10、query:image-gen-rl
-   evidence：面向扩散视觉生成大语言模型的解耦强化学习系统
-2. [DivRL: Disentangled Self-Similarity Rewards for Diverse Subject-Driven Generation](/202606/24/2606.23950v1-divrl-disentangled-self-similarity-rewards-for-diverse-subject-driven-generation)  
+1. [Accelerating Disaggregated RL for Visual Generative LLMs with Diffusion-Based Parallelism and Trainer-Assisted Generation](/202606/25/2606.24369v2-accelerating-disaggregated-rl-for-visual-generative-llms-with-diffusion-based-parallelism-and-trainer-assisted-generation)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：使用强化学习和解耦奖励进行主题驱动图像生成
+   evidence：直接将强化学习应用于扩散图像生成
+2. [ReFPO: Reflow Regularization for Flow Matching Policy Gradients](/202606/25/2606.21086v1-refpo-reflow-regularization-for-flow-matching-policy-gradients)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：提出面向流生成模型的在线强化学习方法
 
 ### 速读区论文标签
 - 本次无速读推荐。
