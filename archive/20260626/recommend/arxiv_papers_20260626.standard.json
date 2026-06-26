@@ -1,0 +1,176 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-26T20:34:59.908429+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.26930v1",
+      "source": "arxiv",
+      "title": "PortraitGen: Exemplar-Driven GRPO with Dual-Reward Guidance for Photorealistic Portrait Generation",
+      "abstract": "Reinforcement Learning like Group Relative Policy Optimization (GRPO) has significantly advanced text-to-image post-training. However, current methods often favor superficial aesthetics, such as over-saturated colors, leaving critical flaws like AI artifacts and biological implausibilities unresolved. We attribute these limitations to two primary factors: (1) The absence of real images during post-training confines GRPO sampling to the original distribution, failing to break inherent generative boundaries; (2) the optimization process lacks specific rewards targeting fine-grained artifacts like overly oily skin and other AI artifacts. To address this, we propose PortraitGen, a novel framework tailored for photorealistic portrait generation. First, we break inherent generative boundaries by directly introducing real images into the GRPO sampling groups, where image inversion is employed to obtain their transition probabilities and latents. Second, to explicitly steer the model toward photorealism, we introduce a complementary dual-reward mechanism: OmniReward for general quality and AI-Portrait for human-centric fidelity. Furthermore, we curate PortraitBench, a comprehensive portrait-centric benchmark. Extensive experiments demonstrate that PortraitGen significantly outperforms existing baselines, effectively suppressing AI artifacts and achieving unprecedented photorealism.",
+      "authors": [
+        "Xiaomin Li",
+        "Qian Liang",
+        "Yinan Li",
+        "Ying Zhang",
+        "Chen Li",
+        "Jing Lyu",
+        "Huchuan Lu",
+        "Xu Jia"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-25T12:05:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.26930v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "reinforcement learning (GRPO) for photorealistic portrait generation with dual rewards",
+      "llm_evidence_cn": "使用强化学习（GRPO）进行逼真肖像生成并设计双奖励函数",
+      "llm_evidence": "使用强化学习（GRPO）进行逼真肖像生成并设计双奖励函数",
+      "canonical_evidence": "使用强化学习（GRPO）进行逼真肖像生成并设计双奖励函数",
+      "llm_tldr_en": "Proposes PortraitGen using GRPO with dual-reward guidance for photorealistic portrait generation, addressing artifacts and biological implausibilities through exemplar-driven optimization.",
+      "llm_tldr_cn": "现有基于强化学习的文本到图像后训练方法偏好表面美学，忽视AI伪影和生物不合理性。本文提出PortraitGen框架，利用示例驱动的GRPO算法，结合双奖励机制分别针对伪影和生物细节进行优化。实验表明，该方法在保留照片真实感的同时显著减少伪影，在肖像生成质量上超越现有基线。该工作展示了将真实图像先验与细粒度奖励结合的有效性，为图像生成中强化学习的奖励设计提供了新范例。",
+      "llm_tldr": "现有基于强化学习的文本到图像后训练方法偏好表面美学，忽视AI伪影和生物不合理性。本文提出PortraitGen框架，利用示例驱动的GRPO算法，结合双奖励机制分别针对伪影和生物细节进行优化。实验表明，该方法在保留照片真实感的同时显著减少伪影，在肖像生成质量上超越现有基线。该工作展示了将真实图像先验与细粒度奖励结合的有效性，为图像生成中强化学习的奖励设计提供了新范例。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.26872v1",
+      "source": "arxiv",
+      "title": "SpatialFlow-GRPO: Where Spatial Credit Drives Image Editing",
+      "abstract": "Recent online reinforcement learning has substantially improved image editing quality. However, existing Flow-GRPO-style methods usually rely on a single whole-image reward, which makes fine-grained editing optimization difficult. We observe that a key obstacle in image editing is this spatial uniformity assumption: a whole-image reward cannot distinguish how different spatial regions contribute to image quality. To address this issue, we propose SpatialFlow-GRPO, a training framework that introduces spatially fine-grained reward feedback. The framework converts region-aware rewards into semantic-region-level optimization signals and aligns region advantages with the corresponding latent positions during policy updates. We also train a region-aware reward model, SFReward, construct SFReward-14K with region-annotated editing samples, and introduce MultiEditBench to evaluate multi-region editing ability. On OmniGen2 and FLUX.2-klein-4B, SpatialFlow-GRPO outperforms Flow-GRPO on GEdit-Bench, ImgEdit-Bench, and MultiEditBench. The results show that SpatialFlow-GRPO converts local feedback into spatially aligned update signals and improves editing quality.",
+      "authors": [
+        "Yankai Yang",
+        "Yancheng Long",
+        "Wei Chen",
+        "Xingyu Lu",
+        "Hongyang Wei",
+        "Bin Wen",
+        "Fan Yang",
+        "Tingting Gao",
+        "Han Li",
+        "Shuo Yang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-25T10:58:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.26872v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "proposes online RL for image editing with spatially fine-grained reward feedback",
+      "llm_evidence_cn": "提出用于图像编辑的在线强化学习框架，具有空间细粒度奖励反馈",
+      "llm_evidence": "提出用于图像编辑的在线强化学习框架，具有空间细粒度奖励反馈",
+      "canonical_evidence": "提出用于图像编辑的在线强化学习框架，具有空间细粒度奖励反馈",
+      "llm_tldr_en": "Introduces SpatialFlow-GRPO, an online RL framework for image editing that uses region-aware rewards to provide fine-grained optimization signals, improving editing quality.",
+      "llm_tldr_cn": "该工作针对图像编辑中的强化学习优化，指出全局图像奖励的局限性，提出空间细粒度奖励反馈框架SpatialFlow-GRPO。该方法将区域感知奖励转化为语义级优化信号，并在策略更新中对齐区域优势与潜在位置。同时训练区域感知奖励模型，显著提升了编辑质量。",
+      "llm_tldr": "该工作针对图像编辑中的强化学习优化，指出全局图像奖励的局限性，提出空间细粒度奖励反馈框架SpatialFlow-GRPO。该方法将区域感知奖励转化为语义级优化信号，并在策略更新中对齐区域优势与潜在位置。同时训练区域感知奖励模型，显著提升了编辑质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.27305v1",
+      "source": "arxiv",
+      "title": "Sculpting NeRF Geometry: Human-Preference Fine-Tuning of a 3D-Aware Face GAN",
+      "abstract": "Reinforcement learning from human feedback (RLHF) for 3D generation is now established across a number of works, but most existing pipelines optimise explicit surface representations, often by converting radiance fields into meshes and training heavily on surface-supervised data. We instead fine-tune a pretrained 3D-aware generative model directly from a learned reward over radiance-field density ($σ$) values, with no externally supplied mesh or shape prior. The reward model requires no pretraining, trains easily on a small set of preference samples, and yields robust improvement in 3D geometry. Working on an unconditional 3D-aware face GAN (EG3D), our reward reads the continuous 3D density field of the neural radiance field (NeRF) directly and supplies a geometry-only learning signal, requiring neither text conditioning, mesh extraction, nor multi-view rendering. A density-consistency constraint keeps the 2D appearance qualitatively similar while the geometry is reshaped, at a measurable but bounded distributional cost (FID-50k rises from 4.09 to 6.66): the fine-tuned generator, trained from the preferences of a single annotator as a proof of concept, produces face geometries preferred by users in 74.4% of pairwise comparisons.",
+      "authors": [
+        "Archer Moore",
+        "Mingming Gong",
+        "Liam Hodgkinson"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-25T17:26:06+00:00",
+      "link": "https://arxiv.org/pdf/2606.27305v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses RLHF to fine-tune a 3D-aware face GAN with a learned reward function",
+      "llm_evidence_cn": "使用基于人类反馈的强化学习微调3D感知人脸GAN，设计奖励函数",
+      "llm_evidence": "使用基于人类反馈的强化学习微调3D感知人脸GAN，设计奖励函数",
+      "canonical_evidence": "使用基于人类反馈的强化学习微调3D感知人脸GAN，设计奖励函数",
+      "llm_tldr_en": "Fine-tunes a 3D-aware face GAN using RLHF directly from radiance-field density, with a reward model trained on preference samples, improving 3D geometry without mesh priors.",
+      "llm_tldr_cn": "该工作针对3D感知人脸生成模型，提出直接基于辐射场密度的强化学习从人类反馈微调方法。奖励模型无需预训练，仅需少量偏好样本即可训练，并显著提升了3D几何质量。该方法避免了显式表面表示，为3D生成中的强化学习应用提供了新思路。",
+      "llm_tldr": "该工作针对3D感知人脸生成模型，提出直接基于辐射场密度的强化学习从人类反馈微调方法。奖励模型无需预训练，仅需少量偏好样本即可训练，并显著提升了3D几何质量。该方法避免了显式表面表示，为3D生成中的强化学习应用提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.27180v1",
+      "source": "arxiv",
+      "title": "Automating Potential-based Reward Shaping with Vision Language Model Guidance",
+      "abstract": "Sparse rewards are inherently challenging for reinforcement learning agents as they lack intermediate feedback to guide exploration and to correctly attribute the sparse success rewards to relevant parts of the trajectory. Naive reward shaping can induce reward hacking, yielding policies that exploit auxiliary signals instead of solving the intended task. Potential-based reward shaping (PBRS) guarantees preservation of the optimal policy set, but requires the definition of a heuristic potential function over the state space. In this work, we introduce the VLM-guided PBRS framework VLM-PBRS that learns the potential function directly from vision language model (VLM) feedback. We query a lightweight VLM to obtain preferences over image pairs and train a model of the potential function using these preferences. As this approach is based on potential-based reward shaping, it preserves the original optimal policies, and removes the need for expert-designed reward shaping terms. Because large VLMs are prohibitively expensive to invoke repeatedly during policy learning, we employ smaller, more computationally efficient VLMs. Although the resulting preference labels are less accurate, empirical evidence shows that the preference labels can still be used to accelerate learning. We validate our method empirically in the Meta-World and Franka Kitchen environments and highlight the connection between VLM preference label accuracy and sample efficiency improvements. Our contributions are threefold: (1) the first application of VLM preference-based learning to synthesize a potential function for PBRS, (2) a principled, low-cost solution that leverages small VLMs, and (3) extensive empirical demonstration of improved sample efficiency and robustness to reward hacking.",
+      "authors": [
+        "Henrik Müller",
+        "Daniel Kudenko"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-06-25T15:45:57+00:00",
+      "link": "https://arxiv.org/pdf/2606.27180v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "automates reward shaping for RL, applicable to image generation tasks",
+      "llm_evidence_cn": "自动化奖励塑形方法可迁移至图像生成任务",
+      "llm_evidence": "自动化奖励塑形方法可迁移至图像生成任务",
+      "canonical_evidence": "自动化奖励塑形方法可迁移至图像生成任务",
+      "llm_tldr_en": "Proposes VLM-PBRS that learns potential functions from VLM feedback for reward shaping, directly relevant to designing reward functions for image generation RL.",
+      "llm_tldr_cn": "针对强化学习中稀疏奖励难以设计的问题，提出VLM-PBRS框架，利用视觉语言模型（VLM）的偏好反馈自动学习潜在函数，实现基于势的奖励塑形。该方法无需人工定义启发式函数，通过查询VLM获得图像对偏好来指导奖励设计。虽然实验在一般RL环境中进行，但其奖励塑形方法可直接迁移至图像生成任务，为设计图像生成奖励函数提供自动化方案。",
+      "llm_tldr": "针对强化学习中稀疏奖励难以设计的问题，提出VLM-PBRS框架，利用视觉语言模型（VLM）的偏好反馈自动学习潜在函数，实现基于势的奖励塑形。该方法无需人工定义启发式函数，通过查询VLM获得图像对偏好来指导奖励设计。虽然实验在一般RL环境中进行，但其奖励塑形方法可直接迁移至图像生成任务，为设计图像生成奖励函数提供自动化方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

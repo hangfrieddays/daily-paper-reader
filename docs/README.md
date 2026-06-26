@@ -6,27 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-25
-- 运行时间：2026-06-25 21:09:30 UTC
+- 最新运行日期：2026-06-26
+- 运行时间：2026-06-26 20:39:25 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：2
-- 速读区：0
+- 本次总论文数：4
+- 精读区：3
+- 速读区：1
 
 ### 今日简报（AI）
-今天精读了两篇高分论文，分别聚焦视觉生成式LLM的强化学习加速与流匹配策略梯度的正则化改进。最值得关注的方向是扩散模型并行化与生成器辅助训练的协同设计，以及ReFPO正则化方法如何稳定流匹配策略学习。建议关注视觉生成与强化学习的交叉领域，可尝试将扩散模型与策略优化结合以提升推理效率。
-- 详情：[/202606/25/README](/202606/25/README)
+今日精读两篇高分GRPO论文及一篇速读，聚焦人像生成与图像编辑新方法。  
+最值得关注的是《PortraitGen》在示例驱动人像生成中的双奖励机制（10分）和《SpatialFlow-GRPO》的空间信用引导编辑（9分）。  
+建议后续深入GRPO在视觉生成中的奖励设计，并探索视觉语言模型辅助奖励塑形的潜力。
+- 详情：[/202606/26/README](/202606/26/README)
 
 ### 精读区论文标签
-1. [Accelerating Disaggregated RL for Visual Generative LLMs with Diffusion-Based Parallelism and Trainer-Assisted Generation](/202606/25/2606.24369v2-accelerating-disaggregated-rl-for-visual-generative-llms-with-diffusion-based-parallelism-and-trainer-assisted-generation)  
+1. [PortraitGen: Exemplar-Driven GRPO with Dual-Reward Guidance for Photorealistic Portrait Generation](/202606/26/2606.26930v1-portraitgen-exemplar-driven-grpo-with-dual-reward-guidance-for-photorealistic-portrait-generation)  
+   标签：评分：10.0/10、query:image-gen-rl
+   evidence：使用强化学习（GRPO）进行逼真肖像生成并设计双奖励函数
+2. [SpatialFlow-GRPO: Where Spatial Credit Drives Image Editing](/202606/26/2606.26872v1-spatialflow-grpo-where-spatial-credit-drives-image-editing)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：直接将强化学习应用于扩散图像生成
-2. [ReFPO: Reflow Regularization for Flow Matching Policy Gradients](/202606/25/2606.21086v1-refpo-reflow-regularization-for-flow-matching-policy-gradients)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：提出面向流生成模型的在线强化学习方法
+   evidence：提出用于图像编辑的在线强化学习框架，具有空间细粒度奖励反馈
+3. [Sculpting NeRF Geometry: Human-Preference Fine-Tuning of a 3D-Aware Face GAN](/202606/26/2606.27305v1-sculpting-nerf-geometry-human-preference-fine-tuning-of-a-3d-aware-face-gan)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：使用基于人类反馈的强化学习微调3D感知人脸GAN，设计奖励函数
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Automating Potential-based Reward Shaping with Vision Language Model Guidance](/202606/26/2606.27180v1-automating-potential-based-reward-shaping-with-vision-language-model-guidance)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：自动化奖励塑形方法可迁移至图像生成任务
 
 
 <div class="dpr-home-promo-card">

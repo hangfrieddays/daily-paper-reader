@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-26",
+  "date": "2026-06-26",
+  "generated_at": "2026-06-26T20:39:34",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/26/2606.26930v1-portraitgen-exemplar-driven-grpo-with-dual-reward-guidance-for-photorealistic-portrait-generation",
+      "section": "deep",
+      "title_en": "PortraitGen: Exemplar-Driven GRPO with Dual-Reward Guidance for Photorealistic Portrait Generation",
+      "authors": "Xiaomin Li, Qian Liang, Yinan Li, Ying Zhang, Chen Li, Jing Lyu, Huchuan Lu, Xu Jia",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.26930v1",
+      "score": "10.0",
+      "evidence": "使用强化学习（GRPO）进行逼真肖像生成并设计双奖励函数",
+      "tldr": "现有基于强化学习的文本到图像后训练方法常产生过饱和颜色等伪影，原因在于缺乏真实图像引导和细粒度奖励。PortraitGen通过将真实图像直接引入GRPO采样组并利用图像反转获取其转移概率和潜在变量，打破生成边界。同时设计双奖励机制（OmniReward和AI-Portrait）分别优化整体质量和人像保真度。在自建PortraitBench基准上，该方法显著抑制AI伪影，达到当前最优的逼真效果。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement Learning like Group Relative Policy Optimization (GRPO) has significantly advanced text-to-image post-training. However, current methods often favor superficial aesthetics, such as over-saturated colors, leaving critical flaws like AI artifacts and biological implausibilities unresolved. We attribute these limitations to two primary factors: (1) The absence of real images during post-training confines GRPO sampling to the original distribution, failing to break inherent generative boundaries; (2) the optimization process lacks specific rewards targeting fine-grained artifacts like overly oily skin and other AI artifacts. To address this, we propose PortraitGen, a novel framework tailored for photorealistic portrait generation. First, we break inherent generative boundaries by directly introducing real images into the GRPO sampling groups, where image inversion is employed to obtain their transition probabilities and latents. Second, to explicitly steer the model toward photorealism, we introduce a complementary dual-reward mechanism: OmniReward for general quality and AI-Portrait for human-centric fidelity. Furthermore, we curate PortraitBench, a comprehensive portrait-centric benchmark. Extensive experiments demonstrate that PortraitGen significantly outperforms existing baselines, effectively suppressing AI artifacts and achieving unprecedented photorealism.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/26/2606.26872v1-spatialflow-grpo-where-spatial-credit-drives-image-editing",
+      "section": "deep",
+      "title_en": "SpatialFlow-GRPO: Where Spatial Credit Drives Image Editing",
+      "authors": "Yankai Yang, Yancheng Long, Wei Chen, Xingyu Lu, Hongyang Wei, Bin Wen, Fan Yang, Tingting Gao, Han Li, Shuo Yang",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.26872v1",
+      "score": "9.0",
+      "evidence": "提出用于图像编辑的在线强化学习框架，具有空间细粒度奖励反馈",
+      "tldr": "现有图像编辑方法使用整图奖励，难以区分不同空间区域的贡献。为此提出SpatialFlow-GRPO，引入空间细粒度奖励反馈，将区域奖励转化为语义区域级优化信号，并训练区域感知奖励模型SFReward。在OmniGen2和FLUX.2模型上，该方法在GEdit-Bench、ImgEdit-Bench和MultiEditBench上均优于Flow-GRPO。该工作将局部反馈转化为空间对齐的更新信号，提升了编辑质量。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Recent online reinforcement learning has substantially improved image editing quality. However, existing Flow-GRPO-style methods usually rely on a single whole-image reward, which makes fine-grained editing optimization difficult. We observe that a key obstacle in image editing is this spatial uniformity assumption: a whole-image reward cannot distinguish how different spatial regions contribute to image quality. To address this issue, we propose SpatialFlow-GRPO, a training framework that introduces spatially fine-grained reward feedback. The framework converts region-aware rewards into semantic-region-level optimization signals and aligns region advantages with the corresponding latent positions during policy updates. We also train a region-aware reward model, SFReward, construct SFReward-14K with region-annotated editing samples, and introduce MultiEditBench to evaluate multi-region editing ability. On OmniGen2 and FLUX.2-klein-4B, SpatialFlow-GRPO outperforms Flow-GRPO on GEdit-Bench, ImgEdit-Bench, and MultiEditBench. The results show that SpatialFlow-GRPO converts local feedback into spatially aligned update signals and improves editing quality.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/26/2606.27305v1-sculpting-nerf-geometry-human-preference-fine-tuning-of-a-3d-aware-face-gan",
+      "section": "deep",
+      "title_en": "Sculpting NeRF Geometry: Human-Preference Fine-Tuning of a 3D-Aware Face GAN",
+      "authors": "Archer Moore, Mingming Gong, Liam Hodgkinson",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.27305v1",
+      "score": "9.0",
+      "evidence": "使用基于人类反馈的强化学习微调3D感知人脸GAN，设计奖励函数",
+      "tldr": "现有3D生成中RLHF通常依赖显式表面表示（如网格）。本文微调预训练3D感知人脸GAN（EG3D），直接从辐射场密度学习人类偏好奖励，无需网格或形状先验。使用单个标注者的偏好样本，用户偏好率达74.4%，FID-50k从4.09升至6.66。实验表明，仅从密度场学习偏好即可有效改善3D几何，同时保持2D外观基本不变。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning from human feedback (RLHF) for 3D generation is now established across a number of works, but most existing pipelines optimise explicit surface representations, often by converting radiance fields into meshes and training heavily on surface-supervised data. We instead fine-tune a pretrained 3D-aware generative model directly from a learned reward over radiance-field density ($σ$) values, with no externally supplied mesh or shape prior. The reward model requires no pretraining, trains easily on a small set of preference samples, and yields robust improvement in 3D geometry. Working on an unconditional 3D-aware face GAN (EG3D), our reward reads the continuous 3D density field of the neural radiance field (NeRF) directly and supplies a geometry-only learning signal, requiring neither text conditioning, mesh extraction, nor multi-view rendering. A density-consistency constraint keeps the 2D appearance qualitatively similar while the geometry is reshaped, at a measurable but bounded distributional cost (FID-50k rises from 4.09 to 6.66): the fine-tuned generator, trained from the preferences of a single annotator as a proof of concept, produces face geometries preferred by users in 74.4% of pairwise comparisons.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/26/2606.27180v1-automating-potential-based-reward-shaping-with-vision-language-model-guidance",
+      "section": "quick",
+      "title_en": "Automating Potential-based Reward Shaping with Vision Language Model Guidance",
+      "authors": "Henrik Müller, Daniel Kudenko",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.27180v1",
+      "score": "6.0",
+      "evidence": "自动化奖励塑形方法可迁移至图像生成任务",
+      "tldr": "强化学习面临稀疏奖励时缺乏中间反馈，朴素奖励塑造易引发奖励黑客。提出VLM-PBRS框架，利用轻量级VLM对图像对的偏好学习势函数，结合PBRS保证最优策略不变。在Meta-World和Franka Kitchen环境验证，偏好标签精度影响样本效率但整体显著提升，且对奖励黑客鲁棒。首次将VLM偏好学习用于合成PBRS势函数，以低成本实现自动化奖励塑造。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Sparse rewards are inherently challenging for reinforcement learning agents as they lack intermediate feedback to guide exploration and to correctly attribute the sparse success rewards to relevant parts of the trajectory. Naive reward shaping can induce reward hacking, yielding policies that exploit auxiliary signals instead of solving the intended task. Potential-based reward shaping (PBRS) guarantees preservation of the optimal policy set, but requires the definition of a heuristic potential function over the state space. In this work, we introduce the VLM-guided PBRS framework VLM-PBRS that learns the potential function directly from vision language model (VLM) feedback. We query a lightweight VLM to obtain preferences over image pairs and train a model of the potential function using these preferences. As this approach is based on potential-based reward shaping, it preserves the original optimal policies, and removes the need for expert-designed reward shaping terms. Because large VLMs are prohibitively expensive to invoke repeatedly during policy learning, we employ smaller, more computationally efficient VLMs. Although the resulting preference labels are less accurate, empirical evidence shows that the preference labels can still be used to accelerate learning. We validate our method empirically in the Meta-World and Franka Kitchen environments and highlight the connection between VLM preference label accuracy and sample efficiency improvements. Our contributions are threefold: (1) the first application of VLM preference-based learning to synthesize a potential function for PBRS, (2) a principled, low-cost solution that leverages small VLMs, and (3) extensive empirical demonstration of improved sample efficiency and robustness to reward hacking.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
