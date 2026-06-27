@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-27",
+  "date": "2026-06-27",
+  "generated_at": "2026-06-27T20:48:54",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/27/2606.26947v1-scaling-multi-reference-image-generation-with-dynamic-reward-optimization",
+      "section": "deep",
+      "title_en": "Scaling Multi-Reference Image Generation with Dynamic Reward Optimization",
+      "authors": "Wenwang Huang, Yusen Fu, Junjie Wang, Mengfei Huang, Yulin Li, Gan Liu, Jing Cai, Yancheng He, Zhuotao Tian",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.26947v1",
+      "score": "8.0",
+      "evidence": "多参考图像生成中的动态奖励优化",
+      "tldr": "多参考图像生成(MRIG)因缺乏复杂场景评估基准而进展受限。现有OmniRef-Bench测试显示，主流开源模型在混合类型参考图像数量增加时性能显著下降。本文提出DyRef两阶段训练框架，先通过监督微调获得基础能力，再引入难度感知优势重加权(DAR)和判别奖励缩放(DRS)动态优化策略。实验表明，DyRef在OmniRef-Bench和单图像编辑基准上大幅提升模型性能，验证了动态奖励优化的有效性和泛化能力。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "While personalized image generation has achieved remarkable progress, multi-reference image generation (MRIG) remains a challenging task. Most existing benchmarks fail to adequately evaluate complex MRIG scenarios, hindering further progress in this area. To better assess model performance on complex MRIG tasks, we introduce OmniRef-Bench, a benchmark that covers complex combinations of reference image types and a large number of reference images. Evaluations on OmniRef-Bench show that mainstream open-source models struggle in complex MRIG scenarios, and their performance deteriorates significantly as the number of mixed-type reference images increases. To address this issue, we propose DyRef, a two-stage training framework. In the first stage, supervised fine-tuning equips the model with the basic capability to handle complex MRIG tasks. In the second stage, we introduce Difficulty-aware Advantage Reweighting (DAR) and Discriminative Reward Scaling (DRS). DAR dynamically adjusts the optimization objective to improve performance when handling a large number of mixed-type reference images. DRS enlarges intra-group reward differences for more effective policy optimization. Experiments demonstrate that DyRef significantly improves the performance of open-source models on OmniRef-Bench and single-image editing benchmarks, demonstrating the effectiveness and generalization capability of our approach.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/27/2606.27376v1-ask-solve-generate-self-evolving-unified-multimodal-understanding-and-generation-via-self-consistency-rewards",
+      "section": "quick",
+      "title_en": "Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards",
+      "authors": "Ritesh Thawkar, Shravan Venkatraman, Omkar Thawakar, Abdelrahman Shaker, Fahad Khan, Hisham Cholakkal, Salman Khan, Rao Muhammad Anwer",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.27376v1",
+      "score": "6.0",
+      "evidence": "利用自一致性奖励进行统一图像生成与理解",
+      "tldr": "统一多模态大模型通常依赖人工标注或外部奖励模型来提升性能。本文提出无需任何外部监督的自进化训练框架，通过内部三个角色（Proposer、Solver、Generator）的循环协作，利用self-consistency rewards生成训练信号。引入Solver Token Entropy稳定学习，并设计多尺度内部评估方案增强图像生成。在BLIP3o、BAGEL、VARGPT等架构上，理解和生成指标全面提升，BAGEL在MMMU上绝对提升3.5%，GenEval从82%升至85%。该方法首次实现仅用未标注图像即可自主增强多模态能力，且跨架构通用。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Most unified large multimodal models (LMMs) that support both visual understanding and image generation still rely on curated post-training supervision, such as human annotations, preference labels, or external reward models. We ask whether a unified LMM can improve both abilities autonomously using only unlabeled images. We propose a self-evolving training framework with three internal roles: a Proposer that generates visual questions, a Solver that answers and evaluates them, and a Generator that synthesizes images. Training uses only self-derived consistency signals, without human annotations, preference labels, or task-trained external reward/judge models. To stabilize learning, we introduce Solver Token Entropy (STE), a continuous difficulty signal based on token-level prediction uncertainty that remains useful even when sample-level consistency becomes unreliable. For image generation, we design a multi-scale internal evaluation scheme that combines question-answer fidelity scoring with cycle-consistent captioning. This creates a solver-mediated coupling, where better visual understanding enables more reliable generation assessment and stronger internal training signals. The framework preserves the same role decomposition, reward logic, and training schedule across diffusion-based BLIP3o, rectified-flow BAGEL, and autoregressive VARGPT-v1.1 architectures, requiring only each backbone's native prompting and generation interface. Across eight understanding metrics, our method consistently improves over the corresponding base models. On BAGEL, it achieves a $+3.5\\%$ absolute gain on MMMU and improves GenEval image generation performance from $82\\%$ to $85\\%$. Code and models are publicly released.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -6,34 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-26
-- 运行时间：2026-06-26 20:39:25 UTC
+- 最新运行日期：2026-06-27
+- 运行时间：2026-06-27 20:48:48 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：3
+- 本次总论文数：2
+- 精读区：1
 - 速读区：1
 
 ### 今日简报（AI）
-今日精读两篇高分GRPO论文及一篇速读，聚焦人像生成与图像编辑新方法。  
-最值得关注的是《PortraitGen》在示例驱动人像生成中的双奖励机制（10分）和《SpatialFlow-GRPO》的空间信用引导编辑（9分）。  
-建议后续深入GRPO在视觉生成中的奖励设计，并探索视觉语言模型辅助奖励塑形的潜力。
-- 详情：[/202606/26/README](/202606/26/README)
+今天精读了一篇多参考图像生成的动态奖励优化研究（8.0分），速读了一篇基于自一致性奖励的统一多模态理解与生成论文（6.0分）。  
+最值得关注的方向是动态奖励优化，能显著提升多参考图像生成的一致性与质量。  
+建议普通读者可尝试将动态奖励机制引入自己的图像生成任务，尤其适用于多条件输入场景。
+- 详情：[/202606/27/README](/202606/27/README)
 
 ### 精读区论文标签
-1. [PortraitGen: Exemplar-Driven GRPO with Dual-Reward Guidance for Photorealistic Portrait Generation](/202606/26/2606.26930v1-portraitgen-exemplar-driven-grpo-with-dual-reward-guidance-for-photorealistic-portrait-generation)  
-   标签：评分：10.0/10、query:image-gen-rl
-   evidence：使用强化学习（GRPO）进行逼真肖像生成并设计双奖励函数
-2. [SpatialFlow-GRPO: Where Spatial Credit Drives Image Editing](/202606/26/2606.26872v1-spatialflow-grpo-where-spatial-credit-drives-image-editing)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：提出用于图像编辑的在线强化学习框架，具有空间细粒度奖励反馈
-3. [Sculpting NeRF Geometry: Human-Preference Fine-Tuning of a 3D-Aware Face GAN](/202606/26/2606.27305v1-sculpting-nerf-geometry-human-preference-fine-tuning-of-a-3d-aware-face-gan)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：使用基于人类反馈的强化学习微调3D感知人脸GAN，设计奖励函数
+1. [Scaling Multi-Reference Image Generation with Dynamic Reward Optimization](/202606/27/2606.26947v1-scaling-multi-reference-image-generation-with-dynamic-reward-optimization)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：多参考图像生成中的动态奖励优化
 
 ### 速读区论文标签
-1. [Automating Potential-based Reward Shaping with Vision Language Model Guidance](/202606/26/2606.27180v1-automating-potential-based-reward-shaping-with-vision-language-model-guidance)  
+1. [Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards](/202606/27/2606.27376v1-ask-solve-generate-self-evolving-unified-multimodal-understanding-and-generation-via-self-consistency-rewards)  
    标签：评分：6.0/10、query:image-gen-rl
-   evidence：自动化奖励塑形方法可迁移至图像生成任务
+   evidence：利用自一致性奖励进行统一图像生成与理解
 
 
 <div class="dpr-home-promo-card">

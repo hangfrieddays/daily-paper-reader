@@ -1,0 +1,103 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-27T20:45:01.841911+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.26947v1",
+      "source": "arxiv",
+      "title": "Scaling Multi-Reference Image Generation with Dynamic Reward Optimization",
+      "abstract": "While personalized image generation has achieved remarkable progress, multi-reference image generation (MRIG) remains a challenging task. Most existing benchmarks fail to adequately evaluate complex MRIG scenarios, hindering further progress in this area. To better assess model performance on complex MRIG tasks, we introduce OmniRef-Bench, a benchmark that covers complex combinations of reference image types and a large number of reference images. Evaluations on OmniRef-Bench show that mainstream open-source models struggle in complex MRIG scenarios, and their performance deteriorates significantly as the number of mixed-type reference images increases. To address this issue, we propose DyRef, a two-stage training framework. In the first stage, supervised fine-tuning equips the model with the basic capability to handle complex MRIG tasks. In the second stage, we introduce Difficulty-aware Advantage Reweighting (DAR) and Discriminative Reward Scaling (DRS). DAR dynamically adjusts the optimization objective to improve performance when handling a large number of mixed-type reference images. DRS enlarges intra-group reward differences for more effective policy optimization. Experiments demonstrate that DyRef significantly improves the performance of open-source models on OmniRef-Bench and single-image editing benchmarks, demonstrating the effectiveness and generalization capability of our approach.",
+      "authors": [
+        "Wenwang Huang",
+        "Yusen Fu",
+        "Junjie Wang",
+        "Mengfei Huang",
+        "Yulin Li",
+        "Gan Liu",
+        "Jing Cai",
+        "Yancheng He",
+        "Zhuotao Tian"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-06-25T12:21:13+00:00",
+      "link": "https://arxiv.org/pdf/2606.26947v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "dynamic reward optimization for multi-reference image generation",
+      "llm_evidence_cn": "多参考图像生成中的动态奖励优化",
+      "llm_evidence": "多参考图像生成中的动态奖励优化",
+      "canonical_evidence": "多参考图像生成中的动态奖励优化",
+      "llm_tldr_en": "Proposes DyRef, a two-stage training framework with dynamic reward optimization to scale multi-reference image generation, addressing performance degradation with many references.",
+      "llm_tldr_cn": "针对多参考图像生成中参考数量增加导致性能下降的问题，本文提出DyRef两阶段训练框架，通过动态奖励优化策略提升模型在复杂多参考场景下的生成质量。实验表明，DyRef能有效缓解现有开源模型在混合参考类型和大量参考图像时的退化现象，为个性化图像生成提供了可扩展的解决方案。",
+      "llm_tldr": "针对多参考图像生成中参考数量增加导致性能下降的问题，本文提出DyRef两阶段训练框架，通过动态奖励优化策略提升模型在复杂多参考场景下的生成质量。实验表明，DyRef能有效缓解现有开源模型在混合参考类型和大量参考图像时的退化现象，为个性化图像生成提供了可扩展的解决方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.27376v1",
+      "source": "arxiv",
+      "title": "Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards",
+      "abstract": "Most unified large multimodal models (LMMs) that support both visual understanding and image generation still rely on curated post-training supervision, such as human annotations, preference labels, or external reward models. We ask whether a unified LMM can improve both abilities autonomously using only unlabeled images. We propose a self-evolving training framework with three internal roles: a Proposer that generates visual questions, a Solver that answers and evaluates them, and a Generator that synthesizes images. Training uses only self-derived consistency signals, without human annotations, preference labels, or task-trained external reward/judge models. To stabilize learning, we introduce Solver Token Entropy (STE), a continuous difficulty signal based on token-level prediction uncertainty that remains useful even when sample-level consistency becomes unreliable. For image generation, we design a multi-scale internal evaluation scheme that combines question-answer fidelity scoring with cycle-consistent captioning. This creates a solver-mediated coupling, where better visual understanding enables more reliable generation assessment and stronger internal training signals. The framework preserves the same role decomposition, reward logic, and training schedule across diffusion-based BLIP3o, rectified-flow BAGEL, and autoregressive VARGPT-v1.1 architectures, requiring only each backbone's native prompting and generation interface. Across eight understanding metrics, our method consistently improves over the corresponding base models. On BAGEL, it achieves a $+3.5\\%$ absolute gain on MMMU and improves GenEval image generation performance from $82\\%$ to $85\\%$. Code and models are publicly released.",
+      "authors": [
+        "Ritesh Thawkar",
+        "Shravan Venkatraman",
+        "Omkar Thawakar",
+        "Abdelrahman Shaker",
+        "Fahad Khan",
+        "Hisham Cholakkal",
+        "Salman Khan",
+        "Rao Muhammad Anwer"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-25T17:59:57+00:00",
+      "link": "https://arxiv.org/pdf/2606.27376v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "self-consistency rewards for unified image generation and understanding",
+      "llm_evidence_cn": "利用自一致性奖励进行统一图像生成与理解",
+      "llm_evidence": "利用自一致性奖励进行统一图像生成与理解",
+      "canonical_evidence": "利用自一致性奖励进行统一图像生成与理解",
+      "llm_tldr_en": "Proposes a self-evolving framework with self-consistency rewards to improve both understanding and generation without human supervision.",
+      "llm_tldr_cn": "统一多模态大模型依赖人工标注或外部奖励模型进行后训练。本文提出自进化框架，通过自一致性奖励信号自主学习，无需人工参与。实验表明模型在理解和生成任务上均有提升。该工作探索了无监督自我奖励在图像生成中的应用潜力。",
+      "llm_tldr": "统一多模态大模型依赖人工标注或外部奖励模型进行后训练。本文提出自进化框架，通过自一致性奖励信号自主学习，无需人工参与。实验表明模型在理解和生成任务上均有提升。该工作探索了无监督自我奖励在图像生成中的应用潜力。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
