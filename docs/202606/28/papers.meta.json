@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-28",
+  "date": "2026-06-28",
+  "generated_at": "2026-06-28T21:06:12",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/28/2606.27376v1-ask-solve-generate-self-evolving-unified-multimodal-understanding-and-generation-via-self-consistency-rewards",
+      "section": "deep",
+      "title_en": "Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards",
+      "authors": "Ritesh Thawkar, Shravan Venkatraman, Omkar Thawakar, Abdelrahman Shaker, Fahad Khan, Hisham Cholakkal, Salman Khan, Rao Muhammad Anwer",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.27376v1",
+      "score": "9.0",
+      "evidence": "利用自一致性奖励训练生成器；强化学习用于图像生成",
+      "tldr": "现有统一多模态大模型仍需人工标注或外部奖励模型进行后训练。本文提出一种自进化框架，让模型仅利用无标注图像自主提升理解和生成能力。框架内设提议者、求解者和生成者三种角色，通过自一致性信号进行训练，并引入求解者令牌熵稳定学习。在多个主流架构上，该方法在八项理解指标上一致提升，生成性能也显著提高，实现了无需外部监督的自主进化。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Most unified large multimodal models (LMMs) that support both visual understanding and image generation still rely on curated post-training supervision, such as human annotations, preference labels, or external reward models. We ask whether a unified LMM can improve both abilities autonomously using only unlabeled images. We propose a self-evolving training framework with three internal roles: a Proposer that generates visual questions, a Solver that answers and evaluates them, and a Generator that synthesizes images. Training uses only self-derived consistency signals, without human annotations, preference labels, or task-trained external reward/judge models. To stabilize learning, we introduce Solver Token Entropy (STE), a continuous difficulty signal based on token-level prediction uncertainty that remains useful even when sample-level consistency becomes unreliable. For image generation, we design a multi-scale internal evaluation scheme that combines question-answer fidelity scoring with cycle-consistent captioning. This creates a solver-mediated coupling, where better visual understanding enables more reliable generation assessment and stronger internal training signals. The framework preserves the same role decomposition, reward logic, and training schedule across diffusion-based BLIP3o, rectified-flow BAGEL, and autoregressive VARGPT-v1.1 architectures, requiring only each backbone's native prompting and generation interface. Across eight understanding metrics, our method consistently improves over the corresponding base models. On BAGEL, it achieves a $+3.5\\%$ absolute gain on MMMU and improves GenEval image generation performance from $82\\%$ to $85\\%$. Code and models are publicly released.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/28/2606.23835v1-abacus-adapting-unified-foundation-model-for-bridging-image-count-understanding-and-generation",
+      "section": "deep",
+      "title_en": "ABACUS: Adapting Unified Foundation Model for Bridging Image Count Understanding and Generation",
+      "authors": "Anindya Mondal, Sauradip Nag, Anjan Dutta",
+      "date": "2026-06-22",
+      "pdf": "https://arxiv.org/pdf/2606.23835v1",
+      "score": "8.0",
+      "evidence": "使用GRPO(强化学习)进行忠实计数的图像生成",
+      "tldr": "现有模型在处理物体计数、人群计数等多种计数任务及计数保真图像生成时需专门训练，缺乏统一性。ABACUS基于3B参数统一基础模型，通过密度感知自适应缩放实现空间定位，利用GRPO边界感知策略消除裁剪误差，并引入循环一致GRPO让理解分支自我批评生成结果。在七个基准上达到SOTA，超越专用模型和更大通用模型，无需额外训练即实现计数理解与生成统一。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "ABACUS is a unified vision-language model that handles object counting, crowd counting, referring-expression counting, and count-faithful image generation without any benchmark-specific training required. Our model is built on existing 3B-parameter unified foundation model and is adapted for object localization tasks using three key innovations: density-aware adaptive zooming with objectness maps for spatial grounding; a boundary-aware count policy via GRPO to eliminate crop-boundary errors; and a cycle-consistent GRPO strategy where the understanding branch self-critiques generated outputs, closing the understanding-generation gap without any external annotations. ABACUS achieves state-of-the-art results across seven benchmarks, outperforming both task-specific specialists and larger generalist models.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

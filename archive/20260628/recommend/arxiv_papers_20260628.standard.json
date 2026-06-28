@@ -1,0 +1,95 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-28T21:04:57.202162+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.27376v1",
+      "source": "arxiv",
+      "title": "Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards",
+      "abstract": "Most unified large multimodal models (LMMs) that support both visual understanding and image generation still rely on curated post-training supervision, such as human annotations, preference labels, or external reward models. We ask whether a unified LMM can improve both abilities autonomously using only unlabeled images. We propose a self-evolving training framework with three internal roles: a Proposer that generates visual questions, a Solver that answers and evaluates them, and a Generator that synthesizes images. Training uses only self-derived consistency signals, without human annotations, preference labels, or task-trained external reward/judge models. To stabilize learning, we introduce Solver Token Entropy (STE), a continuous difficulty signal based on token-level prediction uncertainty that remains useful even when sample-level consistency becomes unreliable. For image generation, we design a multi-scale internal evaluation scheme that combines question-answer fidelity scoring with cycle-consistent captioning. This creates a solver-mediated coupling, where better visual understanding enables more reliable generation assessment and stronger internal training signals. The framework preserves the same role decomposition, reward logic, and training schedule across diffusion-based BLIP3o, rectified-flow BAGEL, and autoregressive VARGPT-v1.1 architectures, requiring only each backbone's native prompting and generation interface. Across eight understanding metrics, our method consistently improves over the corresponding base models. On BAGEL, it achieves a $+3.5\\%$ absolute gain on MMMU and improves GenEval image generation performance from $82\\%$ to $85\\%$. Code and models are publicly released.",
+      "authors": [
+        "Ritesh Thawkar",
+        "Shravan Venkatraman",
+        "Omkar Thawakar",
+        "Abdelrahman Shaker",
+        "Fahad Khan",
+        "Hisham Cholakkal",
+        "Salman Khan",
+        "Rao Muhammad Anwer"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-25T17:59:57+00:00",
+      "link": "https://arxiv.org/pdf/2606.27376v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "self-consistency rewards for training a generator; reinforcement learning for image generation",
+      "llm_evidence_cn": "利用自一致性奖励训练生成器；强化学习用于图像生成",
+      "llm_evidence": "利用自一致性奖励训练生成器；强化学习用于图像生成",
+      "canonical_evidence": "利用自一致性奖励训练生成器；强化学习用于图像生成",
+      "llm_tldr_en": "A self-evolving framework for unified multimodal understanding and generation uses self-consistency rewards to train a Proposer-Solver-Generator loop without human annotations or external reward models.",
+      "llm_tldr_cn": "当前统一多模态模型依赖人工标注或外部奖励，本文提出一个自进化框架，包含提议者、求解者和生成者三个角色，仅使用自一致性信号作为奖励来提升理解和生成能力。实验表明，该方法无需任何外部监督即可实现性能提升，为多模态模型的自主进化提供了新思路。",
+      "llm_tldr": "当前统一多模态模型依赖人工标注或外部奖励，本文提出一个自进化框架，包含提议者、求解者和生成者三个角色，仅使用自一致性信号作为奖励来提升理解和生成能力。实验表明，该方法无需任何外部监督即可实现性能提升，为多模态模型的自主进化提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.23835v1",
+      "source": "arxiv",
+      "title": "ABACUS: Adapting Unified Foundation Model for Bridging Image Count Understanding and Generation",
+      "abstract": "ABACUS is a unified vision-language model that handles object counting, crowd counting, referring-expression counting, and count-faithful image generation without any benchmark-specific training required. Our model is built on existing 3B-parameter unified foundation model and is adapted for object localization tasks using three key innovations: density-aware adaptive zooming with objectness maps for spatial grounding; a boundary-aware count policy via GRPO to eliminate crop-boundary errors; and a cycle-consistent GRPO strategy where the understanding branch self-critiques generated outputs, closing the understanding-generation gap without any external annotations. ABACUS achieves state-of-the-art results across seven benchmarks, outperforming both task-specific specialists and larger generalist models.",
+      "authors": [
+        "Anindya Mondal",
+        "Sauradip Nag",
+        "Anjan Dutta"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "eess.IV"
+      ],
+      "published": "2026-06-22T18:16:31+00:00",
+      "link": "https://arxiv.org/pdf/2606.23835v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses GRPO (reinforcement learning) for count-faithful image generation",
+      "llm_evidence_cn": "使用GRPO(强化学习)进行忠实计数的图像生成",
+      "llm_evidence": "使用GRPO(强化学习)进行忠实计数的图像生成",
+      "canonical_evidence": "使用GRPO(强化学习)进行忠实计数的图像生成",
+      "llm_tldr_en": "ABACUS is a unified model that uses GRPO to achieve state-of-the-art count-faithful image generation without external annotations.",
+      "llm_tldr_cn": "ABACUS是一个统一的视觉语言模型，可处理多种计数任务和计数忠实的图像生成。针对现有方法在边界处计数错误的问题，提出基于GRPO的边界感知计数策略和循环一致性GRPO策略，使理解分支自我批评生成输出。在七个基准上达到最优结果，展示了强化学习在计数生成中的有效性。",
+      "llm_tldr": "ABACUS是一个统一的视觉语言模型，可处理多种计数任务和计数忠实的图像生成。针对现有方法在边界处计数错误的问题，提出基于GRPO的边界感知计数策略和循环一致性GRPO策略，使理解分支自我批评生成输出。在七个基准上达到最优结果，展示了强化学习在计数生成中的有效性。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

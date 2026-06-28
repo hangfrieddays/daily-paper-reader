@@ -6,28 +6,27 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-27
-- 运行时间：2026-06-27 20:48:48 UTC
+- 最新运行日期：2026-06-28
+- 运行时间：2026-06-28 21:06:05 UTC
 - 运行状态：成功
 - 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 精读区：2
+- 速读区：0
 
 ### 今日简报（AI）
-今天精读了一篇多参考图像生成的动态奖励优化研究（8.0分），速读了一篇基于自一致性奖励的统一多模态理解与生成论文（6.0分）。  
-最值得关注的方向是动态奖励优化，能显著提升多参考图像生成的一致性与质量。  
-建议普通读者可尝试将动态奖励机制引入自己的图像生成任务，尤其适用于多条件输入场景。
-- 详情：[/202606/27/README](/202606/27/README)
+今日精读两篇关于多模态理解与生成统一框架的高分论文。自我一致性奖励驱动的自进化机制、以及图计数理解与生成的自适应桥接方法值得重点研究。建议后续关注多模态大模型在统一理解与生成中的自监督信号设计及领域适配策略。
+- 详情：[/202606/28/README](/202606/28/README)
 
 ### 精读区论文标签
-1. [Scaling Multi-Reference Image Generation with Dynamic Reward Optimization](/202606/27/2606.26947v1-scaling-multi-reference-image-generation-with-dynamic-reward-optimization)  
+1. [Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards](/202606/28/2606.27376v1-ask-solve-generate-self-evolving-unified-multimodal-understanding-and-generation-via-self-consistency-rewards)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：利用自一致性奖励训练生成器；强化学习用于图像生成
+2. [ABACUS: Adapting Unified Foundation Model for Bridging Image Count Understanding and Generation](/202606/28/2606.23835v1-abacus-adapting-unified-foundation-model-for-bridging-image-count-understanding-and-generation)  
    标签：评分：8.0/10、query:image-gen-rl
-   evidence：多参考图像生成中的动态奖励优化
+   evidence：使用GRPO(强化学习)进行忠实计数的图像生成
 
 ### 速读区论文标签
-1. [Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards](/202606/27/2606.27376v1-ask-solve-generate-self-evolving-unified-multimodal-understanding-and-generation-via-self-consistency-rewards)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：利用自一致性奖励进行统一图像生成与理解
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
