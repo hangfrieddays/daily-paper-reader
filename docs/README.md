@@ -6,24 +6,30 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-28
-- 运行时间：2026-06-28 21:06:05 UTC
+- 最新运行日期：2026-06-29
+- 运行时间：2026-06-29 21:19:18 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：2
+- 本次总论文数：4
+- 精读区：4
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读两篇关于多模态理解与生成统一框架的高分论文。自我一致性奖励驱动的自进化机制、以及图计数理解与生成的自适应桥接方法值得重点研究。建议后续关注多模态大模型在统一理解与生成中的自监督信号设计及领域适配策略。
-- 详情：[/202606/28/README](/202606/28/README)
+今日精读两篇高评分视觉论文，聚焦图像生成与编辑的强化学习创新。最值得看：Qwen-Image-2.0-RL在图像生成中引入强化学习（满分），以及SpatialFlow-GRPO通过空间信用分配提升图像编辑精度。建议优先阅读Qwen-Image-2.0-RL，理解多模态大模型与RL结合的前沿范式。
+- 详情：[/202606/29/README](/202606/29/README)
 
 ### 精读区论文标签
-1. [Ask, Solve, Generate: Self-Evolving Unified Multimodal Understanding and Generation via Self-Consistency Rewards](/202606/28/2606.27376v1-ask-solve-generate-self-evolving-unified-multimodal-understanding-and-generation-via-self-consistency-rewards)  
+1. [Qwen-Image-2.0-RL Technical Report](/202606/29/2606.27608v1-qwen-image-20-rl-technical-report)  
+   标签：评分：10.0/10、query:image-gen-rl
+   evidence：Qwen-Image-2.0-RL使用强化学习从人类反馈和在线策略蒸馏，结合奖励模型提升图像生成质量和指令遵循
+2. [SpatialFlow-GRPO: Where Spatial Credit Drives Image Editing](/202606/29/2606.26872v2-spatialflow-grpo-where-spatial-credit-drives-image-editing)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：利用自一致性奖励训练生成器；强化学习用于图像生成
-2. [ABACUS: Adapting Unified Foundation Model for Bridging Image Count Understanding and Generation](/202606/28/2606.23835v1-abacus-adapting-unified-foundation-model-for-bridging-image-count-understanding-and-generation)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：使用GRPO(强化学习)进行忠实计数的图像生成
+   evidence：使用在线强化学习为图像编辑提供空间细粒度奖励
+3. [NormGuard: Reward-Preserving Norm Constraints in Flow-Matching Reinforcement Learning](/202606/29/2606.27771v1-normguard-reward-preserving-norm-constraints-in-flow-matching-reinforcement-learning)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：针对流式图像生成器的RL后训练，提出范数约束
+4. [TempAct: Advancing Temporal Plausibility in Autoregressive Video Generation via Planner-Executor RL](/202606/29/2606.28016v1-tempact-advancing-temporal-plausibility-in-autoregressive-video-generation-via-planner-executor-rl)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：TempAct采用规划器-执行器强化学习提升自回归视频生成的时间合理性
 
 ### 速读区论文标签
 - 本次无速读推荐。

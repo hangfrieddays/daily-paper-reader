@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-29",
+  "date": "2026-06-29",
+  "generated_at": "2026-06-29T21:19:27",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/29/2606.27608v1-qwen-image-20-rl-technical-report",
+      "section": "deep",
+      "title_en": "Qwen-Image-2.0-RL Technical Report",
+      "authors": "Yixian Xu, Kaiyuan Gao, Yuxiang Chen, Yilei Chen, Zecheng Tang, Zihao Liu, Zikai Zhou, Deqing Li, Hao Meng, Kuan Cao, Jiahao Li, Jie Zhang, Liang Peng, Lihan Jiang, Ningyuan Tang, Shengming Yin, Tianhe Wu, Xiaoyue Chen, Yan Shu, Yanran Zhang, Yi Wang, Yu Wu, Yujia Wu, Zekai Zhang, Zhendong Wang, Xiao Xu, Kun Yan, Chenfei Wu",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.27608v1",
+      "score": "10.0",
+      "evidence": "Qwen-Image-2.0-RL使用强化学习从人类反馈和在线策略蒸馏，结合奖励模型提升图像生成质量和指令遵循",
+      "tldr": "针对扩散模型Qwen-Image-2.0在视觉质量和指令遵循上的不足，提出基于强化学习与on-policy蒸馏的后训练流程。通过构建覆盖对齐、美学等维度的复合奖励模型，采用GRPO框架并引入混合CFG与奖励校准实现稳定训练，最后用on-policy蒸馏合并文本到图像与图像编辑策略。在Qwen-Image-Bench上总分达57.84，T2I与编辑ELO分别提升78和93分，显著改善了美学、提示遵循和编辑准确性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We present Qwen-Image-2.0-RL, a post-training pipeline that applies reinforcement learning from human feedback (RLHF) and on-policy distillation (OPD) to improve both the visual quality and instruction-following capability of the Qwen-Image-2.0 diffusion model. To provide reliable reward signals, we construct task-specific composite reward models by fine-tuning vision-language models with a pointwise scoring paradigm and chain-of-thought reasoning. For text-to-image generation, the reward models cover alignment, aesthetics, and portrait fidelity dimensions. For image editing tasks, the reward system addresses instruction-following accuracy and face identity preservation. Building on this reward system, we develop a scalable GRPO-based RL training framework, incorporating a hybrid classifier-free guidance (CFG) strategy to preserve pre-trained knowledge, prompt curation via intra-group reward range filtering, and per-category reward weight calibration. To merge the task-specialized RL policies for T2I and editing, we propose on-policy distillation as the final training stage, which consolidates multiple teachers into a single student model through trajectory-level velocity matching. Extensive evaluation shows that Qwen-Image-2.0-RL achieves 57.84 overall score on Qwen-Image-Bench (+2.61 over the base model), Elo ratings of 1193 in text-to-image arena (+78) and 1349 in image edit arena (+93), demonstrating consistent gains in aesthetic quality, prompt adherence, and editing accuracy.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/29/2606.26872v2-spatialflow-grpo-where-spatial-credit-drives-image-editing",
+      "section": "deep",
+      "title_en": "SpatialFlow-GRPO: Where Spatial Credit Drives Image Editing",
+      "authors": "Yankai Yang, Yancheng Long, Wei Chen, Xingyu Lu, Hongyang Wei, Bin Wen, Fan Yang, Tingting Gao, Han Li, Shuo Yang",
+      "date": "2026-06-25",
+      "pdf": "https://arxiv.org/pdf/2606.26872v2",
+      "score": "9.0",
+      "evidence": "使用在线强化学习为图像编辑提供空间细粒度奖励",
+      "tldr": "现有Flow-GRPO方法因使用整图奖励而难以进行细粒度编辑优化，关键在于空间均匀性假设。本文提出SpatialFlow-GRPO，将区域感知奖励转化为语义区域级优化信号，并在策略更新时对齐区域优势与对应潜在位置。还训练了SFReward奖励模型并构建MultiEditBench基准。在OmniGen2和FLUX.2上，该方法在GEdit-Bench、ImgEdit-Bench和MultiEditBench上均优于Flow-GRPO。空间细粒度奖励显著提升了图像编辑质量。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Recent online reinforcement learning has substantially improved image editing quality. However, existing Flow-GRPO-style methods usually rely on a single whole-image reward, which makes fine-grained editing optimization difficult. We observe that a key obstacle in image editing is this spatial uniformity assumption: a whole-image reward cannot distinguish how different spatial regions contribute to image quality. To address this issue, we propose SpatialFlow-GRPO, a training framework that introduces spatially fine-grained reward feedback. The framework converts region-aware rewards into semantic-region-level optimization signals and aligns region advantages with the corresponding latent positions during policy updates. We also train a region-aware reward model, SFReward, construct SFReward-14K with region-annotated editing samples, and introduce MultiEditBench to evaluate multi-region editing ability. On OmniGen2 and FLUX.2-klein-4B, SpatialFlow-GRPO outperforms Flow-GRPO on GEdit-Bench, ImgEdit-Bench, and MultiEditBench. The results show that SpatialFlow-GRPO converts local feedback into spatially aligned update signals and improves editing quality.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/29/2606.27771v1-normguard-reward-preserving-norm-constraints-in-flow-matching-reinforcement-learning",
+      "section": "deep",
+      "title_en": "NormGuard: Reward-Preserving Norm Constraints in Flow-Matching Reinforcement Learning",
+      "authors": "Tianlin Pan, Lianyu Pang, Cheng Da, Huan Yang, Changqian Yu, Kun Gai, Wenhan Luo",
+      "date": "2026-06-26",
+      "pdf": "https://arxiv.org/pdf/2606.27771v1",
+      "score": "9.0",
+      "evidence": "针对流式图像生成器的RL后训练，提出范数约束",
+      "tldr": "基于流的生成模型经强化学习后训练后，感知质量下降源于速度范数膨胀5-15%。现有推理时重缩放对RL无效，因为膨胀已嵌入权重且无奖励信号。本文提出NormGuard，在训练时对速度范数施加铰链惩罚，仅当超出参考值时激活。在多个基模型、后训练方法和奖励代理下，NormGuard一致提升MLLM评定的图像质量与真实感，同时保持奖励，且少步推理下增益放大，不可由早停解释。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning (RL) post-training improves the reward alignment of flow-based generators, but often degrades perceptual quality in ways that are not captured by the reward proxy. We identify a simple structural signature of this drift: across three post-training methods (NFT, AWM, DPO), RL fine-tuning inflates the per-step velocity norm $\\|v_θ\\|$ by $5\\%$ to $15\\%$ relative to the reference. A form of norm inflation has been studied in classifier-free guidance (CFG), where rescaling the velocity back to a reference norm at inference time can mitigate the resulting artifacts. However, this inference-time correction does not transfer cleanly to RL: rescaling $v_θ$ to match $\\|v_{\\text{ref}}\\|$ at inference time neither improves reward nor fixes the quality degradation, because the inflation is co-adapted into the model weights. Furthermore, an adjoint sensitivity analysis shows that velocity magnitude rescaling carries no coherent first-order reward signal at the batch level, indicating that suppressing norm inflation is unlikely to remove a consistently reward-carrying component. Since inference-time renormalization fails while norm suppression carries no reward cost, training-time intervention is the appropriate strategy. Together, these findings motivate \\methodname, a hinge penalty that activates only when $\\|v_θ\\|$ exceeds $\\|v_{\\text{ref}}\\|$ and composes additively with any velocity-local base loss. Across two base models, three post-training methods, and two reward proxies, \\methodname consistently improves MLLM-judged image quality and forensic realism while preserving reward, with gains that amplify under few-step inference and are not explained by early stopping.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/29/2606.28016v1-tempact-advancing-temporal-plausibility-in-autoregressive-video-generation-via-planner-executor-rl",
+      "section": "deep",
+      "title_en": "TempAct: Advancing Temporal Plausibility in Autoregressive Video Generation via Planner-Executor RL",
+      "authors": "Jing Wang, Xiangxin Zhou, Jiajun Liang, Kaiqi Liu, Wanyun Pang, Zhenyu Xie, Tianyu Pang, Xiaodan Liang",
+      "date": "2026-06-26",
+      "pdf": "https://arxiv.org/pdf/2606.28016v1",
+      "score": "9.0",
+      "evidence": "TempAct采用规划器-执行器强化学习提升自回归视频生成的时间合理性",
+      "tldr": "自回归视频扩散模型逐块生成视频，但全局提示导致时序指令模糊，逐步提示则引起延迟反应和语义混合。TempAct提出规划器-执行器强化学习框架：LLM规划器探索可执行的跨度感知步骤提示，自回归扩散执行器在自身生成历史下遵循提示。层次组探索机制实现规划级和执行级信用分配，结合分层奖励优化时序一致性。实验显著提升时序合理性并保持视觉质量。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Autoregressive (AR) video diffusion models enable low-latency streaming generation by synthesizing videos chunk by chunk with cached visual context, but this chunk-wise formulation makes temporal instruction following ambiguous. A single global prompt does not specify which sub-event should be realized in each chunk, while naively switching to step-wise prompts often leads to delayed reactions, blended step semantics, and error propagation across prompt transitions. These failures are difficult to address with supervised fine-tuning or distillation alone: SFT suffers from exposure bias, while rollout-based distillation still optimizes low-level denoising or teacher-distribution matching rather than directly enforcing action ordering and prompt-transition correctness. We address these challenges with TempAct, a planner--executor reinforcement learning framework that jointly optimizes temporal decomposition and step-conditioned execution for temporally plausible AR video generation. TempAct uses an LLM planner to explore span-aware step prompts that are executable by the video model, and trains an AR diffusion executor to follow these prompts under its own generated histories. Its key mechanism is hierarchical group exploration: candidate plans form planning groups, and each plan induces an execution group of multiple continuations from a shared visual context, enabling plan-level credit assignment for long-horizon temporal outcomes and executor-level credit assignment for prompt-switch behavior. We further design hierarchical rewards that combine plan-quality and full-video temporal feedback for the planner with local transition-level step-following rewards, aesthetic regularization, and KL constraints for the executor. Experiments on Self-Forcing and LongLive show that TempAct improves temporal consistency while preserving overall visual quality.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
