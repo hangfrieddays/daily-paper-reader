@@ -1,0 +1,137 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-30T21:19:08.512899+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2606.28301v1",
+      "source": "arxiv",
+      "title": "VGB for Masked Diffusion Model: Efficient Test-time Scaling for Reward Satisfaction and Sample Editing",
+      "abstract": "Inference-time scaling is a promising paradigm to improve generative models, especially when outputs must satisfy structural constraints or optimize downstream rewards. We consider Masked Diffusion Model (MDM) and introduce MDM-VGB, a discrete diffusion sampler that augments unmasking generation with theoretically principled reward-guided remasking. Inspired by the recent success of the classical Jerrum-Sinclair backtracking Markov chain in reward-tilted generation, MDM-VGB extends the backtracking random walk from a fixed prefix tree to a masked-state graph, allowing tokens to be unmasked and remasked at arbitrary positions. The resulting sampler favors unmasking and remasking moves that lead to higher-value partial configurations, enabling both effective high-reward generation and efficient repair of low-reward samples. We prove that MDM-VGB is robust to process-verifier noise and achieves quadratic complexity, while popular test-time heuristics such as best-of-$N$ can incur exponential complexity due to error accumulation. Our theoretical findings are corroborated by strong empirical performance, particularly on popular constraint-satisfaction and scientific benchmarks such as Sudoku and QM9.",
+      "authors": [
+        "Kijung Jeon",
+        "Thuy-Duong Vuong",
+        "Molei Tao"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.DS",
+        "math.NA",
+        "math.PR",
+        "stat.ML"
+      ],
+      "published": "2026-06-26T17:47:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.28301v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reward-guided remasking for masked diffusion model in image generation",
+      "llm_evidence_cn": "用奖励指导的掩码扩散模型进行图像生成",
+      "llm_evidence": "用奖励指导的掩码扩散模型进行图像生成",
+      "canonical_evidence": "用奖励指导的掩码扩散模型进行图像生成",
+      "llm_tldr_en": "This paper introduces MDM-VGB, a reward-guided discrete diffusion sampler for masked diffusion models, enabling test-time scaling to satisfy downstream rewards in image generation.",
+      "llm_tldr_cn": "该文针对掩码扩散模型在图像生成中如何满足奖励约束的问题，提出了MDM-VGB采样器，通过理论上合理的奖励指导反掩码机制，在生成过程中偏向高奖励的部分，实现了推理时缩放。实验表明该方法在满足结构约束和优化奖励方面效果显著，为将强化学习思想融入扩散模型提供了新途径。",
+      "llm_tldr": "该文针对掩码扩散模型在图像生成中如何满足奖励约束的问题，提出了MDM-VGB采样器，通过理论上合理的奖励指导反掩码机制，在生成过程中偏向高奖励的部分，实现了推理时缩放。实验表明该方法在满足结构约束和优化奖励方面效果显著，为将强化学习思想融入扩散模型提供了新途径。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.30376v1",
+      "source": "arxiv",
+      "title": "FlowAWR: Online Adaptive Flow Reinforcement via Advantage-Weighted Rectification",
+      "abstract": "Aligning generative flow models on continuous spaces via online reinforcement learning is constrained by intractable trajectory likelihoods. Existing density-approximated policy gradient methods rely on stochastic SDE samplers to construct tractable transition kernels, which introduce training-inference inconsistencies and necessitates Classifier-Free Guidance (CFG).   While implicit frameworks such as DiffusionNFT directly optimize forward-process velocity fields, its heuristic fixed-magnitude corrections prevent optimization strength from relative intra-group quality.   We propose \\textit{Flow Advantage-Weighted Rectification} (\\textbf{FlowAWR}), a paradigm that recasts continuous generative policy optimization as supervised regression toward a theoretically optimal velocity field.   Starting from the optimal policy of a KL-constrained reward maximization, FlowAWR derives the optimal velocity field that admits a magnitude-aware, advantage-weighted rectification form, yielding SDE-free optimization and CFG-free generation.   In comparative evaluations on SD3.5-Medium, FlowAWR achieves improved alignment performance alongside a 2$\\times$ to 5$\\times$ convergence acceleration over DiffusionNFT (e.g., reaching a 24.12 PickScore in 1.2k steps, versus 23.82 in 2.0k steps for DiffusionNFT and 23.50 in $>$4k steps for FlowGRPO). Under multi-reward constraints, FlowAWR sustains generation quality, satisfying structural rules while maintaining stable out-of-domain performance.",
+      "authors": [
+        "Zheming Fu",
+        "Ruizhe He",
+        "Wei Shang",
+        "Xiaoxiao Ma",
+        "Lei Wang",
+        "Chang Liu",
+        "Siming Fu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-06-29T14:37:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.30376v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "online reinforcement learning for flow-based generative models",
+      "llm_evidence_cn": "基于流的生成模型的在线强化学习",
+      "llm_evidence": "基于流的生成模型的在线强化学习",
+      "canonical_evidence": "基于流的生成模型的在线强化学习",
+      "llm_tldr_en": "FlowAWR recasts continuous generative policy optimization as supervised regression via advantage-weighted rectification, aligning flow models consistently without CFG.",
+      "llm_tldr_cn": "现有对齐生成流模型的在线强化学习方法面临轨迹似然不可计算和训练-推理不一致的问题。FlowAWR提出优势加权修正范式，将连续生成策略优化转化为有监督回归，消除了对无分类器指导的依赖。实验表明该方法在图像生成对齐任务上实现了更稳定且高质量的结果，为流模型与强化学习结合提供了新思路。",
+      "llm_tldr": "现有对齐生成流模型的在线强化学习方法面临轨迹似然不可计算和训练-推理不一致的问题。FlowAWR提出优势加权修正范式，将连续生成策略优化转化为有监督回归，消除了对无分类器指导的依赖。实验表明该方法在图像生成对齐任务上实现了更稳定且高质量的结果，为流模型与强化学习结合提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.30414v1",
+      "source": "arxiv",
+      "title": "Diffusion Fine-tuning with Rewarded Moment Matching Distillation",
+      "abstract": "Distillation and Reinforcement Learning (RL) fine-tuning are the primary pillars of diffusion post-training. While traditionally studied in isolation, the interaction between these phases remains poorly understood, and in particular how fine-tuning impacts the generative quality of distilled models. We introduce Rewarded Moment Matching Distillation (RMMD), a novel framework that simultaneously distills diffusion models and maximizes a reward function. RMMD preserves the high-fidelity ``naturalness'' characteristic of advanced distillation (such as 8-step Moment Matching) by adapting the sampling loop for on-policy training and repurposing the distillation loss as a proxy for integral KL regularization. By evaluating the FID-Reward Pareto fronts on ImageNet, we demonstrate that RMMD achieves superior trade-offs compared to single-step baselines (DI++) and multi-step competitors (DRaFT, HyperNoise). Finally, we apply RMMD to GenCast, a state-of-the-art weather forecasting model, to distill it while optimizing the Continuous Ranked Probability Score (CRPS) metric. The resulting distilled model achieves a 7.5x speedup while outperforming the teacher model on 93% of target weather variables, and being better calibrated. This proves that RMMD scales to complex, high-dimensional scientific domains.",
+      "authors": [
+        "Alexis Jacq",
+        "Guillaume Couairon",
+        "Valentin De Bortoli",
+        "Quentin Berthet",
+        "Arnaud Doucet",
+        "Romuald Elie"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-29T15:00:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.30414v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion fine-tuning with RL reward maximization",
+      "llm_evidence_cn": "扩散模型微调结合强化学习奖励最大化",
+      "llm_evidence": "扩散模型微调结合强化学习奖励最大化",
+      "canonical_evidence": "扩散模型微调结合强化学习奖励最大化",
+      "llm_tldr_en": "RMMD simultaneously distills and fine-tunes diffusion models with RL rewards, improving Pareto frontier of FID and reward.",
+      "llm_tldr_cn": "针对扩散模型蒸馏与RL微调隔离问题，本文提出奖励矩匹配蒸馏（RMMD），同时优化生成质量和奖励。该方法将蒸馏损失转化为KL正则化，在图像生成任务上实现了更好的FID-奖励帕累托前沿。",
+      "llm_tldr": "针对扩散模型蒸馏与RL微调隔离问题，本文提出奖励矩匹配蒸馏（RMMD），同时优化生成质量和奖励。该方法将蒸馏损失转化为KL正则化，在图像生成任务上实现了更好的FID-奖励帕累托前沿。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

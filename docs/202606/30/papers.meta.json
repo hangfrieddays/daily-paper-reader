@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-30",
+  "date": "2026-06-30",
+  "generated_at": "2026-06-30T21:23:31",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/30/2606.28301v1-vgb-for-masked-diffusion-model-efficient-test-time-scaling-for-reward-satisfaction-and-sample-editing",
+      "section": "deep",
+      "title_en": "VGB for Masked Diffusion Model: Efficient Test-time Scaling for Reward Satisfaction and Sample Editing",
+      "authors": "Kijung Jeon, Thuy-Duong Vuong, Molei Tao",
+      "date": "2026-06-26",
+      "pdf": "https://arxiv.org/pdf/2606.28301v1",
+      "score": "9.0",
+      "evidence": "用奖励指导的掩码扩散模型进行图像生成",
+      "tldr": "掩码扩散模型在推理时需满足结构约束或优化奖励，现有方法如best-of-N因误差累积导致指数复杂度。本文提出MDM-VGB离散扩散采样器，将经典Jerrum-Sinclair回溯链扩展到遮罩状态图，允许任意位置解遮罩和重遮罩，并通过奖励引导重遮罩。理论证明算法对验证器噪声鲁棒且复杂度为二次，在数独和QM9等基准上取得强性能，实现了高效高奖励生成和低奖励样本修复。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Inference-time scaling is a promising paradigm to improve generative models, especially when outputs must satisfy structural constraints or optimize downstream rewards. We consider Masked Diffusion Model (MDM) and introduce MDM-VGB, a discrete diffusion sampler that augments unmasking generation with theoretically principled reward-guided remasking. Inspired by the recent success of the classical Jerrum-Sinclair backtracking Markov chain in reward-tilted generation, MDM-VGB extends the backtracking random walk from a fixed prefix tree to a masked-state graph, allowing tokens to be unmasked and remasked at arbitrary positions. The resulting sampler favors unmasking and remasking moves that lead to higher-value partial configurations, enabling both effective high-reward generation and efficient repair of low-reward samples. We prove that MDM-VGB is robust to process-verifier noise and achieves quadratic complexity, while popular test-time heuristics such as best-of-$N$ can incur exponential complexity due to error accumulation. Our theoretical findings are corroborated by strong empirical performance, particularly on popular constraint-satisfaction and scientific benchmarks such as Sudoku and QM9.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/30/2606.30376v1-flowawr-online-adaptive-flow-reinforcement-via-advantage-weighted-rectification",
+      "section": "deep",
+      "title_en": "FlowAWR: Online Adaptive Flow Reinforcement via Advantage-Weighted Rectification",
+      "authors": "Zheming Fu, Ruizhe He, Wei Shang, Xiaoxiao Ma, Lei Wang, Chang Liu, Siming Fu",
+      "date": "2026-06-29",
+      "pdf": "https://arxiv.org/pdf/2606.30376v1",
+      "score": "9.0",
+      "evidence": "基于流的生成模型的在线强化学习",
+      "tldr": "针对连续空间流模型在线强化学习中的轨迹似然难处理问题，现有方法依赖SDE采样器导致训练-推理不一致或采用固定幅度修正。本文提出FlowAWR，将策略优化转化为向理论最优速度场的优势加权回归，无需SDE和CFG。在SD3.5-Medium上，FlowAWR在1.2k步达到24.12 PickScore，比DiffusionNFT收敛快2-5倍，且多奖励约束下保持生成质量。该方法为在线流对齐提供了高效、稳定的新范式。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Aligning generative flow models on continuous spaces via online reinforcement learning is constrained by intractable trajectory likelihoods. Existing density-approximated policy gradient methods rely on stochastic SDE samplers to construct tractable transition kernels, which introduce training-inference inconsistencies and necessitates Classifier-Free Guidance (CFG).   While implicit frameworks such as DiffusionNFT directly optimize forward-process velocity fields, its heuristic fixed-magnitude corrections prevent optimization strength from relative intra-group quality.   We propose \\textit{Flow Advantage-Weighted Rectification} (\\textbf{FlowAWR}), a paradigm that recasts continuous generative policy optimization as supervised regression toward a theoretically optimal velocity field.   Starting from the optimal policy of a KL-constrained reward maximization, FlowAWR derives the optimal velocity field that admits a magnitude-aware, advantage-weighted rectification form, yielding SDE-free optimization and CFG-free generation.   In comparative evaluations on SD3.5-Medium, FlowAWR achieves improved alignment performance alongside a 2$\\times$ to 5$\\times$ convergence acceleration over DiffusionNFT (e.g., reaching a 24.12 PickScore in 1.2k steps, versus 23.82 in 2.0k steps for DiffusionNFT and 23.50 in $>$4k steps for FlowGRPO). Under multi-reward constraints, FlowAWR sustains generation quality, satisfying structural rules while maintaining stable out-of-domain performance.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/30/2606.30414v1-diffusion-fine-tuning-with-rewarded-moment-matching-distillation",
+      "section": "deep",
+      "title_en": "Diffusion Fine-tuning with Rewarded Moment Matching Distillation",
+      "authors": "Alexis Jacq, Guillaume Couairon, Valentin De Bortoli, Quentin Berthet, Arnaud Doucet, Romuald Elie",
+      "date": "2026-06-29",
+      "pdf": "https://arxiv.org/pdf/2606.30414v1",
+      "score": "8.0",
+      "evidence": "扩散模型微调结合强化学习奖励最大化",
+      "tldr": "扩散模型后训练中蒸馏和强化学习微调通常被分开研究，二者交互机制不明确。提出Rewarded Moment Matching Distillation (RMMD)框架，同时进行蒸馏和奖励最大化，通过在线策略采样并重用蒸馏损失作为KL正则化，保持Moment Matching的高保真自然性。在ImageNet上获得更优的FID-奖励Pareto前沿，优于单步和多步基线。在天气预报模型GenCast上实现7.5倍加速，93%目标变量超越教师模型且校准更好。证明RMMD可扩展到复杂高维科学领域。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Distillation and Reinforcement Learning (RL) fine-tuning are the primary pillars of diffusion post-training. While traditionally studied in isolation, the interaction between these phases remains poorly understood, and in particular how fine-tuning impacts the generative quality of distilled models. We introduce Rewarded Moment Matching Distillation (RMMD), a novel framework that simultaneously distills diffusion models and maximizes a reward function. RMMD preserves the high-fidelity ``naturalness'' characteristic of advanced distillation (such as 8-step Moment Matching) by adapting the sampling loop for on-policy training and repurposing the distillation loss as a proxy for integral KL regularization. By evaluating the FID-Reward Pareto fronts on ImageNet, we demonstrate that RMMD achieves superior trade-offs compared to single-step baselines (DI++) and multi-step competitors (DRaFT, HyperNoise). Finally, we apply RMMD to GenCast, a state-of-the-art weather forecasting model, to distill it while optimizing the Continuous Ranked Probability Score (CRPS) metric. The resulting distilled model achieves a 7.5x speedup while outperforming the teacher model on 93% of target weather variables, and being better calibrated. This proves that RMMD scales to complex, high-dimensional scientific domains.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
