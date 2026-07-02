@@ -6,22 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-01
-- 运行时间：2026-07-01 21:36:45 UTC
+- 最新运行日期：2026-07-02
+- 运行时间：2026-07-02 21:09:56 UTC
 - 运行状态：成功
-- 本次总论文数：0
-- 精读区：0
-- 速读区：0
+- 本次总论文数：2
+- 精读区：1
+- 速读区：1
 
 ### 今日简报（AI）
-> 今日无新推荐，系统未产出可展示论文。
-- 详情：[/202607/01/README](/202607/01/README)
+今日精读一篇《Flow-Map GRPO》并速读一篇《VLM-AR3L》，聚焦强化学习在生成模型与奖励对齐中的应用。最值得关注的是9.0分的《Flow-Map GRPO》，其通过锚定随机组合实现少步流图生成器的强化学习。建议普通读者后续关注流图生成与基于视觉语言模型的奖励设计技术。
+- 详情：[/202607/02/README](/202607/02/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Flow-Map GRPO: Reinforcement Learning for Few-Step Flow-Map Generators via Anchored Stochastic Composition](/202607/02/2607.00535v1-flow-map-grpo-reinforcement-learning-for-few-step-flow-map-generators-via-anchored-stochastic-composition)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：提出Flow-Map GRPO在线强化学习后训练框架用于少步流图生成器
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [VLM-AR3L: Vision-Language Models for Absolute and Relative Rewards in Reinforcement Learning](/202607/02/2607.00483v1-vlm-ar3l-vision-language-models-for-absolute-and-relative-rewards-in-reinforcement-learning)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：使用VLM设计强化学习奖励函数
 
 
 <div class="dpr-home-promo-card">

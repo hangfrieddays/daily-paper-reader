@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-02",
+  "date": "2026-07-02",
+  "generated_at": "2026-07-02T21:10:03",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/02/2607.00535v1-flow-map-grpo-reinforcement-learning-for-few-step-flow-map-generators-via-anchored-stochastic-composition",
+      "section": "deep",
+      "title_en": "Flow-Map GRPO: Reinforcement Learning for Few-Step Flow-Map Generators via Anchored Stochastic Composition",
+      "authors": "Zhiqi Li, Wen Zhang, Bo Zhu",
+      "date": "2026-07-01",
+      "pdf": "https://arxiv.org/pdf/2607.00535v1",
+      "score": "9.0",
+      "evidence": "提出Flow-Map GRPO在线强化学习后训练框架用于少步流图生成器",
+      "tldr": "少步流图生成器加速采样但为确定性模型，难以用强化学习后训练。本文提出Flow-Map GRPO在线RL后训练框架，通过锚定随机流图组合（ASFMC）引入随机性并保持边际路径。在基于FLUX的MeanFlow和sCM模型上，该方法在奖励、感知和任务级指标上显著提升。结果表明，确定性少步流图生成器可有效对齐RL后训练，无需重新训练为随机模型。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Few-step flow-map generators, such as consistency models and MeanFlow, accelerate sampling by directly learning long-range transport maps between noise and data. However, these models are typically deterministic, which makes them difficult to optimize with reinforcement learning (RL) post-training methods that require stochastic trajectories and well-defined likelihood ratios. Existing SDE-based stochasticization techniques are designed for velocity-based samplers with infinitesimal or finely discretized transitions, and therefore do not directly apply to long-range flow maps. In this work, we propose Flow-Map GRPO, an online RL post-training framework for deterministic few-step flow-map generators. The key component is Anchored Stochastic Flow Map Composition (ASFMC), a path-preserving stochasticization mechanism that introduces randomness through anchor-based conditional resampling while preserving the original marginal probability path of the deterministic flow map. We derive GRPO objectives for both single-time and two-time flow-map parameterizations. Experiments on few-step FLUX-based text-to-image generators, including MeanFlow and sCM, show that Flow-Map GRPO improves pretrained deterministic flow-map models across reward-based, perceptual, and task-level evaluation metrics. Our results demonstrate that deterministic few-step flow-map generators can be effectively aligned with RL post-training without modifying their original model parameterization or retraining them as native stochastic models.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/02/2607.00483v1-vlm-ar3l-vision-language-models-for-absolute-and-relative-rewards-in-reinforcement-learning",
+      "section": "quick",
+      "title_en": "VLM-AR3L: Vision-Language Models for Absolute and Relative Rewards in Reinforcement Learning",
+      "authors": "Kuan-Chen Chen, Winston Chen, Wei-Fang Sun, Min-Chun Hu",
+      "date": "2026-07-01",
+      "pdf": "https://arxiv.org/pdf/2607.00483v1",
+      "score": "7.0",
+      "evidence": "使用VLM设计强化学习奖励函数",
+      "tldr": "强化学习奖励设计困难，尤其在开放式环境。VLM-AR3L框架利用视觉语言模型，从偏好标签学习绝对和相对奖励模型。绝对奖励评估单个状态，相对奖励比较连续观察。在经典控制、操作和开放世界任务中，特别是在Minecraft上，优于先前方法。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Designing effective reward functions remains a major challenge in reinforcement learning (RL), particularly in open-ended environments where task goals are abstract and difficult to quantify. In this work, we present VLM-AR3L, a framework that leverages Vision-Language Models (VLMs) to provide both absolute and relative rewards for RL. VLM-AR3L interprets an agent's visual observations in the context of a natural language task goal, and learns both absolute and relative rewards from VLM-generated preference labels. The absolute reward model predicts scalar evaluations for individual states, while the relative reward model compares consecutive observations to infer progress or regression toward the task goal. Their integration combines the stability of state-based evaluation with the robustness of comparative supervision. We evaluate VLM-AR3L across benchmarks spanning classic control, manipulation, and open-world embodied tasks, with a particular focus on Minecraft given its visual complexity and long-horizon decision-making requirements. Experimental results show that VLM-AR3L consistently outperforms prior VLM-based reward learning methods.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
