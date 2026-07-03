@@ -1,0 +1,101 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-03T21:18:49.979926+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.02291v1",
+      "source": "arxiv",
+      "title": "Optimizing Visual Generative Models via Distribution-wise Rewards",
+      "abstract": "Conventional reinforcement learning strategies for visual generation typically employ sample-wise reward functions, yet this practice frequently results in reward hacking that degrades image diversity and introduces visual anomalies. To address these limitations, we present a novel framework that finetunes generative models using distribution-wise rewards, ensuring better alignment with real-world data distributions. Unlike rewards that evaluate samples individually, distribution-wise reward accounts for the data distribution of the samples, mitigating the mode collapse problem that occurs when all samples optimize towards the same direction independently. To overcome the prohibitive computational cost of estimating these rewards, we introduce a subset-replace strategy that efficiently provides reward signals by updating only a small subset of a generated reference set. Additionally, we apply RL to optimize post-hoc model merging coefficients, potentially mitigating the train-inference inconsistency caused by introducing stochastic differential equation (SDE) in regular RL practices. Extensive experiments show our approach significantly improves FID-50K across various base models, from 8.30 to 5.77 for SiT and from 3.74 to 3.52 for EDM2. Qualitative evaluation also confirms that our method enhances perceptual quality while preserving sample diversity.",
+      "authors": [
+        "Ruihang Li",
+        "Mengde Xu",
+        "Shuyang Gu",
+        "Leigang Qu",
+        "Fuli Feng",
+        "Han Hu",
+        "Wenjie Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-07-02T15:08:56+00:00",
+      "link": "https://arxiv.org/pdf/2607.02291v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "distribution-wise rewards to prevent reward hacking in visual generation",
+      "llm_evidence_cn": "分布级别奖励避免视觉生成中的奖励黑客问题",
+      "llm_evidence": "分布级别奖励避免视觉生成中的奖励黑客问题",
+      "canonical_evidence": "分布级别奖励避免视觉生成中的奖励黑客问题",
+      "llm_tldr_en": "Proposes distribution-wise rewards for finetuning generative models to avoid mode collapse and reward hacking, using subset-replacement to reduce computational cost.",
+      "llm_tldr_cn": "传统强化学习视觉生成使用样本级奖励导致奖励黑客和模式坍塌。本文提出分布级奖励框架，通过考虑样本数据分布避免模式坍塌，并引入子集替换方法降低计算成本。实验证明该方法在图像生成中保持了多样性并提高了质量。",
+      "llm_tldr": "传统强化学习视觉生成使用样本级奖励导致奖励黑客和模式坍塌。本文提出分布级奖励框架，通过考虑样本数据分布避免模式坍塌，并引入子集替换方法降低计算成本。实验证明该方法在图像生成中保持了多样性并提高了质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.28016v2",
+      "source": "arxiv",
+      "title": "TempAct: Advancing Temporal Plausibility in Autoregressive Video Generation via Planner-Executor RL",
+      "abstract": "Autoregressive (AR) video diffusion models enable low-latency streaming generation by synthesizing videos chunk by chunk with cached visual context, but this chunk-wise formulation makes temporal instruction following ambiguous. A single global prompt does not specify which sub-event should be realized in each chunk, while naively switching to step-wise prompts often leads to delayed reactions, blended step semantics, and error propagation across prompt transitions. These failures are difficult to address with supervised fine-tuning or distillation alone: SFT suffers from exposure bias, while rollout-based distillation still optimizes low-level denoising or teacher-distribution matching rather than directly enforcing action ordering and prompt-transition correctness. We address these challenges with TempAct, a planner--executor reinforcement learning framework that jointly optimizes temporal decomposition and step-conditioned execution for temporally plausible AR video generation. TempAct uses an LLM planner to explore span-aware step prompts that are executable by the video model, and trains an AR diffusion executor to follow these prompts under its own generated histories. Its key mechanism is hierarchical group exploration: candidate plans form planning groups, and each plan induces an execution group of multiple continuations from a shared visual context, enabling plan-level credit assignment for long-horizon temporal outcomes and executor-level credit assignment for prompt-switch behavior. We further design hierarchical rewards that combine plan-quality and full-video temporal feedback for the planner with local transition-level step-following rewards, aesthetic regularization, and KL constraints for the executor. Experiments on Self-Forcing and LongLive show that TempAct improves temporal consistency while preserving overall visual quality.",
+      "authors": [
+        "Jing Wang",
+        "Xiangxin Zhou",
+        "Jiajun Liang",
+        "Kaiqi Liu",
+        "Wanyuan Pang",
+        "Zhenyu Xie",
+        "Tianyu Pang",
+        "Xiaodan Liang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-26T12:19:28+00:00",
+      "link": "https://arxiv.org/pdf/2606.28016v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "RL for autoregressive video generation",
+      "llm_evidence_cn": "用于自回归视频生成的强化学习",
+      "llm_evidence": "用于自回归视频生成的强化学习",
+      "canonical_evidence": "用于自回归视频生成的强化学习",
+      "llm_tldr_en": "TempAct uses a planner-executor RL framework to improve temporal plausibility in autoregressive video generation by directly enforcing action-level constraints.",
+      "llm_tldr_cn": "自回归视频扩散模型在时间指令遵循方面存在歧义和错误传播问题。本文提出TempAct，采用规划器-执行器强化学习框架，直接强制执行动作级约束以提升时间合理性。实验证明该方法优于监督微调和蒸馏方法。",
+      "llm_tldr": "自回归视频扩散模型在时间指令遵循方面存在歧义和错误传播问题。本文提出TempAct，采用规划器-执行器强化学习框架，直接强制执行动作级约束以提升时间合理性。实验证明该方法优于监督微调和蒸馏方法。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "papers on reinforcement learning for image generation",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

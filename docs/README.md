@@ -6,26 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-02
-- 运行时间：2026-07-02 21:09:56 UTC
+- 最新运行日期：2026-07-03
+- 运行时间：2026-07-03 21:21:34 UTC
 - 运行状态：成功
 - 本次总论文数：2
 - 精读区：1
 - 速读区：1
 
 ### 今日简报（AI）
-今日精读一篇《Flow-Map GRPO》并速读一篇《VLM-AR3L》，聚焦强化学习在生成模型与奖励对齐中的应用。最值得关注的是9.0分的《Flow-Map GRPO》，其通过锚定随机组合实现少步流图生成器的强化学习。建议普通读者后续关注流图生成与基于视觉语言模型的奖励设计技术。
-- 详情：[/202607/02/README](/202607/02/README)
+1) 今日精读高分论文《Optimizing Visual Generative Models via Distribution-wise Rewards》，并速读视频生成时间合理性研究。  
+2) 最值得关注的方向：通过分布级奖励优化视觉生成模型，分数高达9.0/10；视频生成中时序合理性提升也有新思路。  
+3) 建议优先精读该9分论文，掌握分布奖励机制的核心设计，再结合速读文章对比视频生成的时间控制方法。
+- 详情：[/202607/03/README](/202607/03/README)
 
 ### 精读区论文标签
-1. [Flow-Map GRPO: Reinforcement Learning for Few-Step Flow-Map Generators via Anchored Stochastic Composition](/202607/02/2607.00535v1-flow-map-grpo-reinforcement-learning-for-few-step-flow-map-generators-via-anchored-stochastic-composition)  
+1. [Optimizing Visual Generative Models via Distribution-wise Rewards](/202607/03/2607.02291v1-optimizing-visual-generative-models-via-distribution-wise-rewards)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：提出Flow-Map GRPO在线强化学习后训练框架用于少步流图生成器
+   evidence：分布级别奖励避免视觉生成中的奖励黑客问题
 
 ### 速读区论文标签
-1. [VLM-AR3L: Vision-Language Models for Absolute and Relative Rewards in Reinforcement Learning](/202607/02/2607.00483v1-vlm-ar3l-vision-language-models-for-absolute-and-relative-rewards-in-reinforcement-learning)  
+1. [TempAct: Advancing Temporal Plausibility in Autoregressive Video Generation via Planner-Executor RL](/202607/03/2606.28016v2-tempact-advancing-temporal-plausibility-in-autoregressive-video-generation-via-planner-executor-rl)  
    标签：评分：7.0/10、query:image-gen-rl
-   evidence：使用VLM设计强化学习奖励函数
+   evidence：用于自回归视频生成的强化学习
 
 
 <div class="dpr-home-promo-card">
