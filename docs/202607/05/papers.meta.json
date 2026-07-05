@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-05",
+  "date": "2026-07-05",
+  "generated_at": "2026-07-05T20:10:42",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/05/2607.02137v1-art-for-diffusion-sampling-continuous-time-control-and-actor-critic-learning",
+      "section": "deep",
+      "title_en": "ART for Diffusion Sampling: Continuous-Time Control and Actor-Critic Learning",
+      "authors": "Yilie Huang, Wenpin Tang, Xun Yu Zhou",
+      "date": "2026-07-02",
+      "pdf": "https://arxiv.org/pdf/2607.02137v1",
+      "score": "9.0",
+      "evidence": "使用演员-评论家强化学习优化扩散采样时间步分配以提升生成质量",
+      "tldr": "扩散采样中时间步分配常使用固定方案，可能造成次优。本文提出自适应重参数化时间（ART）框架，将采样时钟速度作为控制，基于欧拉误差代理构建优化目标，并通过ART-RL转化为连续时间强化学习问题，利用actor-critic方法学习最优调度。实验表明，ART-RL可嵌入现有采样器，仅改变时间步网格即一致提升样本质量，且泛化至不同预算、数据集和求解器。该工作为扩散采样提供了一种自适应调度学习范式。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We study timestep allocation for score-based diffusion sampling, where a learned reverse-time dynamics is discretized on a finite grid. Uniform and hand-crafted schedules are standard choices, but they rely on fixed prescriptions and can therefore be suboptimal. To address this limitation, we propose Adaptive Reparameterized Time (ART), a continuous-time control formulation that learns a time change by treating the speed of the sampling clock as the control, so that a uniform grid on the learned clock induces adaptive timesteps in the original diffusion time. Based on a leading-order Euler error surrogate, ART provides a principled objective for allocating timesteps along the sampling trajectory. To solve this deterministic control problem, we introduce ART-RL, an auxiliary randomized formulation with Gaussian policies that turns schedule learning into a continuous-time reinforcement learning problem. We prove that the randomized ART-RL formulation is equivalent to ART at the optimizer level, in the sense that its optimal Gaussian policy recovers the optimal ART time-warping rate through its mean. We further establish policy evaluation and policy improvement characterizations and derive trajectory-based moment identities that yield implementable actor--critic updates for learning the schedule. Across experiments ranging from controlled low-dimensional settings to image generation, ART-RL can be plugged into existing diffusion samplers by changing only the timestep grid, consistently improving sample quality over strong baseline schedules at matched budgets while leaving the rest of the sampling pipeline unchanged. The learned schedules also exhibit broad generalization, transferring without retraining across sampling budgets, datasets, solvers, pipelines, and representation spaces.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/05/2607.00483v2-vlm-ar3l-vision-language-models-for-absolute-and-relative-rewards-in-reinforcement-learning",
+      "section": "quick",
+      "title_en": "VLM-AR3L: Vision-Language Models for Absolute and Relative Rewards in Reinforcement Learning",
+      "authors": "Kuan-Chen Chen, Winston Chen, Wei-Fang Sun, Min-Chun Hu",
+      "date": "2026-07-01",
+      "pdf": "https://arxiv.org/pdf/2607.00483v2",
+      "score": "7.0",
+      "evidence": "专注于使用VLM设计强化学习奖励函数，直接相关于图像生成的奖励设计",
+      "tldr": "强化学习中奖励函数设计困难，尤其开放环境。VLM-AR3L利用视觉语言模型提供绝对与相对奖励：绝对模型评估单状态，相对模型比较连续观察推断任务进展。两者结合兼顾稳定性与鲁棒性。在经典控制、操作和开放世界任务（尤其Minecraft）上超越先前方法。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Designing effective reward functions remains a major challenge in reinforcement learning (RL), particularly in open-ended environments where task goals are abstract and difficult to quantify. In this work, we present VLM-AR3L, a framework that leverages Vision-Language Models (VLMs) to provide both absolute and relative rewards for RL. VLM-AR3L interprets an agent's visual observations in the context of a natural language task goal, and learns both absolute and relative rewards from VLM-generated preference labels. The absolute reward model predicts scalar evaluations for individual states, while the relative reward model compares consecutive observations to infer progress or regression toward the task goal. Their integration combines the stability of state-based evaluation with the robustness of comparative supervision. We evaluate VLM-AR3L across benchmarks spanning classic control, manipulation, and open-world embodied tasks, with a particular focus on Minecraft given its visual complexity and long-horizon decision-making requirements. Experimental results show that VLM-AR3L consistently outperforms prior VLM-based reward learning methods.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/05/2607.01897v1-rank-then-act-reward-free-control-from-frame-order-progress",
+      "section": "quick",
+      "title_en": "Rank-Then-Act: Reward-Free Control from Frame-Order Progress",
+      "authors": "Yuriy Maksyuta, George Bredis, Ruslan Rakhimov, Daniil Gavrilov",
+      "date": "2026-07-02",
+      "pdf": "https://arxiv.org/pdf/2607.01897v1",
+      "score": "6.0",
+      "evidence": "提出基于排序相关的奖励函数用于强化学习，可迁移至图像生成奖励设计",
+      "tldr": "现有强化学习依赖人工设计奖励函数，限制了应用范围。本文提出Rank-Then-Act (RTA) 框架，利用专家视频演示，通过训练视觉语言模型作为基于进度的序数评分器，采用GRPO目标恢复帧的时间顺序。不同于直接使用评分作为奖励，RTA计算预测排名与真实时间索引之间的Spearman秩相关系数作为奖励信号，该信号有界且尺度不变。在PyBoy、PointMaze等基准上，RTA匹配或超越先前方法，并展示了单个评分器跨任务重用的能力，为免奖励策略学习提供了可扩展方案。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We introduce Rank-Then-Act (RTA), a framework for learning control policies from expert video demonstrations without environment rewards. RTA trains a Vision-Language Model (VLM) offline as a progress-based ordinal scorer, using a Group Relative Policy Optimization (GRPO) objective over shuffled frame sequences, which forces the model to recover temporal ordering from visual semantics rather than trivial time cues. Importantly, instead of using the scorer directly as a scalar reward model, we propose a correlation-based reward function for reinforcement learning: at each interaction window, we compute the Spearman rank correlation between predicted progress rankings and true temporal indices, yielding a bounded, scale-invariant learning signal. This design decouples reward learning from absolute calibration and enables stable transfer across tasks and environments. We evaluate RTA on discrete control benchmarks (PyBoy: Catrap, Kirby) and continuous control tasks (PointMaze, MetaWorld). RTA consistently matches or outperforms prior video-based reward learning methods and rank-based baselines, while demonstrating strong cross-task reuse of a single pretrained progress scorer. Our results suggest that correlation-structured supervision over video-derived ordinal signals is sufficient for policy learning, offering a scalable alternative to explicit reward design.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
