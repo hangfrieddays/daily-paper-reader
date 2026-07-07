@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-07",
+  "date": "2026-07-07",
+  "generated_at": "2026-07-07T21:48:34",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/07/2607.03748v1-bridging-interleaved-multi-modal-reasoning-as-a-unified-decision-process",
+      "section": "deep",
+      "title_en": "Bridging Interleaved Multi-Modal Reasoning as a Unified Decision Process",
+      "authors": "Zican Hu, Xuyang Hu, Yiming Liu, Zuwei Long, Wei Liu, Yunzhuo Hao, Jiawei Gu, Linjie Li, Yu Cheng, Zhenhong Sun, Weibo Gu, Xing Sun, Zhi Wang",
+      "date": "2026-07-04",
+      "pdf": "https://arxiv.org/pdf/2607.03748v1",
+      "score": "9.0",
+      "evidence": "使用强化学习策略梯度优化多模态生成",
+      "tldr": "当前统一多模态模型（UMMs）的交错推理中，强化学习仅优化文本步骤，图像生成依赖监督，导致策略梯度无法跨越模态传播。本文提出BRAID框架，将多模态推理建模为统一马尔可夫决策过程（MDP），共享轨迹级优势，通过模态原生策略梯度联合优化文本和图像生成，并利用VLM法官对中间图像提供推理效用评分以解决长程信用分配。在空间推理和视觉感知任务上，BRAID显著优于多种基线，证明统一MDP与视觉思维引导对多模态推理至关重要。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Unified multi-modal models (UMMs) have shown promising interleaved text-image reasoning capabilities, yet effectively optimizing such multi-turn generation via reinforcement learning (RL) remains an open challenge. Existing approaches apply RL exclusively to text steps, relegating image generation to supervised surrogates, preventing policy gradients from propagating through the full interleaved trajectory across heterogeneous modalities. This leaves the potential of RL for UMMs largely untapped. In the paper, we introduce \\textbf{BRAID} (\\textbf{B}ridging inte\\textbf{R}le\\textbf{A}ved mult\\textbf{I}-modal reasoning as a unified \\textbf{D}ecision process), a simple framework that casts multi-turn text-image-text reasoning as a unified Markov decision process (MDP), enabling joint optimization of textual and visual generation via a single, principled RL objective. BRAID computes a shared trajectory-level advantage and propagates it coherently into both text tokens and image denoising paths, each optimized through its modality-native policy gradient mechanism. To further address long-horizon credit assignment, BRAID employs a vision-language model (VLM) judge that scores each intermediate image on its reasoning utility, supplying dense turn-level feedback to sharpen learning at critical visual branches. Experiments on spatial reasoning and visual perception benchmarks show that BRAID consistently outperforms various baselines, confirming that a unified MDP formulation with vision-thinking guidance is essential for effective multi-modal reasoning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/07/2607.03960v1-reward-lightning-fast-video-generation-via-homologous-preference-distillation",
+      "section": "deep",
+      "title_en": "Reward Lightning: Fast Video Generation via Homologous Preference Distillation",
+      "authors": "Jiaxiang Cheng, Bing Ma, Xuhua Ren, Kai Yu, Peng Zhang, Tianxiang Zheng, Qinglin Lu",
+      "date": "2026-07-04",
+      "pdf": "https://arxiv.org/pdf/2607.03960v1",
+      "score": "8.0",
+      "evidence": "提出潜在奖励模型用于视频生成对齐",
+      "tldr": "视频扩散模型面临偏好对齐与蒸馏加速的冲突，现有方法在分离表示空间优化导致梯度矛盾。提出Reward Lightning框架，基于同源性原则在共享潜在特征上统一两个目标。引入潜在奖励模型直接打分，同源偏好蒸馏联合对抗蒸馏与对齐，实现1-4步生成高质量视频。在VBench评分提升2.1%，文本对齐与运动质量领先。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Achieving simultaneous preference alignment and distillation acceleration in video diffusion models remains an open challenge. Existing methods optimize the two objectives over mismatched representation spaces, where improving one objective often compromises the other. To overcome this, we propose Reward Lightning, a unified framework that aligns and accelerates a video diffusion model within a single shared representation. Its central principle is homology: both objectives are evaluated on identical latent features, which mitigates the gradient conflicts that arise when they are optimized over disjoint representations. As a foundational component, we first introduce a latent reward model (LRM) that scores videos directly in the latent space, without decoding back to the pixel space. Building on the LRM, homologous preference distillation (HPD) reuses this shared backbone to perform adversarial distillation and preference alignment jointly, yielding few-step generators that remain faithful and well aligned. Extensive experiments demonstrate that the LRM surpasses pixel-level and latent-level reward baselines by $11.0\\%$ and $14.7\\%$ in preference accuracy, and that Reward Lightning generates high-fidelity videos in merely $1$ to $4$ steps, improving the average VBench score by $2.1\\%$ while leading in text alignment, motion quality, and visual quality. Project page: https://reward-lightning.github.io.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/07/2607.05150v1-claim-level-rubric-rewards-for-video-caption-reinforcement-learning",
+      "section": "quick",
+      "title_en": "Claim-Level Rubric Rewards for Video Caption Reinforcement Learning",
+      "authors": "Mingqi Gao, Hongyuan Dong, Yifei Chen, Zhisheng Zhong, Zheng Ruan, Wenjin Hou, Yu Chen, Han Hu, Yansong Tang",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.05150v1",
+      "score": "6.0",
+      "evidence": "为视频字幕生成设计的结构化奖励框架，可迁移至图像生成奖励设计",
+      "tldr": "密集视频字幕生成中的强化学习面临奖励设计难题：整体奖励易被风格化利用，参考奖励限制生成多样性。本文提出CuRe，通过结构化规则将字幕分解为类别感知原子声明，实现细粒度声明级验证。该方法将模糊的整体判断转化为清晰的逐项验证，有效提升奖励可靠性和生成质量。贡献在于提出结构化奖励框架，为解决开放生成任务的奖励设计问题提供了新思路。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "In this paper, we introduce Claim-Level Rubric Rewards (CuRe), a structured reward framework designed to address the reward-design bottleneck in reinforcement learning for dense video captioning. Existing reward designs generally fall into two categories: holistic response-level judgment across heterogeneous criteria, or alignment-based evaluation against reference captions. However, both paradigms suffer from fundamental limitations. Holistic rewards struggle to ensure factual accuracy and are prone to stylistic reward hacking, while reference-based rewards overly rely on rigid textual alignment, failing to preserve the completeness and diversity inherent to open-ended generation tasks. To address these challenges, CuRe reformulates reward modeling as fine-grained claim-level verification. Specifically, CuRe decomposes captions into category-aware atomic claims through a structured rubric, converting holistic evaluation into simpler and more reliable claim-level verification.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
