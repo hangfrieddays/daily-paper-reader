@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-08",
+  "date": "2026-07-08",
+  "generated_at": "2026-07-08T20:13:50",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/08/2607.02137v2-art-for-diffusion-sampling-continuous-time-control-and-actor-critic-learning",
+      "section": "deep",
+      "title_en": "ART for Diffusion Sampling: Continuous-Time Control and Actor-Critic Learning",
+      "authors": "Yilie Huang, Wenpin Tang, Xun Yu Zhou",
+      "date": "2026-07-02",
+      "pdf": "https://arxiv.org/pdf/2607.02137v2",
+      "score": "9.0",
+      "evidence": "使用Actor-Critic学习优化扩散采样时间步分配",
+      "tldr": "扩散采样中时间步分配通常采用固定方案，导致次优性能。本文提出ART，将采样时钟速度作为控制，通过连续时间控制学习自适应时间步。进一步用强化学习求解，证明等价性并推导actor-critic更新。在低维和图像生成任务上，ART-RL改进样本质量，且泛化到不同预算、数据集和求解器。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We study timestep allocation for score-based diffusion sampling, where a learned reverse-time dynamics is discretized on a finite grid. Uniform and hand-crafted schedules are standard choices, but they rely on fixed prescriptions and can therefore be suboptimal. To address this limitation, we propose Adaptive Reparameterized Time (ART), a continuous-time control formulation that learns a time change by treating the speed of the sampling clock as the control, so that a uniform grid on the learned clock induces adaptive timesteps in the original diffusion time. Based on a leading-order Euler error surrogate, ART provides a principled objective for allocating timesteps along the sampling trajectory. To solve this deterministic control problem, we introduce ART-RL, an auxiliary randomized formulation with Gaussian policies that turns schedule learning into a continuous-time reinforcement learning problem. We prove that the randomized ART-RL formulation is equivalent to ART at the optimizer level, in the sense that its optimal Gaussian policy recovers the optimal ART time-warping rate through its mean. We further establish policy evaluation and policy improvement characterizations and derive trajectory-based moment identities that yield implementable actor--critic updates for learning the schedule. Across experiments ranging from controlled low-dimensional settings to image generation, ART-RL can be plugged into existing diffusion samplers by changing only the timestep grid, consistently improving sample quality over strong baseline schedules at matched budgets while leaving the rest of the sampling pipeline unchanged. The learned schedules also exhibit broad generalization, transferring without retraining across sampling budgets, datasets, solvers, pipelines, and representation spaces.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

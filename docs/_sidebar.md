@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-08 <!--dpr-date:20260708-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/08/2607.02137v2-art-for-diffusion-sampling-continuous-time-control-and-actor-critic-learning" data-sidebar-item="{&quot;title&quot;: &quot;ART for Diffusion Sampling: Continuous-Time Control and Actor-Critic Learning&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.02137v2-art-for-diffusion-sampling-continuous-time-control-and-actor-critic-learning&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用Actor-Critic学习优化扩散采样时间步分配&quot;}">ART for Diffusion Sampling: Continuous-Time Control and Actor-Critic Learning</a>
   * 2026-07-07 <!--dpr-date:20260707-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/07/2607.03748v1-bridging-interleaved-multi-modal-reasoning-as-a-unified-decision-process" data-sidebar-item="{&quot;title&quot;: &quot;Bridging Interleaved Multi-Modal Reasoning as a Unified Decision Process&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.03748v1-bridging-interleaved-multi-modal-reasoning-as-a-unified-decision-process&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用强化学习策略梯度优化多模态生成&quot;}">Bridging Interleaved Multi-Modal Reasoning as a Unified Decision Process</a>

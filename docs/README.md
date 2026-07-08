@@ -6,29 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-07
-- 运行时间：2026-07-07 21:48:28 UTC
+- 最新运行日期：2026-07-08
+- 运行时间：2026-07-08 20:13:44 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：2
-- 速读区：1
+- 本次总论文数：1
+- 精读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日推荐3篇论文，其中2篇精读聚焦多模态推理与视频生成，1篇速读探讨视频描述强化学习。最值得关注的方向是《Bridging Interleaved Multi-Modal Reasoning》提出的统一决策框架（9.0分）和《Reward Lightning》中的同源偏好蒸馏加速视频生成（8.0分）。建议优先精读前两篇，它们分别代表多模态推理与视频生成的前沿探索。
-- 详情：[/202607/07/README](/202607/07/README)
+今日精读一篇高分论文《ART for Diffusion Sampling》，聚焦连续时间控制与Actor-Critic学习框架。该研究将扩散模型采样过程转化为控制问题，提出RT方法显著提升采样效率与质量，对加速生成式AI推理具有关键价值。建议关注Actor-Critic在扩散采样中的创新应用，尝试将其与现有采样器结合以优化实际部署。
+- 详情：[/202607/08/README](/202607/08/README)
 
 ### 精读区论文标签
-1. [Bridging Interleaved Multi-Modal Reasoning as a Unified Decision Process](/202607/07/2607.03748v1-bridging-interleaved-multi-modal-reasoning-as-a-unified-decision-process)  
+1. [ART for Diffusion Sampling: Continuous-Time Control and Actor-Critic Learning](/202607/08/2607.02137v2-art-for-diffusion-sampling-continuous-time-control-and-actor-critic-learning)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：使用强化学习策略梯度优化多模态生成
-2. [Reward Lightning: Fast Video Generation via Homologous Preference Distillation](/202607/07/2607.03960v1-reward-lightning-fast-video-generation-via-homologous-preference-distillation)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：提出潜在奖励模型用于视频生成对齐
+   evidence：使用Actor-Critic学习优化扩散采样时间步分配
 
 ### 速读区论文标签
-1. [Claim-Level Rubric Rewards for Video Caption Reinforcement Learning](/202607/07/2607.05150v1-claim-level-rubric-rewards-for-video-caption-reinforcement-learning)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：为视频字幕生成设计的结构化奖励框架，可迁移至图像生成奖励设计
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">

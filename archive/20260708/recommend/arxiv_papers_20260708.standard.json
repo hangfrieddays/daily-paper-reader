@@ -1,0 +1,56 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-08T20:12:25.443385+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.02137v2",
+      "source": "arxiv",
+      "title": "ART for Diffusion Sampling: Continuous-Time Control and Actor-Critic Learning",
+      "abstract": "We study timestep allocation for score-based diffusion sampling, where a learned reverse-time dynamics is discretized on a finite grid. Uniform and hand-crafted schedules are standard choices, but they rely on fixed prescriptions and can therefore be suboptimal. To address this limitation, we propose Adaptive Reparameterized Time (ART), a continuous-time control formulation that learns a time change by treating the speed of the sampling clock as the control, so that a uniform grid on the learned clock induces adaptive timesteps in the original diffusion time. Based on a leading-order Euler error surrogate, ART provides a principled objective for allocating timesteps along the sampling trajectory. To solve this deterministic control problem, we introduce ART-RL, an auxiliary randomized formulation with Gaussian policies that turns schedule learning into a continuous-time reinforcement learning problem. We prove that the randomized ART-RL formulation is equivalent to ART at the optimizer level, in the sense that its optimal Gaussian policy recovers the optimal ART time-warping rate through its mean. We further establish policy evaluation and policy improvement characterizations and derive trajectory-based moment identities that yield implementable actor--critic updates for learning the schedule. Across experiments ranging from controlled low-dimensional settings to image generation, ART-RL can be plugged into existing diffusion samplers by changing only the timestep grid, consistently improving sample quality over strong baseline schedules at matched budgets while leaving the rest of the sampling pipeline unchanged. The learned schedules also exhibit broad generalization, transferring without retraining across sampling budgets, datasets, solvers, pipelines, and representation spaces.",
+      "authors": [
+        "Yilie Huang",
+        "Wenpin Tang",
+        "Xun Yu Zhou"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-07-02T13:13:19+00:00",
+      "link": "https://arxiv.org/pdf/2607.02137v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Actor-critic learning for diffusion sampling timestep allocation",
+      "llm_evidence_cn": "使用Actor-Critic学习优化扩散采样时间步分配",
+      "llm_evidence": "使用Actor-Critic学习优化扩散采样时间步分配",
+      "canonical_evidence": "使用Actor-Critic学习优化扩散采样时间步分配",
+      "llm_tldr_en": "Proposes ART, a continuous-time control method using actor-critic learning to adapt timestep schedules for diffusion sampling, improving efficiency and quality.",
+      "llm_tldr_cn": "扩散模型的采样时间步分配通常采用固定方案，效率低下。本文提出ART，将时间步分配建模为连续时间控制问题，并利用Actor-Critic强化学习优化采样时钟速度，从而自适应调整时间步。实验表明该方法能有效提升采样质量和效率，为扩散模型采样提供了新的RL优化视角，并展示了强化学习在图像生成采样中的潜力。",
+      "llm_tldr": "扩散模型的采样时间步分配通常采用固定方案，效率低下。本文提出ART，将时间步分配建模为连续时间控制问题，并利用Actor-Critic强化学习优化采样时钟速度，从而自适应调整时间步。实验表明该方法能有效提升采样质量和效率，为扩散模型采样提供了新的RL优化视角，并展示了强化学习在图像生成采样中的潜力。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
