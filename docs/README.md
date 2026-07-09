@@ -6,21 +6,19 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-08
-- 运行时间：2026-07-08 20:13:44 UTC
+- 最新运行日期：2026-07-09
+- 运行时间：2026-07-09 21:21:49 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：1
+- 本次总论文数：0
+- 精读区：0
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读一篇高分论文《ART for Diffusion Sampling》，聚焦连续时间控制与Actor-Critic学习框架。该研究将扩散模型采样过程转化为控制问题，提出RT方法显著提升采样效率与质量，对加速生成式AI推理具有关键价值。建议关注Actor-Critic在扩散采样中的创新应用，尝试将其与现有采样器结合以优化实际部署。
-- 详情：[/202607/08/README](/202607/08/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202607/09/README](/202607/09/README)
 
 ### 精读区论文标签
-1. [ART for Diffusion Sampling: Continuous-Time Control and Actor-Critic Learning](/202607/08/2607.02137v2-art-for-diffusion-sampling-continuous-time-control-and-actor-critic-learning)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：使用Actor-Critic学习优化扩散采样时间步分配
+- 本次无精读推荐。
 
 ### 速读区论文标签
 - 本次无速读推荐。
