@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-10",
+  "date": "2026-07-10",
+  "generated_at": "2026-07-10T20:55:40",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/10/2607.07693v1-selective-timestep-weighting-and-advantage-based-replay-for-sample-efficient-diffusion-rlhf",
+      "section": "deep",
+      "title_en": "Selective Timestep Weighting and Advantage-Based Replay for Sample-Efficient Diffusion RLHF",
+      "authors": "Eric Zhu, Abhinav Shrivastava, Soumik Mukhopadhyay",
+      "date": "2026-07-08",
+      "pdf": "https://arxiv.org/pdf/2607.07693v1",
+      "score": "9.0",
+      "evidence": "利用时间步加权和优势重放提升扩散模型RLHF的反馈效率",
+      "tldr": "扩散模型RLHF因奖励信息在去噪轨迹中分布不均而反馈效率低下。本文提出选择性时间步加权和基于优势的重放策略，聚焦信息丰富的时间步和轨迹进行优化。在相同超参数下，该方法比基线提升高达6倍样本效率。该工作显著降低了扩散模型与人类偏好对齐的反馈成本。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning from human feedback (RLHF) has emerged as a powerful paradigm for aligning generative models with human preferences. However, applying RLHF to diffusion models remains highly feedback inefficient, as existing approaches typically require large amounts of human or reward model evaluations. This limitation reduces the practicality of diffusion RLHF in realworld settings where feedback is the primary bottleneck. In this paper, we propose two complementary strategies that substantially improve the feedback efficiency of diffusion RLHF while preserving generalization to unseen prompts. Our key observation is that reward information in diffusion trajectories is unevenly distributed: not all denoising timesteps or trajectories contribute equally to learning from a reward signal. By emphasizing informative timesteps and trajectories during optimization, we obtain more effective gradient updates. First, we introduce a per-timestep weighting scheme that reweights denoising steps during policy optimization. We theoretically connect this weighting to the optimal convergence properties of proximal policy optimization (PPO) and approximate the resulting weighting trend empirically. Second, we introduce a replay mechanism that prioritizes informative trajectories, enabling the model to reuse past samples instead of repeatedly querying new rewards. Together, these strategies significantly improve the feedback efficiency of diffusion RLHF. Under identical hyperparameter settings, our approach achieves up to a 6$\\times$ improvement in sample efficiency compared to widely used diffusion RLHF baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/10/2607.08056v1-reinforcing-the-generation-order-of-multimodal-masked-diffusion-models",
+      "section": "deep",
+      "title_en": "Reinforcing the Generation Order of Multimodal Masked Diffusion Models",
+      "authors": "Yidong Ouyang, Zhe Wang, Sourav Bhabesh, Dmitriy Bespalov",
+      "date": "2026-07-09",
+      "pdf": "https://arxiv.org/pdf/2607.08056v1",
+      "score": "9.0",
+      "evidence": "采用组相对策略优化(GRPO)学习文本到图像扩散的最优生成顺序",
+      "tldr": "扩散语言模型在自然语言生成中表现优异，但生成顺序优化在文本到图像和多模态理解中尚未充分探索。本文发现模型logits不足以确定最优顺序，提出基于GRPO的可学习控制模块。该方法在GenEval上提升4.08%，在VLMEvalKit上提升4.85%，有效增强细粒度空间关系理解和多模态推理。该工作为优化多模态扩散模型的生成顺序提供了新思路。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Diffusion Language Models (DLMs) have recently achieved substantial progress in natural language generation tasks. Recent research demonstrates that adaptive token generation ordering can significantly improve performance in mathematical reasoning and code synthesis applications. In this work, we investigate the optimization of generation order for both text-to-image synthesis and multimodal understanding. We first establish that, unlike structured problems in language generation such as Sudoku puzzles, model logits alone are insufficient for determining optimal generation sequences in text-to-image generation and multimodal understanding. To address this challenge, we introduce a learnable control module trained via Group Relative Policy Optimization (GRPO) to determine the generation order. Our results demonstrate that learning this control block substantially improves both text-to-image alignment and multimodal understanding in DLMs. In particular, it enhances the model's ability to capture fine-grained spatial relationships in generated images while also strengthening performance on multimodal reasoning and comprehension tasks. We evaluate our framework on GenEval, an object-focused benchmark for text-to-image alignment, where it achieves 4.08% relative improvements. In addition, experiments on VLMEvalKit confirm 4.85% relative improvements in multimodal understanding, highlighting the broad effectiveness of our approach.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

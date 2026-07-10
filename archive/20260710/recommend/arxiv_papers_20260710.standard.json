@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-10T20:54:15.528262+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.07693v1",
+      "source": "arxiv",
+      "title": "Selective Timestep Weighting and Advantage-Based Replay for Sample-Efficient Diffusion RLHF",
+      "abstract": "Reinforcement learning from human feedback (RLHF) has emerged as a powerful paradigm for aligning generative models with human preferences. However, applying RLHF to diffusion models remains highly feedback inefficient, as existing approaches typically require large amounts of human or reward model evaluations. This limitation reduces the practicality of diffusion RLHF in realworld settings where feedback is the primary bottleneck. In this paper, we propose two complementary strategies that substantially improve the feedback efficiency of diffusion RLHF while preserving generalization to unseen prompts. Our key observation is that reward information in diffusion trajectories is unevenly distributed: not all denoising timesteps or trajectories contribute equally to learning from a reward signal. By emphasizing informative timesteps and trajectories during optimization, we obtain more effective gradient updates. First, we introduce a per-timestep weighting scheme that reweights denoising steps during policy optimization. We theoretically connect this weighting to the optimal convergence properties of proximal policy optimization (PPO) and approximate the resulting weighting trend empirically. Second, we introduce a replay mechanism that prioritizes informative trajectories, enabling the model to reuse past samples instead of repeatedly querying new rewards. Together, these strategies significantly improve the feedback efficiency of diffusion RLHF. Under identical hyperparameter settings, our approach achieves up to a 6$\\times$ improvement in sample efficiency compared to widely used diffusion RLHF baselines.",
+      "authors": [
+        "Eric Zhu",
+        "Abhinav Shrivastava",
+        "Soumik Mukhopadhyay"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-07-08T17:49:49+00:00",
+      "link": "https://arxiv.org/pdf/2607.07693v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Sample-efficient RLHF for diffusion models using timestep weighting and advantage replay",
+      "llm_evidence_cn": "利用时间步加权和优势重放提升扩散模型RLHF的反馈效率",
+      "llm_evidence": "利用时间步加权和优势重放提升扩散模型RLHF的反馈效率",
+      "canonical_evidence": "利用时间步加权和优势重放提升扩散模型RLHF的反馈效率",
+      "llm_tldr_en": "Proposes selective timestep weighting and advantage-based replay to improve sample efficiency of RLHF for diffusion models, enabling alignment with fewer feedback evaluations.",
+      "llm_tldr_cn": "现有的扩散模型RLHF方法反馈效率低，需要大量人类或奖励模型评估。本文提出两种互补策略：选择性时间步加权和基于优势的重放，利用扩散轨迹中奖励分布不均匀的特性，显著提升反馈效率，同时保持对未见提示的泛化能力。实验表明该方法在减少评估次数的情况下达到同等或更优的对齐效果，为扩散模型的实用化RLHF提供了高效方案。",
+      "llm_tldr": "现有的扩散模型RLHF方法反馈效率低，需要大量人类或奖励模型评估。本文提出两种互补策略：选择性时间步加权和基于优势的重放，利用扩散轨迹中奖励分布不均匀的特性，显著提升反馈效率，同时保持对未见提示的泛化能力。实验表明该方法在减少评估次数的情况下达到同等或更优的对齐效果，为扩散模型的实用化RLHF提供了高效方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.08056v1",
+      "source": "arxiv",
+      "title": "Reinforcing the Generation Order of Multimodal Masked Diffusion Models",
+      "abstract": "Diffusion Language Models (DLMs) have recently achieved substantial progress in natural language generation tasks. Recent research demonstrates that adaptive token generation ordering can significantly improve performance in mathematical reasoning and code synthesis applications. In this work, we investigate the optimization of generation order for both text-to-image synthesis and multimodal understanding. We first establish that, unlike structured problems in language generation such as Sudoku puzzles, model logits alone are insufficient for determining optimal generation sequences in text-to-image generation and multimodal understanding. To address this challenge, we introduce a learnable control module trained via Group Relative Policy Optimization (GRPO) to determine the generation order. Our results demonstrate that learning this control block substantially improves both text-to-image alignment and multimodal understanding in DLMs. In particular, it enhances the model's ability to capture fine-grained spatial relationships in generated images while also strengthening performance on multimodal reasoning and comprehension tasks. We evaluate our framework on GenEval, an object-focused benchmark for text-to-image alignment, where it achieves 4.08% relative improvements. In addition, experiments on VLMEvalKit confirm 4.85% relative improvements in multimodal understanding, highlighting the broad effectiveness of our approach.",
+      "authors": [
+        "Yidong Ouyang",
+        "Zhe Wang",
+        "Sourav Bhabesh",
+        "Dmitriy Bespalov"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "stat.ML"
+      ],
+      "published": "2026-07-09T02:07:30+00:00",
+      "link": "https://arxiv.org/pdf/2607.08056v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses GRPO to learn optimal generation order for text-to-image diffusion",
+      "llm_evidence_cn": "采用组相对策略优化(GRPO)学习文本到图像扩散的最优生成顺序",
+      "llm_evidence": "采用组相对策略优化(GRPO)学习文本到图像扩散的最优生成顺序",
+      "canonical_evidence": "采用组相对策略优化(GRPO)学习文本到图像扩散的最优生成顺序",
+      "llm_tldr_en": "Proposes a learnable control module trained via Group Relative Policy Optimization to optimize generation order in text-to-image and multimodal diffusion models.",
+      "llm_tldr_cn": "本文研究文本到图像生成中扩散模型的生成顺序优化问题。不同于语言生成，模型logits本身不足以确定最优顺序，因此引入一个可学习的控制模块，通过组相对策略优化（GRPO）进行训练。实验结果表明，优化后的生成顺序显著提升了文本到图像合成和跨模态理解任务的质量，证明了强化学习在生成流程中的有效性。",
+      "llm_tldr": "本文研究文本到图像生成中扩散模型的生成顺序优化问题。不同于语言生成，模型logits本身不足以确定最优顺序，因此引入一个可学习的控制模块，通过组相对策略优化（GRPO）进行训练。实验结果表明，优化后的生成顺序显著提升了文本到图像合成和跨模态理解任务的质量，证明了强化学习在生成流程中的有效性。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
