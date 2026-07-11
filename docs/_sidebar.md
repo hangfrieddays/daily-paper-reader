@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-11 <!--dpr-date:20260711-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/11/2607.06609v1-d2po-optimizing-diffusion-samplers-via-dynamic-preference" data-sidebar-item="{&quot;title&quot;: &quot;D2PO: Optimizing Diffusion Samplers via Dynamic Preference&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.06609v1-d2po-optimizing-diffusion-samplers-via-dynamic-preference&quot;, &quot;score&quot;: &quot;8.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用动态直接偏好优化改进扩散采样器质量，类似于基于RL的对齐方法&quot;}">D2PO: Optimizing Diffusion Samplers via Dynamic Preference</a>
   * 2026-07-10 <!--dpr-date:20260710-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/10/2607.07693v1-selective-timestep-weighting-and-advantage-based-replay-for-sample-efficient-diffusion-rlhf" data-sidebar-item="{&quot;title&quot;: &quot;Selective Timestep Weighting and Advantage-Based Replay for Sample-Efficient Diffusion RLHF&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.07693v1-selective-timestep-weighting-and-advantage-based-replay-for-sample-efficient-diffusion-rlhf&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;利用时间步加权和优势重放提升扩散模型RLHF的反馈效率&quot;}">Selective Timestep Weighting and Advantage-Based Replay for Sample-Efficient Diffusion RLHF</a>

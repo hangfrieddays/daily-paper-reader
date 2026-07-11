@@ -6,26 +6,21 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-10
-- 运行时间：2026-07-10 20:55:34 UTC
+- 最新运行日期：2026-07-11
+- 运行时间：2026-07-11 20:39:46 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：2
+- 本次总论文数：1
+- 精读区：1
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读两篇高分论文，聚焦扩散模型在RLHF样本效率提升与多模态生成顺序优化上的突破。  
-值得关注的方向：扩散RLHF中利用选择性时间步加权与基于优势的重放机制改进样本效率；多模态掩码扩散模型通过强化学习重构生成顺序。  
-建议进一步关注这两篇的具体方法与实验设计，后续可尝试将时序加权策略迁移至其他生成任务。
-- 详情：[/202607/10/README](/202607/10/README)
+今日精读一篇扩散模型采样优化论文。D2PO通过动态偏好学习显著提升采样效率与生成质量。建议关注该方法的具体实现及在图像生成任务中的复现效果。
+- 详情：[/202607/11/README](/202607/11/README)
 
 ### 精读区论文标签
-1. [Selective Timestep Weighting and Advantage-Based Replay for Sample-Efficient Diffusion RLHF](/202607/10/2607.07693v1-selective-timestep-weighting-and-advantage-based-replay-for-sample-efficient-diffusion-rlhf)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：利用时间步加权和优势重放提升扩散模型RLHF的反馈效率
-2. [Reinforcing the Generation Order of Multimodal Masked Diffusion Models](/202607/10/2607.08056v1-reinforcing-the-generation-order-of-multimodal-masked-diffusion-models)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：采用组相对策略优化(GRPO)学习文本到图像扩散的最优生成顺序
+1. [D2PO: Optimizing Diffusion Samplers via Dynamic Preference](/202607/11/2607.06609v1-d2po-optimizing-diffusion-samplers-via-dynamic-preference)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：使用动态直接偏好优化改进扩散采样器质量，类似于基于RL的对齐方法
 
 ### 速读区论文标签
 - 本次无速读推荐。

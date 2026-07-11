@@ -1,0 +1,54 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-11T20:38:10.048467+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.06609v1",
+      "source": "arxiv",
+      "title": "D2PO: Optimizing Diffusion Samplers via Dynamic Preference",
+      "abstract": "We propose D2PO (Dynamic Direct Preference Optimization), a principled framework for optimizing diffusion sampling policies with respect to timestep schedules and classifier-free guidance (CFG) weights. Our work is motivated by a fundamental limitation of existing student-teacher regression frameworks; low-NFE student samplers are trained to mimic high-NFEteachers, often sacrificing high-frequency texture fidelity while preserving coarse global structures, thereby misaligning the sampler with perceptual quality. D2PO addresses this challenge by reformulating sampler optimization as a preference-based alignment problem, leveraging the Direct Preference Optimization (DPO) framework. To make DPO applicable to diffusion samplers, we model the sampling policy as an energy-based model (EBM), transforming preference comparisons into tractable energy differences. We further introduce a novel energy formulation derived directly from the pretrained score network, enabling preference evaluation in perturbed spaces that jointly capture structural consistency and fine-grained details. Moreover, we introduce dynamic preferences, where the preferred samples used for alignment progressively improve as the sampling policies are learned. This self-improving mechanism replaces rigid static teacher supervision with an iterative, preference-guided refinement process, providing progressively stronger alignment signals. Extensive experiments demonstrate that D2PO aligns diffusion samplers with perceptual quality more faithfully, unlocking the full potential of high-quality teachers and consistently outperforming conventional regression-based schedulers under low-NFE constraints.",
+      "authors": [
+        "Jinkyu Kim",
+        "Jinyoung Choi",
+        "Bohyung Han"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-07T06:05:42+00:00",
+      "link": "https://arxiv.org/pdf/2607.06609v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses Dynamic Direct Preference Optimization to improve diffusion sampler quality, akin to RL-based alignment",
+      "llm_evidence_cn": "使用动态直接偏好优化改进扩散采样器质量，类似于基于RL的对齐方法",
+      "llm_evidence": "使用动态直接偏好优化改进扩散采样器质量，类似于基于RL的对齐方法",
+      "canonical_evidence": "使用动态直接偏好优化改进扩散采样器质量，类似于基于RL的对齐方法",
+      "llm_tldr_en": "Proposes D2PO, a framework that reformulates diffusion sampler optimization as a preference-based alignment problem using DPO, improving image fidelity and perceptual quality over standard regression-based distillation.",
+      "llm_tldr_cn": "针对低步数扩散采样器通过回归蒸馏导致高频纹理丢失的问题，论文提出D2PO，将采样策略优化转化为基于偏好对齐的问题，利用直接偏好优化（DPO）来优化采样时间表和引导权重。实验证明，D2PO生成的图像在纹理细节和感知质量上显著优于传统蒸馏方法，为扩散模型的轻量化部署提供了新思路。",
+      "llm_tldr": "针对低步数扩散采样器通过回归蒸馏导致高频纹理丢失的问题，论文提出D2PO，将采样策略优化转化为基于偏好对齐的问题，利用直接偏好优化（DPO）来优化采样时间表和引导权重。实验证明，D2PO生成的图像在纹理细节和感知质量上显著优于传统蒸馏方法，为扩散模型的轻量化部署提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

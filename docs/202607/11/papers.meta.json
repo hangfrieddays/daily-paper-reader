@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-11",
+  "date": "2026-07-11",
+  "generated_at": "2026-07-11T20:39:52",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/11/2607.06609v1-d2po-optimizing-diffusion-samplers-via-dynamic-preference",
+      "section": "deep",
+      "title_en": "D2PO: Optimizing Diffusion Samplers via Dynamic Preference",
+      "authors": "Jinkyu Kim, Jinyoung Choi, Bohyung Han",
+      "date": "2026-07-07",
+      "pdf": "https://arxiv.org/pdf/2607.06609v1",
+      "score": "8.0",
+      "evidence": "使用动态直接偏好优化改进扩散采样器质量，类似于基于RL的对齐方法",
+      "tldr": "现有扩散采样器通过学生-教师回归方法优化，低NFE采样器牺牲高频纹理保真度，与感知质量对齐不足。本文提出D2PO框架，将采样器优化转化为基于偏好的对齐问题，利用直接偏好优化（DPO）并将采样策略建模为能量模型，使偏好比较转化为可处理的能量差异。引入从预训练分数网络导出的新颖能量公式，在扰动空间中评估偏好以捕捉结构一致性和细节。进一步提出动态偏好，随采样策略学习逐步提升偏好样本质量，实现自我改进。实验表明D2PO更忠实对齐感知质量，在低NFE约束下持续优于传统基于回归的调度器。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We propose D2PO (Dynamic Direct Preference Optimization), a principled framework for optimizing diffusion sampling policies with respect to timestep schedules and classifier-free guidance (CFG) weights. Our work is motivated by a fundamental limitation of existing student-teacher regression frameworks; low-NFE student samplers are trained to mimic high-NFEteachers, often sacrificing high-frequency texture fidelity while preserving coarse global structures, thereby misaligning the sampler with perceptual quality. D2PO addresses this challenge by reformulating sampler optimization as a preference-based alignment problem, leveraging the Direct Preference Optimization (DPO) framework. To make DPO applicable to diffusion samplers, we model the sampling policy as an energy-based model (EBM), transforming preference comparisons into tractable energy differences. We further introduce a novel energy formulation derived directly from the pretrained score network, enabling preference evaluation in perturbed spaces that jointly capture structural consistency and fine-grained details. Moreover, we introduce dynamic preferences, where the preferred samples used for alignment progressively improve as the sampling policies are learned. This self-improving mechanism replaces rigid static teacher supervision with an iterative, preference-guided refinement process, providing progressively stronger alignment signals. Extensive experiments demonstrate that D2PO aligns diffusion samplers with perceptual quality more faithfully, unlocking the full potential of high-quality teachers and consistently outperforming conventional regression-based schedulers under low-NFE constraints.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
