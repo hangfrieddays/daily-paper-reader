@@ -6,21 +6,21 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-11
-- 运行时间：2026-07-11 20:39:46 UTC
+- 最新运行日期：2026-07-12
+- 运行时间：2026-07-12 20:13:22 UTC
 - 运行状态：成功
 - 本次总论文数：1
 - 精读区：1
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读一篇扩散模型采样优化论文。D2PO通过动态偏好学习显著提升采样效率与生成质量。建议关注该方法的具体实现及在图像生成任务中的复现效果。
-- 详情：[/202607/11/README](/202607/11/README)
+今日精读1篇聚焦扩散模型推理时缩放的新方法《Flash-BoN》，评分8.0，核心是即时草稿生成技术。值得关注的方向：通过即时草稿机制实现扩散模型推理时的高效缩放，显著降低计算成本。建议关注该文方法在图像生成任务中的实际加速效果，并对比传统缩放策略的优劣。
+- 详情：[/202607/12/README](/202607/12/README)
 
 ### 精读区论文标签
-1. [D2PO: Optimizing Diffusion Samplers via Dynamic Preference](/202607/11/2607.06609v1-d2po-optimizing-diffusion-samplers-via-dynamic-preference)  
+1. [Flash-BoN: Instant Drafts for Inference-Time Scaling in Diffusion Models](/202607/12/2607.04461v1-flash-bon-instant-drafts-for-inference-time-scaling-in-diffusion-models)  
    标签：评分：8.0/10、query:image-gen-rl
-   evidence：使用动态直接偏好优化改进扩散采样器质量，类似于基于RL的对齐方法
+   evidence：使用最佳N采样强化学习在文本到图像生成中进行推理时扩展
 
 ### 速读区论文标签
 - 本次无速读推荐。

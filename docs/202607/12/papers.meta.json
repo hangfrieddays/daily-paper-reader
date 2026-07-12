@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-12",
+  "date": "2026-07-12",
+  "generated_at": "2026-07-12T20:13:28",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/12/2607.04461v1-flash-bon-instant-drafts-for-inference-time-scaling-in-diffusion-models",
+      "section": "deep",
+      "title_en": "Flash-BoN: Instant Drafts for Inference-Time Scaling in Diffusion Models",
+      "authors": "Ruchit Rawal, Reza Shirkavand, Sayak Paul, Yuxin Wen, Heng Huang, Yizheng Chen, Tom Goldstein, Gowthami Somepalli",
+      "date": "2026-07-05",
+      "pdf": "https://arxiv.org/pdf/2607.04461v1",
+      "score": "8.0",
+      "evidence": "使用最佳N采样强化学习在文本到图像生成中进行推理时扩展",
+      "tldr": "扩散模型推理时缩放现有方法忽略生成成本，墙钟评估下简单BoN已不输引导搜索。为此提出Flash-BoN，通过时间步截断、层跳过和激活代理生成大量廉价草稿，经多阶段验证选择最佳草稿精炼。在固定墙钟预算下，Flash-BoN在多个基准和模型规模上超越所有基线，增益随模型规模增大。该方法与正交技术结合可进一步提升，且候选多样性是关键因素。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Inference-time scaling for text-to-image generation has progressed from simple Best-of-$N$ (BoN) sampling to guided search methods that verify and steer candidate trajectories at intermediate denoising steps. These approaches focus on when and how often to verify during denoising but largely treat the cost of generation itself as fixed. Moreover, the standard practice of comparing methods by number of function evaluations (NFEs) counts only denoising forward passes and ignores verifier overhead, which can distort efficiency rankings. We show that under wall-clock evaluation, simple BoN already matches or outperforms several guided search techniques, suggesting that compute is better spent on broader exploration than on repeated intermediate verification. This motivates Flash-BoN, which generates a large pool of inexpensive draft candidates by combining three complementary acceleration knobs: timestep truncation, layer skipping, and activation proxies into a single configuration optimized once per model. An efficient multi-stage verification procedure then identifies the most promising draft, which is refined at full quality. Across three benchmarks and three model scales, Flash-BoN consistently outperforms all baselines under fixed wall-clock budgets, with gains that grow at larger model scales (+8% AUC). We further show that our strategy combines well and improves existing orthogonal techniques such as reflection-based prompt optimization (+16% AUC). The gains correlate with increased candidate diversity, which also enables draft-guided selection to accelerate RL post-training convergence.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

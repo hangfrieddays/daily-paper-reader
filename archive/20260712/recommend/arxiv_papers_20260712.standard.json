@@ -1,0 +1,58 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-12T20:12:05.124966+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.04461v1",
+      "source": "arxiv",
+      "title": "Flash-BoN: Instant Drafts for Inference-Time Scaling in Diffusion Models",
+      "abstract": "Inference-time scaling for text-to-image generation has progressed from simple Best-of-$N$ (BoN) sampling to guided search methods that verify and steer candidate trajectories at intermediate denoising steps. These approaches focus on when and how often to verify during denoising but largely treat the cost of generation itself as fixed. Moreover, the standard practice of comparing methods by number of function evaluations (NFEs) counts only denoising forward passes and ignores verifier overhead, which can distort efficiency rankings. We show that under wall-clock evaluation, simple BoN already matches or outperforms several guided search techniques, suggesting that compute is better spent on broader exploration than on repeated intermediate verification. This motivates Flash-BoN, which generates a large pool of inexpensive draft candidates by combining three complementary acceleration knobs: timestep truncation, layer skipping, and activation proxies into a single configuration optimized once per model. An efficient multi-stage verification procedure then identifies the most promising draft, which is refined at full quality. Across three benchmarks and three model scales, Flash-BoN consistently outperforms all baselines under fixed wall-clock budgets, with gains that grow at larger model scales (+8% AUC). We further show that our strategy combines well and improves existing orthogonal techniques such as reflection-based prompt optimization (+16% AUC). The gains correlate with increased candidate diversity, which also enables draft-guided selection to accelerate RL post-training convergence.",
+      "authors": [
+        "Ruchit Rawal",
+        "Reza Shirkavand",
+        "Sayak Paul",
+        "Yuxin Wen",
+        "Heng Huang",
+        "Yizheng Chen",
+        "Tom Goldstein",
+        "Gowthami Somepalli"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-05T19:02:32+00:00",
+      "link": "https://arxiv.org/pdf/2607.04461v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses Best-of-N reinforcement learning for inference-time scaling in text-to-image generation",
+      "llm_evidence_cn": "使用最佳N采样强化学习在文本到图像生成中进行推理时扩展",
+      "llm_evidence": "使用最佳N采样强化学习在文本到图像生成中进行推理时扩展",
+      "canonical_evidence": "使用最佳N采样强化学习在文本到图像生成中进行推理时扩展",
+      "llm_tldr_en": "Proposes Flash-BoN, a method to generate instant drafts for efficient Best-of-N sampling in text-to-image diffusion models, improving quality with minimal overhead.",
+      "llm_tldr_cn": "本文针对扩散模型推理时扩展的高成本问题，提出Flash-BoN方法，通过生成即时草稿实现高效的最佳N采样，在文本到图像生成中以更少计算开销提升图像质量，表明简单RL采样策略可匹敌复杂引导搜索方法。",
+      "llm_tldr": "本文针对扩散模型推理时扩展的高成本问题，提出Flash-BoN方法，通过生成即时草稿实现高效的最佳N采样，在文本到图像生成中以更少计算开销提升图像质量，表明简单RL采样策略可匹敌复杂引导搜索方法。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
