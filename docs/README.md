@@ -6,24 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-12
-- 运行时间：2026-07-12 20:13:22 UTC
+- 最新运行日期：2026-07-13
+- 运行时间：2026-07-13 20:25:20 UTC
 - 运行状态：成功
 - 本次总论文数：1
-- 精读区：1
-- 速读区：0
+- 精读区：0
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读1篇聚焦扩散模型推理时缩放的新方法《Flash-BoN》，评分8.0，核心是即时草稿生成技术。值得关注的方向：通过即时草稿机制实现扩散模型推理时的高效缩放，显著降低计算成本。建议关注该文方法在图像生成任务中的实际加速效果，并对比传统缩放策略的优劣。
-- 详情：[/202607/12/README](/202607/12/README)
+今天速读了一篇利用视觉语言模型从三视图生成3D CAD的创新论文。研究展示了将工程正交视图自动转化为三维模型的新路径，有望显著提升设计效率。建议关注该方法向复杂装配和主流CAD软件集成的进展。
+- 详情：[/202607/13/README](/202607/13/README)
 
 ### 精读区论文标签
-1. [Flash-BoN: Instant Drafts for Inference-Time Scaling in Diffusion Models](/202607/12/2607.04461v1-flash-bon-instant-drafts-for-inference-time-scaling-in-diffusion-models)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：使用最佳N采样强化学习在文本到图像生成中进行推理时扩展
+- 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Ortho2CAD: 3D CAD generation from orthographic drawings using vision language models](/202607/13/2607.08891v1-ortho2cad-3d-cad-generation-from-orthographic-drawings-using-vision-language-models)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：明确使用几何强化学习训练视觉语言模型从正交投影图生成CAD
 
 
 <div class="dpr-home-promo-card">

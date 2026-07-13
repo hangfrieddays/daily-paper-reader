@@ -1,0 +1,55 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-13T20:24:31.400733+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.08891v1",
+      "source": "arxiv",
+      "title": "Ortho2CAD: 3D CAD generation from orthographic drawings using vision language models",
+      "abstract": "Engineering design intent is often communicated through rasterized orthographic drawings. However, downstream workflows inherently require editable and parametrically defined 3D computer-aided design (CAD) models. To bridge this gap, we introduce Ortho2CAD, a vision-language model (VLM) specifically designed to translate rasterized orthographic drawings directly into editable CadQuery code, which can then be seamlessly converted into 3D CAD models. To train the model effectively, we utilize supervised fine-tuning (SFT) for instances where explicit CadQuery code labels already exist, and we apply geometry-grounded reinforcement learning (RL) to optimize the model in scenarios where ground-truth labels are absent. To enable learning at scale, we create a pythonOCC-based drawing generator that renders first-angle orthographic projections from STEP models, complete with dashed hidden lines and key dimensions. On existing datasets encompassing settings both with and without CadQuery supervision, we generate orthographic drawings and show that our model produces 100% syntactically valid code. Moreover, it achieves a 3D CAD intersection-over-union (IoU) accuracy that surpasses all baselines, with an average relative improvement of over 7% compared directly against the next best performing model. We show that leveraging VLMs with SFT and RL techniques can effectively pave the way forward for orthographic drawing to 3D CAD reconstruction. Our implementation is available at https://github.com/AdityaJoglekar/Ortho2CAD.",
+      "authors": [
+        "Aditya Joglekar",
+        "Amit Regmi",
+        "Kenji Shimada",
+        "Levent Burak Kara"
+      ],
+      "primary_category": "cs.CE",
+      "categories": [
+        "cs.CE"
+      ],
+      "published": "2026-07-09T19:32:49+00:00",
+      "link": "https://arxiv.org/pdf/2607.08891v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "explicitly uses geometry-grounded RL to train a VLM for CAD generation from orthographic drawing images",
+      "llm_evidence_cn": "明确使用几何强化学习训练视觉语言模型从正交投影图生成CAD",
+      "llm_evidence": "明确使用几何强化学习训练视觉语言模型从正交投影图生成CAD",
+      "canonical_evidence": "明确使用几何强化学习训练视觉语言模型从正交投影图生成CAD",
+      "llm_tldr_en": "Ortho2CAD uses supervised fine-tuning and reinforcement learning to translate orthographic drawings into 3D CAD models, optimizing with RL when ground-truth labels are absent.",
+      "llm_tldr_cn": "该论文针对从光栅化正交投影图生成3D CAD模型的任务，提出Ortho2CAD视觉语言模型。在训练时，对于有标签数据采用监督微调，对于无标签数据则引入基于几何约束的强化学习来优化模型。实验表明，这种方法在缺乏人工标注时仍能有效提升生成质量，为图像到3D模型的自动转换提供了新思路。",
+      "llm_tldr": "该论文针对从光栅化正交投影图生成3D CAD模型的任务，提出Ortho2CAD视觉语言模型。在训练时，对于有标签数据采用监督微调，对于无标签数据则引入基于几何约束的强化学习来优化模型。实验表明，这种方法在缺乏人工标注时仍能有效提升生成质量，为图像到3D模型的自动转换提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

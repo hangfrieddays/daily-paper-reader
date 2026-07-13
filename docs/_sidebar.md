@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-13 <!--dpr-date:20260713-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/13/2607.08891v1-ortho2cad-3d-cad-generation-from-orthographic-drawings-using-vision-language-models" data-sidebar-item="{&quot;title&quot;: &quot;Ortho2CAD: 3D CAD generation from orthographic drawings using vision language models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.08891v1-ortho2cad-3d-cad-generation-from-orthographic-drawings-using-vision-language-models&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;明确使用几何强化学习训练视觉语言模型从正交投影图生成CAD&quot;}">Ortho2CAD: 3D CAD generation from orthographic drawings using vision language models</a>
   * 2026-07-12 <!--dpr-date:20260712-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/12/2607.04461v1-flash-bon-instant-drafts-for-inference-time-scaling-in-diffusion-models" data-sidebar-item="{&quot;title&quot;: &quot;Flash-BoN: Instant Drafts for Inference-Time Scaling in Diffusion Models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.04461v1-flash-bon-instant-drafts-for-inference-time-scaling-in-diffusion-models&quot;, &quot;score&quot;: &quot;8.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用最佳N采样强化学习在文本到图像生成中进行推理时扩展&quot;}">Flash-BoN: Instant Drafts for Inference-Time Scaling in Diffusion Models</a>
