@@ -6,24 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-13
-- 运行时间：2026-07-13 20:25:20 UTC
+- 最新运行日期：2026-07-14
+- 运行时间：2026-07-14 21:24:49 UTC
 - 运行状态：成功
 - 本次总论文数：1
-- 精读区：0
-- 速读区：1
+- 精读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今天速读了一篇利用视觉语言模型从三视图生成3D CAD的创新论文。研究展示了将工程正交视图自动转化为三维模型的新路径，有望显著提升设计效率。建议关注该方法向复杂装配和主流CAD软件集成的进展。
-- 详情：[/202607/13/README](/202607/13/README)
+今日精读一篇高价值论文，提出利用预训练多模态大模型作为零样本奖励模型来优化文本到图像生成。  
+核心发现：该方法无需额外训练即可评估图像与文本的一致性，为提升生成质量提供新思路。  
+建议关注该技术如何落地到实际生成模型反馈中，尤其适用于需要精准控制图像-文本对齐的场景。
+- 详情：[/202607/14/README](/202607/14/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Read It Back: Pretrained MLLMs Are Zero-Shot Reward Models for Text-to-Image Generation](/202607/14/2607.11886v1-read-it-back-pretrained-mllms-are-zero-shot-reward-models-for-text-to-image-generation)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：提出SpectraReward，一种用于文本到图像生成强化学习的无需训练的奖励函数
 
 ### 速读区论文标签
-1. [Ortho2CAD: 3D CAD generation from orthographic drawings using vision language models](/202607/13/2607.08891v1-ortho2cad-3d-cad-generation-from-orthographic-drawings-using-vision-language-models)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：明确使用几何强化学习训练视觉语言模型从正交投影图生成CAD
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">

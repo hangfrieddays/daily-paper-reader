@@ -1,0 +1,56 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-14T21:23:45.840981+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.11886v1",
+      "source": "arxiv",
+      "title": "Read It Back: Pretrained MLLMs Are Zero-Shot Reward Models for Text-to-Image Generation",
+      "abstract": "In this paper, we propose SpectraReward, a training-free reward function that turns pretrained MLLMs into off-the-shelf reward models for image-generation reinforcement learning. Instead of asking the MLLM to judge a generated image or answer decomposed verification questions, SpectraReward measures how well the original prompt can be recovered from the generated image through a single image-conditioned, teacher-forced forward pass. We use the average image-conditioned prompt log-likelihood as the reward, directly reusing the MLLM's pretrained image-text alignment ability without preference labels, reward-model fine-tuning. We further introduce Self-SpectraReward, a special case for unified multimodal models where the policy's own understanding branch serves as the reward model for its generation branch, forming a closed-loop self-improving framework without external reward models or external knowledge. Extensive experiments validate SpectraReward through a broad image-generation RL study covering two diffusion models, three RL algorithms, nine reward MLLM backbones from four MLLM families spanning 4B to 235B parameters, and five out-of-distribution text-to-image benchmarks. Results show that both SpectraReward and Self-SpectraReward significantly and consistently improve generation performance and outperform prior MLLM-derived reward training methods. Further analysis reveals that larger reward MLLMs are not always better, while Self-SpectraReward can match or surpass much larger external reward models, suggesting that reward-policy alignment is a key factor for effective image-generation RL. Project Page: https://huangrh99.github.io/SpectraReward/",
+      "authors": [
+        "Runhui Huang",
+        "Qihui Zhang",
+        "Zhe Liu",
+        "Yu Gao",
+        "Jie Wu",
+        "Hengshuang Zhao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-13T17:59:58+00:00",
+      "link": "https://arxiv.org/pdf/2607.11886v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "proposes SpectraReward, a training-free reward function for RL in text-to-image generation",
+      "llm_evidence_cn": "提出SpectraReward，一种用于文本到图像生成强化学习的无需训练的奖励函数",
+      "llm_evidence": "提出SpectraReward，一种用于文本到图像生成强化学习的无需训练的奖励函数",
+      "canonical_evidence": "提出SpectraReward，一种用于文本到图像生成强化学习的无需训练的奖励函数",
+      "llm_tldr_en": "SpectraReward uses MLLMs as zero-shot reward models for image-generation RL, measuring prompt recoverability to provide rewards without training, outperforming supervised baselines.",
+      "llm_tldr_cn": "针对图像生成强化学习中奖励函数需要大量标注或训练的问题，本文提出SpectraReward，将预训练多模态大语言模型直接用作零样本奖励模型。它通过衡量生成图像能否恢复原始提示词来计算奖励，无需偏好标签或微调。实验表明该方法在多种图像生成任务上优于有监督基线，为图像生成强化学习提供了一种高效且通用的奖励设计范式。",
+      "llm_tldr": "针对图像生成强化学习中奖励函数需要大量标注或训练的问题，本文提出SpectraReward，将预训练多模态大语言模型直接用作零样本奖励模型。它通过衡量生成图像能否恢复原始提示词来计算奖励，无需偏好标签或微调。实验表明该方法在多种图像生成任务上优于有监督基线，为图像生成强化学习提供了一种高效且通用的奖励设计范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
