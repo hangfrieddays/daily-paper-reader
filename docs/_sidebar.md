@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-18 <!--dpr-date:20260718-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/18/2607.14272v1-lyapunov-guidance-a-unified-framework-for-stabilizing-generative-flows" data-sidebar-item="{&quot;title&quot;: &quot;Lyapunov Guidance: A Unified Framework for Stabilizing Generative Flows&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.14272v1-lyapunov-guidance-a-unified-framework-for-stabilizing-generative-flows&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;将奖励引导与李雅普诺夫控制统一用于生成流&quot;}">Lyapunov Guidance: A Unified Framework for Stabilizing Generative Flows</a>
   * 2026-07-17 <!--dpr-date:20260717-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/17/2607.14962v1-multi-axis-maxk-reinforcement-learning-for-representative-diversity-in-text-to-image-generation" data-sidebar-item="{&quot;title&quot;: &quot;Multi-Axis Max@K Reinforcement Learning for Representative Diversity in Text-to-Image Generation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.14962v1-multi-axis-maxk-reinforcement-learning-for-representative-diversity-in-text-to-image-generation&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;直接应用强化学习提高文本到图像生成的多样性&quot;}">Multi-Axis Max@K Reinforcement Learning for Representative Diversity in Text-to-Image Generation</a>
