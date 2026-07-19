@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-19 <!--dpr-date:20260719-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/19/2607.14398v1-integration-matters-rollout-based-training-for-constrained-diffusion-models" data-sidebar-item="{&quot;title&quot;: &quot;Integration Matters: Rollout-Based Training for Constrained Diffusion Models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.14398v1-integration-matters-rollout-based-training-for-constrained-diffusion-models&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;利用在线滚动这一强化学习技术训练约束扩散模型，应用于图像生成&quot;}">Integration Matters: Rollout-Based Training for Constrained Diffusion Models</a>
   * 2026-07-18 <!--dpr-date:20260718-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/18/2607.14272v1-lyapunov-guidance-a-unified-framework-for-stabilizing-generative-flows" data-sidebar-item="{&quot;title&quot;: &quot;Lyapunov Guidance: A Unified Framework for Stabilizing Generative Flows&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.14272v1-lyapunov-guidance-a-unified-framework-for-stabilizing-generative-flows&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;将奖励引导与李雅普诺夫控制统一用于生成流&quot;}">Lyapunov Guidance: A Unified Framework for Stabilizing Generative Flows</a>

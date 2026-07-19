@@ -6,26 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-18
-- 运行时间：2026-07-18 19:52:13 UTC
+- 最新运行日期：2026-07-19
+- 运行时间：2026-07-19 19:43:15 UTC
 - 运行状态：成功
 - 本次总论文数：1
-- 精读区：1
-- 速读区：0
+- 精读区：0
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读1篇高分论文《Lyapunov Guidance: A Unified Framework for Stabilizing Generative Flows》，提出用李雅普诺夫理论统一稳定生成模型的新框架。
-最值得关注的方向是生成流模型的稳定性控制和理论统一，该框架有望解决生成过程中的发散问题。
-建议有兴趣的读者重点关注该框架在扩散模型和流匹配中的应用潜力，可结合实验复现验证。
-- 详情：[/202607/18/README](/202607/18/README)
+今天筛选1篇速读论文，聚焦扩散模型在约束条件下的训练优化。值得关注的是，该研究通过rollout训练策略提升模型对复杂约束的满足能力，为可控生成提供新思路。建议读者重点关注其约束建模方法与实验设计，可应用于图像生成、运动规划等场景。
+- 详情：[/202607/19/README](/202607/19/README)
 
 ### 精读区论文标签
-1. [Lyapunov Guidance: A Unified Framework for Stabilizing Generative Flows](/202607/18/2607.14272v1-lyapunov-guidance-a-unified-framework-for-stabilizing-generative-flows)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：将奖励引导与李雅普诺夫控制统一用于生成流
+- 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Integration Matters: Rollout-Based Training for Constrained Diffusion Models](/202607/19/2607.14398v1-integration-matters-rollout-based-training-for-constrained-diffusion-models)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：利用在线滚动这一强化学习技术训练约束扩散模型，应用于图像生成
 
 
 <div class="dpr-home-promo-card">

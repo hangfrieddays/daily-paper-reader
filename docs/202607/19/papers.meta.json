@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-19",
+  "date": "2026-07-19",
+  "generated_at": "2026-07-19T19:43:21",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/19/2607.14398v1-integration-matters-rollout-based-training-for-constrained-diffusion-models",
+      "section": "quick",
+      "title_en": "Integration Matters: Rollout-Based Training for Constrained Diffusion Models",
+      "authors": "Xiaoxuan Liang, Saeid Naderiparizi, Berend Zwartsenberg, Frank Wood",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.14398v1",
+      "score": "7.0",
+      "evidence": "利用在线滚动这一强化学习技术训练约束扩散模型，应用于图像生成",
+      "tldr": "约束扩散模型面临训练与采样分布不匹配问题。现有方法要么在训练时优化但忽略采样轨迹，要么在采样时校正但引入分布偏移且需要昂贵调参。本文提出基于在线rollout的微调框架，通过固定噪声调度进行微分，将约束引导融入训练过程，从而对齐训练与采样。实验表明，该方法在保持采样质量的同时，显著提升了约束满足度。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Constrained generative models aim to produce samples that satisfy complex feasibility constraints while remaining faithful to the data distribution. Existing constrained generation methods typically enforce constraints either through training-time optimization or sampling-time correction. Training-time optimization approaches optimize on states induced by the training distribution, which can differ substantially from those encountered during sampling. Sampling-time correction methods instead modify the sampling process at inference, introducing distribution shift and requiring expensive tuning, particularly for few-step sampling. We propose a fine-tuning framework that incorporates constraint guidance obtained through online rollout into the training process, which aligns training with sampling by differentiating through the fixed noise schedule used to numerically integrate the denoising process. This exposes the model to violations that arise along the denoising trajectory and aligns diffusion learning with the sampling process. Experiments across multiple tasks show that our method improves constraint satisfaction while maintaining competitive sampling quality compared to prior methods.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
