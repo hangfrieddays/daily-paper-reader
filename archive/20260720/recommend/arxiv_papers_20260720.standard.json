@@ -1,0 +1,56 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-20T21:16:24.342573+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.15740v1",
+      "source": "arxiv",
+      "title": "Debiasing Text-to-Image Evaluation via Implicit Cultural Alignment Reward Modeling",
+      "abstract": "As Text-to-Image (T2I) systems rapidly advance, evaluating the cultural authenticity of synthesized content has become increasingly important for fair and trustworthy generative AI. Existing T2I evaluation metrics and multimodal judges often rely on visual-semantic representations that underrepresent implicit cultural norms, leading to biased preference judgments and the omission of fine-grained cultural cues. In addition, visual question answering (VQA)-based evaluators typically depend on autoregressive text generation, which limits their scalability for real-time reward modeling. To address these limitations, we introduce an Implicit Cultural Alignment Reward Model built upon a lightweight 4.2-billion-parameter Multimodal Large Language Model (MLLM). Our framework integrates an Implicit Cultural Probe with a Skip-connection Cross-Attention (SkipCA) mechanism, enabling late-stage semantic features to directly attend to early-stage visual representations and better preserve culturally salient details. Evaluations on 3,323 challenging and carefully curated image pairs from the CulturalFrames benchmark show that our approach achieves 80.54% pairwise accuracy, with Pearson and Kendall correlation coefficients of 0.546 and 0.377, respectively, outperforming representative vision-language metrics and MLLM-based evaluators. Moreover, by bypassing autoregressive text generation, our model processes each evaluation in 0.21 seconds under our local inference setup, achieving a $10\\times$ speedup over standard VQA-based evaluators. These results suggest that the proposed reward model can provide an efficient and culturally aware scalar signal for preference optimization pipelines such as Reinforcement Learning from Human Feedback and Direct Preference Optimization.",
+      "authors": [
+        "Bo-An Chang",
+        "Yu-Chih Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG",
+        "cs.MM"
+      ],
+      "published": "2026-07-17T08:23:03+00:00",
+      "link": "https://arxiv.org/pdf/2607.15740v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reward modeling for T2I evaluation",
+      "llm_evidence_cn": "为文本到图像评估设计奖励模型",
+      "llm_evidence": "为文本到图像评估设计奖励模型",
+      "canonical_evidence": "为文本到图像评估设计奖励模型",
+      "llm_tldr_en": "Proposes an implicit cultural alignment reward model for debiasing text-to-image evaluation, directly relevant to designing reward functions for image generation tasks.",
+      "llm_tldr_cn": "针对文本到图像（T2I）评估中的文化偏差问题，提出了一种隐式文化对齐奖励模型（Implicit Cultural Alignment Reward Model），基于轻量级多模态大语言模型构建，能够实时对生成图像的文化真实性进行偏好评分。该方法直接关联到为图像生成任务设计奖励函数的需求，可扩展用于T2I模型的训练或评估中的奖励信号。在多个跨文化数据集上验证了其有效性和效率。",
+      "llm_tldr": "针对文本到图像（T2I）评估中的文化偏差问题，提出了一种隐式文化对齐奖励模型（Implicit Cultural Alignment Reward Model），基于轻量级多模态大语言模型构建，能够实时对生成图像的文化真实性进行偏好评分。该方法直接关联到为图像生成任务设计奖励函数的需求，可扩展用于T2I模型的训练或评估中的奖励信号。在多个跨文化数据集上验证了其有效性和效率。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
