@@ -1,0 +1,136 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-21T21:08:14.140728+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.16409v1",
+      "source": "arxiv",
+      "title": "Think, Plan, Paint: Layout-Aware Reasoning for Controllable Image Generation in Unified Models",
+      "abstract": "Unified Multimodal Large Language Models (MLLMs) offer a promising paradigm for unifying visual understanding and generation, yet they still struggle to follow complex spatial instructions and logical constraints in controllable image generation. To address this gap, we present ATLAS, a unified framework that equips MLLMs with a human-like \"Think, Plan, and Paint\" paradigm. We adopt layout as the shared representation that connects the three stages, enabling the model to reason about spatial requirements, plan explicit object arrangements, and render the final image. We further improve plan-to-image fidelity with reinforcement-learning-based layout alignment. We instantiate ATLAS at 7B and 80B scales, achieving state-of-the-art performance among MLLMs on image generation benchmarks and an average 65.31% improvement over existing layout-based unified MLLMs. On spatially related tasks, ATLAS obtains an average 23.06% gain over the base models. Through the same layout interface, ATLAS also supports instruction-guided editing and multimodal grounding. We further introduce ATLAS-Reasoning, a benchmark for evaluating generation under complex spatial instructions.",
+      "authors": [
+        "Junhao Liu",
+        "Jian-Wei Zhang",
+        "Tao Huang",
+        "Miles Yang",
+        "Zhao Zhong",
+        "Liefeng Bo"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-17T18:02:44+00:00",
+      "link": "https://arxiv.org/pdf/2607.16409v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Reinforcement-learning-based layout alignment for controllable image generation",
+      "llm_evidence_cn": "基于强化学习的布局对齐用于可控图像生成",
+      "llm_evidence": "基于强化学习的布局对齐用于可控图像生成",
+      "canonical_evidence": "基于强化学习的布局对齐用于可控图像生成",
+      "llm_tldr_en": "ATLAS framework equips MLLMs with Think-Plan-Paint paradigm using layout as shared representation, and improves plan-to-image fidelity via reinforcement-learning-based layout alignment. Directly applies RL to image generation for better controllability.",
+      "llm_tldr_cn": "该论文针对统一多模态大模型在可控图像生成中空间指令遵循困难的问题，提出ATLAS框架。采用“思考-规划-绘制”范式，以布局为共同表示，并通过基于强化学习的布局对齐提升规划到图像的忠实度。在7B和80B规模上达到最先进结果。该方法直接展示了强化学习改善图像生成质量的可行性。",
+      "llm_tldr": "该论文针对统一多模态大模型在可控图像生成中空间指令遵循困难的问题，提出ATLAS框架。采用“思考-规划-绘制”范式，以布局为共同表示，并通过基于强化学习的布局对齐提升规划到图像的忠实度。在7B和80B规模上达到最先进结果。该方法直接展示了强化学习改善图像生成质量的可行性。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.16947v1",
+      "source": "arxiv",
+      "title": "When Physical Preferences Meet Semantic Constraints: Physical and Semantic Direct Preference Optimization for Text-to-Video Generation",
+      "abstract": "Text-to-video (T2V) generation models have achieved strong visual realism, but improving physical plausibility can come at the cost of semantic consistency with the input text. This tension arises because physical preference is typically determined by comparing dynamics between two videos, without accounting for whether either video faithfully depicts the scene specified by the prompt, making physical-semantic conflict a systematic tendency under this supervision paradigm. We formulate this challenge as a constrained preference optimization problem and propose Physical and Semantic Direct Preference Optimization (PSDPO), which modulates each preference pair's contribution based on the agreement between its physical and semantic signals. A gradient-level analysis shows that PSDPO bounds the semantic drift from conflicting pairs to a controllable residual, and further motivates a staged optimization protocol that provably reduces cumulative drift. The resulting method operates entirely within the standard DPO framework, requiring no auxiliary models or additional loss terms. Experiments show that PSDPO improves physical plausibility by up to $2\\times$ over the baseline on VideoPhy-2, while maintaining strong semantic consistency on VBench, achieving a more reliable balance than existing preference-based methods.",
+      "authors": [
+        "Siwei Meng",
+        "Yawei Luo",
+        "Shu Zhang",
+        "Ping Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-18T20:03:50+00:00",
+      "link": "https://arxiv.org/pdf/2607.16947v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Direct Preference Optimization for text-to-video generation, similar reward design for image generation",
+      "llm_evidence_cn": "文本到视频生成的直接偏好优化，类似图像生成的奖励设计",
+      "llm_evidence": "文本到视频生成的直接偏好优化，类似图像生成的奖励设计",
+      "canonical_evidence": "文本到视频生成的直接偏好优化，类似图像生成的奖励设计",
+      "llm_tldr_en": "Proposes Physical and Semantic Direct Preference Optimization (PSDPO) for text-to-video generation, addressing the trade-off between physical plausibility and semantic consistency by constraining preference optimization. This method is directly transferable to image generation with RL reward design.",
+      "llm_tldr_cn": "该论文针对文本到视频生成中物理合理性与语义一致性冲突的问题，提出物理与语义直接偏好优化（PSDPO）方法。通过约束偏好对的贡献，在提升物理合理性的同时保持语义忠实。该方法可推广至图像生成，为设计考虑多目标的强化学习奖励函数提供了新思路。实验表明在视频生成任务上达到最优性能。",
+      "llm_tldr": "该论文针对文本到视频生成中物理合理性与语义一致性冲突的问题，提出物理与语义直接偏好优化（PSDPO）方法。通过约束偏好对的贡献，在提升物理合理性的同时保持语义忠实。该方法可推广至图像生成，为设计考虑多目标的强化学习奖励函数提供了新思路。实验表明在视频生成任务上达到最优性能。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.16903v1",
+      "source": "arxiv",
+      "title": "A Method for Learning Value Systems in Generative AI",
+      "abstract": "Value-aware AI systems require explicit computational representations of human values (groundings) and their aggregation into value systems in order to align their decisions with ours. As such representations are difficult to elicit, value learning seeks to infer them by observing human behaviour. This work addresses the lack of grounded value learning methods in generative AI: existing approaches typically replicate human preferences without awareness of the multidimensional structure of value alignment, or lack principled value system elicitation methods. To address these gaps, we adapt a previously validated value system learning method to the generative AI setting, which, based on pairwise prompt-response preference data, simultaneously learns: i) an implementation of a grounding for a set of values given by a multi-objective reward model, and ii) a value system representation in the form of a weighted linear scalarization of the previous grounding model. To ensure that the learned value systems are based on coherent value representations, our algorithm dynamically prioritizes the grounding learning process. We evaluate the method against baselines and a contemporary method on prompt-response preference datasets. Results show competitive performance and minimal trade-offs against the baselines, while improving explainability.",
+      "authors": [
+        "Andrés Holgado-Sánchez",
+        "Holger Billhardt",
+        "Sascha Ossowski"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY",
+        "cs.AI",
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-07-18T17:37:50+00:00",
+      "link": "https://arxiv.org/pdf/2607.16903v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learns value systems from preferences for generative AI, applicable to reward design for image generation",
+      "llm_evidence_cn": "从偏好中学习价值系统用于生成式AI，可应用于图像生成的奖励设计",
+      "llm_evidence": "从偏好中学习价值系统用于生成式AI，可应用于图像生成的奖励设计",
+      "canonical_evidence": "从偏好中学习价值系统用于生成式AI，可应用于图像生成的奖励设计",
+      "llm_tldr_en": "Proposes a method to learn value systems from pairwise preference data in generative AI, enabling reward function design for image generation.",
+      "llm_tldr_cn": "该工作针对生成式AI中缺乏基于原则的价值学习方法的不足，提出了一种从成对偏好数据中学习价值系统的框架。该方法同时学习价值维度的实现和对齐强度，能够为图像生成等任务提供结构化的奖励信号。实验表明学习到的价值系统可以有效区分不同偏好的样本，有助于生成更符合人类价值观的内容。",
+      "llm_tldr": "该工作针对生成式AI中缺乏基于原则的价值学习方法的不足，提出了一种从成对偏好数据中学习价值系统的框架。该方法同时学习价值维度的实现和对齐强度，能够为图像生成等任务提供结构化的奖励信号。实验表明学习到的价值系统可以有效区分不同偏好的样本，有助于生成更符合人类价值观的内容。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
