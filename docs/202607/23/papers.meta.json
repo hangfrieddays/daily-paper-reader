@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-23",
+  "date": "2026-07-23",
+  "generated_at": "2026-07-23T19:57:03",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/23/2607.14595v2-magicprompt-ultra-lightweight-prompt-tuning-for-video-generation",
+      "section": "deep",
+      "title_en": "MagicPrompt: Ultra-Lightweight Prompt Tuning for Video Generation",
+      "authors": "Yinhan Zhang, Dingwei Tan, Xianghao Kong, Yue Ma, Yeying Jin, Anyi Rao",
+      "date": "2026-07-16",
+      "pdf": "https://arxiv.org/pdf/2607.14595v2",
+      "score": "8.0",
+      "evidence": "通过提示调优进行视频生成的奖励优化",
+      "tldr": "大规模视频扩散模型全微调计算成本高昂，现有参数高效微调方法在亿级模型上仍需大量可训练参数，且奖励训练易受噪声干扰。MagicPrompt通过注意力嵌入提示调优以极少量软提示引导生成，并引入双空间奖励反馈优化利用自监督潜在目标稳定条件引导训练。在少于1%可训练参数下达到竞争性能，显著降低训练成本，为视频生成下游任务提供轻量高效方案。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Large-scale video diffusion models deliver strong generation performance, but full fine-tuning for downstream tasks incurs prohibitive computational costs. Existing parameter-efficient fine-tuning (PEFT) methods have two critical flaws on billion-scale models: they still require substantial trainable parameters, and reward-based training suffers from noise-induced optimization instability in condition-guided tasks. We propose MagicPrompt, a lightweight framework that achieves extreme parameter efficiency and stable reward optimization. It first adopts Attention-Embedded Prompt Tuning, which steers generation via lightweight soft prompts with orders of magnitude fewer parameters while preserving pre-trained knowledge. It further introduces Dual-Space Reward Feedback Optimization, which uses self-supervised latent objectives to improve condition-guided reward training. Experiments show MagicPrompt reaches competitive performance with less than 1% trainable parameters and notably reduces training costs.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/23/2607.15273v2-meanflownft-bringing-forward-process-rl-to-average-velocity-generators",
+      "section": "deep",
+      "title_en": "MeanFlowNFT: Bringing Forward-Process RL to Average-Velocity Generators",
+      "authors": "Yushi Huang, Xiangxin Zhou, Jun Zhang, Liefeng Bo, Tianyu Pang",
+      "date": "2026-07-16",
+      "pdf": "https://arxiv.org/pdf/2607.15273v2",
+      "score": "8.0",
+      "evidence": "直接提出将前向过程强化学习应用于平均速度生成器（图像生成模型）",
+      "tldr": "MeanFlow生成器通过预测平均速度实现快速少步采样。现有前向过程RL框架DiffusionNFT难以直接应用于平均速度生成器。为此提出MeanFlowNFT，利用MeanFlow恒等式构建瞬时速度预测器，将DiffusionNFT目标适配到MeanFlow上，同时保留平均速度采样。实验表明，MeanFlowNFT在图像和视频生成任务中显著提升基线，4步生成的Wan 2.1 VBench得分84.33，超越50步的RL优化模型82.57。该方法首次将前向过程RL拓展至平均速度生成器，并继承了严格的政策改进保证。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "MeanFlow generators achieve fast few-step sampling by predicting average velocities over time intervals, making them attractive for efficient generation. Reinforcement learning (RL) has become a powerful way to align diffusion and flow models with human preferences and task-specific objectives. In particular, DiffusionNFT offers an efficient forward-process RL framework that does not require reverse-process trajectories or likelihood estimation. However, applying such RL methods to MeanFlow remains underexplored. DiffusionNFT optimizes instantaneous velocities, whereas MeanFlow samples with average velocities. To bridge this gap, we introduce MeanFlowNFT. Inspired by the MeanFlow identity, which bridges average and instantaneous velocities, we construct an induced instantaneous-velocity predictor. We apply the DiffusionNFT objective to this predictor, making reward optimization well-defined for MeanFlow. Sampling remains based on the average velocity, preserving MeanFlow's fast few-step generation. We further prove that MeanFlowNFT inherits DiffusionNFT's strict policy-improvement guarantee. Experiments on image and video generation show that MeanFlowNFT consistently improves baselines. Moreover, it outperforms prior state-of-the-art RL-tuned few-step generators on most metrics ($6$ of $8$ on SD3.5-M), and can even surpass multi-step RL-tuned diffusion while using only a few sampling steps. For instance, on Wan 2.1, $4$-step MeanFlowNFT reaches a VBench score of $84.33$, surpassing $50$-step LongCat-Video RL ($82.57$).",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,95 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-23T19:54:54.368328+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2607.14595v2",
+      "source": "arxiv",
+      "title": "MagicPrompt: Ultra-Lightweight Prompt Tuning for Video Generation",
+      "abstract": "Large-scale video diffusion models deliver strong generation performance, but full fine-tuning for downstream tasks incurs prohibitive computational costs. Existing parameter-efficient fine-tuning (PEFT) methods have two critical flaws on billion-scale models: they still require substantial trainable parameters, and reward-based training suffers from noise-induced optimization instability in condition-guided tasks. We propose MagicPrompt, a lightweight framework that achieves extreme parameter efficiency and stable reward optimization. It first adopts Attention-Embedded Prompt Tuning, which steers generation via lightweight soft prompts with orders of magnitude fewer parameters while preserving pre-trained knowledge. It further introduces Dual-Space Reward Feedback Optimization, which uses self-supervised latent objectives to improve condition-guided reward training. Experiments show MagicPrompt reaches competitive performance with less than 1% trainable parameters and notably reduces training costs.",
+      "authors": [
+        "Yinhan Zhang",
+        "Dingwei Tan",
+        "Xianghao Kong",
+        "Yue Ma",
+        "Yeying Jin",
+        "Anyi Rao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-16T05:46:59+00:00",
+      "link": "https://arxiv.org/pdf/2607.14595v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reward optimization for video generation using prompt tuning",
+      "llm_evidence_cn": "通过提示调优进行视频生成的奖励优化",
+      "llm_evidence": "通过提示调优进行视频生成的奖励优化",
+      "canonical_evidence": "通过提示调优进行视频生成的奖励优化",
+      "llm_tldr_en": "MagicPrompt achieves extreme parameter efficiency and stable reward optimization for video generation via Attention-Embedded Prompt Tuning and Dual-Space Reward.",
+      "llm_tldr_cn": "针对大规模视频扩散模型微调成本高、奖励优化不稳定的问题，MagicPrompt提出超轻量提示调优框架，通过注意力嵌入提示和双空间奖励机制，在极少量可训练参数下实现稳定奖励优化，显著提升生成质量，为生成式AI的奖励驱动训练提供了高效方案。",
+      "llm_tldr": "针对大规模视频扩散模型微调成本高、奖励优化不稳定的问题，MagicPrompt提出超轻量提示调优框架，通过注意力嵌入提示和双空间奖励机制，在极少量可训练参数下实现稳定奖励优化，显著提升生成质量，为生成式AI的奖励驱动训练提供了高效方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.15273v2",
+      "source": "arxiv",
+      "title": "MeanFlowNFT: Bringing Forward-Process RL to Average-Velocity Generators",
+      "abstract": "MeanFlow generators achieve fast few-step sampling by predicting average velocities over time intervals, making them attractive for efficient generation. Reinforcement learning (RL) has become a powerful way to align diffusion and flow models with human preferences and task-specific objectives. In particular, DiffusionNFT offers an efficient forward-process RL framework that does not require reverse-process trajectories or likelihood estimation. However, applying such RL methods to MeanFlow remains underexplored. DiffusionNFT optimizes instantaneous velocities, whereas MeanFlow samples with average velocities. To bridge this gap, we introduce MeanFlowNFT. Inspired by the MeanFlow identity, which bridges average and instantaneous velocities, we construct an induced instantaneous-velocity predictor. We apply the DiffusionNFT objective to this predictor, making reward optimization well-defined for MeanFlow. Sampling remains based on the average velocity, preserving MeanFlow's fast few-step generation. We further prove that MeanFlowNFT inherits DiffusionNFT's strict policy-improvement guarantee. Experiments on image and video generation show that MeanFlowNFT consistently improves baselines. Moreover, it outperforms prior state-of-the-art RL-tuned few-step generators on most metrics ($6$ of $8$ on SD3.5-M), and can even surpass multi-step RL-tuned diffusion while using only a few sampling steps. For instance, on Wan 2.1, $4$-step MeanFlowNFT reaches a VBench score of $84.33$, surpassing $50$-step LongCat-Video RL ($82.57$).",
+      "authors": [
+        "Yushi Huang",
+        "Xiangxin Zhou",
+        "Jun Zhang",
+        "Liefeng Bo",
+        "Tianyu Pang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-07-16T17:59:02+00:00",
+      "link": "https://arxiv.org/pdf/2607.15273v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "directly proposes RL for image generation using forward-process RL on MeanFlow generators",
+      "llm_evidence_cn": "直接提出将前向过程强化学习应用于平均速度生成器（图像生成模型）",
+      "llm_evidence": "直接提出将前向过程强化学习应用于平均速度生成器（图像生成模型）",
+      "canonical_evidence": "直接提出将前向过程强化学习应用于平均速度生成器（图像生成模型）",
+      "llm_tldr_en": "MeanFlowNFT adapts forward-process RL to average-velocity generators for image generation, bridging the gap between DiffusionNFT and MeanFlow sampling.",
+      "llm_tldr_cn": "MeanFlow生成器通过预测平均速度实现快速少步采样。然而，现有前向过程强化学习方法（如DiffusionNFT）优化的是瞬时速度，与MeanFlow的平均速度采样不兼容。本文提出MeanFlowNFT，利用MeanFlow恒等式连接平均速度与瞬时速度，从而将前向过程RL成功应用于MeanFlow生成器。实验表明，该方法能有效对齐生成模型与人类偏好，提升图像质量。",
+      "llm_tldr": "MeanFlow生成器通过预测平均速度实现快速少步采样。然而，现有前向过程强化学习方法（如DiffusionNFT）优化的是瞬时速度，与MeanFlow的平均速度采样不兼容。本文提出MeanFlowNFT，利用MeanFlow恒等式连接平均速度与瞬时速度，从而将前向过程RL成功应用于MeanFlow生成器。实验表明，该方法能有效对齐生成模型与人类偏好，提升图像质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
