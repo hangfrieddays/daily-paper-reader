@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-25",
+  "date": "2026-07-25",
+  "generated_at": "2026-07-25T21:01:55",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/25/2607.17479v1-traversrl-traversable-pedestrian-pathway-generation-with-reinforcement-learning",
+      "section": "deep",
+      "title_en": "TraversRL: Traversable Pedestrian Pathway Generation With Reinforcement Learning",
+      "authors": "Bin Han, Robert Wolfe, Bill Howe",
+      "date": "2026-07-20",
+      "pdf": "https://arxiv.org/pdf/2607.17479v1",
+      "score": "9.0",
+      "evidence": "利用强化学习从航拍图像生成行人路径",
+      "tldr": "从航拍图像自动生成行人路径网络时，现有分割方法常产生不连通或碎片化图。本文提出TraversRL，一种视觉条件模型，模拟旅行者导航过程，通过强化学习迭代生长路径网络。动作空间包含短/长方向-距离段以跨越遮挡和复杂模式，结合图级和步级奖励平衡连通性与精确边缘。在多个数据集上，相比分割基线，交并比显著提升，连通性翻倍以上。结果表明将路径提取建模为序贯决策过程并优化图质量，能生成更可靠的行人网络。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Automatically generating pedestrian pathways from aerial images requires producing a connected network suitable for routing, not just detecting where sidewalks appear. Sidewalks and crossings, in contrast to roads, may be partially occluded, implicitly defined, and exhibit complex connectivity patterns. Existing segmentation-based approaches focus on labeling pixels to infer segments, but often produce disconnected or fragmentary graphs that are unreliable for navigation. We introduce TraversRL, a vision-conditioned model that iteratively grows a pathway network from an aerial image, simulating a traveler navigating the built environment. TraversRL uses an action space of short and long direction-distance segments designed to adapt to complex patterns and span occlusions, and uses a combination of graph-level and step-wise rewards to balance overall connectivity with precise edge placement. Across three visual backbones and three intersection datasets, TraversRL substantially improves buffered IoU with the ground-truth graph relative to a state-of-the-art segmentation baseline, and more than doubles metrics of connectivity. Moreover, combining global and local rewards produces cleaner graphs with fewer spurious branches while further improving overall performance. These results demonstrate that modeling pathway extraction as a sequential decision process from the perspective of a traveler, while optimizing for final graph quality with reinforcement learning, produces significantly more reliable pedestrian networks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/25/2607.21591v1-inference-time-scaling-of-diffusion-models-via-progressive-seed-pruning",
+      "section": "deep",
+      "title_en": "Inference-Time Scaling of Diffusion Models via Progressive Seed Pruning",
+      "authors": "Rogerio Guimaraes, Pietro Perona",
+      "date": "2026-07-23",
+      "pdf": "https://arxiv.org/pdf/2607.21591v1",
+      "score": "8.0",
+      "evidence": "对中间去噪估计进行评分作为奖励来剪枝种子以提升图像质量",
+      "tldr": "扩散模型推理时扩展常受固定内存占用限制，缺乏有效方法。本文提出渐进种子剪枝（PSP），通过前期探索大量种子并积极剪枝低分轨迹，仅保留有希望路径完全去噪，在固定计算预算下提升生成质量。实验证明PSP在GenEval和人类评估上优于best-of-N、重要性采样和树搜索基线，为扩散模型推理时扩展提供新方向。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Diffusion and flow-matching models dominate conditional image generation, yet inference-time scaling for these models is far less developed than for autoregressive language models. Because final quality is highly sensitive to the initial noise seed, many approaches spend extra compute on seed search or resampling under a black-box reward, but typically maintaining a constant memory footprint throughout inference. We show that relaxing this constraint enables an underexplored inference-time scaling axis: by front-loading exploration, evaluating many seeds early, and pruning aggressively, we can use a fixed compute budget more effectively. \\emph{Progressive Seed Pruning} (\\PSP) scores intermediate denoised estimates and progressively narrows the candidate set so that only promising trajectories are fully denoised, while keeping the total number of model evaluations fixed. Across diffusion and flow-matching backbones, \\PSP \\ consistently improves reward-guided selection and achieves higher GenEval scores (automated) and better human evaluation on prompt-alignment than best-of-$N$, importance-sampling, and tree-search baselines at matched compute. Project page: https://www.vision.caltech.edu/psp. Code: https://github.com/rogerioagjr/psp.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
