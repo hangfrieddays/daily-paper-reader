@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-26",
+  "date": "2026-07-26",
+  "generated_at": "2026-07-26T20:41:42",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/26/2607.18470v1-rrpo-reference-relative-policy-optimization-with-stratified-conditional-rollouts",
+      "section": "quick",
+      "title_en": "RRPO: Reference-Relative Policy Optimization with Stratified Conditional Rollouts",
+      "authors": "Yuxin Xiong, Xunyi Jiang, Rohan Surana, Xintong Li, Sheldon Yu, Nikki Lijing Kuang, Ryan A. Rossi, Jingbo Shang, Tong Yu, Julian McAuley, Junda Wu",
+      "date": "2026-07-20",
+      "pdf": "https://arxiv.org/pdf/2607.18470v1",
+      "score": "6.0",
+      "evidence": "提出通用的策略优化方法RRPO，可应用于图像生成中的强化学习",
+      "tldr": "GRPO在可验证反馈中有效，但难以扩展到非可验证任务。为此提出RRPO，使用分层条件rollout构建正负锚集，训练度量投影头生成对比优势，再冻结投影头用于策略优化。在可验证推理、开放生成和后SFT设置中，RRPO与基于验证器的方法竞争，优于弱监督基线，并在SFT后带来额外收益。该方法无需任务特定正确性信号，统一了不同类型任务的强化学习框架。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Group Relative Policy Optimization (GRPO) has shown strong effectiveness in reinforcement learning from verifiable feedback, where sampled rollouts can be compared within a group using task-provided correctness signals. However, extending group-relative optimization beyond verifiable settings is challenging because success in many tasks is not captured by a single correctness criterion. We propose \\textbf{Reference-Relative Policy Optimization (RRPO)}, which generalizes GRPO by replacing direct correctness-based advantage construction with reference-relative contrastive comparisons. RRPO first uses \\emph{stratified conditional rollouts} to construct positive and negative anchor sets, and then trains a metric projection head with a set-contrastive objective to compare candidate rollouts against these anchors. The resulting alignment scores directly define contrastive advantages: during policy optimization, the projection head is frozen, and the scores are centered within each rollout group in a standard group-relative objective. We evaluate RRPO using anchor-based contrastive advantages throughout policy optimization, without relying on task ground-truth verifiers. Across verifiable reasoning, open-ended generation, and post-SFT settings, RRPO remains competitive with verifier-based optimization, improves over weakly supervised baselines, and provides additional gains after supervised fine-tuning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

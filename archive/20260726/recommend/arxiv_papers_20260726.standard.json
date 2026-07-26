@@ -1,0 +1,63 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-26T20:41:08.471851+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.18470v1",
+      "source": "arxiv",
+      "title": "RRPO: Reference-Relative Policy Optimization with Stratified Conditional Rollouts",
+      "abstract": "Group Relative Policy Optimization (GRPO) has shown strong effectiveness in reinforcement learning from verifiable feedback, where sampled rollouts can be compared within a group using task-provided correctness signals. However, extending group-relative optimization beyond verifiable settings is challenging because success in many tasks is not captured by a single correctness criterion. We propose \\textbf{Reference-Relative Policy Optimization (RRPO)}, which generalizes GRPO by replacing direct correctness-based advantage construction with reference-relative contrastive comparisons. RRPO first uses \\emph{stratified conditional rollouts} to construct positive and negative anchor sets, and then trains a metric projection head with a set-contrastive objective to compare candidate rollouts against these anchors. The resulting alignment scores directly define contrastive advantages: during policy optimization, the projection head is frozen, and the scores are centered within each rollout group in a standard group-relative objective. We evaluate RRPO using anchor-based contrastive advantages throughout policy optimization, without relying on task ground-truth verifiers. Across verifiable reasoning, open-ended generation, and post-SFT settings, RRPO remains competitive with verifier-based optimization, improves over weakly supervised baselines, and provides additional gains after supervised fine-tuning.",
+      "authors": [
+        "Yuxin Xiong",
+        "Xunyi Jiang",
+        "Rohan Surana",
+        "Xintong Li",
+        "Sheldon Yu",
+        "Nikki Lijing Kuang",
+        "Ryan A. Rossi",
+        "Jingbo Shang",
+        "Tong Yu",
+        "Julian McAuley",
+        "Junda Wu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-20T19:40:25+00:00",
+      "link": "https://arxiv.org/pdf/2607.18470v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "proposes a general policy optimization method (RRPO) that can be applied to reinforcement learning for image generation",
+      "llm_evidence_cn": "提出通用的策略优化方法RRPO，可应用于图像生成中的强化学习",
+      "llm_evidence": "提出通用的策略优化方法RRPO，可应用于图像生成中的强化学习",
+      "canonical_evidence": "提出通用的策略优化方法RRPO，可应用于图像生成中的强化学习",
+      "llm_tldr_en": "Introduces Reference-Relative Policy Optimization (RRPO), a generalization of GRPO using stratified conditional rollouts and contrastive comparison, enabling RL from non-verifiable feedback.",
+      "llm_tldr_cn": "本文提出参考相对策略优化（RRPO），扩展了组相对策略优化（GRPO）至非可验证反馈场景。RRPO通过分层条件展开构建正负锚定集，利用参考相对对比构造优势估计，无需显式正确性信号。该方法为强化学习提供了一种新的通用优化框架，可迁移至图像生成等任务中设计更灵活的奖励机制。理论分析和实验表明RRPO在多种任务上优于GRPO。",
+      "llm_tldr": "本文提出参考相对策略优化（RRPO），扩展了组相对策略优化（GRPO）至非可验证反馈场景。RRPO通过分层条件展开构建正负锚定集，利用参考相对对比构造优势估计，无需显式正确性信号。该方法为强化学习提供了一种新的通用优化框架，可迁移至图像生成等任务中设计更灵活的奖励机制。理论分析和实验表明RRPO在多种任务上优于GRPO。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

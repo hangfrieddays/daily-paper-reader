@@ -6,27 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-25
-- 运行时间：2026-07-25 21:01:48 UTC
+- 最新运行日期：2026-07-26
+- 运行时间：2026-07-26 20:41:37 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：2
-- 速读区：0
+- 本次总论文数：1
+- 精读区：0
+- 速读区：1
 
 ### 今日简报（AI）
-今天精读2篇高质量论文，分别聚焦强化学习生成可穿越路径与扩散模型推理时缩放。最值得关注TraversRL用强化学习设计行人通道，以及渐进种子剪枝提升扩散模型性能。建议优先阅读TraversRL，掌握RL在路径生成中的应用，并尝试将剪枝技术迁移至自身扩散模型推理优化。
-- 详情：[/202607/25/README](/202607/25/README)
+今日推荐1篇速读论文，主题为强化学习中的策略优化新方法。  
+值得关注的方向是“参考相对策略优化（RRPO）”及分层条件rollout机制。  
+建议普通读者可关注该方法在样本效率上的改进潜力。
+- 详情：[/202607/26/README](/202607/26/README)
 
 ### 精读区论文标签
-1. [TraversRL: Traversable Pedestrian Pathway Generation With Reinforcement Learning](/202607/25/2607.17479v1-traversrl-traversable-pedestrian-pathway-generation-with-reinforcement-learning)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：利用强化学习从航拍图像生成行人路径
-2. [Inference-Time Scaling of Diffusion Models via Progressive Seed Pruning](/202607/25/2607.21591v1-inference-time-scaling-of-diffusion-models-via-progressive-seed-pruning)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：对中间去噪估计进行评分作为奖励来剪枝种子以提升图像质量
+- 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [RRPO: Reference-Relative Policy Optimization with Stratified Conditional Rollouts](/202607/26/2607.18470v1-rrpo-reference-relative-policy-optimization-with-stratified-conditional-rollouts)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：提出通用的策略优化方法RRPO，可应用于图像生成中的强化学习
 
 
 <div class="dpr-home-promo-card">

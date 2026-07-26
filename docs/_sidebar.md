@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-26 <!--dpr-date:20260726-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/26/2607.18470v1-rrpo-reference-relative-policy-optimization-with-stratified-conditional-rollouts" data-sidebar-item="{&quot;title&quot;: &quot;RRPO: Reference-Relative Policy Optimization with Stratified Conditional Rollouts&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.18470v1-rrpo-reference-relative-policy-optimization-with-stratified-conditional-rollouts&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;提出通用的策略优化方法RRPO，可应用于图像生成中的强化学习&quot;}">RRPO: Reference-Relative Policy Optimization with Stratified Conditional Rollouts</a>
   * 2026-07-25 <!--dpr-date:20260725-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/25/2607.17479v1-traversrl-traversable-pedestrian-pathway-generation-with-reinforcement-learning" data-sidebar-item="{&quot;title&quot;: &quot;TraversRL: Traversable Pedestrian Pathway Generation With Reinforcement Learning&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.17479v1-traversrl-traversable-pedestrian-pathway-generation-with-reinforcement-learning&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;利用强化学习从航拍图像生成行人路径&quot;}">TraversRL: Traversable Pedestrian Pathway Generation With Reinforcement Learning</a>
