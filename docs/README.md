@@ -6,26 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-26
-- 运行时间：2026-07-26 20:41:37 UTC
+- 最新运行日期：2026-07-27
+- 运行时间：2026-07-27 20:37:41 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：0
 - 精读区：0
-- 速读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日推荐1篇速读论文，主题为强化学习中的策略优化新方法。  
-值得关注的方向是“参考相对策略优化（RRPO）”及分层条件rollout机制。  
-建议普通读者可关注该方法在样本效率上的改进潜力。
-- 详情：[/202607/26/README](/202607/26/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202607/27/README](/202607/27/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [RRPO: Reference-Relative Policy Optimization with Stratified Conditional Rollouts](/202607/26/2607.18470v1-rrpo-reference-relative-policy-optimization-with-stratified-conditional-rollouts)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：提出通用的策略优化方法RRPO，可应用于图像生成中的强化学习
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
