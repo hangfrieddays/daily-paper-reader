@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-28",
+  "date": "2026-07-28",
+  "generated_at": "2026-07-28T20:32:39",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/28/2607.23488v1-learning-sampling-parameters-for-diffusion-models",
+      "section": "deep",
+      "title_en": "Learning Sampling Parameters for Diffusion Models",
+      "authors": "Arisrei Lim, Yossi Gandelsman",
+      "date": "2026-07-26",
+      "pdf": "https://arxiv.org/pdf/2607.23488v1",
+      "score": "9.0",
+      "evidence": "使用强化学习学习文本到图像扩散模型的采样参数",
+      "tldr": "文本到图像扩散模型通常对采样参数（如提示、引导尺度、噪声调度）采用固定的全局设置，但不同提示和生成阶段需要不同参数值。为此提出LeSAMP框架，使用强化学习训练大语言模型，根据用户提示生成随时间步变化的参数调度，并通过人类偏好模型和VLM裁判优化策略。在Flux.1和Stable Diffusion 3.5上，LeSAMP在人类偏好评分中胜率达68.12%，VLM评判胜率达73.37%，用户研究胜率59.46%。结果表明，学习采样参数策略可作为现有后训练方法的有效补充，提升扩散模型输出质量。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Text-to-image diffusion models expose many inference-time sampling parameters, including prompts, negative prompts, classifier-free guidance scales, and noise schedules. These parameters are typically manually chosen once and then held fixed across prompts and denoising timesteps, even though different prompts and stages of generation can benefit from different parameter values. We introduce LeSAMP, a framework for learning prompt-conditioned, timestep-varying sampling parameters. We formulate parameter selection as a reinforcement learning problem: Given a user prompt, a large language model is trained to emit schedules for the chosen sampling parameters. We optimize our model using rewards from human preference models and VLM-as-a-judge. We evaluate our model on Flux.1 [dev] and Stable Diffusion 3.5, and find that compared to baselines, LeSAMP has a win rate of up to 68.12% using human preference scores and 73.37% using VLM-as-a-judge. These gains are validated in a user study where we achieve win rates of up to 59.46% over previous baselines. Our results suggest that learned sampling-parameter policies provide a complementary approach to existing post-training methods for improving diffusion model outputs.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/28/2607.24353v1-prism-prompt-refinement-via-image-grounded-self-rewarding-mechanism-for-text-to-image-generation",
+      "section": "deep",
+      "title_en": "PRISM: Prompt Refinement via Image-grounded Self-rewarding Mechanism for Text-to-Image Generation",
+      "authors": "Guo Tang, HongJie Luo, Tianxu Wang, Ying Zhang, Hao Wang",
+      "date": "2026-07-27",
+      "pdf": "https://arxiv.org/pdf/2607.24353v1",
+      "score": "8.0",
+      "evidence": "利用自奖励机制对文本到图像生成的提示进行精炼",
+      "tldr": "文本到图像生成对提示词敏感，现有优化方法缺乏图像诊断和可复用策略。PRISM框架通过多任务微调统一VLM，利用自奖励优化结合混合理想点与切比雪夫奖励，闭环反馈图像诊断和评分。实验表明PRISM提升整体图像质量与细粒度语义对齐，并提供可解释反馈用于提示优化。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Text-to-image generation models can synthesize high-quality images from natural language descriptions, but their performance remains highly sensitive to prompt formulation. Existing prompt optimization methods mainly rely on text-side rewriting, prompt expansion, or external reward signals, offering limited image-grounded diagnosis and weak support for learning reusable optimisation policies. In this paper, we propose PRISM, a Prompt Refinement framework via Image-grounded Self-rewarding Mechanism. PRISM closes the prompt-image-feedback loop by interpreting generated images with structured visual diagnosis and scoring them along semantic consistency, aesthetic quality, and human preference alignment. It first initializes a unified VLM through multi-task supervised fine-tuning, and then improves the prompt policy via self-rewarding optimization with a hybrid ideal-point and Chebyshev reward. Extensive experiments show that PRISM improves holistic image quality and fine-grained semantic alignment, while providing interpretable feedback for targeted prompt refinement. The code is available at https://anonymous.4open.science/r/PRISM-FF81.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/28/2607.23696v1-offline-to-online-creative-optimization-with-generative-models-and-adaptive-testing",
+      "section": "quick",
+      "title_en": "Offline-to-Online Creative Optimization with Generative Models and Adaptive Testing",
+      "authors": "Kevin Lee, Benjamin Letham, Zhiyuan Jerry Lin, Elodie Samson, Eric Onofrey, Poppy Zhang, Shawndra Hill, Eytan Bakshy",
+      "date": "2026-07-26",
+      "pdf": "https://arxiv.org/pdf/2607.23696v1",
+      "score": "6.0",
+      "evidence": "预测模型作为生成模型优化的评判器",
+      "tldr": "广告创意优化面临生成易评估难的瓶颈。提出离线到在线工作流：用历史A/B测试数据训练预测模型，在线下阶段对生成模型产生的创意排序和优化，再在线上自适应实验中测试候选列表。50臂现场实验显示最佳创意参与度比人类作者高45.1%，另两个实验提升46.7%和36.2%。尽管预测模型无法直接选出最佳创意，但能有效指导生成强候选，并通过自适应实验高效选择，同时减少流量浪费。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Ad creative optimization is increasingly constrained by evaluation rather than generation. Generative models can produce many plausible creatives, but reliable evaluation requires online experiments, in which only a limited slate can be tested. We study how to use data from historical A/B tests to generate and select the candidates in that slate. We developed and deployed a performance-driven offline-to-online workflow that guides creative generation with a predictive model as an inference-time critic. In the offline phase, we use a predictive model trained on historical experiments to rank and refine variants created by a generative model. A final test slate is then deployed in an online adaptive experiment. In a 50-arm field experiment, we found that the best creative generated with this method yielded 45.1% higher engagement than the best human-authored creative. Two additional experiments showed the same upper-tail pattern, with lifts of 46.7% and 36.2%. We found that despite the predictive model being too noisy to directly identify the best creative offline, it effectively guides the generative model toward creating strong candidates that can be efficiently evaluated in an adaptive experiment. The results suggest a design principle for creative optimization with generative models: use predictive models to guide generation of a slate to test, judge the slate by whether it contains high-performing candidates at a feasible test size, and use adaptive experiments to select among candidates while limiting traffic lost to weak arms.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

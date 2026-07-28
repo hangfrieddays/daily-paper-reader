@@ -1,0 +1,135 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-28T20:29:46.444817+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.23488v1",
+      "source": "arxiv",
+      "title": "Learning Sampling Parameters for Diffusion Models",
+      "abstract": "Text-to-image diffusion models expose many inference-time sampling parameters, including prompts, negative prompts, classifier-free guidance scales, and noise schedules. These parameters are typically manually chosen once and then held fixed across prompts and denoising timesteps, even though different prompts and stages of generation can benefit from different parameter values. We introduce LeSAMP, a framework for learning prompt-conditioned, timestep-varying sampling parameters. We formulate parameter selection as a reinforcement learning problem: Given a user prompt, a large language model is trained to emit schedules for the chosen sampling parameters. We optimize our model using rewards from human preference models and VLM-as-a-judge. We evaluate our model on Flux.1 [dev] and Stable Diffusion 3.5, and find that compared to baselines, LeSAMP has a win rate of up to 68.12% using human preference scores and 73.37% using VLM-as-a-judge. These gains are validated in a user study where we achieve win rates of up to 59.46% over previous baselines. Our results suggest that learned sampling-parameter policies provide a complementary approach to existing post-training methods for improving diffusion model outputs.",
+      "authors": [
+        "Arisrei Lim",
+        "Yossi Gandelsman"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-07-26T06:29:48+00:00",
+      "link": "https://arxiv.org/pdf/2607.23488v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses RL to learn sampling parameters for text-to-image diffusion models",
+      "llm_evidence_cn": "使用强化学习学习文本到图像扩散模型的采样参数",
+      "llm_evidence": "使用强化学习学习文本到图像扩散模型的采样参数",
+      "canonical_evidence": "使用强化学习学习文本到图像扩散模型的采样参数",
+      "llm_tldr_en": "LeSAMP uses reinforcement learning to learn prompt-conditioned, timestep-varying sampling parameters for text-to-image diffusion models, optimized via human preference rewards.",
+      "llm_tldr_cn": "文本到图像扩散模型推理时需手动设定采样参数（如引导尺度、噪声调度），不同提示应自适应调整。本文提出LeSAMP，将参数选择建模为强化学习问题，训练大语言模型根据提示生成参数调度，并用人类偏好模型和VLM作为奖励进行优化。在Flux.1上验证了该方法能显著提升生成图像质量。",
+      "llm_tldr": "文本到图像扩散模型推理时需手动设定采样参数（如引导尺度、噪声调度），不同提示应自适应调整。本文提出LeSAMP，将参数选择建模为强化学习问题，训练大语言模型根据提示生成参数调度，并用人类偏好模型和VLM作为奖励进行优化。在Flux.1上验证了该方法能显著提升生成图像质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.24353v1",
+      "source": "arxiv",
+      "title": "PRISM: Prompt Refinement via Image-grounded Self-rewarding Mechanism for Text-to-Image Generation",
+      "abstract": "Text-to-image generation models can synthesize high-quality images from natural language descriptions, but their performance remains highly sensitive to prompt formulation. Existing prompt optimization methods mainly rely on text-side rewriting, prompt expansion, or external reward signals, offering limited image-grounded diagnosis and weak support for learning reusable optimisation policies. In this paper, we propose PRISM, a Prompt Refinement framework via Image-grounded Self-rewarding Mechanism. PRISM closes the prompt-image-feedback loop by interpreting generated images with structured visual diagnosis and scoring them along semantic consistency, aesthetic quality, and human preference alignment. It first initializes a unified VLM through multi-task supervised fine-tuning, and then improves the prompt policy via self-rewarding optimization with a hybrid ideal-point and Chebyshev reward. Extensive experiments show that PRISM improves holistic image quality and fine-grained semantic alignment, while providing interpretable feedback for targeted prompt refinement. The code is available at https://anonymous.4open.science/r/PRISM-FF81.",
+      "authors": [
+        "Guo Tang",
+        "HongJie Luo",
+        "Tianxu Wang",
+        "Ying Zhang",
+        "Hao Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-27T12:31:32+00:00",
+      "link": "https://arxiv.org/pdf/2607.24353v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "self-rewarding mechanism for prompt refinement in text-to-image generation",
+      "llm_evidence_cn": "利用自奖励机制对文本到图像生成的提示进行精炼",
+      "llm_evidence": "利用自奖励机制对文本到图像生成的提示进行精炼",
+      "canonical_evidence": "利用自奖励机制对文本到图像生成的提示进行精炼",
+      "llm_tldr_en": "PRISM uses an image-grounded self-rewarding mechanism to refine prompts for text-to-image generation, scoring images on consistency, aesthetics, and human preference.",
+      "llm_tldr_cn": "针对文本到图像生成中提示敏感性问题，本文提出PRISM框架，通过图像自奖励机制闭环反馈，对生成图像进行结构化诊断并打分（语义一致性、美学质量、人类偏好），从而迭代优化提示，无需外部奖励信号，显著提升生成质量。该方法可学习可复用的优化策略，为提示工程提供新范式。",
+      "llm_tldr": "针对文本到图像生成中提示敏感性问题，本文提出PRISM框架，通过图像自奖励机制闭环反馈，对生成图像进行结构化诊断并打分（语义一致性、美学质量、人类偏好），从而迭代优化提示，无需外部奖励信号，显著提升生成质量。该方法可学习可复用的优化策略，为提示工程提供新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.23696v1",
+      "source": "arxiv",
+      "title": "Offline-to-Online Creative Optimization with Generative Models and Adaptive Testing",
+      "abstract": "Ad creative optimization is increasingly constrained by evaluation rather than generation. Generative models can produce many plausible creatives, but reliable evaluation requires online experiments, in which only a limited slate can be tested. We study how to use data from historical A/B tests to generate and select the candidates in that slate. We developed and deployed a performance-driven offline-to-online workflow that guides creative generation with a predictive model as an inference-time critic. In the offline phase, we use a predictive model trained on historical experiments to rank and refine variants created by a generative model. A final test slate is then deployed in an online adaptive experiment. In a 50-arm field experiment, we found that the best creative generated with this method yielded 45.1% higher engagement than the best human-authored creative. Two additional experiments showed the same upper-tail pattern, with lifts of 46.7% and 36.2%. We found that despite the predictive model being too noisy to directly identify the best creative offline, it effectively guides the generative model toward creating strong candidates that can be efficiently evaluated in an adaptive experiment. The results suggest a design principle for creative optimization with generative models: use predictive models to guide generation of a slate to test, judge the slate by whether it contains high-performing candidates at a feasible test size, and use adaptive experiments to select among candidates while limiting traffic lost to weak arms.",
+      "authors": [
+        "Kevin Lee",
+        "Benjamin Letham",
+        "Zhiyuan Jerry Lin",
+        "Elodie Samson",
+        "Eric Onofrey",
+        "Poppy Zhang",
+        "Shawndra Hill",
+        "Eytan Bakshy"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-26T14:45:15+00:00",
+      "link": "https://arxiv.org/pdf/2607.23696v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "predictive model as critic for generative model refinement",
+      "llm_evidence_cn": "预测模型作为生成模型优化的评判器",
+      "llm_evidence": "预测模型作为生成模型优化的评判器",
+      "canonical_evidence": "预测模型作为生成模型优化的评判器",
+      "llm_tldr_en": "Uses offline A/B test data to train a predictive critic that guides creative generation selection in an adaptive online experiment.",
+      "llm_tldr_cn": "当前广告创意优化受限于在线评估成本。本文提出离线到在线的工作流，利用历史A/B测试数据训练预测模型作为推理时评判器，指导生成模型筛选和优化创意。50臂现场实验验证了该方法在有限测试槽位下能有效提升创意表现。",
+      "llm_tldr": "当前广告创意优化受限于在线评估成本。本文提出离线到在线的工作流，利用历史A/B测试数据训练预测模型作为推理时评判器，指导生成模型筛选和优化创意。50臂现场实验验证了该方法在有限测试槽位下能有效提升创意表现。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
