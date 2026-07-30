@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-07-30 <!--dpr-date:20260730-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/30/2607.26094v1-meta-learned-reward-shaping-for-reinforcement-learning-from-human-feedback" data-sidebar-item="{&quot;title&quot;: &quot;Meta-Learned Reward Shaping for Reinforcement Learning from Human Feedback&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.26094v1-meta-learned-reward-shaping-for-reinforcement-learning-from-human-feedback&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;元学习奖励塑形用于RLHF；可迁移至图像生成奖励设计&quot;}">Meta-Learned Reward Shaping for Reinforcement Learning from Human Feedback</a>
   * 2026-07-28 <!--dpr-date:20260728-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202607/28/2607.23488v1-learning-sampling-parameters-for-diffusion-models" data-sidebar-item="{&quot;title&quot;: &quot;Learning Sampling Parameters for Diffusion Models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.23488v1-learning-sampling-parameters-for-diffusion-models&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;使用强化学习学习文本到图像扩散模型的采样参数&quot;}">Learning Sampling Parameters for Diffusion Models</a>

@@ -1,0 +1,53 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-30T21:21:55.520701+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.26094v1",
+      "source": "arxiv",
+      "title": "Meta-Learned Reward Shaping for Reinforcement Learning from Human Feedback",
+      "abstract": "Reinforcement Learning from Human Feedback (RLHF) is the standard approach for aligning large language models with human preferences, but its quality is limited by static, task-agnostic reward models. This mismatch leads to sparse learning signals and suboptimal alignment. We introduce MeRLa (Meta-Learned Reward Shaping), a principled framework that meta-learns a task-aware shaping function $Φ(x,y;φ)$ across auxiliary tasks before RLHF training. The learned shaping produces a composite reward that preserves policy optimality while providing task-specific learning signals. Our meta-objective combines task discrimination, entropy regularization, and potential-based conservation for stable convergence. We provide theoretical guarantees for policy invariance, analyze representation drift sensitivity, and formally address incentive misalignment from entropy maximization. Experiments on LLaMA-3-8B across four benchmarks show consistent improvements over PPO, DPO, GRPO, and DAPO, achieving a 90.8% length-controlled win rate on AlpacaEval 2.0 and a score of 9.14 on MT-Bench, with 41% less training instability. MeRLa retains its benefits when combined with process-based and rubric-based enhanced rewards.",
+      "authors": [
+        "Yunpeng Chu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "published": "2026-07-28T02:09:26+00:00",
+      "link": "https://arxiv.org/pdf/2607.26094v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "meta-learned reward shaping for RLHF; transferable to image generation reward design",
+      "llm_evidence_cn": "元学习奖励塑形用于RLHF；可迁移至图像生成奖励设计",
+      "llm_evidence": "元学习奖励塑形用于RLHF；可迁移至图像生成奖励设计",
+      "canonical_evidence": "元学习奖励塑形用于RLHF；可迁移至图像生成奖励设计",
+      "llm_tldr_en": "Proposes MeRLa, a meta-learning framework for task-aware reward shaping in RLHF, which can be adapted to image generation tasks to design better reward functions.",
+      "llm_tldr_cn": "针对RLHF中静态奖励模型导致学习信号稀疏的问题，提出MeRLa框架，通过元学习在辅助任务上训练任务感知的塑形函数，生成复合奖励以提供特定任务的学习信号。该方法可迁移至图像生成领域，为生成质量设计更有效的奖励函数，理论上保证策略最优性。实验验证了其提升对齐效果。",
+      "llm_tldr": "针对RLHF中静态奖励模型导致学习信号稀疏的问题，提出MeRLa框架，通过元学习在辅助任务上训练任务感知的塑形函数，生成复合奖励以提供特定任务的学习信号。该方法可迁移至图像生成领域，为生成质量设计更有效的奖励函数，理论上保证策略最优性。实验验证了其提升对齐效果。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

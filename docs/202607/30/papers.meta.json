@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-30",
+  "date": "2026-07-30",
+  "generated_at": "2026-07-30T21:22:31",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/30/2607.26094v1-meta-learned-reward-shaping-for-reinforcement-learning-from-human-feedback",
+      "section": "quick",
+      "title_en": "Meta-Learned Reward Shaping for Reinforcement Learning from Human Feedback",
+      "authors": "Yunpeng Chu",
+      "date": "2026-07-28",
+      "pdf": "https://arxiv.org/pdf/2607.26094v1",
+      "score": "7.0",
+      "evidence": "元学习奖励塑形用于RLHF；可迁移至图像生成奖励设计",
+      "tldr": "现有RLHF依赖静态奖励模型，导致学习信号稀疏和对齐次优。MeRLa框架通过元学习任务感知塑形函数，生成复合奖励保留策略最优性并增强信号。在LLaMA-3-8B上，AlpacaEval 2.0胜率90.8%，MT-Bench评分9.14，训练不稳定降低41%。该方法可无缝结合过程或评分增强奖励，显著提升对齐性能。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement Learning from Human Feedback (RLHF) is the standard approach for aligning large language models with human preferences, but its quality is limited by static, task-agnostic reward models. This mismatch leads to sparse learning signals and suboptimal alignment. We introduce MeRLa (Meta-Learned Reward Shaping), a principled framework that meta-learns a task-aware shaping function $Φ(x,y;φ)$ across auxiliary tasks before RLHF training. The learned shaping produces a composite reward that preserves policy optimality while providing task-specific learning signals. Our meta-objective combines task discrimination, entropy regularization, and potential-based conservation for stable convergence. We provide theoretical guarantees for policy invariance, analyze representation drift sensitivity, and formally address incentive misalignment from entropy maximization. Experiments on LLaMA-3-8B across four benchmarks show consistent improvements over PPO, DPO, GRPO, and DAPO, achieving a 90.8% length-controlled win rate on AlpacaEval 2.0 and a score of 9.14 on MT-Bench, with 41% less training instability. MeRLa retains its benefits when combined with process-based and rubric-based enhanced rewards.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
