@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-31",
+  "date": "2026-07-31",
+  "generated_at": "2026-07-31T21:03:31",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/31/2607.27699v1-refinesvg-visual-feedback-driven-reinforcement-learning-for-image-to-svg-generation",
+      "section": "deep",
+      "title_en": "RefineSVG: Visual Feedback-Driven Reinforcement Learning for Image-to-SVG Generation",
+      "authors": "Shaobo Liu, Feiqiao Mao, Shuaishuai Zhou, Yan Zhan, Weiqi Tan, Zhiqiong Lu, Zhengping Liang",
+      "date": "2026-07-30",
+      "pdf": "https://arxiv.org/pdf/2607.27699v1",
+      "score": "9.0",
+      "evidence": "利用视觉反馈强化学习进行图像到SVG生成",
+      "tldr": "现有MLLM图像转SVG依赖单次开环推理，缺乏中间验证，易产生几何漂移和视觉幻觉。RefineSVG提出闭环视觉反馈框架，通过外部渲染引擎对比初始SVG与目标图生成多维残差图Diff-Map，作为ReAct式纠错信号驱动模型自我修正；并设计SVG语义词汇将token序列压缩超52%。经监督微调、拒绝采样冷启动与端到端强化学习训练，模型在重建保真度、结构准确性和代码效率上全面超越基线，为图像到矢量图生成提供了可验证的自我纠错范式。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We propose RefineSVG, a single-step closed-loop visual feedback framework that enables multimodal large language models (MLLMs) to perform high-fidelity image-to-SVG generation through self-correction. Existing MLLM-based approaches rely on single-pass open-loop inference, where the model receives visual input only once and must generate thousands of SVG code tokens without intermediate verification. This paradigm inevitably leads to geometric drift, error accumulation, and visual hallucination on complex images. RefineSVG overcomes this limitation by invoking an external rendering engine after an initial SVG generation pass to compare the rendered output against the target image. The comparison yields a multi-dimensional visual residual map (Diff-Map) that is fed back to the model as a ReAct-style correction signal, driving a targeted correction step. To support this render-observe-correct interaction, we further introduce an SVG-oriented semantic vocabulary that compresses token sequences by over 52%. A progressive training pipeline spanning supervised fine-tuning, rejection-sampling cold-start data construction, and end-to-end agentic reinforcement learning aligns the model with closed-loop visual correction. Extensive experiments show that RefineSVG consistently outperforms existing baselines in reconstruction fidelity, structural accuracy, and code efficiency.Code is available at https://github.com/liuxiaobo66/RefineSVG.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/31/2607.28058v1-temporal-concentration-from-rollout-errors-implicit-preference-optimization-for-text-to-video-diffusion",
+      "section": "quick",
+      "title_en": "Temporal Concentration from Rollout Errors: Implicit Preference Optimization for Text-to-Video Diffusion",
+      "authors": "Henglin Liu, Fangyuan Kong, Jing Wang, Yizhou Lin, Nisha Huang, Chang Liu, Xintao Wang, Pengfei Wan, Kun Gai, Xiu Li",
+      "date": "2026-07-30",
+      "pdf": "https://arxiv.org/pdf/2607.28058v1",
+      "score": "7.0",
+      "evidence": "利用在线奖励信号的扩散生成偏好优化",
+      "tldr": "当前视频扩散模型的偏好优化如DPO虽提升视觉质量，但运动崩溃、闪烁等稀疏时间伪影仍严重。其瓶颈在于偏好信号难以在线获取且时空监督无法聚焦伪影片段。cIPO利用去噪重建的原始与重建视频构造隐式偏好对，通过帧级重建误差识别高错误时间区域进行局部优化。实验证明cIPO在多个数据集上显著增强视频真实感与时间连贯性，并降低对人工标注和外部奖励的依赖。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Recent advances in preference alignment for diffusion-based video generation, particularly via Direct Preference Optimization (DPO), have significantly improved visual quality. However, temporally sparse artifacts such as motion collapse, object flickering, and color oversaturation remain a major barrier to perceptual realism. Existing methods struggle with these issues due to two key limitations: (1) the preference attribution bottleneck, where offline human annotations are costly and fail to accurately capture learning dynamics, while online reward signals are rollout-aware but often unstable and biased; and (2) temporal credit misallocation, where uniformly applied supervision cannot effectively target the brief segments in which artifacts occur. To address these challenges, we propose concentrated Implicit Preference Optimization (cIPO), a post-training framework for video diffusion models. cIPO derives implicit preference signals directly from the denoising process: given a real video, the model adds forward noise and reconstructs it via iterative denoising, treating the original as the preferred sample and the reconstruction as the dispreferred one. This formulation captures inference-time errors without requiring human annotations or external reward models. Moreover, frame-level discrepancies between original and reconstructed videos reveal when failures occur. cIPO leverages this by computing temporal reconstruction errors and concentrating optimization on high-error segments, enabling more precise correction of failure-prone regions. Extensive experiments demonstrate that cIPO consistently enhances video authenticity and temporal coherence across multiple datasets, highlighting the effectiveness and efficiency of implicit preference with temporally concentrated optimization.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/31/2607.27968v1-beyond-binary-rewards-a-comparative-study-of-reward-design-for-reinforcement-unlearning",
+      "section": "quick",
+      "title_en": "Beyond Binary Rewards: A Comparative Study of Reward Design for Reinforcement Unlearning",
+      "authors": "Efstratios Zaradoukas, Davide Gabrielli, Bardh Prenkaj, Gjergji Kasneci",
+      "date": "2026-07-30",
+      "pdf": "https://arxiv.org/pdf/2607.27968v1",
+      "score": "6.0",
+      "evidence": "强化学习奖励设计比较，方法可迁移至图像生成奖励设置",
+      "tldr": "隐私法规推动机器遗忘研究，现有强化遗忘方法采用稀疏二元奖励，学习信号弱。本文提出奖励分解框架，解耦可验证性与稀疏性，并设计指数奖励与PageRank奖励。在RWKU基准上，两种奖励均优于二元奖励，遗忘速度提升至3倍且保持模型效用。表明奖励设计是提升机器遗忘效率的关键驱动。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Machine unlearning seeks to selectively remove specific knowledge from trained language models without full retraining, a growing necessity under privacy regulations such as GDPR and the EU AI Act. Recent work has reformulated unlearning as a Reinforcement Learning with Verifiable Rewards (RLVR) problem, where models are optimized against verifiable rewards computed directly from their outputs. However, existing methods rely on sparse binary rewards that provide minimal learning signal, indicating only whether forbidden content was avoided, and limiting convergence speed. In this paper, we study how reward design affects unlearning efficiency within the Reinforcement Unlearning (RUL) framework. We introduce a principled reward decomposition framework that decouples verifiability from sparsity, and propose two new reward functions: an exponential reward that provides graded penalties based on the count of forbidden-concept occurrences, and a PageRank inspired reward that weights penalties by semantic importance. We conduct experiments on the Real World Knowledge Unlearning (RWKU) benchmark, demonstrating that both rewards consistently outperform the binary setting, while reaching similar forgetting performance up to $3\\times$ faster and preserving general model utility. Our results show that reward design is a key driver of unlearning efficiency offering a practical path toward scalable and efficient machine unlearning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
