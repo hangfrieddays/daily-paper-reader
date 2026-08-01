@@ -1,0 +1,101 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-01T21:01:50.882626+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.27372v1",
+      "source": "arxiv",
+      "title": "Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation",
+      "abstract": "The deep learning revolution, kicked off by AlexNet, taught us that end-to-end training beats decomposing a problem into hand-designed stages. Generative modeling, however, has remained the exception-despite generative models being remarkably capable, they are still not trained end-to-end. This is because, at its core, generative modeling is about handling distributions with many modes, and existing scalable approaches handle this the same way, by factoring the generation procedure, which prevents end-to-end generation. In this work, we introduce Explorative Modeling, a new paradigm that instead factors the training loop, exploring K candidate matches between model generations and data, and training on the best, so predictions commit to modes rather than blurring them. We find Explorative Models (XMs) useful in two settings. First, increasing exploration adds a third pretraining axis beyond parameters and data for existing generative models-where scaling exploration monotonically improves performance across both continuous and discrete domains (images, video, and language). Notably, gains from exploration increase with scale, climbing from 7% to 36% as data scales and from 13% to 23% as models grow, with efficiency gains more than doubling at 3x the compute. Concretely, exploration improves FLOP efficiency by 4.1x, sample efficiency by 6.2x, parameter efficiency by 47%, lifts the strongest of image-generation recipes to a near-state-of-the-art 1.43 FID on ImageNet without guidance, enables scaling how end-to-end existing models are, and unlocks scaling generalization. Second, XMs enable end-to-end reconstructive generative modeling, matching diffusion on control tasks with 16-256x fewer inference steps. Together, these results establish XMs as both a new pretraining axis for existing generative models and a standalone end-to-end generative modeling paradigm.",
+      "authors": [
+        "Alexi Gladstone",
+        "Heng Ji",
+        "Yilun Du"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ],
+      "published": "2026-07-29T18:25:17+00:00",
+      "link": "https://arxiv.org/pdf/2607.27372v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Explorative selection of candidate generations resembles RL-style reward-based training for generative models",
+      "llm_evidence_cn": "生成候选择优训练类似于强化学习的奖励式优化，可推动生成质量提升",
+      "llm_evidence": "生成候选择优训练类似于强化学习的奖励式优化，可推动生成质量提升",
+      "canonical_evidence": "生成候选择优训练类似于强化学习的奖励式优化，可推动生成质量提升",
+      "llm_tldr_en": "Explorative Modeling factors the training loop by exploring K candidate matches and training on the best, enabling end-to-end generation. The approach offers a third pretraining axis and relates closely to reinforcement-learning-style selection for generative model optimization.",
+      "llm_tldr_cn": "当前生成模型因多模态分布无法端到端训练，现有方法通常分解生成过程。本文提出探索式建模，在训练循环中探索K个生成-数据候选并择优训练，使预测能提交到关键模式。实验显示该方法能实现端到端生成，为生成模型训练开辟第三预训练轴。其探索-选择机制与强化学习思路相通，对图像生成中的奖励式优化具有直接借鉴价值。",
+      "llm_tldr": "当前生成模型因多模态分布无法端到端训练，现有方法通常分解生成过程。本文提出探索式建模，在训练循环中探索K个生成-数据候选并择优训练，使预测能提交到关键模式。实验显示该方法能实现端到端生成，为生成模型训练开辟第三预训练轴。其探索-选择机制与强化学习思路相通，对图像生成中的奖励式优化具有直接借鉴价值。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.27659v1",
+      "source": "arxiv",
+      "title": "Learning Color Grading, No Photo Sharing: Federated Aesthetic Preference Learning for Personalized Image Enhancement",
+      "abstract": "Personalized image enhancement should reflect individual aesthetic taste, yet learning such preferences commonly depends on private photos and ratings that are unsuitable for centralized collection. The task must infer preference from sparse, heterogeneous feedback and translate it into natural-looking color transformations on resource-constrained user devices. We introduce FedPAIE, a federated personalized aesthetic image enhancement framework for user-adaptive color grading without centralizing raw photos or ratings. FedPAIE trains a lightweight dual-cue aesthetic scorer, calibrates it into a personalized scorer on a small local support set, and freezes it to guide regularized adaptation of a lightweight CLUT enhancer from unpaired local photographs. Fidelity constraints and an excess-gap penalty regularize scorer-guided adaptation to limit proxy-score over-optimization while preserving content and natural appearance. Training remains lightweight throughout the pipeline: scorer learning updates at most 0.787M parameters, enhancer adaptation updates 0.265M, and inference retains only a 0.293M-parameter personalized enhancer. Experiments on MIT-Adobe FiveK and Flickr-AES demonstrate effective open-world personalization and a favorable balance between user preference and image fidelity. FedPAIE thus connects decentralized preference learning with efficient personalized image transformation without requiring paired user retouches.",
+      "authors": [
+        "Chuanzhi Xu",
+        "Ziyuan Tao",
+        "Jean Julien KNell",
+        "Yanrong Chen",
+        "Haolan Guo",
+        "Xuanhua Yin",
+        "Adnan Mahmood",
+        "Weidong Cai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.DC"
+      ],
+      "published": "2026-07-30T04:16:38+00:00",
+      "link": "https://arxiv.org/pdf/2607.27659v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Federated aesthetic scorer can serve as a reward function for image enhancement and generation.",
+      "llm_evidence_cn": "联邦美学评分器可作为图像增强/生成的奖励函数。",
+      "llm_evidence": "联邦美学评分器可作为图像增强/生成的奖励函数。",
+      "canonical_evidence": "联邦美学评分器可作为图像增强/生成的奖励函数。",
+      "llm_tldr_en": "FedPAIE federatedly trains a dual-cue aesthetic scorer, calibrates it into a personalized scorer on-device, and uses it to guide color-grading adaptation, enabling privacy-preserving personalized image enhancement without centralizing photos or ratings.",
+      "llm_tldr_cn": "个性化图像增强需要适配用户审美偏好，但集中收集私人照片和评分存在隐私风险。FedPAIE提出联邦学习框架，训练轻量级双线索美学评分器，并在本地小样本支持集上校准为个性化评分器，用于引导颜色分级适配。该方法在不共享原始照片与评分的情况下实现用户自适应增强，并能在资源受限设备上运行，为美学偏好建模与个性化图像处理提供了隐私保护的解决方案。",
+      "llm_tldr": "个性化图像增强需要适配用户审美偏好，但集中收集私人照片和评分存在隐私风险。FedPAIE提出联邦学习框架，训练轻量级双线索美学评分器，并在本地小样本支持集上校准为个性化评分器，用于引导颜色分级适配。该方法在不共享原始照片与评分的情况下实现用户自适应增强，并能在资源受限设备上运行，为美学偏好建模与个性化图像处理提供了隐私保护的解决方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

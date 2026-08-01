@@ -6,29 +6,27 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-31
-- 运行时间：2026-07-31 21:03:25 UTC
+- 最新运行日期：2026-08-01
+- 运行时间：2026-08-01 21:03:51 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：1
+- 本次总论文数：2
+- 精读区：0
 - 速读区：2
 
 ### 今日简报（AI）
-今日精读聚焦图像转SVG的强化学习新方法，并速读视频扩散偏好优化与奖励设计对比两篇。最值得关注的是《RefineSVG》，其视觉反馈驱动机制显著提升SVG生成质量，可作为多模态生成方向的核心参考。下一步建议普通读者从精读论文入手，理解反馈信号在生成任务中的关键作用。
-- 详情：[/202607/31/README](/202607/31/README)
+今日速读2篇论文，均获6分，暂无精读。最值得关注的是探索性建模提出的“第三预训练轴”与端到端生成，以及联邦学习驱动的无照片共享个性化图像增强。建议后续精读这两篇，深入理解其方法对比与适用场景。
+- 详情：[/202608/01/README](/202608/01/README)
 
 ### 精读区论文标签
-1. [RefineSVG: Visual Feedback-Driven Reinforcement Learning for Image-to-SVG Generation](/202607/31/2607.27699v1-refinesvg-visual-feedback-driven-reinforcement-learning-for-image-to-svg-generation)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：利用视觉反馈强化学习进行图像到SVG生成
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Temporal Concentration from Rollout Errors: Implicit Preference Optimization for Text-to-Video Diffusion](/202607/31/2607.28058v1-temporal-concentration-from-rollout-errors-implicit-preference-optimization-for-text-to-video-diffusion)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：利用在线奖励信号的扩散生成偏好优化
-2. [Beyond Binary Rewards: A Comparative Study of Reward Design for Reinforcement Unlearning](/202607/31/2607.27968v1-beyond-binary-rewards-a-comparative-study-of-reward-design-for-reinforcement-unlearning)  
+1. [Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation](/202608/01/2607.27372v1-explorative-modeling-unlocking-a-third-pretraining-axis-and-end-to-end-generation)  
    标签：评分：6.0/10、query:image-gen-rl
-   evidence：强化学习奖励设计比较，方法可迁移至图像生成奖励设置
+   evidence：生成候选择优训练类似于强化学习的奖励式优化，可推动生成质量提升
+2. [Learning Color Grading, No Photo Sharing: Federated Aesthetic Preference Learning for Personalized Image Enhancement](/202608/01/2607.27659v1-learning-color-grading-no-photo-sharing-federated-aesthetic-preference-learning-for-personalized-image-enhancement)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：联邦美学评分器可作为图像增强/生成的奖励函数。
 
 
 <div class="dpr-home-promo-card">
