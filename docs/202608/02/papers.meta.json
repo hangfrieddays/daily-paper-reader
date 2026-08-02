@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-02",
+  "date": "2026-08-02",
+  "generated_at": "2026-08-02T20:41:15",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/02/2607.26860v1-amortized-moment-matching-for-visual-generation",
+      "section": "quick",
+      "title_en": "Amortized Moment Matching for Visual Generation",
+      "authors": "Wenze Liu, Xintao Wang, Pengfei Wan, Xiangyu Yue",
+      "date": "2026-07-29",
+      "pdf": "https://arxiv.org/pdf/2607.26860v1",
+      "score": "7.0",
+      "evidence": "面向视觉生成的分布训练信号；可扩展的弗雷歇距离损失可作为奖励",
+      "tldr": "针对生成模型训练中显式统计匹配计算代价高、难以扩展的问题，提出摊销矩匹配框架，将去噪器视为多项式投影，并推导出可矩阵化优化的AMFD损失。该方法在全局表征上作为后训练目标时训练更稳健，显著提升ImageNet一步生成性能，并解锁原生生成空间探索。在文本到图像任务中，AMFD使一步模型在GenEval上超越多步教师模型，大幅增强指令跟随能力。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We propose amortized moment matching, utilizing neural networks to learn data moments as distributional training signals. By casting diffusion denoisers through polynomial projections, we establish a general framework for moment amortization, revealing that an $n$-th degree projection explicitly identifies data moments up to order $n+1$. Derived from the tractable affine case, we instantiate the Amortized Fréchet Distance (AMFD) loss. Unlike FD-loss which relies on explicit marginal moment calculations, AMFD is able to dynamically learn conditional moments via an alternating, matrix-free optimization pipeline that effortlessly scales to high-dimensional data. When operating on global representation features, AMFD serves as a powerful post-training objective; empirically, its neural formulation yields more robust training dynamics than exact statistical matching, substantially surpassing the FD baseline on the FDr$^6$ metric and achieving superior one-step generation on ImageNet. Furthermore, it unlocks direct exploration within native generative spaces, suggesting that the first two moments can identify target distributions only in spaces with strong semantics. Finally, when scaled to text-to-image generation, the condition-aware nature of AMFD unlocks massive gains in instruction-following capabilities, enabling our one-step models to outperform their multi-step FLUX.2 [klein] 4B teachers on the GenEval benchmark while achieving on-par performance on PickScore. Code and checkpoints are available at https://github.com/poppuppy/amfd.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

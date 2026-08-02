@@ -6,27 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-01
-- 运行时间：2026-08-01 21:03:51 UTC
+- 最新运行日期：2026-08-02
+- 运行时间：2026-08-02 20:41:09 UTC
 - 运行状态：成功
-- 本次总论文数：2
+- 本次总论文数：1
 - 精读区：0
-- 速读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-今日速读2篇论文，均获6分，暂无精读。最值得关注的是探索性建模提出的“第三预训练轴”与端到端生成，以及联邦学习驱动的无照片共享个性化图像增强。建议后续精读这两篇，深入理解其方法对比与适用场景。
-- 详情：[/202608/01/README](/202608/01/README)
+今日速读1篇视觉生成论文，无精读，重点聚焦《Amortized Moment Matching for Visual Generation》（7.0分）。该文提出摊销矩匹配方法，是当前最值得关注的生成方向。建议进一步精读原文，评估其与主流扩散模型的差异与潜力。
+- 详情：[/202608/02/README](/202608/02/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation](/202608/01/2607.27372v1-explorative-modeling-unlocking-a-third-pretraining-axis-and-end-to-end-generation)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：生成候选择优训练类似于强化学习的奖励式优化，可推动生成质量提升
-2. [Learning Color Grading, No Photo Sharing: Federated Aesthetic Preference Learning for Personalized Image Enhancement](/202608/01/2607.27659v1-learning-color-grading-no-photo-sharing-federated-aesthetic-preference-learning-for-personalized-image-enhancement)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：联邦美学评分器可作为图像增强/生成的奖励函数。
+1. [Amortized Moment Matching for Visual Generation](/202608/02/2607.26860v1-amortized-moment-matching-for-visual-generation)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：面向视觉生成的分布训练信号；可扩展的弗雷歇距离损失可作为奖励
 
 
 <div class="dpr-home-promo-card">

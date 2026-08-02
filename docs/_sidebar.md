@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-08-02 <!--dpr-date:20260802-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/02/2607.26860v1-amortized-moment-matching-for-visual-generation" data-sidebar-item="{&quot;title&quot;: &quot;Amortized Moment Matching for Visual Generation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.26860v1-amortized-moment-matching-for-visual-generation&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;面向视觉生成的分布训练信号；可扩展的弗雷歇距离损失可作为奖励&quot;}">Amortized Moment Matching for Visual Generation</a>
   * 2026-08-01 <!--dpr-date:20260801-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/01/2607.27372v1-explorative-modeling-unlocking-a-third-pretraining-axis-and-end-to-end-generation" data-sidebar-item="{&quot;title&quot;: &quot;Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2607.27372v1-explorative-modeling-unlocking-a-third-pretraining-axis-and-end-to-end-generation&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;生成候选择优训练类似于强化学习的奖励式优化，可推动生成质量提升&quot;}">Explorative Modeling: Unlocking a Third Pretraining Axis and End-to-End Generation</a>
