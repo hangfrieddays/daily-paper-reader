@@ -6,24 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-02
-- 运行时间：2026-08-02 20:41:09 UTC
+- 最新运行日期：2026-08-03
+- 运行时间：2026-08-03 21:05:16 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：0
 - 精读区：0
-- 速读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日速读1篇视觉生成论文，无精读，重点聚焦《Amortized Moment Matching for Visual Generation》（7.0分）。该文提出摊销矩匹配方法，是当前最值得关注的生成方向。建议进一步精读原文，评估其与主流扩散模型的差异与潜力。
-- 详情：[/202608/02/README](/202608/02/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202608/03/README](/202608/03/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Amortized Moment Matching for Visual Generation](/202608/02/2607.26860v1-amortized-moment-matching-for-visual-generation)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：面向视觉生成的分布训练信号；可扩展的弗雷歇距离损失可作为奖励
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
