@@ -1,0 +1,226 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-21T20:33:15.321171+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2608.14430v1",
+      "source": "arxiv",
+      "title": "Designing Reinforcement Learning for Diffusion Models: A Unified Path-Space View",
+      "abstract": "Reinforcement learning (RL) post-training provides a direct way to align diffusion models with human preferences and task-specific rewards. However, current RL algorithms for diffusion models remain fragmented: reverse-trajectory methods rely on discretized likelihood ratios, whereas forward-matching methods train on reward-labeled noising versions of the rollout samples. This paper shows that these seemingly different losses arise from a single path-space principle. Starting from the regularized diffusion-RL objective, we use importance sampling between sampling SDEs to obtain an explicit policy-gradient estimator on trajectory space. The estimator contains the stochastic Itô integral underlying Flow-GRPO-type updates; we derive an equivalent variance-reduced value-gradient form that recovers the forward-matching structure of AWM and DiffusionNFT. This identifies the empirical gap between these method families as a variance-reduction effect rather than a difference in RL principle. The derivation yields a unified design space organized by value-gradient estimation, weight functions, and sampling choices. Within this space, we propose a multi-sample KDE value-gradient estimator that reuses rollout groups, together with scale-bounded weight families that retain stable existing recipes while excluding singular ones. Experiments on SD3.5-M and Qwen-Image models validate the variance-reduction explanation and show that the resulting recipe improves over prior diffusion-RL baselines.",
+      "authors": [
+        "Yixian Xu",
+        "Yuanrui Zhang",
+        "Shengjie Luo",
+        "Liwei Wang",
+        "Di He"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV",
+        "stat.ML"
+      ],
+      "published": "2026-08-14T16:11:55+00:00",
+      "link": "https://arxiv.org/pdf/2608.14430v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "RL post-training for diffusion image generation",
+      "llm_evidence_cn": "面向扩散模型图像生成的强化学习后训练",
+      "llm_evidence": "面向扩散模型图像生成的强化学习后训练",
+      "canonical_evidence": "面向扩散模型图像生成的强化学习后训练",
+      "llm_tldr_en": "This paper unifies RL algorithms for diffusion models via a path-space principle, deriving an explicit policy-gradient estimator and reconciling reverse-trajectory and forward-matching losses.",
+      "llm_tldr_cn": "针对扩散模型强化学习后训练算法碎片化的问题，本文从路径空间原理出发，利用重要性采样得到轨迹空间上的显式策略梯度估计器，并证明反向轨迹类与正向匹配类方法等价。该统一视角为奖励驱动的图像生成模型后训练提供了清晰理论基础，并可用于设计更高效的RL算法。",
+      "llm_tldr": "针对扩散模型强化学习后训练算法碎片化的问题，本文从路径空间原理出发，利用重要性采样得到轨迹空间上的显式策略梯度估计器，并证明反向轨迹类与正向匹配类方法等价。该统一视角为奖励驱动的图像生成模型后训练提供了清晰理论基础，并可用于设计更高效的RL算法。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.20161v1",
+      "source": "arxiv",
+      "title": "DARS: Dual-Level Credit Assignment RL with Structured Reasoning for Instruction-Based Image Editing",
+      "abstract": "Instruction-based image editing uses a planner-renderer pipeline: a vision-language model (VLM) first converts the instruction into an edit plan, and a diffusion model then executes that plan. Training such systems with only final-image rewards is inefficient because a poor edit does not reveal whether additional optimization should place more emphasis on the planner or the renderer, and even planner-dominant cases remain difficult to localize within a free-form reasoning trace. We present DARS, a reinforcement learning framework for dual-level credit assignment in this two-stage setting. Across modules, multi-plan multi-render rollouts estimate between-plan and within-plan reward variability for soft module routing, while rollout mean rewards provide hardness estimates for an adaptive curriculum. Within the planner, a four-field structured reasoning output enables a prefix-gated reward and token-level advantage reweighting, turning outcome-level feedback into localized supervision. Experiments on five benchmarks show that DARS outperforms a Joint~RL baseline with the same backbone, data, reward model, and rollout budget, with the largest gains on reasoning-intensive edits.",
+      "authors": [
+        "Haoxiang Cao",
+        "Jiajiong Cao",
+        "Xuanpu Zhang",
+        "Changqian Yu",
+        "Chaoqun Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-20T15:16:39+00:00",
+      "link": "https://arxiv.org/pdf/2608.20161v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Reinforcement learning with reward design for instruction-based image editing",
+      "llm_evidence_cn": "面向指令图像编辑的强化学习与奖励设计",
+      "llm_evidence": "面向指令图像编辑的强化学习与奖励设计",
+      "canonical_evidence": "面向指令图像编辑的强化学习与奖励设计",
+      "llm_tldr_en": "DARS presents a dual-level credit assignment reinforcement learning framework for a planner-renderer image editing pipeline, using multi-plan multi-render rollouts to localize which module causes poor edits.",
+      "llm_tldr_cn": "指令图像编辑采用规划器-渲染器流水线，仅用最终图像奖励训练效率低，且难以定位是规划器还是渲染器的问题。针对这一问题，DARS提出双层信用分配的强化学习框架：在模块间通过多规划多渲染 rollout 估计奖励变异性进行软路由，在规划器内部对自由形式推理轨迹进行结构化分析，从而将优化信号定位到具体决策。实验表明该方法显著提升编辑准确率和训练效率。",
+      "llm_tldr": "指令图像编辑采用规划器-渲染器流水线，仅用最终图像奖励训练效率低，且难以定位是规划器还是渲染器的问题。针对这一问题，DARS提出双层信用分配的强化学习框架：在模块间通过多规划多渲染 rollout 估计奖励变异性进行软路由，在规划器内部对自由形式推理轨迹进行结构化分析，从而将优化信号定位到具体决策。实验表明该方法显著提升编辑准确率和训练效率。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.20334v1",
+      "source": "arxiv",
+      "title": "Swift-Image: Exploring the Performance Frontier of Compact Unified Image Generation Models",
+      "abstract": "We present Swift-Image, a compact unified model for text-to-image generation, single-image editing, and multi-image editing. Our goal is to explore how far a relatively small visual generator can be pushed through systematic training engineering under a constrained computational budget. Swift-Image adopts an efficient 6B single-stream DiT and a progressive training pipeline that evolves from broad semantic coverage to higher resolution, stronger visual quality, and unified generation-editing supervision. For post-training, we employ parallel expert reinforcement learning followed by multi-teacher on-policy distillation to alleviate interference among heterogeneous objectives. We further decouple high-level reasoning from pixel-level rendering with a Prompt Enhancer that translates user requests into generator-aligned visual specifications. For efficient deployment, structural pruning and few-step distillation produce 3B and accelerated variants. Swift-Image achieves leading aggregate performance among evaluated open-source models with only 6B parameters and 243K GPU training hours; the compressed 3B model incurs nearly no loss, while few-step distillation further improves aggregate editing performance with substantially fewer sampling steps. Our study also summarizes practical lessons for architecture, data curriculum, post-training, prompt enhancement, and model compression.",
+      "authors": [
+        "Taihang Hu",
+        "Zhao Wang",
+        "Zuan Gao",
+        "Tao Liu",
+        "Hao Yan",
+        "Zhengze Xu",
+        "Yuhang Yu",
+        "Yongchao Du",
+        "Xingjian Wang",
+        "Jun Zheng",
+        "Qinye Zhou",
+        "Zhengrui Chen",
+        "Chao Lin",
+        "Yefeng Shen",
+        "Zhengtao Wu",
+        "Ge Wu",
+        "Xiaoli Xu",
+        "Denghui Yang",
+        "Huayu Zhang",
+        "Mingzhou Zhang",
+        "Mengting Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-20T17:59:52+00:00",
+      "link": "https://arxiv.org/pdf/2608.20334v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses parallel expert reinforcement learning for unified image generation",
+      "llm_evidence_cn": "采用并行专家强化学习进行统一图像生成",
+      "llm_evidence": "采用并行专家强化学习进行统一图像生成",
+      "canonical_evidence": "采用并行专家强化学习进行统一图像生成",
+      "llm_tldr_en": "Swift-Image is a compact unified image generation model trained with parallel expert RL and multi-teacher on-policy distillation, achieving strong performance under constrained compute.",
+      "llm_tldr_cn": "针对紧凑型统一图像生成模型在有限算力下的性能上限问题，Swift-Image采用6B单流DiT与渐进式训练管线，从语义覆盖逐步提升到高分辨率与统一生成编辑监督。在后训练阶段，通过并行专家强化学习与多教师在线蒸馏缓解异构目标间的干扰。实验表明该模型在文本到图像、单图编辑与多图编辑任务上均达到高效高性能，为小规模生成模型提供系统化训练工程参考。",
+      "llm_tldr": "针对紧凑型统一图像生成模型在有限算力下的性能上限问题，Swift-Image采用6B单流DiT与渐进式训练管线，从语义覆盖逐步提升到高分辨率与统一生成编辑监督。在后训练阶段，通过并行专家强化学习与多教师在线蒸馏缓解异构目标间的干扰。实验表明该模型在文本到图像、单图编辑与多图编辑任务上均达到高效高性能，为小规模生成模型提供系统化训练工程参考。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.12876v1",
+      "source": "arxiv",
+      "title": "SPARED: Reasoning-Based AI-Generated Image Detection via Adversarially Edited Data",
+      "abstract": "Detecting AI-generated images is only half the task: a deployed detector must also justify its verdict, yet existing detectors inherit three failure modes from their training data: real and fake images collected from different sources invite provenance shortcuts, supervised explanation corpora teach templated rationales, and a static forgery corpus leaves the decision boundary standing still while generators keep moving. We introduce \\methodname{}, an adversarial reinforcement learning framework that pits two heterogeneous models against each other. A diffusion image editor learns to edit real photographs into fake counterparts of those same photographs that fool the current detector, while a reasoning MLLM learns to expose them with a verdict grounded in free-form reasoning. Both rewards are shortcut-proof by design: the attacker is credited only when its edit is faithfully executed, and the defender only when its verdict is correct. As the two models alternate, each round's attacker regenerates a harder training pool aimed at the current detector's blind spots, so the detector must generalize rather than memorize any fixed artifact distribution. Although the explanation is never rewarded, its quality rises round over round as a side effect of accuracy-only training. A detector trained within this loop improves monotonically across rounds on each of three external benchmarks.",
+      "authors": [
+        "Yicheng Bao",
+        "Xiahui Guo",
+        "Xuhong Wang",
+        "Xin Tan"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-08-13T06:40:20+00:00",
+      "link": "https://arxiv.org/pdf/2608.12876v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Adversarial reinforcement learning framework trains a diffusion image editor to generate fake edited images",
+      "llm_evidence_cn": "对抗强化学习框架训练扩散图像编辑器生成伪造编辑图像",
+      "llm_evidence": "对抗强化学习框架训练扩散图像编辑器生成伪造编辑图像",
+      "canonical_evidence": "对抗强化学习框架训练扩散图像编辑器生成伪造编辑图像",
+      "llm_tldr_en": "SPARED uses an adversarial RL framework where a diffusion editor learns to edit real photos into fake images that fool a detector, while a reasoning MLLM learns to justify detection and improve robustness.",
+      "llm_tldr_cn": "AI生成图像检测既要识别伪造也要给出可解释理由，但现有检测器因数据来源捷径、模板化解释和静态伪造语料而受限。为此提出SPARED，一种对抗强化学习框架：扩散图像编辑器学习把真实照片编辑成能骗过当前检测器的伪图，推理型多模态大模型则学习给出判定和解释。该方法将强化学习与扩散图像生成结合，实现了检测器与生成器的动态对抗训练。实验表明该框架能提升检测鲁棒性与解释质量，为图像生成中的强化学习应用提供了新范式。",
+      "llm_tldr": "AI生成图像检测既要识别伪造也要给出可解释理由，但现有检测器因数据来源捷径、模板化解释和静态伪造语料而受限。为此提出SPARED，一种对抗强化学习框架：扩散图像编辑器学习把真实照片编辑成能骗过当前检测器的伪图，推理型多模态大模型则学习给出判定和解释。该方法将强化学习与扩散图像生成结合，实现了检测器与生成器的动态对抗训练。实验表明该框架能提升检测鲁棒性与解释质量，为图像生成中的强化学习应用提供了新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.18183v1",
+      "source": "arxiv",
+      "title": "Accelerating Visual On-Policy Distillation with Batched Speculative Jacobi Rollouts",
+      "abstract": "Visual on-policy distillation (OPD) improves the training of compact visual autoregressive models by learning from trajectories generated by the current student. However, these online rollouts are still produced token by token with autoregressive decoding, which adds substantial cost to every on-policy training step. Speculative Jacobi Decoding (SJD) provides an alternative because it can process multiple tokens in parallel without an auxiliary draft model, but the original method is designed for single-sequence inference. We introduce HB-SJD, a batched SJD rollout backend for visual OPD. HB-SJD allows each image to advance independently according to its own decoding progress, while images at different sequence positions are still verified in batched model forwards. As images finish, HB-SJD switches between Full and Compact execution to reduce the cost of later rollout rounds. HB-SJD only replaces the student rollout backend and leaves the teacher, distillation objective, and optimization procedure unchanged. Experiments with LlamaGen show that HB-SJD substantially reduces rollout and end-to-end training time while preserving the generation quality of the distilled student.",
+      "authors": [
+        "Bingqi Shan",
+        "Zhehao Yu",
+        "Kenhong Lin",
+        "Baoquan Zhang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-08-18T07:16:48+00:00",
+      "link": "https://arxiv.org/pdf/2608.18183v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "On-policy distillation of visual autoregressive models with batched rollouts",
+      "llm_evidence_cn": "视觉自回归模型的在策略蒸馏与批量展开",
+      "llm_evidence": "视觉自回归模型的在策略蒸馏与批量展开",
+      "canonical_evidence": "视觉自回归模型的在策略蒸馏与批量展开",
+      "llm_tldr_en": "HB-SJD accelerates visual on-policy distillation by batching speculative Jacobi rollouts, allowing multiple images to advance independently in parallel and reducing per-step rollout cost.",
+      "llm_tldr_cn": "视觉在策略蒸馏依赖逐令牌自回归展开，训练开销巨大。本文提出HB-SJD，将推测雅可比解码扩展到批量场景，使各图像按自身解码进度独立推进并验证。实验表明该方法在保持生成质量的同时显著降低rollout成本，为视觉生成模型的强化式训练提供了更高效的实现。",
+      "llm_tldr": "视觉在策略蒸馏依赖逐令牌自回归展开，训练开销巨大。本文提出HB-SJD，将推测雅可比解码扩展到批量场景，使各图像按自身解码进度独立推进并验证。实验表明该方法在保持生成质量的同时显著降低rollout成本，为视觉生成模型的强化式训练提供了更高效的实现。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
