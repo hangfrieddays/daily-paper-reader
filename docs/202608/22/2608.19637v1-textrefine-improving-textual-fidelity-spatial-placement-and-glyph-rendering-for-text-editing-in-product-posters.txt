@@ -1,0 +1,1821 @@
+TextRefine: Improving Textual Fidelity, Spatial Placement, and Glyph Rendering
+for Text Editing in Product Posters
+Honglie Wang1,2,3, Jia Sun1, Zijun Li1, Junlong Wu1, Pengcheng Wei1,
+Jiyuan Wang1, Yongrui Heng1, Boheng Zhang1, Huaiqing Wang1, Dewen Fan1, Qianqian Gan1, Fan
+Yang1, Tingting Gao1, Yan-Ming Zhang2,3
+1Kuaishou Technology
+2School of Artificial Intelligence, University of Chinese Academy of Sciences, Beijing 100049, China
+3State Key Laboratory of Multimodal Artificial Intelligence Systems (MAIS), Institute of Automation, Chinese Academy of
+Sciences, Beijing 100190, China
+Abstract
+Text editing in product posters entails inserting new text or
+replacing existing text while preserving product appearance,
+background content, and global composition. Despite recent
+progress in instruction-based image editing, general-purpose
+models remain unreliable in this setting: they often omit or
+incorrectly render the target text, place it over salient prod-
+ucts or pre-existing content, and produce structurally distorted
+or visually inconsistent glyphs. We introduce TextRefine, a
+task-aligned post-training framework that combines super-
+vised fine-tuning with operation-specific reward optimization
+to address these complementary failure modes. For text in-
+sertion, our text-span-level reward jointly assesses semantic
+fidelity and target-span coverage, penalizes spatial conflicts
+with products and existing text, and employs a gated structural
+constraint to preserve non-text regions. For text replacement,
+our glyph-level reward leverages the connectionist temporal
+classification (CTC) posterior of the target character to provide
+graded supervision for fine-grained defects, including missing
+strokes, structural deformations, and confusion among visu-
+ally similar characters. We further introduce OpenTextEdit,
+a dataset comprising 100K images for text editing in product
+posters, with multi-text layouts, detailed text attributes, prod-
+uct masks, and challenging low-frequency characters. Exten-
+sive experiments on both insertion and replacement demon-
+strate that TextRefine consistently outperforms the evaluated
+image editing baselines in textual fidelity, placement reliabil-
+ity, and glyph quality while better preserving source-image
+content.
+Introduction
+Text-to-image generation has advanced rapidly in recent
+years, and state-of-the-art models can now synthesize
+photorealistic, high-fidelity images from natural language
+prompts (Podell et al. 2024; Betker et al. 2023; Saharia et al.
+2022; Labs 2024; Esser et al. 2024). Within this broader
+progress, Visual Text Rendering (VTR), the ability to gen-
+erate legible and semantically faithful text inside images,
+has become a core capability of modern generative sys-
+tems (Zhang et al. 2025; Wu et al. 2025; ByteDance 2025;
+Team et al. 2026). Recent specialized models already demon-
+strate strong text-rendering performance in the generation-
+from-scratch regime, where dense multilingual text can be
+produced with high accuracy and visual coherence (Tuo,
+Figure 1: Representative failure modes of existing methods
+for text editing in product posters. In text insertion (top), gen-
+erated text may overlap salient product regions, conflict with
+existing text, or deviate from the intended content. In text re-
+placement (bottom), models may alter unintended character
+instances or produce structurally distorted glyphs.
+Geng, and Bo 2024; Liu et al. 2024; Gong et al. 2025; Gao
+et al. 2025a; Wu et al. 2025).
+Text editing in product posters presents challenges that
+are not adequately addressed by progress in generation from
+scratch. The task encompasses both text insertion, in which
+one or more promotional text spans must be incorporated into
+an existing layout, and text replacement, in which localized
+text must be modified without disrupting its surroundings.
+Successful editing therefore requires simultaneous control
+over three aspects: textual fidelity, spatial placement, and
+glyph rendering. As shown in Figure 1, existing models
+may omit or incorrectly render requested text, place newly
+generated text over salient products or pre-existing content,
+and introduce structural defects during character replace-
+arXiv:2608.19637v1  [cs.CV]  20 Aug 2026
+
+
+ment. These errors are particularly consequential in product
+posters, where text conveys essential commercial informa-
+tion and must coexist with tightly constrained visual layouts.
+Moreover, all edits must preserve product appearance, back-
+ground content, and the overall composition of the source
+image.
+A central obstacle is the mismatch between these require-
+ments and existing supervision. Reinforcement-learning ap-
+proaches to visual text rendering commonly derive rewards
+from OCR or multimodal large language models and reduce
+recognition outputs to rule-based scores such as exact match
+or edit distance (Geng et al. 2025; Du et al. 2020; Wei et al.
+2024; Bai et al. 2025; Du et al. 2025; Chang et al. 2025).
+Although such signals measure whether textual content is
+recognizable, they provide limited supervision for poster-
+specific spatial conflicts and are often insensitive to subtle
+glyph defects that do not change the recognized character.
+A single string-level score is therefore insufficient to capture
+the distinct requirements of insertion and replacement: in-
+sertion demands span-level assessment of content, coverage,
+and placement, whereas replacement requires fine-grained
+sensitivity to character structure.
+To address this supervision gap, we propose TextRefine, a
+task-aligned post-training framework for text editing in prod-
+uct posters. TextRefine first performs supervised fine-tuning
+on mixed insertion and replacement data to establish general
+editing capability, and then applies reinforcement learning
+with two complementary, operation-specific reward signals.
+For text insertion, a text-span-level reward evaluates semantic
+fidelity and target-span coverage while penalizing conflicts
+with product regions and pre-existing text; a gated structural
+constraint additionally discourages unintended changes to
+non-text content. For text replacement, a glyph-level reward
+uses the connectionist temporal classification posterior of
+the target character to provide graded supervision for miss-
+ing strokes, structural deformations, and confusion among
+visually similar characters.
+We further construct OpenTextEdit, a 100K-image
+dataset designed for text editing in product posters. It covers
+both text insertion and text replacement, with an emphasis
+on multi-text layouts and structurally complex low-frequency
+characters, and provides text content, layout references, vi-
+sual attributes, and product masks for task-aligned training
+and evaluation.
+We summarize our contributions as follows:
+• We formulate text editing in product posters as two com-
+plementary tasks—text insertion and text replacement—
+and identify the distinct requirements of textual fidelity,
+spatial placement, glyph rendering, and source-image
+preservation.
+• We propose TextRefine, a task-aligned post-training
+framework that combines supervised fine-tuning with re-
+inforcement learning. Its text-span-level reward jointly
+optimizes content, coverage, and product-aware place-
+ment constraints for insertion, while its CTC-posterior-
+based glyph-level reward provides fine-grained structural
+supervision for replacement.
+• We construct OpenTextEdit, a 100K-image dataset fea-
+turing multi-text layouts, detailed text attributes, product
+masks, and challenging low-frequency characters. Exper-
+iments on both tasks demonstrate consistent improve-
+ments over strong image editing baselines in text accuracy,
+placement reliability, glyph fidelity, and content preser-
+vation.
+Related Work
+Visual Text Rendering
+Visual text rendering (VTR), the generation of legible and
+semantically accurate text within images, has become a key
+capability of modern generative models. Performance in the
+generation-from-scratch setting has improved substantially,
+with recent models achieving high fidelity for dense multi-
+lingual text synthesis.
+Existing approaches employ two primary strategies. The
+first injects auxiliary constraints into diffusion models
+through specialized modules: glyph conditions (Tuo, Geng,
+and Bo 2024; Yang et al. 2023; Ma et al. 2025; Zhang et al.
+2024) for morphological control and layout guidance (Chen
+et al. 2023; Wang et al. 2025d; Gao et al. 2025b; Zeng et al.
+2024) for spatial precision. The second improves text en-
+coder designs using character-level tokens or tokenizer-free
+architectures (Zhao and Lian 2024; Chen et al. 2024; Liu
+et al. 2024) to preserve fine-grained textual information.
+Recent large-scale models (Labs 2024; Esser et al. 2024;
+ByteDance 2025; Wu et al. 2025) have achieved substantial
+text-rendering capability without relying on explicit glyph
+conditions.
+However, image editing presents fundamental challenges
+absent in generation-from-scratch: preserving source con-
+tent, including foreground subjects, background context, and
+composition, while inserting or replacing text. Existing edit-
+ing approaches, including AnyText (Tuo et al. 2023), Any-
+Text2 (Tuo, Geng, and Bo 2024), TextCtrl (Zeng et al. 2024),
+GlyphMastero (Wang et al. 2025b), PosterMaker (Gao et al.
+2025b), RepText (Wang et al. 2025a), and FireRed-Image-
+Edit (Team et al. 2026), typically rely on complex auxiliary
+inputs such as glyph encoders, prior guidance, and external
+layout specifications. Despite these efforts, they lack mecha-
+nisms for multi-span semantic supervision, fall short in glyph
+fidelity for complex characters, and do not jointly optimize
+span-level and character-level quality.
+Reinforcement Learning for Visual Text Rendering
+Reinforcement learning with scalar reward feedback has
+emerged as an effective post-training mechanism for improv-
+ing generative model quality (Wang et al. 2025c). In the
+context of VTR, recent works have explored RL-based fine-
+tuning driven by OCR-derived rewards. Examples include
+Seedream 2.0 (Gong et al. 2025) and Seedream 3.0 (Gao et al.
+2025a), which incorporate text accuracy rewards during post-
+training for bilingual rendering; X-Omni (Geng et al. 2025),
+which applies RL to discrete autoregressive generation with
+OCR-based long-text rewards; and BLIP3o-NEXT (Chen
+et al. 2025), which leverages OCR rewards in a generation
+post-training pipeline.
+
+
+Text Insertion Data Construction
+Web Images
+Text Detection
+(EasyOCR)
+Text Removal
+(Qwen-Image-Edit)
+Pair Filtering 
+&Text Recovery 
+(Qwen3VL-8B)
+Recovered Text
+"text": "升级新款玻璃", 
+"box": [563, 132, 1006, 214], 
+"text": "小贵！",
+"box": [543, 242, 942, 428],
+"text": "冰感散热", 
+"box": [545, 419, 992, 544], 
+…
+Text Attribute Inference 
+(Qwen3VL-8B)
+Text Attribute
+"relative_position": 
+"图片右上角", 
+"color_and_effect": 
+"文字为黑色，背景为浅米色
+圆角矩形，黑色文字与浅色
+背景对比强烈，清晰醒目。”
+...
+Simple Template Prompt
+Add text: ”升级新款玻璃”,”小贵！”…
+Descriptive Prompt
+Add the text “升级新款玻璃” to the upper-right corner 
+of the image, using a black, bold, sans-serif font (similar 
+to Heiti) with a relatively large size and thick, forceful 
+strokes; place it on a light beige rounded-rectangle 
+background so the text stands out with strong contrast 
+and clear visibility.
+Training Pairs
+Text Replacement Data Construction (Rare Chinese Characters)
+Web Images
+Text Detection
+(EasyOCR)
+Text Removal
+(Qwen-Image-Edit)
+Rare Character Substituiton
+& Text Color Inference 
+(Qwen3VL-8B)
+Text Attribute
+”Origin Text“: 耐高温不变形
+”New Text“: 耐高温不蠡形
+”Text RGB“: [255, 255, 0]
+Select Font
+(50 Chinese Fonts)
+Text Rendering
+Replace Prompt 1
+Replace the character 
+“变” with “蠡” in the 
+string “耐高温不变形”.
+Replace Prmopt 2
+Change “耐高温不变形” 
+to “耐高温不蠡形”.
+Data
+Image Operation
+VLM Analysis
+Prompt Construction
+Font Library
+Data Flow
+Figure 2: Overview of the data construction pipeline for text insertion and text replacement in OpenTextEdit.
+These methods demonstrate that RL supervision can
+improve text accuracy in generation-from-scratch settings.
+However, they share a fundamental limitation that becomes
+acute in the editing context. Their reward signals rely on
+standard OCR models (Du et al. 2020; Wei et al. 2024) or
+vision-language models (Bai et al. 2025) that operate at the
+string level, evaluating only character recognition accuracy
+and lacking fine-grained structural perception. Consequently,
+such rewards are insensitive to glyph-level defects, including
+missing strokes, extra components, and local distortions that
+compromise legibility without failing recognition. Existing
+RL frameworks for VTR do not distinguish span-level textual
+quality from glyph-level fidelity, collapsing both into a single
+reward signal that inadequately supervises text insertion and
+text replacement.
+Methodology
+Preliminaries
+DiffusionNFT
+We adopt DiffusionNFT as the online re-
+inforcement learning algorithm for policy optimization.
+Let vθ(xt, t, c) denote the trainable velocity field and
+vold(xt, t, c) the sampling policy. Given an online sample
+x0, a task-specific reward model produces a normalized qual-
+ity score r ∈[0, 1]. DiffusionNFT constructs implicit posi-
+tive and negative policies as v+
+θ = (1 −β)vold + βvθ and
+v−
+θ = (1 + β)vold −βvθ, where β > 0 controls the update
+magnitude. The resulting optimization objective is
+LNFT = E(x0,c)∼πold, t;
+xt∼q(·|x0,t)
+h
+r ∥v+
+θ (xt, t, c) −v∥2
+2
++ (1 −r) ∥v−
+θ (xt, t, c) −v∥2
+2
+i
+,
+(1)
+where v is the target velocity and q(xt | x0, t) denotes the for-
+ward noising process. The objective assigns greater weight
+to the positive policy term for high-reward samples and to
+the negative policy term for low-reward samples. We instan-
+tiate r with task-specific signals tailored to text insertion and
+localized text editing in product posters.
+Task Definition
+We consider two forms of text editing in
+product posters: text insertion and localized text replacement.
+Let τ ∈{ins, rep} denote the task identity. Given a source
+poster xsrc, an editing instruction c, and a task-specific target
+y, the model generates an edited poster ˆx that renders the
+requested text while preserving product appearance, back-
+ground content, and non-target layout elements. For insertion
+(τ = ins), the target is a set of text spans y = {yi}N
+i=1 to
+be placed within the available poster layout. For replacement
+(τ = rep), the target is a glyph y⋆to be rendered in a local-
+ized source-text region. We use a simple instruction template
+and a descriptive attribute-aware template for insertion, to-
+gether with two operation-specific templates for replacement.
+These formats expose the model to complementary levels of
+instruction specificity while retaining an unambiguous edit-
+ing target. Our goal is to learn a single policy whose reward
+is selected according to the requirements of each task.
+Text Editing Data Construction
+As illustrated in Figure 2, we construct task-specific train-
+ing pairs that reflect the visual and textual constraints of
+product posters. For insertion, we collect candidate poster
+images from large-scale web data, localize existing text with
+OCR, and remove the detected regions using Qwen-Image-
+Edit-2511. A vision-language model (VLM) filters unreli-
+able edits and retains pairs consisting of an original poster
+and its text-removed counterpart. By comparing the paired
+images, the VLM recovers the target spans and annotates
+visual attributes such as color, position, and font style. We
+convert these annotations into a simple prompt specifying
+
+
+Input
+Text Detection
+(PaddleOCRv5)
+Foreground Extraction
+(RMBG-2.0)
+Merged Mask Region
+Candidate Regions
+Valid Region
+Invalid Region
+Overlap with 
+foreground regions
+Overlap with 
+existing text regions
+Figure 3: Valid-span filtering for product-poster text insertion. A detected span is retained when its overlap with pre-existing
+text is below τbbox and its overlap with the salient-product mask m is below τmask. This criterion implements the non-overlap
+preference used in our target setting rather than a universal poster-layout rule.
+the insertion target and a descriptive prompt that addition-
+ally encodes appearance and layout cues. The resulting pairs
+supervise both faithful text rendering and compatibility with
+the existing product-poster composition.
+For localized replacement, we construct a complementary
+subset centered on low-frequency Chinese characters, whose
+complex structures remain difficult for general-purpose edi-
+tors. Starting from OCR-localized text regions, we remove a
+selected region, substitute its content with a target character,
+and render the character using one of 50 Chinese fonts col-
+lected from online sources. This controlled procedure yields
+paired source and target posters while retaining the surround-
+ing local context. We then generate two replacement-specific
+prompts that explicitly identify the source and target text,
+thereby reducing ambiguity in localized editing. We use syn-
+thetic rendering only for the replacement subset: insertion
+additionally requires learning poster-level placement and ap-
+pearance, whereas localized replacement primarily benefits
+from controlled supervision of character structure and re-
+gional consistency.
+Text-Span-Level Reward
+The insertion reward evaluates whether the edited poster con-
+tains the requested spans without introducing spurious text or
+violating the non-overlap preference adopted in our product-
+poster setting. Given target spans y = {yi}N
+i=1, we apply
+OCR to obtain detections {(uj, bj, sj)}M
+j=1, where uj, bj,
+and sj denote the recognized string, bounding box, and con-
+fidence score, respectively. Let Bsrc = {¯bk} denote source-
+poster text boxes, and let m denote the salient-product mask
+obtained with BiRefNet (Zheng et al. 2024). We retain de-
+tections whose overlap with both pre-existing text and the
+product region is below predefined thresholds, yielding the
+valid span set
+V =
+
+
+
+
+
+
+
+
+
+(vj,˜bj)
+
+max
+¯bk∈Bsrc
+|˜bj ∩¯bk|
+min(|˜bj|, |¯bk|)
+< τbbox,
+|˜bj ∩m|
+|˜bj|
+< τmask
+
+
+
+
+
+
+
+
+
+,
+(2)
+where τbbox = 0.5 and τmask = 0.5 in our implementa-
+tion. This filtering rule operationalizes a controllable layout
+preference for the product posters considered here; it is not
+intended as a universal design principle, since intentional
+text–product overlap can be appropriate in other poster styles.
+For each target span yi, we compute similarity against
+retained OCR spans using normalized edit distance. Let ϕ(·)
+remove whitespace and normalize case, and define
+sij = 1 −
+dLev(ϕ(yi), ϕ(vj))
+max{|ϕ(yi)|, |ϕ(vj)|},
+ri =
+
+
+
+
+
+
+
+1,
+∃vj∈V: ϕ(yi)⊆ϕ(vj) or
+ϕ(vj)⊆ϕ(yi)
+,
+max
+vj∈V sij,
+max
+vj∈V sij ≥τmiss,
+0,
+otherwise.
+(3)
+where dLev is the Levenshtein distance and τmiss = 0.5. We
+then combine semantic fidelity and coverage as
+Rspan = 1
+N
+N
+X
+i=1
+ri
+|
+{z
+}
+Rsim
+· max
+
+0, 1 −Utar + Uocr
+max(N, |V|)
+
+|
+{z
+}
+Rcov
+,
+(4)
+where Utar and Uocr denote the numbers of unmatched target
+spans and unmatched OCR detections, respectively. The sim-
+ilarity term measures target-span fidelity, while the coverage
+term penalizes omissions and unintended text generation. To-
+gether with the filtering in Equation 2, this reward assesses
+content coverage and collision avoidance; it does not attempt
+to model the full aesthetics of poster layout.
+To reduce OCR-oriented reward exploitation and preserve
+the source poster, we introduce a gated structural regularizer
+that becomes active only after span-level accuracy exceeds a
+prescribed threshold:
+Rtext = Rspan + 1[Rspan > τssim]
+· SSIM(ψ(ˆx, V), ψ(xsrc, V)) ,
+(5)
+where ψ(·, V) masks the retained text boxes in V by whiten-
+ing them before comparison, and τssim = 0.5. Consequently,
+the optimization first prioritizes rendering the requested text;
+once this condition is met, the SSIM term penalizes unin-
+tended changes to products, backgrounds, and other non-text
+poster content.
+
+
+Prompt: Change “倒油免扶” to “倒膺免扶”.
+Group Sampling during DiffusionNFT
+0.9678 
+0.9614 
+0.9534  
+0.8189
+0.0422 
+0.0058
+Figure 4: Comparison of binary OCR correctness and the
+proposed graded glyph signal. Whereas a binary reward re-
+tains only the final correctnessdecision,thetarget-glyphCTC
+posterior preserves continuous recognition evidence and pro-
+vides a more informative signal for optimizing glyph fidelity.
+Glyph-Level Reward
+Although Rtext measures span-level correctness, it is com-
+paratively insensitive to fine structural defects within an in-
+dividual character. We therefore define a glyph-level reward
+for localized replacement samples (τ = rep) using graded
+recognition evidence from the edited character region. Let
+y⋆denote the target glyph and b⋆= [x1, y1, x2, y2] its anno-
+tated bounding box. We first crop the edited poster ˆx to this
+region,
+ˆxchar = Crop(ˆx, b⋆),
+(6)
+and feed the crop into a PaddleOCR-v5 recognizer. Instead
+of relying only on the final decoded string, we use the full
+CTC posterior matrix
+P ∈[0, 1]T ×|C|,
+(7)
+where T is the temporal length of the recognition sequence,
+C is the OCR character vocabulary, and Pt,k denotes the
+softmax probability assigned to character k ∈C at time step
+t.
+As illustrated in Figure 4, the posterior retains graded
+evidence that is discarded by binary OCR correctness. Let
+id(y⋆) be the vocabulary index of y⋆. We define the glyph
+reward as the maximum posterior probability assigned to the
+target glyph across all CTC time steps:
+Rglyph = max
+1≤t≤T Pt,id(y⋆).
+(8)
+If the recognizer produces multiple candidate sequences, we
+concatenate them along the temporal dimension before ap-
+plying the maximum. The resulting score increases with the
+recognizer’s support for the target glyph and provides a con-
+tinuous optimization signal under missing strokes, structural
+deformation, or confusion with visually similar characters.
+This reward is particularly suited to localized editing of low-
+frequency Chinese characters, for which exact-match super-
+vision is sparse.
+Task-Specific Reward Assignment
+The two rewards address different editing operations and are
+therefore not summed for an individual sample. We train
+TextRefine on a mixed stream of insertion and localized-
+replacement examples and select the scalar DiffusionNFT
+reward according to the task identity:
+R(ˆx, τ, y, b⋆) =
+Rtext,
+τ = ins,
+Rglyph,
+τ = rep.
+(9)
+Thus, insertion samples receive span- and preservation-
+aware supervision through Rtext, whereas replacement sam-
+ples receive character-structure supervision through Rglyph.
+This task-conditioned assignment allows a single editing pol-
+icy to learn from both operations without conflating their
+distinct quality criteria.
+Experiments
+Implementation Details
+Data and Supervised Fine-Tuning.
+We evaluate TextRe-
+fine under a common protocol for insertion and localized
+replacement in product posters, with all training and eval-
+uation images resized to 1024 × 1024. OpenTextEdit con-
+tains 50K insertion images and 50K localized-replacement
+images. Pairing each image with two instruction variants
+yields 200K prompt–image instances for supervised fine-
+tuning. We initialize from Qwen-Image-Edit-2511 and opti-
+mize all model parameters using DeepSpeed ZeRO-3 with
+bf16 mixed precision. Training uses a global batch size of 8
+and a learning rate of 1 × 10−5 for approximately 20 epochs
+on 48 NVIDIA A800 GPUs.
+Hardness-Aware RL Data Selection.
+To improve the in-
+formativeness of online optimization, we prioritize challeng-
+ing examples that remain feasible for the SFT policy. Specif-
+ically, we consider insertion examples containing more than
+three target spans and replacement examples whose target
+characters contain more than 20 strokes. For each candidate,
+the SFT model generates five rollouts using 15 denoising
+steps. We compute the corresponding task-specific rewards
+and retain, for each operation, the 1,000 examples with the
+largest reward variance. This strategy emphasizes semi-hard
+cases for which the policy is capable of producing valid edits
+but remains unstable across rollouts.
+Reinforcement Learning.
+Starting from the SFT check-
+point, we apply DiffusionNFT with LoRA rank 64 and scal-
+ing factor 128. Each update uses groups of 16 samples, with
+48 distinct prompts sampled per epoch. Rollouts use 15 de-
+noising steps, and optimization is performed on four sampled
+timesteps from each trajectory. We train for approximately
+two epochs on 16 NVIDIA A800 GPUs using a learning rate
+of 3.0 × 10−4.
+Evaluation Metrics
+We construct task-specific evaluation subsets from Open-
+TextEdit. The insertion benchmark contains 629 examples
+with simple prompts and 1,235 examples with descrip-
+tive prompts, while the localized-replacement benchmark
+contains 200 examples evaluated with a fixed replacement
+prompt. We report operation-specific text metrics together
+with FID, SSIM, and PSNR to characterize distributional
+quality and preservation of source-poster content. Because
+the benchmarks follow the target product-poster distribution,
+
+
+Figure 5: Qualitative comparison of TextRefine with the evaluated baselines on product-poster text insertion (top) and localized
+replacement (bottom). TextRefine more faithfully renders the requested content while respecting the target poster layout and
+character structure; baseline outputs exhibit product occlusion, unintended text, or glyph distortion.
+the results measure in-domain performance and should not
+be interpreted as evidence of unrestricted cross-domain or
+multilingual generalization.
+Text Insertion Benchmark.
+Each example contains a
+source poster, a target span set Yj = {yj,i}Nj
+i=1, and an edited
+output. We apply PaddleOCR-v5 to the source and edited
+posters and remove detections associated with pre-existing
+source text using bounding-box overlap, leaving candidate
+inserted spans. Target spans are parsed from the instruction,
+and a VLM aligns them with OCR detections while account-
+ing for token fragmentation and minor recognition deviations
+(similarity > 0.7). For example j, let Mj, Pj, and Uj denote
+the numbers of matched, partial, and missed targets, respec-
+tively, and let Ej denote unmatched extra detections; thus
+Nj = Mj + Pj + Uj.
+The sample-level insertion score is
+sins
+j
+= max
+
+0, Mj + αPj −Ej
+Nj
+
+,
+(10)
+where α ∈[0, 1] weights partial matches. Over a benchmark
+with B samples, we report
+Scoreins = 1
+B
+B
+X
+j=1
+sins
+j .
+(11)
+Localized Text Replacement Benchmark.
+Each example
+consists of a source poster, a target character y⋆
+j , and an an-
+notated character box b⋆
+j. We crop the edited poster around
+b⋆
+j with a small margin and apply PaddleOCR-v5 to the lo-
+calized region. Let tj denote the concatenated OCR output.
+We define the correctness indicator as
+zj = I
+
+y⋆
+j ∈tj
+
+,
+(12)
+where I[·] is the Iverson bracket that equals 1 if the target
+character is present in the OCR output and 0 otherwise. The
+replacement accuracy is then
+Accrep = 1
+B
+B
+X
+j=1
+zj,
+(13)
+which measures the proportion of examples for which the tar-
+get character is recognized within the localized replacement
+region. This protocol focuses on single-character editing and
+does not evaluate multi-character rewriting.
+Main Results
+Comparison with Baselines
+We compare TextRefine with
+four representative baselines. Qwen-Image-Edit-2511 (Wu
+et al. 2025) is the general-purpose instruction-based editor
+used for initialization, while FireRed-Image-Edit-1.0 (Team
+et al. 2026) provides a strong visual-text editing baseline. We
+additionally evaluate AnyText2 (Tuo, Geng, and Bo 2024),
+which supports attribute-controllable visual text generation
+and editing, and PosterMaker (Gao et al. 2025b), which is
+specifically designed for accurate text rendering in product
+posters. Together, these methods cover general instruction-
+based editing, specialized visual-text editing, and product-
+poster-oriented generation. Table 1 reports the main compar-
+ison under both prompt settings, and Figure 5 provides quali-
+tative comparisons. Our claims are restricted to the evaluated
+baselines and the OpenTextEdit product-poster benchmarks.
+As shown in Table 1, TextRefine (RL) obtains the strongest
+overall results among the evaluated methods under both
+prompt settings. Relative to its SFT initialization, reward
+optimization increases the matched-span rate and insertion
+score while reducing partial matches, missed spans, and ex-
+tra OCR detections. The accompanying gains in SSIM and
+PSNR indicate improved preservation of non-target poster
+content. These results support the role of the span reward
+in suppressing omissions and unintended text, and of the
+gated structural term in limiting changes outside the inserted
+regions.
+Localized Text Replacement Results.
+Table 2 summa-
+rizes performance on localized editing of low-frequency
+Chinese characters. TextRefine (SFT) already improves sub-
+stantially over the evaluated baselines, showing the benefit
+of task-specific replacement data for structurally complex
+
+
+Table 1: Quantitative comparison on text insertion benchmark under simple template prompt (top, 629 samples) and descriptive
+prompt (bottom, 1235 samples). ↑: higher is better; ↓: lower is better. Best results in bold.
+Method
+Match (%)↑
+Partial (%)↓
+Miss (%)↓
+Extra↓
+Score↑
+FID↓
+SSIM↑
+PSNR↑
+Simple Template Prompt (629 samples)
+Qwen-Image-Edit-2511
+76.8
+8.3
+14.9
+26
+0.7829
+36.7330
+0.8016
+14.8536
+FireRed-Image-Edit-1.0
+82.2
+6.2
+11.6
+32
+0.8277
+30.5686
+0.7825
+14.9120
+TextRefine (SFT)
+87.1
+7.2
+5.7
+52
+0.8526
+24.3464
+0.8232
+15.9917
+TextRefine (RL)
+91.9
+4.3
+3.8
+18
+0.9174
+24.2191
+0.8303
+16.0774
+Descriptive Prompt (1235 samples)
+Qwen-Image-Edit-2511
+79.4
+7.9
+12.6
+102
+0.7893
+48.9229
+0.6412
+12.3042
+FireRed-Image-Edit-1.0
+82.5
+7.2
+10.3
+76
+0.8216
+36.2180
+0.6782
+13.3152
+TextRefine (SFT)
+87.8
+2.8
+9.4
+82
+0.8419
+32.5287
+0.7364
+14.7352
+TextRefine (RL)
+90.0
+1.2
+8.7
+63
+0.8973
+31.9462
+0.7428
+15.1628
+Table 3: Ablation on text insertion reward components (simple template prompt, 629 samples). ↑: higher is better; ↓: lower is
+better. Best results in bold.
+Method
+Match (%)↑
+Partial (%)↓
+Miss (%)↓
+Extra↓
+Score↑
+FID↓
+SSIM↑
+PSNR↑
+SFT (No RL)
+87.1
+7.2
+5.7
+52
+0.8526
+24.3464
+0.8232
+15.9917
+Rspan
+88.6
+4.8
+6.7
+23
+0.8800
+24.2653
+0.8357
+16.0874
+Rtext (with gated SSIM)
+91.9
+4.3
+3.8
+18
+0.9174
+24.1872
+0.8427
+16.1573
+glyphs. Applying the glyph reward yields a further improve-
+ment, supporting the use of the target-character CTC poste-
+rior as an informative optimization signal for this benchmark.
+Detailed reward ablations for both editing operations are pre-
+sented below.
+Table 2: Accuracy on the localized rare-character editing
+benchmark (200 samples). Higher is better. Best result in
+bold.
+Method
+Acc (%)↑
+Qwen-Image-Edit-2511
+48.0
+FireRed-Image-Edit-1.0
+55.5
+TextRefine (SFT)
+69.5
+TextRefine (RL)
+74.5
+Ablation Studies
+Text Insertion.
+Table 3 shows that optimizing Rspan re-
+duces extra OCR detections and improves the insertion score
+relative to SFT, indicating that the similarity and coverage
+terms discourage missing and unintended text. Adding the
+gated SSIM term to form Rtext further improves matched-
+span accuracy and source-poster similarity. Because the
+structural term is activated only after Rspan exceeds the
+threshold, it complements rather than replaces the text-
+centric objective.
+Localized Text Replacement.
+Table 4 shows that Rglyph
+improves accuracy over both SFT and the binary OCR re-
+ward. This result indicates that retaining the target-character
+posterior supplies useful graded supervision for the struc-
+turally complex, low-frequency characters represented in the
+benchmark.
+Table 4: Ablation on localized text replacement rewards
+(rare-character benchmark, 200 samples). Higher is better.
+Best results in bold.
+Method
+Acc (%)↑
+SFT (No RL)
+69.5
+Binary OCR Reward
+73.0
+Rglyph (Ours)
+76.0
+Conclusion
+We presented TextRefine, a task-aligned post-training frame-
+work for text editing in product posters. Its span-level inser-
+tion reward jointly promotes target-text fidelity, coverage,
+reliable placement, and preservation of non-target content,
+while its CTC-posterior glyph reward provides graded struc-
+tural supervision for localized character replacement. We
+also introduced OpenTextEdit, a 100K-image dataset with
+multi-text poster layouts, detailed text attributes, product
+masks, and challenging low-frequency Chinese characters.
+On the evaluated benchmarks, TextRefine improves inser-
+tion accuracy, source-poster preservation, and localized re-
+placement accuracy over its SFT initialization and the com-
+pared baselines. Evaluation remains limited to OpenTextEdit,
+Chinese single-character replacement, and PaddleOCR-v5;
+future work will address external, multilingual, and multi-
+character settings.
+
+
+References
+Bai, S.; Chen, K.; Liu, X.; Wang, J.; Ge, W.; Song, S.; Dang,
+K.; Wang, P.; Wang, S.; Tang, J.; Zhong, H.; Zhu, Y.; Yang,
+M.; Li, Z.; Wan, J.; Wang, P.; Ding, W.; Fu, Z.; Xu, Y.; Ye,
+J.; Zhang, X.; Xie, T.; Cheng, Z.; Zhang, H.; Yang, Z.; Xu,
+H.; and Lin, J. 2025. Qwen2.5-VL Technical Report. arXiv
+preprint arXiv:2502.13923.
+Betker, J.; Goh, G.; Jing, L.; Brooks, T.; Wang, J.; Li, L.;
+Ouyang, L.; Zhuang, J.; Lee, J.; Guo, Y.; et al. 2023. Improv-
+ing image generation with better captions. OpenAI Technical
+Report.
+ByteDance. 2025.
+Seedream 4.0.
+https://seed.bytedance.
+com/en/seedream4_0. Accessed: 2025-09-22.
+Chang, J.; Fang, Y.; Xing, P.; Wu, S.; Cheng, W.; Wang,
+R.; Zeng, X.; Yu, G.; and Chen, H.-B. 2025. OneIG-Bench:
+Omni-dimensional Nuanced Evaluation for Image Genera-
+tion. arXiv preprint arXiv:2506.07977.
+Chen, J.; Huang, Y.; Lv, T.; Cui, L.; Chen, Q.; and Wei,
+F. 2023. TextDiffuser: Diffusion Models as Text Painters.
+NeurIPS, 36: 9353–9387.
+Chen, J.; Huang, Y.; Lv, T.; Cui, L.; Chen, Q.; and Wei, F.
+2024. TextDiffuser-2: Unleashing the Power of Language
+Models for Text Rendering. In ECCV, 386–402.
+Chen, J.; Xue, L.; Xu, Z.; Pan, X.; Yang, S.; Qin, C.; Yan, A.;
+Zhou, H.; Chen, Z.; Huang, L.; et al. 2025. BLIP3o-NEXT:
+Next Frontier of Native Image Generation. arXiv preprint
+arXiv:2510.15857.
+Du, N.; Chen, Z.; Gao, S.; Chen, Z.; Chen, X.; Jiang, Z.;
+Yang, J.; and Tai, Y. 2025. TextCrafter: Accurately Rendering
+Multiple Texts in Complex Visual Scenes. arXiv preprint
+arXiv:2503.23461.
+Du, Y.; Li, C.; Guo, R.; Yin, X.; Liu, W.; Zhou, J.; Bai, Y.; Yu,
+Z.; Yang, Y.; Dang, Q.; et al. 2020. PP-OCR: A practical ultra
+lightweight OCR system. arXiv preprint arXiv:2009.09941.
+Esser, P.; Kulal, S.; Blattmann, A.; Entezari, R.; M"uller,
+J.; Saini, H.; Levi, Y.; Lorenz, D.; Sauer, A.; Boesel, F.;
+et al. 2024. Scaling Rectified Flow Transformers for High-
+Resolution Image Synthesis. In ICML.
+Gao, Y.; Gong, L.; Guo, Q.; Hou, X.; Lai, Z.; Li, F.; Li,
+L.; Lian, X.; Liao, C.; Liu, L.; et al. 2025a. Seedream 3.0
+Technical Report. arXiv preprint arXiv:2504.11346.
+Gao, Y.; Lin, Z.; Liu, C.; Zhou, M.; Ge, T.; Zheng, B.; and
+Xie, H. 2025b. PosterMaker: Towards High-Quality Product
+Poster Generation with Accurate Text Rendering. In CVPR,
+8083–8093.
+Geng, Z.; Wang, Y.; Ma, Y.; Li, C.; Rao, Y.; Gu, S.; Zhong,
+Z.; Lu, Q.; Hu, H.; Zhang, X.; et al. 2025. X-omni: Reinforce-
+ment learning makes discrete autoregressive image genera-
+tive models great again. arXiv preprint arXiv:2507.22058.
+Gong, L.; Hou, X.; Li, F.; Li, L.; Lian, X.; Liu, F.; Liu,
+L.; Liu, W.; Lu, W.; Shi, Y.; et al. 2025. Seedream 2.0: A
+Native Chinese-English Bilingual Image Generation Foun-
+dation Model. arXiv preprint arXiv:2503.07703.
+Labs, B. F. 2024. FLUX. https://github.com/black-forest-
+labs/flux.
+Liu, Z.; Liang, W.; Zhao, Y.; Chen, B.; Liang, L.; Wang, L.;
+Li, J.; and Yuan, Y. 2024. Glyph-ByT5-v2: A Strong Aes-
+thetic Baseline for Accurate Multilingual Visual Text Ren-
+dering. arXiv preprint arXiv:2406.10208.
+Ma, J.; Deng, Y.; Chen, C.; Du, N.; Lu, H.; and Yang,
+Z. 2025. GlyphDraw2: Automatic Generation of Complex
+Glyph Posters with Diffusion Models and Large Language
+Models. In AAAI, volume 39, 5955–5963.
+Podell, D.; English, Z.; Lacey, K.; Blattmann, A.; Dockhorn,
+T.; Müller, J.; Penna, J.; and Rombach, R. 2024. SDXL: Im-
+proving Latent Diffusion Models for High-Resolution Image
+Synthesis. In International Conference on Learning Repre-
+sentations (ICLR).
+Saharia, C.; Chan, W.; Saxena, S.; Li, L.; Whang, J.; Denton,
+E. L.; Ghasemipour, S. K. S.; Lopes, R. G.; Ayan, B. K.;
+Salimans, T.; Ho, J.; Fleet, D. J.; and Norouzi, M. 2022.
+Photorealistic Text-to-Image Diffusion Models with Deep
+Language Understanding. In Advances in Neural Information
+Processing Systems (NeurIPS).
+Team, S. I.; Qiao, C.; Hui, C.; Li, C.; Wang, C.; Song,
+D.; Zhang, J.; Li, J.; Xiang, Q.; Wang, R.; et al. 2026.
+FireRed-Image-Edit-1.0 Technical Report.
+arXiv preprint
+arXiv:2602.13344.
+Tuo, Y.; Geng, Y.; and Bo, L. 2024. AnyText2: Visual Text
+Generation and Editing with Customizable Attributes. arXiv
+preprint arXiv:2411.15245.
+Tuo, Y.; Xiang, W.; He, J.-Y.; Geng, Y.; and Xie, X. 2023.
+AnyText: Multilingual Visual Text Generation and Editing.
+arXiv preprint arXiv:2311.03054.
+Wang, H.; Xu, Y.; Li, Y.; Li, J.; Zhang, C.; Wang, J.; Yang,
+K.; and Chen, Z. 2025a. RepText: Rendering Visual Text via
+Replicating. arXiv preprint arXiv:2504.19724.
+Wang, T.; Liu, T.; Qu, X.; Wu, C.; Liu, L.; and Hu, X. 2025b.
+GlyphMastero: A Glyph Encoder for High-Fidelity Scene
+Text Editing. In CVPR, 28523–28532.
+Wang, Y.; Zang, Y.; Li, H.; Jin, C.; and Wang, J. 2025c.
+Unified Reward Model for Multimodal Understanding and
+Generation. arXiv preprint arXiv:2503.05236.
+Wang, Y.; Zhang, W.; Xu, H.; and Jin, C. 2025d. DreamText:
+High Fidelity Scene Text Synthesis. In CVPR, 28555–28563.
+Wei, H.; Liu, C.; Chen, J.; Wang, J.; Kong, L.; Xu, Y.; Ge,
+Z.; Zhao, L.; Sun, J.; Peng, Y.; et al. 2024. General OCR
+theory: Towards OCR-2.0 via a unified end-to-end model.
+arXiv preprint arXiv:2409.01704.
+Wu, C.; Li, J.; Zhou, J.; Lin, J.; Gao, K.; Yan, K.; Yin, S.-m.;
+Bai, S.; Xu, X.; Chen, Y.; et al. 2025. Qwen-image technical
+report. arXiv preprint arXiv:2508.02324.
+Yang, Y.; Gui, D.; Yuan, Y.; Liang, W.; Ding, H.; Hu, H.; and
+Chen, K. 2023. GlyphControl: Glyph Conditional Control
+for Visual Text Generation. Advances in Neural Information
+Processing Systems, 36: 44050–44066.
+Zeng, W.; Shu, Y.; Li, Z.; Yang, D.; and Zhou, Y. 2024.
+TextCtrl: Diffusion-based Scene Text Editing with Prior
+Guidance Control. NeurIPS, 37: 138569–138594.
+
+
+Zhang, L.; Chen, X.; Wang, Y.; Lu, Y.; and Qiao, Y. 2024.
+Brush Your Text: Synthesize Any Scene Text on Images via
+Diffusion Model. In AAAI, volume 38, 7215–7223.
+Zhang, P.; Xu, H.; Zhang, J.; Xu, G.; Zheng, X.; Yang, Z.; Liu,
+J.; Zhang, Y.; and Jin, L. 2025. Aesthetics is Cheap, Show me
+the Text: An Empirical Evaluation of State-of-the-Art Gen-
+erative Models for OCR. arXiv preprint arXiv:2507.15085.
+Zhao, Y.; and Lian, Z. 2024. UDiffText: A Unified Frame-
+work for High-Quality Text Synthesis in Arbitrary Images
+via Character-Aware Diffusion Models. In ECCV, 217–233.
+Zheng, P.; Gao, D.; Fan, D.-P.; Liu, L.; Laaksonen, J.;
+Ouyang, W.; and Sebe, N. 2024.
+Bilateral Reference for
+High-Resolution Dichotomous Image Segmentation. CAAI
+Artificial Intelligence Research.
+
+
+Appendix
+A.1 More Dataset and Benchmark Details
+Product Category Distribution
+We group products into
+five functional domains: Wearable and Fashion Goods (e.g.,
+jewelry, footwear, and handbags), Home and Lifestyle Prod-
+ucts (e.g., bedding, drinkware, and cookware), Food and
+Agricultural Commodities (e.g., packaged snacks, fresh pro-
+duce, and seafood), Beauty and Personal Care Products (e.g.,
+cosmetics, skincare products, and manicure products), and
+Digital and General Consumer Goods (e.g., phone acces-
+sories, toys, and pet supplies). Tables 1 and 2 report the cor-
+responding distributions of the approximately 100K-example
+training set and the 200-example evaluation benchmark, re-
+spectively. Representative evaluation examples from the five
+product domains are shown in Figure 2.
+Table 1: Product-category distribution of the approximately
+100K-example training set.
+Category
+Share (%)
+Wearable and Fashion Goods
+24.6
+Home and Lifestyle Products
+21.8
+Food and Agricultural Commodities
+19.3
+Beauty and Personal Care Products
+17.9
+Digital and General Consumer Goods
+16.4
+Table 2: Product-category distribution of the 200-example
+evaluation benchmark.
+Category
+Share (%)
+Wearable and Fashion Goods
+24.5
+Home and Lifestyle Products
+22.0
+Food and Agricultural Commodities
+19.5
+Beauty and Personal Care Products
+18.0
+Digital and General Consumer Goods
+16.0
+SFT Training Data Composition
+Our SFT corpus con-
+tains five tasks spanning text insertion, replacement, and re-
+moval: text insertion with simple template prompts (TI-S),
+text insertion with descriptive prompts (TI-D), general text
+replacement (TR-G), rare-character replacement (TR-R),
+and text removal (RM). The rare-text insertion examples are
+divided approximately equally between TI-S and TI-D. TR-G
+is generated by directly editing characters with Qwen-Image-
+Edit-2511 and retaining outputs that pass quality filtering,
+whereas TR-R uses synthetically rendered low-frequency
+characters. RM consists of intermediate text-erased images
+produced during insertion-data construction. Table 3 summa-
+rizes the resulting composition, and representative training
+examples for the five tasks are shown in Figure 1.
+Table 3: Task composition of the SFT training corpus.
+Task
+Samples
+Share (%)
+TI-S
+45,829
+27.90
+TI-D
+30,408
+18.51
+TR-G
+10,000
+6.09
+TR-R
+61,148
+37.23
+RM
+16,862
+10.27
+Total
+164,247
+100.00
+Prompt Templates for Data Construction
+The Open-
+TextEdit construction pipeline uses three VLM prompts to
+recover newly inserted text from paired images, describe the
+visual attributes of localized text regions, and select ren-
+dering colors with sufficient contrast after text removal. We
+provide the English templates below for reproducibility.
+Prompt for Pair Filtering and Text Recovery
+You are an expert in visual text understanding and OCR.
+Task Description:
+The input consists of two images:
+1. Image 1: the edited image, which may contain newly
+added text to be verified.
+2. Image 2: the corresponding pre-edit image, or the
+original background image with the target text
+removed.
+Your task is to compare the two images and detect only
+the text content that appears in Image 1 but is
+absent from Image 2. Text that is present in both
+images, including background text or unchanged scene
+text, must be ignored.
+Output Requirements:
+1. The output must be a strictly valid JSON array.
+2. Each element must be a dictionary containing exactly
+two fields:
+* "text": the recognized newly added text string.
+* "bbox": the pixel-level bounding box in Image 1,
+formatted as [x1, y1, x2, y2], where [x1, y1] and
+[x2, y2] are the top-left and bottom-right corners.
+3. If the newly added text contains multiple lines,
+represent each line as a separate dictionary
+element. The "text" field must not contain newline
+characters.
+4. Do not include explanations, comments, notes, or
+Markdown code-block markers.
+5. The output must be syntactically valid JSON, with no
+trailing commas, missing brackets, or unclosed
+dictionaries.
+Example Output:
+[
+{
+"text": "First line of example text",
+"bbox": [10, 20, 100, 50]
+},
+{
+"text": "Second line of example text",
+"bbox": [10, 60, 100, 90]
+}
+]
+Figure 3: Prompt for pair filtering and text recovery. The template
+identifies newly added text spans and their pixel-level bounding
+boxes by comparing paired images.
+
+
+Prompt for Text Attribute Description
+You are an expert in image analysis, visual typography,
+and layout understanding.
+Task Description:
+The input consists of an original image and a list of
+text regions. Each region is specified by its
+textual content (‘text‘) and absolute pixel-level
+bounding box (‘bbox‘). Analyze each region from its
+actual visual appearance and return one dictionary
+per region in a strictly valid JSON array.
+Each dictionary must contain the following fields in
+exactly this order:
+* "text": Copy the input text exactly without
+modification.
+* "bbox": Copy the input bounding box exactly in the
+format [x1, y1, x2, y2].
+* "relative_position": Concisely describe the text
+position, such as "top-left corner of the image",
+"above the person", or "middle-right side of the
+product".
+* "color_and_effect": Describe the text color, contrast
+with the background, and visible effects such as
+gradient filling, metallic texture, outline, glow,
+highlight, embossing, or three-dimensional
+appearance.
+* "font_style": Describe typographic properties,
+including stroke weight, serif or sans-serif style,
+character type, estimated size, shadow, outline,
+perspective, and overall aesthetic. When possible,
+infer a likely font category such as Songti, Heiti,
+Kaiti, semi-cursive, rounded, or display style.
+* "direction_and_tilt": Describe orientation and tilt,
+including horizontal or vertical layout, estimated
+rotation, or a curved path.
+* "background_features": Describe any panel, color block,
+gradient, decorative texture, or geometric element
+behind the text. Use an empty string if no such
+feature is visible.
+Rules:
+1. The "text" and "bbox" fields must be identical to the
+input; do not correct, translate, normalize, or
+modify them.
+2. All visual attributes must be grounded in observable
+image evidence. Do not hallucinate properties.
+3. Return a strictly valid JSON array with exactly one
+dictionary per input region.
+4. Do not include explanations, comments, notes, or
+Markdown code-block markers.
+5. Do not use trailing commas or malformed JSON.
+Input Format Example:
+[
+{"text": "VANOW", "bbox": [20, 30, 450, 70]},
+{"text": "Large Capacity", "bbox": [50, 300, 200, 400]}
+]
+Output Format Example:
+[
+{
+"text": "VANOW",
+"bbox": [20, 30, 450, 70],
+"relative_position": "Top-left area of the image.",
+"color_and_effect": "Bright gold text with strong
+contrast against a red-to-purple gradient
+background.",
+"font_style": "Large bold sans-serif English display
+font with thick, rigid strokes.",
+"direction_and_tilt": "Horizontally arranged with no
+visible tilt.",
+"background_features": "A right-tilted parallelogram
+panel with a red-to-purple gradient."
+}
+]
+Figure 4: Prompt for text attribute description. The template
+describes the position, color effects, typography, orientation, and
+background features of each localized text region.
+Prompt for Text Color Inference
+You are an expert in image color analysis.
+Task Description:
+The input consists of an image and information for one
+text region:
+* ‘bbox‘: the absolute pixel-level bounding box [x1, y1,
+x2, y2].
+* ‘font_color_rgb‘: the original font color [R, G, B].
+* ‘background_rgb‘: the original background-panel color
+[R, G, B], or null if no panel exists.
+The text in the specified region has already been
+removed, so the current ‘bbox‘ contains only the
+underlying background.
+Your task is to:
+1. Inspect the current visual color inside ‘bbox‘.
+2. Determine whether ‘font_color_rgb‘ provides sufficient
+perceptual contrast with the current region
+background.
+3. Select ‘render_color_rgb‘ using the following priority:
+* If ‘font_color_rgb‘ has sufficient contrast, use it
+directly.
+* Otherwise, if ‘background_rgb‘ is not null and has
+sufficient contrast with the current background, use
+‘background_rgb‘.
+* If neither color provides sufficient contrast,
+automatically choose a strongly contrasting color,
+such as a dark color for a light background or a
+light color for a dark background.
+4. Return ‘region_bg_rgb‘, the dominant current
+background color inside ‘bbox‘.
+Output Requirements:
+Return a strictly valid JSON object containing exactly:
+* "region_bg_rgb": the dominant current region color [R,
+G, B].
+* "render_color_rgb": the selected rendering color [R, G,
+B].
+* "render_color_source": exactly one of "font_color_rgb",
+"background_rgb", or "auto_contrast".
+* "reason": a brief one-sentence explanation.
+Rules:
+1. Every RGB value must be an integer array of length
+three, with components in [0, 255].
+2. Output only the JSON object, without explanations,
+comments, notes, or Markdown code-block markers.
+3. Do not use trailing commas or malformed JSON.
+Input Format Example:
+{
+"bbox": [63, 204, 240, 253],
+"font_color_rgb": [255, 255, 255],
+"background_rgb": [220, 30, 30]
+}
+Output Format Example:
+{
+"region_bg_rgb": [210, 25, 25],
+"render_color_rgb": [255, 255, 255],
+"render_color_source": "font_color_rgb",
+"reason": "The dark red region provides clear contrast
+with the original white font color."
+}
+Figure 5: Prompt for text color inference. The template selects a
+rendering color by comparing the original font color, the historical
+background-panel color, and the current erased-region background.
+
+
+Figure 1: Representative training examples for the five SFT tasks.
+Figure 2: Representative evaluation examples across the five product domains.
+
+
+A.2 More Experimental Results
+More Results for Text Insertion
+We provide a finer-grained
+comparison under two complementary OCR normalization proto-
+cols. The Symbol-Invariant (SI) protocol removes whitespace and
+punctuation before matching, retaining only Chinese characters, let-
+ters, and digits; it therefore measures lexical-content fidelity inde-
+pendently of symbols. The stricter Symbol-Preserving (SP) protocol
+canonicalizes full-width characters and equivalent Chinese/English
+punctuation, but retains symbols during matching. Both protocols
+otherwise use the same two-stage assignment, Levenshtein similar-
+ity thresholds, extra-OCR penalty, and image-level accuracy def-
+inition. For compactness, we abbreviate Qwen-Image-Edit-2511
+as QIE, FireRed-Image-Edit-1.0 as FireRed, and our SFT model
+as TR-SFT; their reward-optimized variants are denoted by the
+suffix -RL. Tables 4–7 report results for the simple-template and
+descriptive-prompt settings.
+We additionally compare with PosterMaker, AnyText v2, and
+GPT-Image-2 (abbreviated as GPT-I2). Unlike the mask-free meth-
+ods evaluated in our primary setting, PosterMaker and AnyText v2
+require an explicit spatial mask as input. To enable a controlled com-
+parison, we use Gemini to generate a semantic description of each
+pre-edit image and construct the required masks directly from the
+ground-truth bounding boxes of the target text regions. Thus, these
+two methods are supplied with explicit localization guidance that
+is unavailable to the mask-free methods, and their results should be
+interpreted as a reference under a less restrictive input setting. GPT-
+Image-2 is evaluated under the same mask-free textual-instruction
+setting as our method.
+Table 4: Simple-template prompt under the SI protocol.
+Method
+Match↑Partial↓Miss↓Extra↓Score↑Acc.↑
+PosterMaker
+83.4
+16.6
+0.0
+0
+0.9685 64.5
+AnyText v2
+76.4
+23.6
+0.0
+0
+0.9552 56.0
+QIE
+77.1
+6.4
+16.6
+92
+0.8361 57.5
+FireRed
+85.4
+5.6
+9.1
+70
+0.9109 67.0
+TR-SFT
+89.8
+6.1
+4.1
+124
+0.9536 72.0
+GPT-I2
+96.2
+3.3
+0.5
+22
+0.9889 87.5
+QIE-RL
+91.6
+7.5
+1.0
+29
+0.9764 77.0
+FireRed-RL
+93.2
+5.9
+1.0
+32
+0.9805 81.0
+TR-RL
+93.5
+4.9
+1.6
+45
+0.9758 81.0
+Table 5: Simple-template prompt under the SP protocol.
+Method
+Match↑Partial↓Miss↓Extra↓Score↑Acc.↑
+PosterMaker
+73.4
+26.6
+0.0
+0
+0.9496 48.0
+AnyText v2
+55.2
+44.8
+0.0
+0
+0.9148 34.0
+QIE
+55.8
+11.3
+32.9
+147
+0.6933 35.0
+FireRed
+75.4
+10.5
+14.1
+106
+0.8551 50.5
+TR-SFT
+87.1
+8.3
+4.6
+135
+0.9443 63.5
+GPT-I2
+94.1
+5.1
+0.8
+26
+0.9824 82.5
+QIE-RL
+88.2
+9.4
+2.4
+37
+0.9645 71.0
+FireRed-RL
+91.3
+7.6
+1.1
+38
+0.9755 75.0
+TR-RL
+91.6
+6.8
+1.6
+49
+0.9733 75.5
+Table 6: Descriptive prompt under the SI protocol.
+Method
+Match↑Partial↓Miss↓Extra↓Score↑Acc.↑
+PosterMaker
+90.0
+10.0
+0.0
+0
+0.9810 69.0
+AnyText v2
+84.2
+15.8
+0.0
+0
+0.9700 49.5
+QIE
+84.7
+4.2
+11.1
+114
+0.8774 50.5
+FireRed
+91.8
+3.7
+4.6
+97
+0.9431 71.5
+TR-SFT
+88.8
+4.6
+6.7
+86
+0.9256 62.0
+GPT-I2
+97.1
+2.3
+0.6
+38
+0.9900 87.0
+QIE-RL
+92.7
+2.8
+4.6
+89
+0.9516 72.0
+FireRed-RL
+94.1
+2.6
+2.8
+93
+0.9681 79.5
+TR-RL
+94.4
+3.4
+2.1
+89
+0.9741 80.0
+Table 7: Descriptive prompt under the SP protocol.
+Method
+Match↑Partial↓Miss↓Extra↓Score↑Acc.↑
+PosterMaker
+88.0
+12.0
+0.0
+0
+0.9772 63.5
+AnyText v2
+81.6
+18.4
+0.0
+0
+0.9650 44.0
+QIE
+82.0
+6.7
+11.3
+118
+0.8718 45.5
+FireRed
+89.9
+5.2
+4.9
+105
+0.9373 66.5
+TR-SFT
+86.1
+6.7
+7.2
+90
+0.9157 56.5
+GPT-I2
+95.9
+3.4
+0.7
+42
+0.9868 82.0
+QIE-RL
+90.4
+5.0
+4.6
+92
+0.9478 66.5
+FireRed-RL
+92.4
+4.9
+2.7
+96
+0.9652 72.5
+TR-RL
+92.9
+4.7
+2.4
+94
+0.9694 73.5
+More Results for Localized Text Replacement
+We further
+evaluate reward optimization for text replacement. Table 8 reports
+image-level editing accuracy under the same evaluation setting. The
+comparison consistently uses the corresponding base models and
+their reward-optimized variants.
+Table 8: Additional comparison of reward optimization for
+text replacement.
+Method
+Acc. (%)↑
+QIE
+45.0
+FireRed
+52.0
+TR-SFT
+77.0
+QIE-RL
+67.0
+FireRed-RL
+62.5
+TR-RL
+85.0
+
+
+Qualitative Effectiveness of the Add-Text Reward
+We fur-
+ther provide qualitative comparisons to illustrate the effectiveness
+of the add-text reward. Figures 3, 4, and 5 compare the editing
+results before and after reward optimization for Qwen-Image-Edit-
+2511, FireRed-Image-Edit-1.0, and TextRefine, respectively. After
+reinforcement learning, all three models more reliably insert the re-
+quested text while preserving the surrounding product appearance,
+layout, and background consistency, indicating that the add-text re-
+ward directly improves instruction-following fidelity for localized
+text insertion.
+Qualitative Effectiveness of the Glyph-Level Reward
+We
+additionally visualize the effect of the glyph-level reward on local-
+ized text replacement. Figures 6 and 7 compare results before and
+after reward optimization for Qwen-Image-Edit-2511 and FireRed-
+Image-Edit-1.0, and for TextRefine, respectively. Consistent with
+the quantitative improvements in Table 8, reinforcement learn-
+ing more reliably replaces the target character with the requested
+low-frequency glyph while preserving the surrounding typogra-
+phy, product appearance, and poster layout. These examples further
+show that the target-character CTC-posterior reward provides fine-
+grained supervision for structurally complex glyphs and reduces
+missing strokes, malformed components, and confusion among vi-
+sually similar characters.
+General Image-Editing Evaluation on RedBench
+To ex-
+amine whether improved text-editing capability compromises gen-
+eral image-editing performance, we further evaluate the mod-
+els on the FireRed-Image-Edit benchmark, which covers diverse
+editing operations in both English (RedBench-EN) and Chinese
+(RedBench-CN). Here, QIE denotes Qwen-Image-Edit-2511, Fir-
+eRed denotes FireRed-Image-Edit-1.0, and TR-RL denotes our
+reward-optimized model. As shown in Tables 9 and 10, TR-RL im-
+proves the overall score over its QIE initialization in both language
+settings, indicating that the enhanced text-rendering capability does
+not sacrifice general image-editing performance.
+Table 9: General image-editing results on RedBench-EN.
+Metric
+QIE
+FireRed
+TR-RL
+GPT-I2
+Add
+4.37
+4.52
+4.45
+4.70
+Adjust
+3.59
+3.93
+3.61
+4.12
+Background
+3.71
+4.23
+3.92
+4.48
+Beauty
+2.82
+2.66
+3.03
+4.00
+Color
+3.84
+4.12
+3.83
+4.37
+Compose
+3.46
+3.49
+3.60
+4.07
+Extract
+2.29
+2.35
+3.58
+3.36
+Low-level
+2.68
+3.17
+3.50
+3.55
+Motion
+4.61
+4.62
+4.71
+4.78
+Portrait
+4.28
+3.63
+3.90
+4.64
+Remove
+4.28
+4.22
+4.33
+4.27
+Replace
+4.36
+4.42
+4.45
+4.60
+Stylize
+4.76
+4.80
+4.76
+4.99
+Text
+3.69
+3.72
+3.83
+4.30
+Viewpoint
+2.61
+2.75
+2.66
+3.02
+Final Score
+3.69
+3.78
+3.88
+4.22
+Table 10: General image-editing results on RedBench-CN.
+Metric
+QIE
+FireRed
+TR-RL
+GPT-I2
+Add
+4.43
+4.48
+4.42
+4.67
+Adjust
+3.44
+3.90
+3.67
+4.07
+Background
+3.94
+4.35
+4.02
+4.45
+Beauty
+2.79
+2.52
+3.02
+3.91
+Color
+3.71
+3.94
+3.86
+4.40
+Compose
+3.35
+3.63
+3.69
+4.11
+Extract
+2.26
+2.55
+3.42
+3.37
+Low-level
+2.59
+3.07
+3.55
+3.39
+Motion
+4.59
+4.58
+4.58
+4.88
+Portrait
+3.54
+3.82
+3.85
+4.57
+Remove
+4.15
+4.24
+4.30
+4.36
+Replace
+4.38
+4.50
+4.40
+4.66
+Stylize
+4.69
+4.73
+4.83
+4.99
+Text
+3.82
+3.67
+3.83
+4.33
+Viewpoint
+2.40
+2.73
+3.20
+3.45
+Final Score
+3.61
+3.78
+3.91
+4.24
+
+
+Figure 3: Qualitative comparison before and after applying the add-text reward to Qwen-Image-Edit-2511.
+
+
+Figure 4: Qualitative comparison before and after applying the add-text reward to FireRed-Image-Edit-1.0.
+
+
+Figure 5: Qualitative comparison of TextRefine before and after reinforcement learning on the add-text task.
+
+
+Figure 6: Qualitative comparisons of Qwen-Image-Edit-2511 and FireRed-Image-Edit-1.0 before and after reinforcement learn-
+ing on the localized text-replacement task.
+
+
+Figure 7: Qualitative comparison of TextRefine before and after reinforcement learning on the localized text-replacement task.

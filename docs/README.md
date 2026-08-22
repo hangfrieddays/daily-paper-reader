@@ -6,37 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-21
-- 运行时间：2026-08-21 20:38:49 UTC
+- 最新运行日期：2026-08-22
+- 运行时间：2026-08-22 19:19:09 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：4
+- 本次总论文数：2
+- 精读区：1
 - 速读区：1
 
 ### 今日简报（AI）
-今日聚焦强化学习与扩散模型的结合，精读2篇高分论文并速读1篇加速策略。  
-最值得关注：路径空间视角统一RL+扩散模型设计，以及DARS的双层级信用分配与结构化推理方法。  
-建议优先精读这两篇高分论文，把握方法论核心，再参考快速蒸馏加速思路拓展视野。
-- 详情：[/202608/21/README](/202608/21/README)
+今日精读高分论文《TextRefine》，聚焦产品海报文本编辑的保真度、空间布局与字形渲染；另速读一篇主体个性化生成研究。  
+最值得关注：TextRefine 以9.0分显著高于另一篇，是提升海报文字编辑质量的关键方向。  
+建议深入复现或试用 TextRefine，优先解决文字扭曲和错位痛点。
+- 详情：[/202608/22/README](/202608/22/README)
 
 ### 精读区论文标签
-1. [Designing Reinforcement Learning for Diffusion Models: A Unified Path-Space View](/202608/21/2608.14430v1-designing-reinforcement-learning-for-diffusion-models-a-unified-path-space-view)  
-   标签：评分：10.0/10、query:image-gen-rl
-   evidence：面向扩散模型图像生成的强化学习后训练
-2. [DARS: Dual-Level Credit Assignment RL with Structured Reasoning for Instruction-Based Image Editing](/202608/21/2608.20161v1-dars-dual-level-credit-assignment-rl-with-structured-reasoning-for-instruction-based-image-editing)  
+1. [TextRefine: Improving Textual Fidelity, Spatial Placement, and Glyph Rendering for Text Editing in Product Posters](/202608/22/2608.19637v1-textrefine-improving-textual-fidelity-spatial-placement-and-glyph-rendering-for-text-editing-in-product-posters)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：面向指令图像编辑的强化学习与奖励设计
-3. [Swift-Image: Exploring the Performance Frontier of Compact Unified Image Generation Models](/202608/21/2608.20334v1-swift-image-exploring-the-performance-frontier-of-compact-unified-image-generation-models)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：采用并行专家强化学习进行统一图像生成
-4. [SPARED: Reasoning-Based AI-Generated Image Detection via Adversarially Edited Data](/202608/21/2608.12876v1-spared-reasoning-based-ai-generated-image-detection-via-adversarially-edited-data)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：对抗强化学习框架训练扩散图像编辑器生成伪造编辑图像
+   evidence：面向产品海报文本编辑的操作特定奖励优化及文本跨度级奖励设计
 
 ### 速读区论文标签
-1. [Accelerating Visual On-Policy Distillation with Batched Speculative Jacobi Rollouts](/202608/21/2608.18183v1-accelerating-visual-on-policy-distillation-with-batched-speculative-jacobi-rollouts)  
+1. [CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets](/202608/22/2608.14403v1-craft-constrained-reward-via-attention-fine-tuning-for-subject-personalization-without-composed-targets)  
    标签：评分：6.0/10、query:image-gen-rl
-   evidence：视觉自回归模型的在策略蒸馏与批量展开
+   evidence：面向主体驱动图像个性化任务设计约束奖励，无需组合目标
 
 
 <div class="dpr-home-promo-card">

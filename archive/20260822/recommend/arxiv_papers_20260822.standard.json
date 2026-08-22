@@ -1,0 +1,108 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-22T19:15:53.421739+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2608.19637v1",
+      "source": "arxiv",
+      "title": "TextRefine: Improving Textual Fidelity, Spatial Placement, and Glyph Rendering for Text Editing in Product Posters",
+      "abstract": "Text editing in product posters entails inserting new text or replacing existing text while preserving product appearance, background content, and global composition. Despite recent progress in instruction-based image editing, general-purpose models remain unreliable in this setting: they often omit or incorrectly render the target text, place it over salient products or pre-existing content, and produce structurally distorted or visually inconsistent glyphs. We introduce \\textbf{TextRefine}, a task-aligned post-training framework that combines supervised fine-tuning with operation-specific reward optimization to address these complementary failure modes. For text insertion, our text-span-level reward jointly assesses semantic fidelity and target-span coverage, penalizes spatial conflicts with products and existing text, and employs a gated structural constraint to preserve non-text regions. For text replacement, our glyph-level reward leverages the connectionist temporal classification (CTC) posterior of the target character to provide graded supervision for fine-grained defects, including missing strokes, structural deformations, and confusion among visually similar characters. We further introduce \\textbf{OpenTextEdit}, a dataset comprising 100K images for text editing in product posters, with multi-text layouts, detailed text attributes, product masks, and challenging low-frequency characters. Extensive experiments on both insertion and replacement demonstrate that TextRefine consistently outperforms the evaluated image editing baselines in textual fidelity, placement reliability, and glyph quality while better preserving source-image content.",
+      "authors": [
+        "Honglie Wang",
+        "Jia Sun",
+        "Zijun Li",
+        "Junlong Wu",
+        "Pengcheng Wei",
+        "Jiyuan Wang",
+        "Yongrui Heng",
+        "Boheng Zhang",
+        "Huaiqing Wang",
+        "Dewen Fan",
+        "Qianqian Gan",
+        "Fan Yang",
+        "Tingting Gao",
+        "Yan-Ming Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-20T05:07:51+00:00",
+      "link": "https://arxiv.org/pdf/2608.19637v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "operation-specific reward optimization with a text-span-level reward for text editing in product posters",
+      "llm_evidence_cn": "面向产品海报文本编辑的操作特定奖励优化及文本跨度级奖励设计",
+      "llm_evidence": "面向产品海报文本编辑的操作特定奖励优化及文本跨度级奖励设计",
+      "canonical_evidence": "面向产品海报文本编辑的操作特定奖励优化及文本跨度级奖励设计",
+      "llm_tldr_en": "TextRefine post-trains text-editing models for product posters with supervised fine-tuning and operation-specific reward optimization, using a text-span-level reward to improve textual fidelity, spatial placement, and glyph rendering.",
+      "llm_tldr_cn": "产品海报中的文本编辑要求同时保证文本保真、空间合理与字形美观，然而通用编辑模型常常漏字、错放位置并产生扭曲字形。为此，TextRefine提出一个任务对齐的后训练框架，将监督微调与操作特定奖励优化相结合，并针对文本插入设计文本跨度级奖励，联合优化空间放置与字形渲染。实验表明该方法显著提升了文本编辑质量与整体构图，展示了奖励优化在图像编辑任务中的有效性和可推广性。此外，该框架对不同图像生成子任务具有普适性，为后续研究提供了新方向。",
+      "llm_tldr": "产品海报中的文本编辑要求同时保证文本保真、空间合理与字形美观，然而通用编辑模型常常漏字、错放位置并产生扭曲字形。为此，TextRefine提出一个任务对齐的后训练框架，将监督微调与操作特定奖励优化相结合，并针对文本插入设计文本跨度级奖励，联合优化空间放置与字形渲染。实验表明该方法显著提升了文本编辑质量与整体构图，展示了奖励优化在图像编辑任务中的有效性和可推广性。此外，该框架对不同图像生成子任务具有普适性，为后续研究提供了新方向。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.14403v1",
+      "source": "arxiv",
+      "title": "CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets",
+      "abstract": "Subject-driven image personalization---generating new images that preserve the identity of one or several reference subjects in novel scenes---is a foundational capability for modern visual content creation. It is currently dominated by generalized methods that fine-tune a pretrained multimodal diffusion transformer (MMDiT) on hundreds of thousands to millions of paired \\emph{(reference, composed-target)} examples, where each composed target is a synthesized image of the subject in a novel scene. Producing such targets demands a costly multi-stage curation pipeline---LLM-based prompt generation, T2I-based composed-target synthesis, reference-subject extraction, VLM-based quality filtering, and correspondence labeling---and tightly couples each method to a particular target synthesizer and curation choice. We introduce \\emph{CRAFT} (Constrained Reward via Attention Fine-Tuning), a single-step ReFL framework that fine-tunes a pre-trained \\emph{reference-aware} MMDiT via LoRA adapters using a compact reference-only data construction---$10$K reference images and subject masks, with no composed-target supervision. CRAFT realizes a \\emph{Where to look} principle: attention-level rewards align noise- and phrase-token attention with the correct reference subject, and the resulting per-subject attention masks gate a pixel-level identity reward to keep image-space supervision consistent with the learned attention routing. Applied to FLUX.2-klein-9B, CRAFT achieves state-of-the-art performance on XVerseBench \\rev{while using no composed-target supervision---only $10$K reference-only samples, whereas prior generalized methods require $150$K to over $2$M composed-target pairs}. The same recipe transfers to other reference-aware backbones, consistently improving performance. Project page: https://jihun999.github.io/projects/CRAFT/.",
+      "authors": [
+        "Jihun Park",
+        "Kyoungmin Lee",
+        "Jongmin Gim",
+        "Hyeonseo Jo",
+        "Jaeyeul Kim",
+        "Han Zou",
+        "Zhenpeng Zhan",
+        "Yan Zhang",
+        "Sunghoon Im"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-14T15:44:07+00:00",
+      "link": "https://arxiv.org/pdf/2608.14403v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Designs a constrained reward for subject-driven image personalization without composed targets",
+      "llm_evidence_cn": "面向主体驱动图像个性化任务设计约束奖励，无需组合目标",
+      "llm_evidence": "面向主体驱动图像个性化任务设计约束奖励，无需组合目标",
+      "canonical_evidence": "面向主体驱动图像个性化任务设计约束奖励，无需组合目标",
+      "llm_tldr_en": "Subject personalization in image generation often needs massive curated paired data. CRAFT designs a constrained reward and uses attention fine-tuning to personalize without composed targets, achieving comparable quality at much lower data cost.",
+      "llm_tldr_cn": "主体驱动的图像个性化通常需要大量由复杂管线生成的配对样本，成本高昂。本文提出CRAFT方法，利用约束奖励信号并结合注意力微调，在不构造组合目标的情况下完成个性化训练。实验表明，该方法在保持身份一致性的同时，其生成质量与依赖大规模数据生成的通用方法相当，显著简化了数据准备流程。这项研究为图像生成任务中的奖励设计提供了一种低成本替代方案，并可与强化学习等后续优化结合使用。",
+      "llm_tldr": "主体驱动的图像个性化通常需要大量由复杂管线生成的配对样本，成本高昂。本文提出CRAFT方法，利用约束奖励信号并结合注意力微调，在不构造组合目标的情况下完成个性化训练。实验表明，该方法在保持身份一致性的同时，其生成质量与依赖大规模数据生成的通用方法相当，显著简化了数据准备流程。这项研究为图像生成任务中的奖励设计提供了一种低成本替代方案，并可与强化学习等后续优化结合使用。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

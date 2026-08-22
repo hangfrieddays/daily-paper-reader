@@ -1,0 +1,2788 @@
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject
+Personalization without Composed Targets
+JIHUN PARK∗, DGIST, South Korea
+KYOUNGMIN LEE, DGIST, South Korea
+JONGMIN GIM, DGIST, South Korea
+HYEONSEO JO, DGIST, South Korea
+JAEYEUL KIM, DGIST, South Korea
+HAN ZOU, Baidu, Inc., China
+ZHENPENG ZHAN, Baidu, Inc., China
+YAN ZHANG†, Baidu, Inc., China
+SUNGHOON IM†, KAIST, South Korea
+Subject-driven image personalization—generating new images that preserve
+the identity of one or several reference subjects in novel scenes—is a founda-
+tional capability for modern visual content creation. It is currently dominated
+by generalized methods that fine-tune a pretrained multimodal diffusion
+transformer (MMDiT) on hundreds of thousands to millions of paired (refer-
+ence, composed-target) examples, where each composed target is a synthe-
+sized image of the subject in a novel scene. Producing such targets demands
+a costly multi-stage curation pipeline—LLM-based prompt generation, T2I-
+based composed-target synthesis, reference-subject extraction, VLM-based
+quality filtering, and correspondence labeling—and tightly couples each
+method to a particular target synthesizer and curation choice. We intro-
+duce CRAFT (Constrained Reward via Attention Fine-Tuning), a single-step
+ReFL framework that fine-tunes a pre-trained reference-aware MMDiT via
+LoRA adapters using a compact reference-only data construction—10K ref-
+erence images and subject masks, with no composed-target supervision.
+CRAFT realizes a Where to look principle: attention-level rewards align
+noise- and phrase-token attention with the correct reference subject, and
+the resulting per-subject attention masks gate a pixel-level identity reward
+to keep image-space supervision consistent with the learned attention rout-
+ing. Applied to FLUX.2-klein-9B, CRAFT achieves state-of-the-art perfor-
+mance on XVerseBench while using no composed-target supervision—only
+10K reference-only samples, whereas prior generalized methods require
+150K to over 2M composed-target pairs. The same recipe transfers to other
+reference-aware backbones, consistently improving performance. Project
+page: https://jihun999.github.io/projects/CRAFT/.
+∗Work done during an internship at Baidu, Inc.
+†Corresponding authors.
+Authors’ Contact Information: Jihun Park, DGIST, Daegu, South Korea, pjh2857@
+dgist.ac.kr; Kyoungmin Lee, DGIST, Daegu, South Korea, kyoungmin@dgist.ac.kr;
+Jongmin Gim, DGIST, Daegu, South Korea, jongmin4422@dgist.ac.kr; Hyeonseo Jo,
+DGIST, Daegu, South Korea, gustj0510@dgist.ac.kr; Jaeyeul Kim, DGIST, Daegu, South
+Korea, jykim94@dgist.ac.kr; Han Zou, Baidu, Inc., Shenzhen, China, zouhan@baidu.
+com; Zhenpeng Zhan, Baidu, Inc., Shenzhen, China, zhanzhenpeng01@baidu.com; Yan
+Zhang, Baidu, Inc., Shenzhen, China, zhangyan97@baidu.com; Sunghoon Im, KAIST,
+Daejeon, South Korea, im@kaist.ac.kr.
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for components of this work owned by others than the
+author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or
+republish, to post on servers or to redistribute to lists, requires prior specific permission
+and/or a fee. Request permissions from permissions@acm.org.
+© 2026 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+ACM 1557-7368/2026/8-ART
+https://doi.org/10.1145/nnnnnnn.nnnnnnn
+CCS Concepts: • Computing methodologies →Image-based rendering;
+Image processing; Computational photography.
+Additional Key Words and Phrases: Subject-Driven Personalization, Reward
+Fine-Tuning, Multimodal Diffusion Transformer, Attention Constraints
+1
+Introduction
+Subject-driven image personalization—generating new images that
+faithfully preserve the identity of one or several given reference
+subjects in novel scenes—has become a foundational capability for
+modern visual content creation [Gal et al. 2022; Kumari et al. 2023;
+Ruiz et al. 2023]. It underlies workflows ranging from on-demand
+product imagery and advertising creative to personalized media
+with consistent characters across multiple scenes to brand and IP
+asset generation that must remain identity-coherent across diverse
+contexts. The underlying technical demand is for a single model
+that, given novel reference subjects and a text prompt at inference
+time, produces images that preserve each subject’s identity across
+arbitrary contexts without per-subject retraining.
+The dominant approach today fine-tunes a single pretrained mul-
+timodal diffusion transformer (MMDiT) [Esser et al. 2024; Labs
+2025] on large paired datasets of (reference, composed-target) exam-
+ples [Cheng et al. 2025; Mou et al. 2025; Wang et al. 2025; Wu et al.
+2025d; Xiao et al. 2025a], where each composed target is a synthe-
+sized image of the subject placed in a novel scene. This paradigm has
+driven recent progress in generalized, encoder-free personalization.
+However, producing the training targets demands a multi-stage cura-
+tion pipeline—LLM-based prompt generation, T2I-based composed-
+target synthesis, reference-subject extraction, VLM-based quality
+filtering, and correspondence labeling [Chen et al. 2025; She et al.
+2025; Wu et al. 2025b]—yielding 150K to over 2M paired samples
+per system and tightly coupling each method to a particular target
+synthesizer and curation choice.
+To address this, we propose CRAFT (Constrained Reward via
+Attention Fine-Tuning). We start from the observation that reference-
+aware MMDiTs, which jointly attend to text, noise, and reference-
+image tokens, often produce subject-aligned attention patterns even
+before any fine-tuning. This opens up an alternative to composed-
+target supervision: rather than inducing such routing through paired
+data, we shape this existing routing directly with a lightweight re-
+ward signal, guided by a Where to look principle—at a small subset of
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+arXiv:2608.14403v1  [cs.CV]  14 Aug 2026
+
+
+2
+•
+Park et al.
+(step, block) coordinates, noise- and prompt-token attention should
+attend to the correct reference region. The supervision this requires
+is correspondingly minimal—just reference images paired with sub-
+ject masks, eliminating the need for expensive composed-target
+pairs.
+Concretely, CRAFT operates within a single-step Reward Feed-
+back Learning (ReFL) loop [Clark et al. 2023; Xu et al. 2023] with
+reward signals backpropagated into LoRA adapters [Hu et al. 2022].
+Attention-level rewards align noise- and prompt-token attention
+with the correct reference subject at the (step, block) coordinates
+identified on the unmodified backbone, realizing the Where to look
+principle. The resulting per-subject attention masks then gate a
+pixel-level identity reward, keeping image-space supervision con-
+sistent with the learned attention routing. Trained on only 10K
+reference images and subject masks, CRAFT achieves state-of-the-
+art performance on various benchmarks, including XVerseBench,
+DreamBench, and OmniContext, and the same recipe transfers to
+other reference-aware backbones. In summary, our contributions
+are as follows:
+• We reformulate generalized subject-driven personalization
+as a reference-side reward problem and introduce CRAFT, a
+single-step ReFL framework that adapts a pre-trained reference-
+aware MMDiT via LoRA, trained solely on reference-side
+supervision.
+• We introduce attention-level rewards that realize the Where
+to look principle, aligning noise- and prompt-token attention
+with the correct reference region at a small subset of (step,
+block) coordinates identified on the unmodified backbone.
+• We tie image-space supervision to learned attention via attention-
+derived per-subject masks that gate a pixel-level identity reward,
+keeping pixel-level supervision consistent with the routing
+the attention rewards produce.
+• CRAFT achieves state-of-the-art performance on various bench-
+marks using only 10K reference-only instances and no composed-
+target supervision, in contrast to the 150K to over 2M composed-
+target pairs prior generalized methods require, and the recipe
+transfers across reference-aware MMDiT backbones.
+2
+Related Work
+2.1
+Subject-Driven Image Personalization
+Subject-driven image personalization aims to generate novel scenes
+that preserve the identity of one or more reference subjects under
+arbitrary text prompts, building on pre-trained text-to-image diffu-
+sion models. Existing approaches can be broadly categorized into
+per-subject optimization, encoder-based adapters, and generalized
+multi-subject models. Per-subject optimization methods [Gal et al.
+2022; Kumari et al. 2023; Ruiz et al. 2023] fine-tune model parame-
+ters for each subject, achieving high fidelity but requiring a separate
+optimization process per instance. Encoder-based adapters [Li et al.
+2023; Wang et al. 2024a; Ye et al. 2023b] remove this cost by inject-
+ing reference features at inference time, but are typically limited to
+specific domains and struggle with multi-subject composition.
+Generalized methods [Chen et al. 2025; Cheng et al. 2025; Mou
+et al. 2025; She et al. 2025; Wang et al. 2025; Wu et al. 2025d,b; Xiao
+et al. 2025a] address these limitations by training a pretrained single
+backbone on large paired datasets of (reference, composed-target)
+samples. In these approaches, composed-target images implicitly
+supervise how subjects should be placed and rendered, and are
+sometimes further used to derive explicit alignment signals [She
+et al. 2025]. However, this reliance on composed-target supervision
+requires large-scale data construction and tightly couples training to
+the quality of synthesized targets. In contrast, we avoid composed-
+target data entirely and instead directly constrain how the model
+attends to reference subjects during generation.
+2.2
+Reward Fine-Tuning of Diffusion Models
+Reward-based fine-tuning of diffusion models has been explored
+to align generation with external evaluators. Policy-gradient ap-
+proaches [Black et al. 2023; Fan et al. 2023] treat denoising as a
+sequential decision process, while reward-backpropagation meth-
+ods [Clark et al. 2023; Prabhudesai et al. 2023; Xu et al. 2023] differ-
+entiate through the denoising process directly. ReFL [Xu et al. 2023]
+and DRaFT-1 [Clark et al. 2023] backpropagate through a single
+denoising step for efficiency, whereas AlignProp [Prabhudesai et al.
+2023] extends this to full trajectories at a higher computational cost.
+Most prior work places rewards on the output image—for example,
+ImageReward [Xu et al. 2023] and human-preference scores [Wu
+et al. 2023]—leaving the model’s internal attention behavior un-
+supervised. In personalization, UMO [Cheng et al. 2025] extends
+ReFL with a Hungarian-matched multi-identity reward, but cou-
+ples it with a diffusion loss against composed target images, re-
+quiring paired data. In contrast, we place reward signals directly
+on the cross-modal attention sub-blocks, eliminating the need for
+composed-target supervision.
+3
+Preliminaries
+3.1
+Multimodal Diffusion Transformers
+Recent text-to-image diffusion models have transitioned from U-
+Net-based architectures [Rombach et al. 2022] to transformer-based
+designs that process all modalities within a unified attention frame-
+work [Esser et al. 2024; Labs 2025]. We build on FLUX.2-klein [Labs
+2025], a 9B-parameter multimodal diffusion transformer (MMDiT)
+distilled to four denoising steps. The model jointly attends to text
+prompt, noise, and reference image tokens within a single attention
+sequence. Given prompt tokens P, noise tokens N, and per-reference
+tokens R𝑘for 𝑘∈{1, . . . , 𝐾}, the model processes the concatenated
+sequence as follows:
+S = [P; N; R1; . . . ; R𝐾] ∈R(𝑁𝑝+𝑁𝑧+𝐾·𝑁𝑟)×𝑑,
+(1)
+where P ∈R𝑁𝑝×𝑑are prompt tokens, N ∈R𝑁𝑧×𝑑are noise tokens,
+and R𝑘∈R𝑁𝑟×𝑑are the tokens corresponding to the 𝑘-th reference
+image, with 𝑑the shared token embedding dimension.
+Attention sub-block notation. At denoising step 𝑡and trans-
+former block 𝑏, self-attention over the concatenated sequence S =
+[P; N; R1; . . . ; R𝐾] produces
+A𝑡,𝑏= softmax Q𝑡,𝑏K𝑡,𝑏⊤/
+√
+𝑑.
+(2)
+For token groups 𝑋,𝑌∈{𝑃, 𝑁, 𝑅1, . . . , 𝑅𝐾}, we denote by A𝑡,𝑏
+𝑋2𝑌the
+sub-block of A𝑡,𝑏whose queries come from group 𝑋and whose
+keys come from group 𝑌. The first index denotes the query side, and
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+3
+the second index denotes the key side. Throughout, group labels
+appearing in attention subscripts (e.g., 𝑁, 𝑃, 𝑅𝑘) are kept in italic,
+whereas the corresponding token matrices (N, P, R𝑘) are written in
+bold.
+3.2
+Reward Feedback Learning (ReFL)
+Reward Feedback Learning (ReFL) [Xu et al. 2023] fine-tunes diffu-
+sion models using differentiable reward signals through truncated
+backpropagation. In general, a reward step 𝑡is sampled from a range
+𝑡∈[𝑇1,𝑇2], and the model backpropagates the reward through a
+single denoising step at 𝑡. The denoising trajectory from 𝑇to 𝑡+1 is
+executed without gradients, and the reward is computed from the
+predicted clean image at step 𝑡. For flow-matching models [Lipman
+et al. 2022; Liu et al. 2022], given the noisy latent z𝑡at step 𝑡, the
+clean image is estimated as:
+ˆx0 = z𝑡−𝑡· 𝑓𝜃(z𝑡,𝑡),
+(3)
+where 𝑓𝜃is the predicted velocity. Single-step variants such as ReFL
+and DRaFT-1 [Clark et al. 2023] are well-suited for large diffusion
+transformers due to their favorable memory and stability properties.
+4
+Method
+CRAFT fine-tunes LoRA adapters of a frozen reference-aware MMDiT
+using single-step Reward Feedback Learning (ReFL). Instead of su-
+pervising composed target images, CRAFT supervises the model’s
+cross-modal routing: attention-level rewards encourage each sub-
+ject’s noise and phrase tokens to focus on the corresponding refer-
+ence subject, and the resulting attention localization gates a pixel-
+level identity reward. The overall procedure is summarized in Fig-
+ure 1 and Algorithm 1.
+4.1
+Reference-Conditioned Reward Setup
+Each training instance is written as  𝑦, {Iref
+𝑘, Mref
+𝑘}𝐾
+𝑘=1
+, where 𝑦is a
+prompt mentioning 𝐾reference subjects, Iref
+𝑘is the 𝑘-th reference
+image, and Mref
+𝑘
+is its image-space subject mask. The masks are
+reward-side guidance only: the model receives 𝑦and {Iref
+𝑘}𝐾
+𝑘=1, but
+never {Mref
+𝑘}𝐾
+𝑘=1. Thus, inference remains mask-free. Dataset con-
+struction details are provided in Section B. Briefly, references are
+isolated single-subject images rendered with FLUX.2 [Labs 2025] in
+text-to-image mode, and each mask Mref
+𝑘is obtained with Grounded-
+SAM [Ren et al. 2024]; no scene composition or composed-target
+synthesis is involved. Tokenizing 𝑦gives a prompt-token sequence
+P. For each subject 𝑘, we denote by P𝑘⊂P the contiguous token
+span of its referring phrase (e.g. “the [category] from image k”),
+and by R𝑘the reference-token block extracted from Iref
+𝑘. For re-
+ward computation, we denote by mref
+𝑘
+∈{0, 1}𝑁𝑟the downsampled
+reference-token-grid mask of Mref
+𝑘.
+CRAFT applies attention-level rewards at a selected reward locus,
+specified by a denoising step 𝑡∗and a set of transformer blocks B.
+Using the attention notation from Section 3, we write throughout
+the method as follows:
+A𝑋2𝑌:=
+1
+|B|
+∑︁
+𝑏∈B
+A𝑡∗,𝑏
+𝑋2𝑌,
+𝑋,𝑌∈{𝑁, 𝑃𝑘, 𝑅𝑘}.
+(4)
+The concrete choice of 𝑡∗and B is determined by profiling the
+backbone: We select the (step 𝑡∗, block B) which A𝑁2𝑅𝑘best aligns
+with the generated subject, as reported in Section A.
+CRAFT uses three subject-specific attention handles: A𝑁2𝑅𝑘, A𝑁2𝑃𝑘,
+A𝑃𝑘2𝑅𝑘. Here, A𝑁2𝑅𝑘is the attention from noise tokens to the 𝑘-th
+reference, A𝑁2𝑃𝑘from noise tokens to P𝑘, and A𝑃𝑘2𝑅𝑘from P𝑘to
+the 𝑘-th reference. These handles implement the Where to look prin-
+ciple: the generated subject should retrieve visual evidence from the
+correct reference region, the corresponding phrase should ground
+to the same region, and the two induced noise-grid localizations
+should agree spatially.
+4.2
+Attention-Level Rewards: Where to Look
+Using the subject-specific attention handles defined in Section 4.1,
+we instantiate the Where to look principle through three comple-
+mentary attention-level rewards. Rnoise-ref aligns noise queries with
+the subject region of the reference, Rtext-ref aligns phrase queries
+with the same region, and Rcons enforces spatial agreement between
+the two noise-grid localizations of subject 𝑘—one obtained from
+A𝑁2𝑅𝑘, one from A𝑁2𝑃𝑘. Below, norm(·) denotes per-vector min–
+max normalization to [0, 1]. Marginalized attention vectors carry
+a superscript indicating the surviving grid (ref for R𝑁𝑟, noise for
+R𝑁𝑧) and a subscript identifying the source sub-block.
+Noise–reference alignment. Rnoise-ref measures, for each subject𝑘,
+the fraction of normalized noise-to-reference response concentrated
+on the subject region:
+Rnoise-ref = 1
+𝐾
+𝐾
+∑︁
+𝑘=1
+Í
+𝑟aref
+𝑁2𝑅𝑘⊙mref
+𝑘
+Í
+𝑟aref
+𝑁2𝑅𝑘+ 𝜀
+,
+aref
+𝑁2𝑅𝑘= norm
+ Í
+𝑛A𝑁2𝑅𝑘
+
+∈R𝑁𝑟,
+(5)
+where ⊙denotes the Hadamard product, 𝜀is a small constant that
+avoids division by zero, and mref
+𝑘
+∈{0, 1}𝑁𝑟is the bilinear down-
+sampling of Mref
+𝑘to the reference-token grid. Maximizing Rnoise-ref
+encourages noise tokens to attend to the subject region of each
+reference, so the generated image tends to draw subject features
+from the reference subject rather than its background.
+Text–reference alignment. To ground subject-𝑘’s phrase tokens
+in their visual evidence, Rtext-ref applies the same fraction-on-mask
+form to the phrase side, acting on the phrase-to-reference attention
+A𝑃𝑘2𝑅𝑘and marginalizing over the phrase-query axis:
+Rtext-ref = 1
+𝐾
+𝐾
+∑︁
+𝑘=1
+Í
+𝑟aref
+𝑃𝑘2𝑅𝑘⊙mref
+𝑘
+Í
+𝑟aref
+𝑃𝑘2𝑅𝑘+ 𝜀
+,
+aref
+𝑃𝑘2𝑅𝑘= norm
+ Í
+𝑝A𝑃𝑘2𝑅𝑘
+
+∈R𝑁𝑟.
+(6)
+Rtext-ref aligns the textual semantics of P𝑘with the visual content
+inside R𝑘, grounding each phrase token in the reference subject
+rather than the generic semantics carried by the text encoder.
+Since Rnoise-ref and Rtext-ref both pull queries toward the same ref-
+erence subject region of mref
+𝑘, we bundle them into a single reference-
+mask alignment term used by the training objective (Section 4.4):
+Rref = 𝑤nr Rnoise-ref + 𝑤tr Rtext-ref,
+(7)
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+4
+•
+Park et al.
+𝒟!"#
+CRAFT
+Forward w/o Gradient 
+Single Step Reward Feedback Learning (Update LoRA parameters)
+I"
+{M!
+"#$}!%&
+'
+𝜙𝜙!"#$%&
+⊙Hadamard Product
+Data Flow
+Velocity Prediction
+Gradient Flow ℬReward Blocks
+L o R A
+Joint Attention 
+Attention-level Reward
+ℬ
+𝐺!
+Attention-driven Subject Mask
+a()*!
+"#$
+a()+!
+,-./#
+a+!)*!
+"#$
+a()*!
+,-./#
+Input Data
+“the [category]
+from image k …”
+M"
+#$%&'
+FLUX.2
+M(
+#$%&'
+ref
+gen
+{M!
+,-./#}!%&
+'
+a$)(*!
+#$%&'
+a$)(*"
+#$%&'
+FLUX.2 T2I Gen
+SAM
+M!
+"#$
+I!
+"#$
+Data Curation
+Pixel-level Reward
+Attention-level Reward - Where To Look
+ℛ012+34
+ℛ567
+0.89
+ℒ8,9:-"
+𝜙
+Similarity
+ℛ.;
+⊙
+⊙
+{M,
+-./01},23
+4
+I$
+{I,
+516},23
+4
+𝜙
+{M,
+516},23
+4
+≈
+Q
+K
+R1
+R2
+P2
+N
+P1
+P2
+N
+P1
+1
+2
+1
+2
+2
+1
+ℛ!"#$
+⟷
+2
+1
+2
+1
+ℛ%&'%()&*
+⟷
+2
+1
+ℛ#"+$&()&*
+⟷
+1
+2
+ℛ)&*
+ℒ= −ℛ#"+$&()&* + ℛ%&'%()&* + ℛ!"#$ + ℛ+, + ℛ-./0(1 + ℛ234 + ℒ5#!6")
+1
+2
+𝐺!
+v$%&'
+v()*"
+“A rabbit 
+holds a blade 
+near a glow-
+ing vase on a 
+stump.”
+v<8/#
+v1-*5
+Fig. 1. Overall pipeline of CRAFT. The denoising prefix is rolled out without gradients up to the reward step 𝑡∗, where two forward passes are performed:
+the frozen backbone 𝑓base produces vbase, while the LoRA-adapted model 𝑓LoRA produces vLoRA together with the cross-modal attention sub-blocks A𝑁2𝑅𝑘,
+A𝑁2𝑃𝑘, and A𝑃𝑘2𝑅𝑘. Following the Where to look principle, Rref and Rcons shape noise- and phrase-token attention toward each reference subject (Section 4.2);
+the resulting per-subject mask mnoise
+𝑘
+then gates the pixel-level identity reward Rid on the VAE-decoded pre-image ˆI (Section 4.3). Auxiliary terms RCLIP-T,
+RAES, and a velocity-space regularizer Lanchor are added for prompt fidelity, aesthetics, and stability (Section 4.4). A single backward pass updates only the
+LoRA parameters.
+where 𝑤nr,𝑤tr ≥0 are the weights of the noise-reference and text-
+reference alignment rewards, respectively.
+Text–noise spatial consistency. Rcons enforces consistent localiza-
+tion of subject𝑘on the noise grid where it is generated. Noise-to-text
+attention is widely used as a spatial-control handle in T2I editing
+and guidance [Chefer et al. 2023; Hertz et al. 2022; Rassin et al. 2023;
+Xiao et al. 2025b]; in our setting, P𝑘and R𝑘both describe the same
+subject (through text and reference, respectively), each producing
+its own noise-grid localization via A𝑁2𝑃𝑘and A𝑁2𝑅𝑘. When these
+two localizations land at different positions, subject 𝑘’s attention
+can split across separate regions. To prevent this, we project both
+blocks onto the noise grid—A𝑁2𝑅𝑘via mask-weighted reduction
+with mref
+𝑘, and A𝑁2𝑃𝑘via marginalization over the phrase-key axis:
+anoise
+𝑁2𝑅𝑘= norm
+ Í
+𝑟A𝑁2𝑅𝑘⊙mref
+𝑘
+
+∈R𝑁𝑧,
+anoise
+𝑁2𝑃𝑘= norm
+ Í
+𝑝A𝑁2𝑃𝑘
+
+∈R𝑁𝑧,
+(8)
+and define Rcons as their probabilistic soft IoU:
+Rcons = 1
+𝐾
+𝐾
+∑︁
+𝑘=1
+Í
+𝑛anoise
+𝑁2𝑅𝑘anoise
+𝑁2𝑃𝑘
+Í
+𝑛
+ anoise
+𝑁2𝑅𝑘+ anoise
+𝑁2𝑃𝑘−anoise
+𝑁2𝑅𝑘anoise
+𝑁2𝑃𝑘
+ + 𝜀,
+(9)
+which is maximized only when the two views coincide. Rcons thus
+encourages spatial agreement between them, reducing the dupli-
+cated or misplaced subjects that can otherwise arise.
+4.3
+Attention-Gated Pixel-Level Identity Reward
+The attention-level supervision in Section 4.2 shapes routing inside
+the transformer. We complement it with a pixel-space identity re-
+ward Rid on the decoded pre-image ˆI = DVAE(z𝑡∗−𝑡∗vLoRA), where
+DVAE is the FLUX.2 VAE decoder. To keep this pixel-level signal
+aligned with the routing being optimized, we measure identity only
+where the attention has placed the subject by gating Rid with a
+per-subject mask derived from the same attention.
+Attention-derived subject mask. Since A𝑁2𝑅𝑘encodes where
+subject 𝑘lands on the noise grid, we reuse it directly as a localiza-
+tion signal. As supported by the subject-routing analysis in Sec-
+tion A, A𝑁2𝑅𝑘already aligns reasonably well with the generated
+subject region in the unmodified backbone, and Rnoise-ref and Rcons
+further sharpen this alignment during training, making external
+re-segmentation of the generated image unnecessary. Gaussian-
+smoothing the mask-weighted sum and thresholding at 0.5 yields
+the per-subject mask:
+mnoise
+𝑘
+=
+(
+1
+if ¯anoise
+𝑁2𝑅𝑘> 0.5
+0
+otherwise
+∈{0, 1}𝑁𝑧,
+¯anoise
+𝑁2𝑅𝑘= norm
+
+𝐺𝜎
+ Í
+𝑟A𝑁2𝑅𝑘⊙mref
+𝑘
+
+∈R𝑁𝑧,
+(10)
+where 𝐺𝜎is a 2D Gaussian smoothing kernel with 𝜎=2, and the case
+definition is applied element-wise.
+Identity reward. Rid scores DINOv2 [Oquab et al. 2023] similarity
+between the generated subject and its reference, gated by mnoise
+𝑘
+so
+that identity is measured exactly where the attention has placed the
+subject in ˆI:
+Rid = 1
+𝐾
+𝐾
+∑︁
+𝑘=1
+cos 𝜙DINOv2(ˆI ⊙Mnoise
+𝑘
+), 𝜙DINOv2(Iref
+𝑘⊙Mref
+𝑘),
+(11)
+where 𝜙DINOv2 is a frozen image encoder and Mnoise
+𝑘
+is the bilinear
+upsampling of mnoise
+𝑘
+to the image grid.
+Due to mnoise
+𝑘
+is derived from A𝑁2𝑅𝑘—which Rnoise-ref shapes di-
+rectly and Rcons couples to A𝑁2𝑃𝑘—the gate moves with the attention
+being optimized. As the attention rewards sharpen this gate, Rid
+scores identity over a tighter region around the actual subject, so
+the attention and pixel supervisions consistently target the same
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+5
+ALGORITHM 1: CRAFT training (single-step ReFL).
+Require: Base model 𝑓base (frozen) and LoRA-adapted model 𝑓LoRA with
+learnable parameters Δ𝜃, reward step 𝑡∗, reward blocks B, learning
+rate 𝜂.
+1: for each training instance (𝑦, {Iref
+𝑘, Mref
+𝑘}𝐾
+𝑘=1) do
+2:
+Sample z𝑇∼N(0, I).
+3:
+for 𝜏= 𝑇,𝑇−1, . . . ,𝑡∗+1 do
+4:
+no grad: z𝜏−1 ←z𝜏−𝜏𝑓base(z𝜏,𝜏| 𝑦, {Iref
+𝑘})
+// roll out
+denoising prefix
+5:
+end for
+6:
+no grad: vbase ←𝑓base(z𝑡∗,𝑡∗| 𝑦, {Iref
+𝑘})
+// base velocity
+7:
+with grad: vLoRA, A ←𝑓LoRA(z𝑡∗,𝑡∗| 𝑦, {Iref
+𝑘})
+//
+A = {A𝑁2𝑅𝑘, A𝑁2𝑃𝑘, A𝑃𝑘2𝑅𝑘}𝐾
+𝑘=1
+8:
+Decode the pre-image: ˆI ←DVAE(z𝑡∗−𝑡∗vLoRA).
+9:
+Compute attention rewards Rref, Rcons and per-subject masks
+{mnoise
+𝑘
+} via Equations (5)-(10).
+10:
+Compute identity reward Rid via Equation (11); auxiliary terms
+RCLIP-T, RAES, Lanchor as defined in Section 4.4.
+11:
+Form the total loss L via Equation (12) and update
+Δ𝜃←Δ𝜃−𝜂∇Δ𝜃L.
+12: end for
+spatial location rather than disagreeing on where the subject should
+appear.
+4.4
+Training Objective
+We combine the bundled reference-mask alignment Rref (Equa-
+tion (7)), the spatial consistency Rcons (Equation (9)), and the pixel
+identity reward Rid (Equation (11)) into the CRAFT objective. We fur-
+ther include two auxiliary reward terms—a CLIP [Radford et al. 2021]
+text–image similarity RCLIP-T and an aesthetic predictor [LAION
+2022] score RAES—for prompt fidelity and aesthetic quality, together
+with a velocity-space anchor Lanchor = ∥vLoRA −sg(vbase)∥2
+2 that
+ties the LoRA velocity field to the base model for training stability.
+The full training objective is as follows:
+L = −Rref −𝑤c Rcons −𝑤id Rid
+−𝑤t RCLIP-T −𝑤a RAES + 𝑤anchor Lanchor,
+(12)
+where the reward terms enter with negative signs so that gradient
+descent maximizes them. The first three terms—Rref, Rcons, and
+Rid—are the essential CRAFT-specific rewards, and are the ones
+ablated in Table 2; the remaining three (RCLIP-T, RAES, Lanchor) are
+auxiliary stabilizers inherited from standard reward fine-tuning.
+Weights 𝑤c,𝑤id,𝑤t,𝑤a,𝑤anchor ≥0. Algorithm 1 summarizes the
+full procedure.
+5
+Experiments
+5.1
+Implementation Details
+Main backbone and training. We implement CRAFT on FLUX.2-
+klein [Labs 2025], a 9B-parameter MMDiT distilled to four denoising
+steps, with the backbone frozen and learning concentrated in LoRA
+adapters. We attach LoRA modules (rank 𝑟= 64) to all attention
+layers and train them at resolution 10242 on four NVIDIA B200
+GPUs using AdamW with learning rate 2×10−6 (constant schedule
+with 50 warmup steps).
+Reward locus. Computing attention-level rewards requires reading
+attention tensors, which disables Flash Attention [Dao 2023; Dao
+et al. 2022]; applying such supervision to all steps and blocks is
+therefore inefficient. We select a compact reward locus by running a
+subject-routing analysis on the unmodified FLUX.2-klein backbone
+and choosing the step/block coordinates whose noise-to-reference
+attention best aligns with generated subject masks. The full protocol
+is described in Section A. For FLUX.2-klein, this analysis identifies
+𝑡∗= 2,
+B = {single_1, single_9, single_8}.
+(13)
+Loss weights and data. We set 𝑤nr = 𝑤tr = 0.5, 𝑤c = 1.0, 𝑤id = 1.0,
+𝑤t = 0.3, 𝑤a = 3 × 10−3, and 𝑤anchor = 0.5. Training runs for 3,000
+optimizer steps. The training dataset contains 10,000 reference-only
+instances; its construction is detailed in Section B.
+5.2
+Evaluation Setup
+Benchmark. We follow the official evaluation protocol of XVerseBe
+nch [Chen et al. 2025], an extension of DreamBench++ [Peng et al.
+2024] designed to comprehensively assess single- and multi-subject
+controllable generation. XVerseBench augments the DreamBench++
+dataset with 20 newly generated portrait images, resulting in a
+benchmark that comprises 20 distinct human identities, 74 unique
+objects, and 45 animal species and individuals. The benchmark con-
+tains 300 test prompts spanning single-, dual-, and triple-subject
+combinations across humans, objects, and animals; following the
+official split, we evaluate on 90 single-subject and 210 multi-subject
+(dual + triple) prompts. The official protocol provides segmented
+reference images at evaluation time, which we use for the main com-
+parison. We also reported additional benchmark results on Dream-
+Bench [Ruiz et al. 2023] and OmniContext [Wu et al. 2025d] in
+Section E.
+Evaluation Metrics. Following XVerseBench [Chen et al. 2025],
+we report four complementary metrics: DPG for prompt fidelity
+(mPLUG-Owl [Ye et al. 2023a] answering Davidsonian Scene Graph
+[Cho et al. 2023] questions on the output), ID for human identity
+(ArcFace [Deng et al. 2019] similarity between generated and refer-
+ence faces), IP for object and animal identity (DINOv2 [Oquab et al.
+2023] similarity over the Florence-2 [Xiao et al. 2024]/SAM 2 [Ravi
+et al. 2024] segmented subject), and AES for image quality (Aesthetic
+Predictor v2.5 [LAION 2022]). For a more comprehensive evaluation,
+we further report the four-metric average AVG = (DPG + ID + IP +
+AES)/4 used by XVerseBench, together with a cross-split aggregate
+Overall = (SingleAVG + MultiAVG)/2.
+5.3
+Comparison with State-of-the-Art Subject-Driven
+Personalization Models
+Quantitative comparison. Table 1 compares CRAFT with recent
+subject-driven personalization methods on XVerseBench. CRAFT
+achieves the best Overall score (76.47) while using only 10K reference-
+only training instances and no composed-target supervision. Follow-
+ing the official protocol, we average the results over four samples;
+the run-to-run spread is small (±0.08 Overall), far below our lead
+over the next-best method. On the single-subject split, CRAFT ob-
+tains the best AVG score (81.62), improving over the strongest prior
+method, MOSAIC [She et al. 2025], by +1.57 points. The gains are
+especially pronounced in identity-related metrics: CRAFT achieves
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+6
+•
+Park et al.
+Table 1. Quantitative comparison on XVerseBench. “Target.” marks composed-target supervision (!/%); “#Data” is the reported training-sample count.
+† denotes results reproduced with official code; (—) denotes not reported. Best/second-best in bold/underlined. ∗CRAFT (mask-free) operates on raw,
+unsegmented references at inference and is reported for reference (not included in the ranking). Because masks are reward-side training annotations only, this
+mask-free setting is CRAFT’s intended inference mode, and it performs on par with or above the segmented-input configuration (Overall 77.80 vs. 76.47).
+Single subject (90 prompts)
+Multi subject (210 prompts)
+Overall ↑
+Method
+Target.
+#Data
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+UNO [Wu et al. 2025b]
+!
+245K
+89.65
+47.91
+80.40
+55.90
+68.47
+85.28
+31.82
+67.00
+54.24
+59.59
+64.03
+OmniGen [Xiao et al. 2025a]
+!
+6.5M
+83.90
+76.51
+78.46
+51.41
+72.57
+78.23
+55.53
+62.32
+49.84
+61.48
+67.03
+OmniGen2 [Wu et al. 2025d]
+!
+180K
+92.60
+62.41
+74.08
+52.34
+70.36
+91.55
+40.81
+67.15
+51.40
+62.73
+66.55
+DreamO [Mou et al. 2025]
+!
+150K
+96.93
+75.48
+70.84
+54.57
+74.46
+88.80
+50.24
+64.63
+52.47
+64.04
+69.25
+UMO† [Cheng et al. 2025]
+!
+—
+86.75
+77.36
+76.99
+61.71
+75.70
+87.18
+58.24
+60.52
+58.74
+66.17
+70.94
+XVerse [Chen et al. 2025]
+!
+2M+
+93.69
+79.48
+76.86
+56.84
+76.72
+88.26
+66.59
+71.48
+53.97
+70.08
+73.40
+MOSAIC [She et al. 2025]
+!
+1.2M
+96.55
+81.98
+80.92
+60.77
+80.05
+88.94
+69.90
+74.27
+55.02
+72.03
+76.04
+CRAFT (Ours)
+%
+10K
+96.81
+84.22
+84.23
+61.24
+81.62
+88.71
+61.16
+77.25
+58.16
+71.32
+76.47
+CRAFT (mask-free, Ours)∗
+%
+10K
+98.91
+87.67
+86.74
+62.58
+83.97
+89.12
+60.35
+77.28
+59.71
+71.62
+77.80
+Reference Images
+Prompt
+A woman is walking 
+a corgi on a street.
+A dolphin and 
+a penguin is swimming 
+in the ocean together. 
+An anime space 
+ranger is riding 
+a bicycle in a space. 
+A man in blue, 
+a man in black, and 
+a man with sunglasses 
+are standing together, 
+chatting and laughing. 
+In a sunlit meadow, 
+an Avatar gracefully 
+donned a cap, its hand 
+delicately holding 
+a glowing ring.
+A parrot is perched 
+on the saddle of a horse, 
+while a kitten is 
+playing at the 
+horse's hooves.
+XVerse
+DreamO
+OmniGen2
+UNO
+OmniGen
+Ours
+MOSAIC
+UMO
+Fig. 2. Qualitative comparison with state-of-the-art subject-driven personalization models.
+the highest Single ID (84.22) and Single IP (84.23), indicating that
+the learned routing improves both human and non-human subject
+preservation.
+On multi-subject prompts, CRAFT achieves the best IP score
+(77.25) and the second-best Multi AVG (71.32). Its Multi ID is lower
+than MOSAIC’s (61.16 vs. 69.90), but CRAFT remains competitive
+overall because it better preserves object/animal identity and im-
+age quality. This multi-subject gap is in part a deliberate operating
+point—raising 𝑤id recovers Multi ID to 68.83 (≈MOSAIC) at a small
+quality cost (Section I)—and we discuss it further in Section J. Com-
+pared with the frozen FLUX.2-klein backbone reported in Table 2,
+CRAFT improves Overall by +5.43 points, with the largest gains in
+subject identity preservation. These results suggest that CRAFT’s
+reference-side rewards provide strong supervision even without
+paired composed targets. We also report CRAFT (mask-free), which
+operates on raw, unsegmented references at inference and achieves
+Overall 77.80, demonstrating that CRAFT does not require test-time
+reference segmentation; full details are in Section F. Additional
+quantitative results on DreamBench [Ruiz et al. 2023] and Omni-
+Context [Wu et al. 2025d] are reported in Section E.
+Qualitative comparison. Figure 2 compares CRAFT with seven
+baselines on six prompts. Two patterns stand out.
+Natural human–subject interaction. Rows 1, 3, and 5 require a
+human or character to actively interact with another referenced
+subject: a woman walking a corgi (row 1), an anime space ranger
+riding a bicycle (row 3), and an Avatar wearing a cap while holding
+a glowing ring (row 5). In these cases, CRAFT places the subjects in
+compatible positions, orientations, and scales, so that the prompted
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+7
+Table 2. Component ablations on XVerseBench. (a) FLUX.2-klein [Labs 2025] backbone; (b) +Rref; (c) +Rcons (cumulative); (d) Rid alone on the backbone; (e)
+full CRAFT (all three rewards). !marks an enabled reward. Best/second-best in bold/underlined.
+Component
+Single subject
+Multi subject
+Overall ↑
+Rref
+Rcons
+Rid
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+(a)
+97.22
+66.29
+78.15
+59.76
+75.36
+88.91
+50.22
+71.23
+56.52
+66.72
+71.04
+(b)
+!
+96.89
+70.15
+79.75
+60.84
+76.91
+88.94
+48.11
+72.69
+57.86
+66.90
+71.91
+(c)
+!
+!
+97.22
+70.63
+81.19
+61.94
+77.75
+88.09
+50.43
+70.70
+58.71
+66.98
+72.37
+(d)
+!
+96.67
+73.27
+81.93
+61.96
+78.46
+87.32
+50.77
+72.90
+60.24
+67.81
+73.14
+(e)
+!
+!
+!
+96.81
+84.22
+84.23
+61.24
+81.62
+88.71
+61.16
+77.25
+58.16
+71.32
+76.47
+Table 3. CRAFT applied to UNO [Wu et al. 2025b] and UMO [Cheng et al.
+2025] on XVerseBench. “Target.” marks composed-target supervision (!/%);
+† denotes results reproduced with official code. Best in bold.
+Method
+Target.
+Single AVG ↑
+Multi AVG ↑
+Overall ↑
+UNO [Wu et al. 2025b]
+!
+68.47
+59.59
+64.03
+UNO + Ours
+%
+76.61
+67.04
+71.83
+UMO† [Cheng et al. 2025]
+!
+75.70
+66.17
+70.94
+UMO + Ours
+%
+79.75
+69.49
+74.62
+Table 4. User study preference (%).
+Method
+IC ↑
+PF ↑
+IQ ↑
+UMO [Cheng et al. 2025]
+15.0
+5.9
+26.0
+XVerse [Chen et al. 2025]
+15.0
+18.3
+16.5
+MOSAIC [She et al. 2025]
+14.8
+13.2
+23.3
+Ours
+55.2
+62.6
+34.2
+action is visually supported rather than merely implied. The woman
+and dog appear as a coherent walking pair, the character is phys-
+ically situated on the bicycle, and the cap and ring are integrated
+with the Avatar instead of being detached or treated as unrelated
+objects. Competing methods often preserve some reference appear-
+ance but fail at this relational composition: they drop one subject,
+place the subjects in disconnected regions, or distort one subject to
+accommodate the other, thereby breaking the prompted interaction.
+Multi-subject identity vs. reference replication. Row 4, which asks
+for three men chatting, helps interpret the Multi ID gap between
+CRAFT and MOSAIC. MOSAIC achieves a higher automatic face-ID
+score, but the visual comparison suggests that part of this score
+may come from reproducing the reference photographs themselves
+rather than recomposing the identities into the requested scene.
+For example, the tight portrait framing of the references is carried
+into the generated image, leaving faces unnaturally cropped within
+an otherwise full-body group composition. CRAFT, despite being
+trained without composed-target supervision, instead adapts each
+identity to a shared group setting: the subjects are placed at com-
+patible scales and viewpoints, and the result reads as a coherent
+conversation scene rather than a collage of reference portraits. This
+behavior is consistent with our objective: CRAFT encourages refer-
+ence evidence to be routed to the correct generated subject, while
+still allowing the subject to be reposed and recomposed according
+to the prompt.
+5.4
+Ablation Study
+Table 2 isolates the effect of CRAFT’s three reward components. The
+ablation reveals three main findings. First, reference-mask alignment
+improves subject grounding. Adding Rref to the frozen backbone
+increases Overall from 71.04 to 71.91, with the largest gain on the
+single-subject split. This indicates that pulling both noise and phrase
+queries toward the reference subject region helps the model extract
+subject evidence from the correct part of the reference image.
+Second, spatial consistency is most useful when multiple subjects
+compete for image space. Adding Rcons further improves Overall
+to 72.37 and increases Multi ID from 48.11 to 50.43. This supports
+our design: aligning the noise-grid localizations induced by noise-
+to-reference and noise-to-text attention reduces split or misplaced
+subject routing.
+Third, the attention rewards and the pixel identity reward are com-
+plementary. Using Rid alone (d) already improves over the backbone
+on both splits (Multi IP 71.23→72.90, Multi ID 50.22→50.77); adding
+the attention-shaping rewards Rref and Rcons in the full model (e)
+sharpens the attention-derived gate and yields a further jump to
+76.47 Overall—Single ID to 84.22, Multi ID to 61.16, and Multi IP to
+77.25. Image-space identity supervision is thus most effective when
+the gate that localizes it is itself shaped by the attention rewards.
+5.5
+Generalization Across Reference-Aware MMDiT
+Backbones
+To verify that CRAFT is not specific to FLUX.2-klein, we apply
+the same recipe to UNO [Wu et al. 2025b] (a FLUX.1-dev-based
+reference-aware MMDiT) and additionally compose it on top of
+UMO [Cheng et al. 2025]; per-metric numbers and implementation
+details are in Section D.
+As shown in Table 3, UNO + CRAFT—supervised entirely by
+reference-side rewards—outperforms UMO, which is itself a
+reward-based fine-tuning of the same UNO backbone but requires
+composed-target supervision. As a result, the two rows without
+composed-target supervision in Table 3 occupy the top two posi-
+tions, ahead of both composed-target–supervised baselines. Com-
+posing CRAFT on top of UMO’s identity-tuned LoRA yields a further
+consistent gain, making UMO + CRAFT the strongest UNO-family
+configuration we evaluate. Together with the FLUX.2-klein result in
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+8
+•
+Park et al.
+Table 2, this confirms that CRAFT generalizes across the reference-
+aware MMDiT backbones we evaluate, complementary to existing
+reward-based fine-tuning, all without introducing composed-target
+supervision.
+5.6
+User study
+We conduct a user study with 119 participants evaluating Identity
+Consistency (IC), Prompt Fidelity (PF), and Image Quality (IQ). For
+each question, participants are shown image sets generated by four
+methods in randomized order and asked to select the best option
+(see Section G for the detailed format). We compare with UMO,
+XVerse, and MOSAIC, the top three quantitative performers. As
+shown in Table 4, our method achieves the highest preference in
+Identity Consistency (55.2%), Prompt Fidelity (62.6%), and Image
+Quality (34.2%), demonstrating its effectiveness.
+6
+Conclusion
+We presented CRAFT, a reward-based fine-tuning framework for
+generalized subject-driven personalization that adapts a pre-trained
+reference-aware MMDiT via single-step ReFL with ref-side-only
+supervision. CRAFT realizes a Where to look principle through three
+attention-level rewards—noise–reference, phrase–reference, and
+noise-grid spatial consistency—computed at a compact subset of
+(step, block) coordinates identified on the unmodified reference-
+aware MMDiT backbone. The same attention rewards yield per-
+subject masks on the noise grid that gate a pixel-level identity re-
+ward, keeping image-space supervision consistent with the learned
+attention routing. Trained on only 10K self-synthesized prompt-
+reference instances, CRAFT achieves state-of-the-art performance
+across various benchmarks without any composed-target supervi-
+sion, which prior methods require at the scale of 150K to 2M pairs.
+The same recipe further transfers across reference-aware MMDiT
+backbones, generalizing beyond a single backbone.
+Limitations. CRAFT has three main limitations. First, CRAFT’s
+clearest gains are on single-subject prompts; on multi-subject scenes,
+its advantage is smaller—it still attains the best multi-subject IP, but
+Multi-ID trails the strongest composed-target baseline (Table 1). This
+gap is in part a deliberate identity–quality operating point rather
+than a hard limit—raising the identity weight closes much of it at a
+small quality cost (Section I)—and we leave stronger multi-subject
+identity preservation to future work. Second, CRAFT requires a back-
+bone that natively accepts reference tokens, so text-only T2I models
+need a reference-conditioning module first. Third, as a reward-based
+recipe, it amplifies the backbone’s existing routing rather than re-
+building it, so absolute performance is bounded by the base model.
+We detail these, together with a robustness analysis of CRAFT’s
+design choices, in Section J and Section I.
+Acknowledgments
+This work was supported by the National Research Foundation of
+Korea (NRF) grant funded by the Korea government (MSIT) (RS-
+2026-25480865) (25%), the 2026 Cultural Technology Research and
+Development Project of the Ministry of Culture, Sports and Tourism
+and the Korea Creative Content Agency (Project name: Develop-
+ment of high-precision hand-crafting and service technologies based
+on physical AI, number: RS-2026-25510431) (25%), the Institute of
+Information & Communications Technology Planning & Evaluation
+(IITP) grant funded by the Korea government (MSIT) (No. RS-2025-
+02219277, AI Star Fellowship Support Project (DGIST)) (25%), and
+the “Advanced GPU Utilization Support Program funded by the
+Government of the Republic of Korea (Ministry of Science and ICT)
+(02-26-01-0057)” (25%).
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+9
+References
+Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, and Sergey Levine. 2023. Training
+diffusion models with reinforcement learning. arXiv preprint arXiv:2305.13301 (2023).
+Hila Chefer, Yuval Alaluf, Yael Vinker, Lior Wolf, and Daniel Cohen-Or. 2023. Attend-
+and-excite: Attention-based semantic guidance for text-to-image diffusion models.
+ACM transactions on Graphics (TOG) 42, 4 (2023), 1–10.
+Bowen Chen, Mengyi Zhao, Haomiao Sun, Li Chen, Xu Wang, Kang Du, and Xing-
+long Wu. 2025. Xverse: Consistent multi-subject control of identity and semantic
+attributes via dit modulation. arXiv preprint arXiv:2506.21416.
+Yufeng Cheng, Wenxu Wu, Shaojin Wu, Mengqi Huang, Fei Ding, and Qian He. 2025.
+UMO: Scaling Multi-Identity Consistency for Image Customization via Matching
+Reward. arXiv preprint arXiv:2509.06818 (2025).
+Jaemin Cho, Yushi Hu, Roopal Garg, Peter Anderson, Ranjay Krishna, Jason Baldridge,
+Mohit Bansal, Jordi Pont-Tuset, and Su Wang. 2023. Davidsonian scene graph:
+Improving reliability in fine-grained evaluation for text-to-image generation. arXiv
+preprint arXiv:2310.18235 (2023).
+Kevin Clark, Paul Vicol, Kevin Swersky, and David J Fleet. 2023. Directly fine-tuning
+diffusion models on differentiable rewards. arXiv preprint arXiv:2309.17400 (2023).
+Tri Dao. 2023. Flashattention-2: Faster attention with better parallelism and work
+partitioning. arXiv preprint arXiv:2307.08691 (2023).
+Tri Dao, Dan Fu, Stefano Ermon, Atri Rudra, and Christopher Ré. 2022. Flashattention:
+Fast and memory-efficient exact attention with io-awareness. Advances in neural
+information processing systems 35 (2022), 16344–16359.
+Chaorui Deng, Deyao Zhu, Kunchang Li, Chenhui Gou, Feng Li, Zeyu Wang, Shu
+Zhong, Weihao Yu, Xiaonan Nie, Ziang Song, et al. 2025. Emerging properties in
+unified multimodal pretraining. arXiv preprint arXiv:2505.14683 (2025).
+Jiankang Deng, Jia Guo, Niannan Xue, and Stefanos Zafeiriou. 2019. Arcface: Addi-
+tive angular margin loss for deep face recognition. In Proceedings of the IEEE/CVF
+conference on computer vision and pattern recognition. 4690–4699.
+Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas Müller, Harry
+Saini, Yam Levi, Dominik Lorenz, Axel Sauer, Frederic Boesel, et al. 2024. Scal-
+ing rectified flow transformers for high-resolution image synthesis. In Forty-first
+international conference on machine learning.
+Ying Fan, Olivia Watkins, Yuqing Du, Hao Liu, Moonkyung Ryu, Craig Boutilier, Pieter
+Abbeel, Mohammad Ghavamzadeh, Kangwook Lee, and Kimin Lee. 2023. Dpok:
+Reinforcement learning for fine-tuning text-to-image diffusion models. Advances in
+Neural Information Processing Systems 36 (2023), 79858–79885.
+Rinon Gal, Yuval Alaluf, Yuval Atzmon, Or Patashnik, Amit H Bermano, Gal Chechik,
+and Daniel Cohen-Or. 2022. An image is worth one word: Personalizing text-to-
+image generation using textual inversion. arXiv preprint arXiv:2208.01618 (2022).
+Amir Hertz, Ron Mokady, Jay Tenenbaum, Kfir Aberman, Yael Pritch, and Daniel
+Cohen-Or. 2022. Prompt-to-prompt image editing with cross attention control.
+arXiv preprint arXiv:2208.01626 (2022).
+Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang,
+Liang Wang, Weizhu Chen, et al. 2022. Lora: Low-rank adaptation of large language
+models. Iclr 1, 2 (2022), 3.
+Qihan Huang, Siming Fu, Jinlong Liu, Hao Jiang, Yipeng Yu, and Jie Song. 2025. Resolv-
+ing multi-condition confusion for finetuning-free personalized image generation. In
+Proceedings of the AAAI Conference on Artificial Intelligence, Vol. 39. 3707–3714.
+Nupur Kumari, Bingliang Zhang, Richard Zhang, Eli Shechtman, and Jun-Yan Zhu.
+2023. Multi-concept customization of text-to-image diffusion. In Proceedings of the
+IEEE/CVF conference on computer vision and pattern recognition. 1931–1941.
+Black Forest Labs. 2025. FLUX.2: Frontier Visual Intelligence. https://bfl.ai/blog/flux-2.
+LAION. 2022. LAION-Aesthetics V2 Predictor. https://github.com/LAION-AI/aesthetic-
+predictor.
+Dongxu Li, Junnan Li, and Steven Hoi. 2023. Blip-diffusion: Pre-trained subject repre-
+sentation for controllable text-to-image generation and editing. Advances in Neural
+Information Processing Systems 36 (2023), 30146–30166.
+Zongjian Li, Zheyuan Liu, Qihui Zhang, Bin Lin, Feize Wu, Shenghai Yuan, Zhiyuan
+Yan, Yang Ye, Wangbo Yu, Yuwei Niu, et al. 2025. Uniworld-v2: Reinforce image
+editing with diffusion negative-aware finetuning and mllm implicit feedback. arXiv
+preprint arXiv:2510.16888 (2025).
+Yaron Lipman, Ricky TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le. 2022.
+Flow matching for generative modeling. arXiv preprint arXiv:2210.02747 (2022).
+Xingchao Liu, Chengyue Gong, and Qiang Liu. 2022. Flow straight and fast: Learning
+to generate and transfer data with rectified flow. arXiv preprint arXiv:2209.03003
+(2022).
+Chong Mou, Yanze Wu, Wenxu Wu, Zinan Guo, Pengze Zhang, Yufeng Cheng, Yiming
+Luo, Fei Ding, Shiwen Zhang, Xinghui Li, et al. 2025. Dreamo: A unified framework
+for image customization. In Proceedings of the SIGGRAPH Asia 2025 Conference
+Papers. 1–12.
+Maxime Oquab, Timothée Darcet, Théo Moutakanni, Huy Vo, Marc Szafraniec, Vasil
+Khalidov, Pierre Fernandez, Daniel Haziza, Francisco Massa, Alaaeldin El-Nouby,
+et al. 2023. Dinov2: Learning robust visual features without supervision. arXiv
+preprint arXiv:2304.07193 (2023).
+Yuang Peng, Yuxin Cui, Haomiao Tang, Zekun Qi, Runpei Dong, Jing Bai, Chunrui Han,
+Zheng Ge, Xiangyu Zhang, and Shu-Tao Xia. 2024. Dreambench++: A human-aligned
+benchmark for personalized image generation. arXiv preprint arXiv:2406.16855
+(2024).
+Mihir Prabhudesai, Anirudh Goyal, Deepak Pathak, and Katerina Fragkiadaki. 2023.
+Aligning text-to-image diffusion models with reward backpropagation. (2023).
+Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini
+Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. 2021.
+Learning transferable visual models from natural language supervision. In Interna-
+tional conference on machine learning. PmLR, 8748–8763.
+Royi Rassin, Eran Hirsch, Daniel Glickman, Shauli Ravfogel, Yoav Goldberg, and Gal
+Chechik. 2023. Linguistic binding in diffusion models: Enhancing attribute cor-
+respondence through attention map alignment. Advances in Neural Information
+Processing Systems 36 (2023), 3536–3559.
+Nikhila Ravi, Valentin Gabeur, Yuan-Ting Hu, Ronghang Hu, Chaitanya Ryali, Tengyu
+Ma, Haitham Khedr, Roman Rädle, Chloe Rolland, Laura Gustafson, et al. 2024. Sam
+2: Segment anything in images and videos. arXiv preprint arXiv:2408.00714 (2024).
+Tianhe Ren, Shilong Liu, Ailing Zeng, Jing Lin, Kunchang Li, He Cao, Jiayu Chen, Xinyu
+Huang, Yukang Chen, Feng Yan, et al. 2024. Grounded sam: Assembling open-world
+models for diverse visual tasks. arXiv preprint arXiv:2401.14159 (2024).
+Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Björn Ommer.
+2022. High-resolution image synthesis with latent diffusion models. In Proceedings
+of the IEEE/CVF conference on computer vision and pattern recognition. 10684–10695.
+Nataniel Ruiz, Yuanzhen Li, Varun Jampani, Yael Pritch, Michael Rubinstein, and Kfir
+Aberman. 2023. Dreambooth: Fine tuning text-to-image diffusion models for subject-
+driven generation. In Proceedings of the IEEE/CVF conference on computer vision and
+pattern recognition. 22500–22510.
+Dong She, Siming Fu, Mushui Liu, Qiaoqiao Jin, Hualiang Wang, Mu Liu, and Jidong
+Jiang. 2025. MOSAIC: Multi-Subject Personalized Generation via Correspondence-
+Aware Alignment and Disentanglement. arXiv preprint arXiv:2509.01977 (2025).
+Qixun Wang, Xu Bai, Haofan Wang, Zekui Qin, Anthony Chen, Huaxia Li, Xu Tang,
+and Yao Hu. 2024a. Instantid: Zero-shot identity-preserving generation in seconds.
+arXiv preprint arXiv:2401.07519 (2024).
+Xierui Wang, Siming Fu, Qihan Huang, Wanggui He, and Hao Jiang. 2024b. Ms-diffusion:
+Multi-subject zero-shot image personalization with layout guidance. arXiv preprint
+arXiv:2406.07209 (2024).
+Yuran Wang, Bohan Zeng, Chengzhuo Tong, Wenxuan Liu, Yang Shi, Xiaochen Ma,
+Hao Liang, Yuanxing Zhang, and Wentao Zhang. 2025. Scone: Bridging Composition
+and Distinction in Subject-Driven Image Generation via Unified Understanding-
+Generation Modeling. arXiv preprint arXiv:2512.12675 (2025).
+Chenfei Wu, Jiahao Li, Jingren Zhou, Junyang Lin, Kaiyuan Gao, Kun Yan, Sheng
+ming Yin, Shuai Bai, Xiao Xu, Yilei Chen, Yuxiang Chen, Zecheng Tang, Zekai
+Zhang, Zhengyi Wang, An Yang, Bowen Yu, Chen Cheng, Dayiheng Liu, Deqing
+Li, Hang Zhang, Hao Meng, Hu Wei, Jingyuan Ni, Kai Chen, Kuan Cao, Liang
+Peng, Lin Qu, Minggang Wu, Peng Wang, Shuting Yu, Tingkun Wen, Wensen Feng,
+Xiaoxiao Xu, Yi Wang, Yichang Zhang, Yongqiang Zhu, Yujia Wu, Yuxuan Cai,
+and Zenan Liu. 2025c. Qwen-Image Technical Report. arXiv:2508.02324 [cs.CV]
+https://arxiv.org/abs/2508.02324
+Chenyuan Wu, Pengfei Zheng, Ruiran Yan, Shitao Xiao, Xin Luo, Yueze Wang, Wanli
+Li, Xiyan Jiang, Yexin Liu, Junjie Zhou, et al. 2025d. Omnigen2: Exploration to
+advanced multimodal generation. arXiv preprint arXiv:2506.18871 (2025).
+Shaojin Wu, Mengqi Huang, Yufeng Cheng, Wenxu Wu, Jiahe Tian, Yiming Luo, Fei
+Ding, and Qian He. 2025a. Uso: Unified style and subject-driven generation via
+disentangled and reward learning. arXiv preprint arXiv:2508.18966 (2025).
+Shaojin Wu, Mengqi Huang, Wenxu Wu, Yufeng Cheng, Fei Ding, and Qian He. 2025b.
+Less-to-more generalization: Unlocking more controllability by in-context gener-
+ation. In Proceedings of the IEEE/CVF International Conference on Computer Vision.
+18682–18692.
+Xiaoshi Wu, Yiming Hao, Keqiang Sun, Yixiong Chen, Feng Zhu, Rui Zhao, and Hong-
+sheng Li. 2023. Human preference score v2: A solid benchmark for evaluating human
+preferences of text-to-image synthesis. arXiv preprint arXiv:2306.09341 (2023).
+Bin Xiao, Haiping Wu, Weijian Xu, Xiyang Dai, Houdong Hu, Yumao Lu, Michael Zeng,
+Ce Liu, and Lu Yuan. 2024. Florence-2: Advancing a unified representation for a
+variety of vision tasks. In Proceedings of the IEEE/CVF Conference on Computer Vision
+and Pattern Recognition. 4818–4829.
+Guangxuan Xiao, Tianwei Yin, William T Freeman, Frédo Durand, and Song Han. 2025b.
+Fastcomposer: Tuning-free multi-subject image generation with localized attention.
+International Journal of Computer Vision 133, 3 (2025), 1175–1194.
+Shitao Xiao, Yueze Wang, Junjie Zhou, Huaying Yuan, Xingrun Xing, Ruiran Yan,
+Chaofan Li, Shuting Wang, Tiejun Huang, and Zheng Liu. 2025a. Omnigen: Unified
+image generation. In Proceedings of the IEEE/CVF Conference on Computer Vision
+and Pattern Recognition. 13294–13304.
+Jiazheng Xu, Xiao Liu, Yuchen Wu, Yuxuan Tong, Qinkai Li, Ming Ding, Jie Tang, and
+Yuxiao Dong. 2023. Imagereward: Learning and evaluating human preferences for
+text-to-image generation. Advances in Neural Information Processing Systems 36
+(2023), 15903–15935.
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+10
+•
+Park et al.
+Hu Ye, Jun Zhang, Sibo Liu, Xiao Han, and Wei Yang. 2023b. Ip-adapter: Text com-
+patible image prompt adapter for text-to-image diffusion models. arXiv preprint
+arXiv:2308.06721 (2023).
+Junyan Ye, Dongzhi Jiang, Zihao Wang, Leqi Zhu, Zhenghao Hu, Zilong Huang, Jun
+He, Zhiyuan Yan, Jinghua Yu, Hongsheng Li, et al. 2025. Echo-4o: Harnessing the
+power of gpt-4o synthetic images for improved image generation. arXiv preprint
+arXiv:2508.09987 (2025).
+Qinghao Ye, Haiyang Xu, Guohai Xu, Jiabo Ye, Ming Yan, Yiyang Zhou, Junyang Wang,
+Anwen Hu, Pengcheng Shi, Yaya Shi, et al. 2023a. mplug-owl: Modularization em-
+powers large language models with multimodality. arXiv preprint arXiv:2304.14178
+(2023).
+Yuxuan Zhang, Yiren Song, Jiaming Liu, Rui Wang, Jinpeng Yu, Hao Tang, Huaxia Li,
+Xu Tang, Yao Hu, Han Pan, et al. 2024. Ssr-encoder: Encoding selective subject rep-
+resentation for subject-driven generation. In 2024 IEEE/CVF Conference on Computer
+Vision and Pattern Recognition (CVPR). IEEE, 8069–8078.
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+11
+A woman, an old man, and an 
+anime girl are standing together in 
+a park.
+A boy and a little girl are playing 
+with a rubber duck.
+A boy is using a vintage camera to 
+take a picture of a toucan.
+A little girl is playing with a puppy.
+A man and another man standing 
+side by side on a street, having a 
+conversation.
+A dog is chasing a butterfly in the 
+garden.
+Fig. 3. Qualitative results on XVerseBench under the official segmented-reference protocol.
+A lizard is sitting on a motorcycle.
+A lion is lying under a tree while a 
+robin is perched on a nearby 
+branch.
+A fox is standing beside an anime 
+girl who is holding a rubber duck.
+A Siamese cat is sitting beside a 
+vintage camera and a cactus.
+A boy is standing beside a yellow 
+taxi, looking at an anime space 
+ranger.
+In a sunlit oasis, a flamingo dances 
+gracefully beside a lounging tiger 
+and a curious, fluffy llama. 
+Nature’s Harmony. 
+Fig. 4. Qualitative results of CRAFT on XVerseBench with un-segmented raw reference images at inference (mask-free protocol).
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+12
+•
+Park et al.
+A yellow fishing net, tangled and adorned with reddish-brown 
+floats, sprawls across the white marble table, its synthetic fibers 
+contrasting sharply with the sleek lines of the silver laptop 
+beside it, as sunlight filters through the room, casting soft 
+shadows on the minimalist workspace.
+She uses a laptop in a quiet library setting.
+The vibrant pink flowers hang gracefully from the edge of the 
+rustic wooden nightstand, their delicate petals catching the soft, 
+filtered light that seeps through the partially drawn curtain, 
+adding a touch of nature to the cozy corner of the room.
+.
+Let the human in the second picture sit astride the white horse
+with a dark mane from the first figure, gently leaning forward 
+to stroke its neck with one hand while the other holds the reins, 
+as golden sunlight filters through nearby trees and casts long 
+shadows across the peaceful grassy meadow.
+The wristwatch rests on the wooden table, while the kitten sits 
+on the bed’s edge, curiously watching the watch.
+The man carries the wolf on his shoulders through a dense 
+forest path, his muscles tense as he strides steadily over uneven 
+ground. Dappled sunlight filters through the thick canopy above, 
+casting shifting patterns of light and shadow on their forms. The 
+wolf rests calmly, its fur blending with the rugged textures of 
+bark and leaves around them.
+The person in the bright orange long-sleeve top and blue 
+headphones interacts with the McDonald's delivery bag in the 
+large, open room that resembles a former church.
+A ginger cat lounges on a soft blanket in a sunlit corner, while a 
+small cactus sits on a nearby wooden table, basking in the warm 
+light.
+Please make the human in the 2nd image kneel on one knee in 
+front of the plant from the first picture in a warmly lit living 
+room, gently brushing their fingers along a green leaf. The plant 
+sits in a ceramic pot beside a textured rug, with warm light from 
+a nearby floor lamp casting soft shadows on the wooden floor 
+and wall behind them.
+The person from image 1 and the person from image 2 sit face 
+to face in a cozy café.
+I want the girl from img 1 to playfully push the colorful toy car 
+in second image across the textured, light-colored surface, her 
+eyes bright with joy.
+He gently cradles the vibrant, multicolored bird as it perches 
+delicately on his outstretched fingers, its feathers ruffling 
+slightly in the warm breeze of a tranquil savanna. The golden 
+grass sways softly around them under a vast sky painted with 
+soft pastel hues of dawn, while his focused gaze meets the 
+bird’s bright eyes, creating a quiet moment of connection.
+I want the woman from the second picture to playfully hold the 
+toy monster from the first image, smiling as she examines its 
+whimsical design and colorful features.
+Let the person from the second image stand thoughtfully beside 
+the sculptural piece in the art gallery from the third image, 
+while the plant from the first image rests on the floor nearby, 
+adding a touch of greenery to the minimalist space.
+Fig. 5. Qualitative results of CRAFT for the OmniContext benchmark.
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+1
+CRAFT: Constrained Reward via Attention Fine-Tuning for
+Subject Personalization without Composed Targets —
+Supplementary Material
+A
+Subject-Routing Analysis
+Applying ReFL to a large MMDiT’s attention map requires selecting
+a small set of denoising steps and attention blocks on which to place
+supervision. Reading attention tensors disables Flash Attention [Dao
+2023; Dao et al. 2022], and applying uniform supervision across
+all blocks and steps is computationally inefficient. We therefore
+perform a lightweight subject-routing analysis on the unmodified
+backbone and select the step/block coordinates whose noise-to-
+reference attention best aligns with generated subject masks.
+Measurement protocol. We run the unmodified FLUX.2-klein
+backbone (no LoRA) on 100 random (reference, prompt) pairs. For
+each pair, we feed the reference image together with its prompt into
+the model, obtain one generated image, and compute a Grounded-
+SAM [Ren et al. 2024] mask mgen on the generated image. At every
+(step, block), we read the noise-to-reference attention A𝑁2𝑅, sum
+along the reference axis to obtain a noise-grid heatmap, threshold
+at the 75th percentile, and compute the binary IoU against mgen.
+A high BinIoU at (𝑡,𝑏) indicates that the base model is already
+attending to the actual generated subject region at that step and
+block, so any supervision pulling on this attention amplifies a signal
+that is already aligned with where the subject ultimately appears.
+We additionally compute three alternative criteria—binary cross-
+entropy (BCE), mean squared error (MSE), and soft IoU—on the real-
+valued (un-thresholded) heatmap, then aggregate by average rank
+across all four criteria to avoid sensitivity to any single threshold
+choice.
+Step-wise behaviour. We sweep all 4 × 32 = 128 (step, block)
+pairs across 100 subjects. The per-step top-3 block mean of A𝑁2𝑅
+(noise-to-reference attention) across the four criteria is reported
+in Table 5 (b): step 2 wins on every criterion. The strongest sin-
+gle block is single_1 at 𝑡∗=2 (BinIoU 0.666, see Table 5 (a)), so
+(𝑡∗=2, single_1) is the joint argmax of our sweep.
+The per-step full-network mean BinIoU is {0.334, 0.466, 0.528, 0.549}
+across steps {0, 1, 2, 3}: step 3 has a slightly higher mean across all
+32 blocks, but this average is dominated by 26 low-alignment blocks
+whose attention only becomes broadly subject-aware at step 3. Re-
+stricting to the top-3 blocks (the ones we would actually supervise)
+reverses the ranking and places step 2 as the cleanest reward step.
+Block ranking at 𝑡∗= 2 (extended). Ranking blocks by aver-
+aged rank across the four heatmap-vs-mask criteria, the top three
+single-stream blocks (single_1, single_9, single_8) are clearly
+separated from the rest of the network on every individual criterion
+(BCE, MSE, soft mIoU, BinIoU), not only on the aggregated rank,
+so the choice of B is robust to which heatmap-similarity metric is
+used.
+Reference-image key vs. prompt key. We further test whether
+the reference-image key or the prompt key is the better target for the
+noise-to-key attention, comparing A𝑁2𝑅(noise-to-reference) against
+A𝑁2𝑃(noise-to-prompt) under the same measurement protocol. Ta-
+ble 5 compares the two against the Grounded-SAM segmentation
+of the generated image across all four denoising steps, both (a) at
+Table 5. Alignment of attention heatmaps with the Grounded-SAM segmen-
+tation of the generated image across all four denoising steps of the 4-step
+distilled FLUX.2-klein-9B, on 100 subjects under the measurement protocol
+of Section A (BinIoU at the 75-th percentile binary mask; un-thresholded
+heatmap for BCE, MSE, soft mIoU; 64×64 resolution; no Gaussian smooth-
+ing). Bold = better between the two key types within the same step. (a)
+same block single_1; (b) the per-step top-3 block mean, where the top-3
+blocks are selected per step per key type by average rank across the four
+metrics.
+Step
+Attention map
+BCE ↓
+MSE ↓
+soft mIoU ↑
+BinIoU ↑
+(a) Same block (single_1) across steps
+0
+A𝑁2𝑅(noise →ref-image)
+0.327
+0.099
+0.497
+0.483
+0
+A𝑁2𝑃(noise →prompt)
+0.317
+0.102
+0.503
+0.440
+1
+A𝑁2𝑅(noise →ref-image)
+0.240
+0.071
+0.574
+0.622
+1
+A𝑁2𝑃(noise →prompt)
+0.305
+0.098
+0.521
+0.565
+2
+A𝑁2𝑅(noise →ref-image)
+0.232
+0.071
+0.586
+0.666
+2
+A𝑁2𝑃(noise →prompt)
+0.295
+0.095
+0.533
+0.654
+3
+A𝑁2𝑅(noise →ref-image)
+0.246
+0.076
+0.581
+0.653
+3
+A𝑁2𝑃(noise →prompt)
+0.305
+0.098
+0.529
+0.666
+(b) Per-step top-3 block mean (top-3 selected by avg rank)
+0
+A𝑁2𝑅(noise →ref-image)
+0.325
+0.098
+0.492
+0.454
+0
+A𝑁2𝑃(noise →prompt)
+0.322
+0.101
+0.500
+0.424
+1
+A𝑁2𝑅(noise →ref-image)
+0.255
+0.078
+0.555
+0.612
+1
+A𝑁2𝑃(noise →prompt)
+0.281
+0.088
+0.534
+0.545
+2
+A𝑁2𝑅(noise →ref-image)
+0.243
+0.074
+0.578
+0.656
+2
+A𝑁2𝑃(noise →prompt)
+0.274
+0.087
+0.545
+0.638
+3
+A𝑁2𝑅(noise →ref-image)
+0.251
+0.077
+0.576
+0.653
+3
+A𝑁2𝑃(noise →prompt)
+0.288
+0.092
+0.535
+0.628
+the single block single_1 and (b) at the per-step top-3 block mean.
+A𝑁2𝑅dominates on the majority of metrics across steps, and at our
+chosen step 𝑡∗=2 it wins on every metric in both views. Figure 6
+shows the corresponding qualitative comparison on the raw (un-
+thresholded) heatmaps—A𝑁2𝑅concentrates on the actual subject
+region in the generated image, while A𝑁2𝑃is more diffuse and leaks
+outside the subject. Together, these results support our choice of
+A𝑁2𝑅(rather than A𝑁2𝑃) as the primary localization signal that Rref
+and mnoise
+𝑘
+build on.
+B
+Training-Dataset Construction Details
+Whereas composed-target pipelines synthesize subject-in-scene im-
+ages and curate them through quality filters and correspondence
+labeling, our 10,000-instance training dataset is assembled from a
+single image per subject with no compositional supervision. As
+illustrated in Figure 7, the pipeline has three lightweight steps: (i)
+ChatGPT generates short rendering captions over a fixed sub-label
+vocabulary, (ii) a T2I model renders one isolated image per cap-
+tion, and Grounded-SAM [Ren et al. 2024] extracts a subject mask
+from each rendered image. (iii) generate random prompts based on
+random combinations of 1-3 sub-labels. The resulting reference (im-
+age, mask) pairs are then bound to training prompts that mention
+one or several subjects, yielding single- and multi-subject training
+instances.
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+2
+•
+Park et al.
+Generated image
+Segmentation mask
+noise 
+ ref-image
+noise 
+ prompt
+Fig. 6. Qualitative comparison of raw (un-thresholded) A𝑁2𝑅(noise-
+to-reference)
+and
+A𝑁2𝑃
+(noise-to-prompt)
+attention
+heatmaps
+at
+(𝑡∗=2, single_1), shown alongside the Grounded-SAM segmentation of
+the generated image. A𝑁2𝑅concentrates on the actual subject region and
+aligns with the segmentation mask; A𝑁2𝑃is more diffuse and frequently
+leaks outside the subject.
+Sub-label vocabulary. We list 400 sub-labels in four top-level cate-
+gories of 100 each:
+• Animal: mammals, birds, reptiles, amphibians, marine life,
+insects.
+• Object: furniture, electronics, vehicles, food, fashion, tools,
+decor, plants, toys.
+• Human: sampled from 21 ethnicities × four age groups ×
+two genders, with optional profession or attire.
+• Character: stylized archetypes (anime, mecha, cyberpunk,
+Pixar 3D, chibi, low-poly, comic, steampunk, etc.).
+Rendering reference images. For each sub-label, ChatGPT gener-
+ates 12 short captions varying in (context, lighting, camera angle,
+photo style) under a “single subject in frame” constraint, yielding
+4,800 captions in total. The captions are tightly templated per cat-
+egory to keep the photo compositionally clean: animal captions
+Sub-Labels
+Animal
+Object
+Human
+Character
+ChatGPT
+Caption Generation
+Prompt Generation
+“A {photo style} of {sub-label}
+{context},{lighting}, 
+single subject in frame.”
+Gen. (Flux.2) & Seg. (Grounded SAM)
+“An elk placed on a …”
+“A moose hovers 
+above a woman …”
+“A snow globe beside
+a coffee mug … with a deer …”
+Single-subject (4.8k)
+Multi-subject (5.2k)
+Random 
+Combinations of 
+1-3 sub-labels
+Training Instances (10k)
+…
+…
+…
+The robot repaired the broken motorbike
+as the curious octopus watched closely.
+Single Training Instance
+Fig. 7. Overall pipeline of dataset curation.
+request a single creature in soft natural light, object captions place
+the item in a neutral interior at a fixed three-quarter angle, hu-
+man captions request a head-and-shoulders portrait, and character
+captions request a full-body stylized illustration. For example, an
+animal caption reads “A photorealistic close-up of a crow in a meadow
+filled with wildflowers, soft diffuse natural light, single subject in
+frame.” Each caption is rendered once at 10242 with FLUX.2-klein,
+and Grounded-SAM [Ren et al. 2024] then extracts a subject mask,
+which we downsample to 642 to match the noise-grid resolution.
+No quality filtering is applied; each (image, mask) pair is kept as
+produced.
+Training prompts. Training prompts are also generated by Chat-
+GPT and cover all combinations of 2 to 3 subjects drawn from the
+four categories (animal, object, human, character), with category rep-
+etition allowed (e.g., two different objects in the same scene). Each
+prompt is a free-form scene with one to three sub-labels dropped
+in. For example: “An elk placed on a statue of a philosopher in a
+sunlit classical garden” (single-subject, animal); “a floating moose
+hovers above a glowing Polynesian middle-aged woman, sus-
+pended in a twilight sky” (multi-subject, animal + human); or “a
+snow globe beside a coffee mug with latte art on a wooden table
+by the window, with a white-tailed deer curled up nearby” (multi-
+subject, animal + object + object). Each filled prompt is paired with
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+3
+Table 6. XVerseBench results for the encoder-adapter baselines, with CRAFT included as a reference. Numbers for the encoder-adapter rows are from
+XVerse [Chen et al. 2025]. Best/second-best in bold/underlined.
+Single subject (90 prompts)
+Multi subject (210 prompts)
+Overall ↑
+Method
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+MS-Diffusion [Wang et al. 2024b]
+96.89
+6.52
+55.71
+59.63
+54.69
+87.21
+3.77
+46.21
+55.91
+48.28
+51.49
+MIP-Adapter [Huang et al. 2025]
+87.56
+39.59
+71.97
+52.12
+62.81
+84.56
+24.58
+57.00
+51.81
+54.49
+58.65
+CRAFT (Ours)
+96.81
+84.22
+84.23
+61.24
+81.62
+88.71
+61.16
+77.25
+58.16
+71.32
+76.47
+the corresponding reference (image, mask) tuples to form a train-
+ing instance. Crucially, no training prompt is ever rendered into
+a composed-target image; the text alone is supplied to the model
+during training, and the rewards (Section 4) provide the only sig-
+nal that the generated output should respect both the prompt and
+the references. The final dataset has 4,800 single-subject and 5,200
+multi-subject instances (10,000 total).
+C
+Encoder-Adapter Baselines on XVerseBench
+We report the two encoder-adapter baselines—MS-Diffusion [Wang
+et al. 2024b] and MIP-Adapter [Huang et al. 2025]—deferred from
+the models in Section 5.3. Both methods inject reference features at
+inference time without per-subject fine-tuning, and were originally
+trained on category-specific subjects (e.g., faces, objects). Table 6 re-
+ports their XVerseBench scores together with CRAFT for reference;
+numbers are taken from XVerse [Chen et al. 2025] (Tab. 1).
+The dominant gap is on identity preservation: MS-Diffusion drops
+to ID 6.52 on single-subject and 3.77 on multi-subject, and MIP-
+Adapter to 39.59 and 24.58, reflecting their specialization to specific
+subject categories at training time. CRAFT exceeds both baselines
+on every per-metric column on both splits, with the sole exception
+of Single DPG where MS-Diffusion is marginally higher (96.89 vs.
+96.81), supporting the observation that encoder-adapter approaches
+transfer poorly to the diverse subject distribution of XVerseBench.
+D
+Generalization Across Reference-Aware MMDiT
+Backbones
+To verify that CRAFT is not specific to FLUX.2-klein, we apply the
+same reward design to two additional reference-aware MMDiT back-
+bones built on FLUX.1-dev: (i) the UNO [Wu et al. 2025b] reference
+adapter, and (ii) UMO [Cheng et al. 2025], itself a reward fine-tune
+of UNO. In both cases, we add a CRAFT LoRA on top of the existing
+(FLUX.1-dev + base LoRA), training only the new adapter weights.
+The headline results appear in Table 3 (Section 5.5). This appendix
+provides the per-metric breakdown and implementation details.
+Reward step and block selection. The UNO/UMO backbones
+use the standard FLUX.1-dev sampling schedule with 𝑇= 25 flow-
+matching steps, in contrast to the 4-step distilled schedule of FLUX.2-
+klein. Because the longer schedule provides room for window-
+based reward sampling, we adopt the original ReFL recipe [Xu
+et al. 2023] as-is and replace the fixed reward step 𝑡∗with a uni-
+form sample 𝑡∼U[𝑇𝑆,𝑇𝐸] over [𝑇𝑆,𝑇𝐸] = [10, 15], correspond-
+ing roughly to the 40–60% window of the schedule’s progress. For
+the reward blocks B, we follow the routing-analysis protocol of
+Section A on the unmodified UNO backbone and select the three
+ALGORITHM 2: CRAFT training on the UNO/UMO backbone
+(single-step ReFL).
+Require: Base model 𝑓base (frozen; FLUX.1-dev + UNO LoRA, or
+FLUX.1-dev + UMO LoRA) and CRAFT-LoRA-adapted model 𝑓LoRA
+with learnable parameters Δ𝜃, total denoising steps 𝑇= 25, reward
+step window [𝑇𝑆,𝑇𝐸] = [10, 15], reward blocks
+B = {single_23, single_25, single_26}, learning rate 𝜂= 5×10−6.
+1: for each training instance (𝑦, {Iref
+𝑘, Mref
+𝑘}𝐾
+𝑘=1) do
+2:
+Sample z𝑇∼N(0, I) and 𝑡∼U[𝑇𝑆,𝑇𝐸]. // reward step within the
+window
+3:
+for 𝜏= 𝑇,𝑇−1, . . . ,𝑡+1 do
+4:
+no grad: z𝜏−1 ←z𝜏−𝜏𝑓base(z𝜏,𝜏| 𝑦, {Iref
+𝑘})
+// roll out 𝑇−𝑡
+denoising steps
+5:
+end for
+6:
+no grad: vbase ←𝑓base(z𝑡,𝑡| 𝑦, {Iref
+𝑘})
+// base velocity
+7:
+with grad: vLoRA, A ←𝑓LoRA(z𝑡∗,𝑡∗| 𝑦, {Iref
+𝑘})
+//
+A = {A𝑁2𝑅𝑘, A𝑁2𝑃𝑘, A𝑃𝑘2𝑅𝑘}𝐾
+𝑘=1
+8:
+Decode the pre-image: ˆI ←DVAE(z𝑡−𝑡vLoRA).
+9:
+Compute attention rewards Rref, Rcons and per-subject masks
+{mnoise
+𝑘
+} via Equations (5)-(10).
+10:
+Compute identity reward Rid via Equation (11); auxiliary terms
+RCLIP-T, RAES, Lanchor as defined in Section 4.4.
+11:
+Form the total loss L via Equation (12) and update
+Δ𝜃←Δ𝜃−𝜂∇Δ𝜃L.
+12: end for
+single-stream blocks with the highest BinIoU in this window, giving
+B = {single_23, single_25, single_26} for UNO; the same B is
+reused for UMO+CRAFT.
+Training configuration. For each backbone, we attach a rank-512
+LoRA matching the existing UNO/UMO LoRA shape; for UMO+CRA
+FT, the LoRA is initialized from the released UMO_UNO weights so
+that CRAFT trains a delta on top of UMO’s identity-tuned state. We
+train at 7682 resolution with the 25-step schedule above, learning
+rate 5×10−6, 𝑤anchor=0.3, 𝑤a=5×10−3, 𝑤nr = 𝑤tr = 0.5 (inside Rref),
+𝑤c=0.3, 𝑤id=3.0. We use the same training dataset as the main ex-
+periments. Each variant trains for 3,000 steps on 4 B200 GPUs (∼4
+hours per run). The full procedure is summarized in Algorithm 2;
+compared to Algorithm 1 in the main paper, the only difference is
+that the reward step is sampled from a window [𝑇𝑆,𝑇𝐸] following
+the original ReFL recipe [Xu et al. 2023], rather than fixed at 𝑡∗.
+Discussion. As shown in Table 7, CRAFT consistently improves
+over both backbones. Against the UNO base, CRAFT lifts single-
+subject AVG from 68.47 to 76.61 (+8.14) and multi-subject AVG from
+59.59 to 67.04 (+7.45), for +7.80 overall. The dominant gains are on
+identity (Single ID 47.91 →74.43, +26.52; Multi ID 31.82 →49.60,
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+4
+•
+Park et al.
+Table 7. Per-metric breakdown of Table 3: CRAFT applied to UNO [Wu et al. 2025b] and UMO [Cheng et al. 2025] on XVerseBench. Best in each column in
+bold.
+Single subject (90 prompts)
+Multi subject (210 prompts)
+Overall ↑
+Method
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+UNO [Wu et al. 2025b]
+89.65
+47.91
+80.40
+55.90
+68.47
+85.28
+31.82
+67.00
+54.24
+59.59
+64.03
+UNO + CRAFT (Ours)
+85.49
+74.43
+84.90
+61.60
+76.61
+86.37
+49.60
+74.14
+58.04
+67.04
+71.83
+UMO [Cheng et al. 2025]
+86.75
+77.36
+76.99
+61.71
+75.70
+87.18
+58.24
+60.52
+58.74
+66.17
+70.94
+UMO + CRAFT (Ours)
+85.92
+86.26
+85.51
+61.32
+79.75
+86.45
+62.36
+70.10
+59.05
+69.49
+74.62
++17.78) and IP (Single 80.40 →84.90, +4.50; Multi 67.00 →74.14,
++7.14), with AES rising on both splits (+5.70 Single, +3.80 Multi).
+DPG stays stable on the multi-subject split (+1.09) but drops on
+the single-subject split (89.65 →85.49, −4.16), reflecting a small
+trade-off between sharper identity routing and prompt-element
+coverage.
+Composed on top of UMO’s identity-tuned LoRA, CRAFT raises
+single AVG from 75.70 to 79.75 (+4.05) and multi AVG from 66.17
+to 69.49 (+3.32), for +3.68 overall, with only a small drop on UMO’s
+multi-subject DPG (86.45 vs. 87.18, −0.73). UMO+CRAFT is the best
+method on the Single AVG, Multi AVG, and Overall aggregates, and
+on Single ID, Single IP, Multi ID, and Multi AES. The remaining
+columns are split: UNO base wins Single DPG, UMO base wins
+Single AES and Multi DPG, and UNO+CRAFT wins Multi IP. This
+composability behavior—CRAFT improving even on top of an al-
+ready identity-tuned LoRA—supports the interpretation of CRAFT
+as a complementary attention-grounded reward stack rather than a
+competing identity reward.
+E
+Additional Personalization Benchmarks
+Beyond XVerseBench (Section 5), we evaluate CRAFT on two ad-
+ditional benchmarks: the OmniContext [Wu et al. 2025d] for per-
+sonalization and composition (Section E.1), and DreamBench [Ruiz
+et al. 2023] for single-subject personalization (Section E.2).
+E.1
+OmniContext: Personalization-and-Composition
+Evaluation
+Benchmark. OmniContext [Wu et al. 2025d], released with Omni-
+Gen2, targets free-form scene composition rather than the canon-
+ical, single-image personalization setting of XVerseBench. It con-
+tains 400 instructions evenly split across eight task types: Single
+(Char., Obj.), Multiple (Char., Obj., Char. + Obj.), and Scene (Char.,
+Obj., Char. + Obj.), where “Scene” tasks additionally require plac-
+ing the subject into a separately specified background image. Each
+instruction is paired with one to three reference images and an
+open-vocabulary natural-language editing/composition prompt.
+Evaluation Metrics. We follow the OmniContext protocol [Wu
+et al. 2025d] and report two GPT-judged scores on a 0–10 scale:
+Prompt Following (PF), which measures whether the generated im-
+age satisfies the textual instruction, and Subject Consistency (SC),
+which measures whether reference subjects retain their identity
+in the output. The two scores are averaged per task type, then
+macro-averaged across the eight task types to give the overall AVG.
+Numbers for prior methods are taken verbatim from Scone [Wang
+et al. 2025] and OmniGen2 [Wu et al. 2025d]; CRAFT and the FLUX.2-
+klein backbone are evaluated under the same protocol with our own
+GPT-4.1 judge using the same scoring template.
+Discussion. Table 8 shows that CRAFT is the strongest open-
+source method on OmniContext, leading every column and improv-
+ing the overall AVG by +0.71 over the previous open-source best,
+Scone [Wang et al. 2025] (8.72 vs. 8.01). The largest gaps over Scone
+are on the Single tasks (Single Char. +0.71, Single Obj. +0.77) and on
+the Scene tasks (Scene Char. +1.52, Scene Char. + Obj. +0.57), which
+together account for the bulk of the AVG improvement. Against the
+FLUX.2-klein backbone (8.62), CRAFT improves overall by +0.10
+AVG, with the largest per-task gains on the multi-subject splits
+(Multi Char. +0.34, Multi C. + O. +0.16, Multi Obj. +0.14)—the splits
+where attention-routing supervision is most informative. The re-
+maining gap to GPT-4o (8.78) is only 0.06 AVG and is concentrated
+on the Scene tasks, where the closed-source system still benefits from
+a much larger image-generation backbone. Qualitative examples
+are shown in Figure 5.
+E.2
+DreamBench: Single-Subject Evaluation
+Benchmark. DreamBench [Ruiz et al. 2023] contains 30 subjects
+(objects, plushies, animals) with 25 prompts each, for 750 (subject,
+prompt) pairs. For each pair, we use the supplied canonical reference
+image for the subject and generate a single image with our model.
+Evaluation Metrics. Following recent DreamBench-evaluated base-
+lines [Chen et al. 2025; Mou et al. 2025; She et al. 2025; Wu et al.
+2025b] and the official dreambench_plus evaluator [Peng et al.
+2024], we report three metrics. To assess overall subject-appearance
+preservation, we compute the CLIP image similarity, denoted CLIP-
+I, as the cosine similarity between CLIP-ViT-B/32 [Radford et al.
+2021] embeddings of the reference and generated images. To as-
+sess prompt fidelity, we compute the CLIP text–image similarity,
+denoted CLIP-T, between the embedding of the textual prompt and
+that of the generated image under the same CLIP encoder. To assess
+fine-grained identity preservation, we compute the DINO similarity,
+denoted DINO, between DINOv2 [Oquab et al. 2023] features of the
+reference and generated images.
+Table 10 shows that CRAFT is best on CLIP-I and DINO. The
+CLIP-I gain (+0.70 over MOSAIC) and the DINO gain (+0.66 over
+MOSAIC, +2.62 over XVerse, +2.03 over DreamO) point to the same
+identity-preservation strength we observe on XVerseBench’s ID
+column: by attending tightly to the reference subject region, CRAFT
+recovers more of the reference’s fine appearance than the encoder-
+based or composed-target baselines. CLIP-T is within 0.34 of the
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+5
+Table 8. Quantitative comparison on OmniContext [Wu et al. 2025d]. “Char. + Obj.” indicates Character + Object. Methods are partitioned into closed-source
+proprietary and open-source systems following Scone [Wang et al. 2025]; numbers for prior methods are from Scone [Wang et al. 2025] and OmniGen2 [Wu
+et al. 2025d], while CRAFT and the FLUX.2-klein backbone are evaluated under the same protocol. The FLUX.2-klein backbone is shown as a reference and is
+not included in the ranking. Best/second-best within each group in bold/underlined.
+Single
+Multiple
+Scene
+Method
+Char. ↑
+Obj. ↑
+Char. ↑
+Obj. ↑
+C. + O. ↑
+Char. ↑
+Obj. ↑
+C. + O. ↑
+AVG ↑
+Closed-source proprietary
+GPT-4o
+8.96
+8.91
+8.90
+8.95
+8.81
+8.92
+8.40
+8.44
+8.78
+Gemini-2.5-Flash-Image
+8.79
+9.12
+8.27
+8.60
+7.71
+7.63
+7.65
+6.81
+8.07
+Open-source
+FLUX.2-klein [Labs 2025] (base)
+8.92
+9.20
+8.56
+8.75
+8.52
+8.51
+8.24
+8.25
+8.62
+UNO [Wu et al. 2025b]
+7.15
+6.72
+3.56
+6.46
+4.90
+2.72
+4.89
+4.76
+5.14
+USO [Wu et al. 2025a]
+8.03
+7.55
+3.32
+6.10
+4.56
+2.77
+5.38
+5.09
+5.35
+BAGEL [Deng et al. 2025]
+7.00
+7.04
+5.32
+6.69
+6.74
+3.94
+5.77
+5.73
+6.03
+OmniGen2 [Wu et al. 2025d]
+8.17
+7.63
+7.26
+7.03
+7.56
+7.02
+6.90
+6.64
+7.28
+UniWorld-V2 [Li et al. 2025]
+8.45
+8.44
+7.87
+8.22
+7.95
+5.36
+7.47
+6.98
+7.59
+Qwen-Image-Edit-2509 [Wu et al. 2025c]
+8.56
+8.41
+7.92
+8.37
+7.79
+5.23
+7.70
+6.86
+7.60
+Echo-4o [Ye et al. 2025]
+8.34
+8.27
+8.13
+8.14
+8.11
+7.07
+7.73
+7.77
+7.95
+Scone [Wang et al. 2025]
+8.34
+8.52
+8.24
+8.14
+8.30
+7.06
+7.88
+7.63
+8.01
+CRAFT (Ours)
+9.05
+9.29
+8.90
+8.89
+8.68
+8.58
+8.20
+8.20
+8.72
+Table 9. Effect of training-set size on XVerseBench. The recipe is retrained on uniformly-sampled subsets of the 10,000-instance training dataset (Section B);
+all other hyperparameters are unchanged. Δ is the change in Overall relative to the full 10,000-instance baseline used in the main paper. The 10,000 row (bold)
+is the configuration used in the main paper. The 20,000 row extends the corpus with the same recipe (a superset of the 10,000 set) and is shown for reference.
+Single subject
+Multi subject
+#Data
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+Overall ↑
+Δ
+20,000
+97.78
+84.09
+84.09
+61.34
+81.83
+87.85
+62.73
+77.23
+58.52
+71.58
+76.70
++0.23
+10,000
+96.81
+84.22
+84.23
+61.24
+81.62
+88.71
+61.16
+77.25
+58.16
+71.32
+76.47
+—
+5,000
+96.94
+84.78
+79.90
+60.95
+80.64
+88.15
+61.43
+77.40
+57.81
+71.20
+75.92
+−0.55
+2,000
+96.94
+84.44
+80.73
+60.62
+80.68
+88.37
+60.80
+76.72
+57.70
+70.90
+75.79
+−0.68
+1,000
+96.11
+82.10
+81.76
+61.02
+80.25
+86.45
+59.27
+76.45
+59.18
+70.34
+75.30
+−1.18
+Table 10. Quantitative comparison on the single-subject DreamBench [Ruiz
+et al. 2023] benchmark (30 subjects, 25 prompts each). All scores are com-
+puted by the official dreambench_plus evaluator. Best in each column in
+bold.
+Method
+CLIP-I ↑
+CLIP-T ↑
+DINO ↑
+DreamBooth [Ruiz et al. 2023]
+80.30
+30.52
+66.81
+BLIP-Diffusion [Li et al. 2023]
+80.47
+30.24
+69.82
+SSR-Encoder [Zhang et al. 2024]
+82.10
+30.79
+61.22
+MS-Diffusion [Wang et al. 2024b]
+80.82
+31.05
+70.32
+UNO [Wu et al. 2025b]
+83.50
+30.41
+75.97
+DreamO [Mou et al. 2025]
+83.35
+30.61
+76.03
+XVerse [Chen et al. 2025]
+83.20
+30.20
+75.44
+MOSAIC [She et al. 2025]
+84.30
+31.64
+77.40
+CRAFT (Ours)
+85.00
+31.30
+78.06
+best (MOSAIC 31.64), so the identity gain is not bought at the cost
+of prompt alignment.
+F
+Mask-Free Inference Evaluation
+The masks used during training (Section 4) are reward-side annota-
+tions only; CRAFT itself accepts an un-masked reference at inference.
+To validate that the trained model is robust without segmentation
+at test time, we re-evaluate on XVerseBench by supplying the raw
+(un-segmented) reference images directly to CRAFT, while all other
+settings follow the official protocol of Section 5.2. The quantitative
+comparison is reported in Table 1 of the main paper.
+The mask-free protocol matches or exceeds the segmented-input
+setting on every column except Multi ID (where it trails by 0.81), and
+improves Overall by +1.33 points. The single-subject split benefits
+the most (+2.35 on Single AVG), suggesting that supplying a seg-
+mented reference does not provide information that CRAFT cannot
+recover from the raw image at inference. This confirms that the
+masks used during training serve only as reward-side annotations,
+and the deployed model does not depend on segmentation at test
+time. Qualitative results under both protocols are shown in Figure 3
+and Figure 4.
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+6
+•
+Park et al.
+Section 1 – Identity Consistency
+Selection Guide:
+Q1.
+Please select the option (A)–(D) that you believe best 
+matches all identities specified in the reference image.
+Option (A)
+Reference
+Option (B)
+Option (C)
+Option (D)
+Section 2 – Prompt Fidelity
+Q1.
+Please select the option (A)–(D) that best matches the 
+given text.
+Option (A)
+Option (B)
+Option (C)
+Option (D)
+“A dog is chasing a butterfly in the garden.” 
+Section 3 – Image Quality 
+Selection Guide:
+Option (A)
+Option (B)
+Option (C)
+Option (D)
+Q1.
+Please select the image among (A)–(D) that you find 
+the most aesthetically pleasing.
+Fig. 8. Example interface used in the user study. Participants selected the best-performing method among four candidates for each question.
+G
+User Study Details
+To complement the quantitative evaluation, we conducted a user
+study with 119 participants aged between 20 and 50. Each partici-
+pant was shown a text prompt together with four sets of generated
+images (see Figure 8 for an example survey screen), each set cor-
+responding to one of the four methods compared in Table 4: our
+CRAFT, UMO [Cheng et al. 2025], XVerse [Chen et al. 2025], and
+MOSAIC [She et al. 2025]. Participants were instructed to select the
+image set that best satisfied each of the following criteria:
+• Identity Consistency (IC): Please select the option (A)–(D)
+that you believe best matches all identities specified in the
+reference image.
+• Prompt Fidelity (PF): Please select the option (A)–(D) that
+best matches the given text.
+• Image Quality (IQ): Please select the image among (A)–(D)
+that you find the most aesthetically pleasing.
+Each participant evaluated multiple sets across diverse prompts
+in a randomized order.
+H
+Training-Set Size Ablation
+We assess how much of CRAFT’s performance depends on the size
+of the training dataset by retraining the same recipe on uniformly
+sampled subsets of the 10,000-instance dataset described in Section B.
+Subsets are drawn without replacement with a fixed seed so that
+smaller subsets are nested in the larger ones, and the single-/multi-
+subject ratio is preserved within ±0.1% across sizes.
+Setup. All other hyperparameters match the main run (Section 5.1).
+Results. Table 9 reports the per-metric and aggregate scores. Over-
+all improves monotonically with training-set size, but the trend is
+shallow: scaling data 10× from 1,000 to 10,000 raises Overall by only
+1.18 points (75.30 →76.47). Extending in the opposite direction,
+doubling the corpus to 20,000 instances with the same recipe and
+matched per-sample exposure adds only +0.23 Overall (→76.70),
+confirming that 10,000 is already near the plateau. The per-subject
+averages show the same pattern, with Single AVG and Multi AVG
+both gaining around one point over the same range. This shallow
+scaling suggests that the bulk of CRAFT’s gains come from per-
+instance attention-routing supervision rather than from the size
+of the training dataset, consistent with the framing of CRAFT as
+shaping pre-existing attention patterns rather than learning subject
+features from data.
+I
+Reward-Weight Sensitivity
+Setup. We perturb each of the three reward weights of CRAFT one
+at a time and re-train from scratch with the rest of the recipe held
+fixed. Concretely, we sweep 𝑤nr = 𝑤tr (inside Rref), 𝑤c (the spatial
+consistency reward), and 𝑤id (the DINO identity reward) at 0.5× and
+2× the main-paper values; the remaining weights (𝑤t,𝑤a,𝑤anchor)
+and all training hyperparameters (Section H, Setup) are unchanged.
+Each perturbation is trained for 3,000 optimizer steps and evaluated
+on XVerseBench under the standard protocol. We do not report a
+𝑤nr = 𝑤tr = 0.25 (0.5×) variant because at this weight the Rref signal
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets
+•
+7
+Table 11. Reward-weight sensitivity on XVerseBench. Each row perturbs a single weight by 0.5× or 2× relative to the main configuration (𝑤nr = 𝑤tr = 0.5,
+𝑤c = 1.0, 𝑤id = 1.0); all other weights and training hyperparameters are unchanged. Δ is the change in Overall vs. the baseline row. “MR” is the mean rank
+across the eight raw per-metric columns (Single/Multi × DPG, ID, IP, AES); lower is more balanced. Bold marks the strict best Overall and the strict lowest
+mean rank; the baseline row is shown in italics.
+Single subject
+Multi subject
+Variant
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+DPG ↑
+ID ↑
+IP ↑
+AES ↑
+AVG ↑
+Overall ↑
+Δ
+MR ↓
+Baseline (𝑤id = 1.0, 𝑤c = 1.0, 𝑤nr = 𝑤tr = 0.5)
+96.81
+84.22
+84.23
+61.24
+81.62
+88.71
+61.16
+77.25
+58.16
+71.32
+76.47
+—
+2.62
+𝑤nr = 𝑤tr = 1.0 (2×)
+97.22
+84.68
+83.86
+60.62
+81.59
+88.21
+61.47
+77.08
+58.13
+71.22
+76.40
+−0.07
+3.12
+𝑤c = 0.5 (0.5×)
+97.78
+82.20
+81.43
+60.82
+80.56
+88.67
+59.78
+76.95
+58.40
+70.95
+75.76
+−0.71
+3.50
+𝑤c = 2.0 (2×)
+97.33
+83.83
+83.21
+60.95
+81.33
+85.98
+60.51
+76.25
+57.62
+70.09
+75.71
+−0.76
+4.25
+𝑤id = 0.5 (0.5×)
+97.50
+81.33
+83.51
+61.90
+81.06
+87.50
+57.61
+75.97
+59.21
+70.07
+75.57
+−0.90
+3.62
+𝑤id = 2.0 (2×)
+97.00
+88.95
+81.31
+58.25
+81.38
+86.55
+68.83
+79.37
+55.91
+72.66
+77.02
++0.55
+3.88
+collapses below the gradient noise of the other rewards, so the run
+is essentially equivalent to dropping Rref entirely.
+Results. Table 11 reports per-metric scores. All five perturbations
+sit within 0.90 Overall of the baseline (range 75.57–77.02, baseline
+76.47), showing that the recipe is robust to ±2× perturbations of
+any single weight. Only 𝑤id = 2.0 improves Overall, by +0.55. The
+improvement is concentrated in identity columns—Multi ID rises
+from 61.16 to 68.83 (+7.67) and Single ID from 84.22 to 88.95 (+4.73)—
+while AES drops on both splits (−2.99 Single, −2.25 Multi) and
+Single IP loses 2.92. The other four perturbations either match the
+baseline or trade a column-level improvement for a comparable loss
+elsewhere; none reach the baseline’s Overall.
+Discussion: choice of operating point. We treat the sweep as
+exposing the identity-versus-quality Pareto frontier of CRAFT. In-
+creasing 𝑤id traces a monotonic trade-off across the three sampled
+values—Multi ID rises from 57.61 →61.16 →68.83 while Multi AES
+falls from 59.21 →58.16 →55.91—confirming that the operating
+point is a genuine Pareto choice rather than an artifact of any single
+run.
+To pick a balanced point on this frontier rather than the one
+that maximizes a single aggregate, we rank each configuration on
+each of the eight raw per-metric columns (Single/Multi × DPG,
+ID, IP, AES) and compute a mean rank. Lower is more balanced.
+The baseline achieves the lowest mean rank (2.62), followed by the
+𝑤nr = 𝑤tr = 2.0 variant (3.12); the configuration that maximizes
+Overall, 𝑤id = 2.0, has mean rank 3.88 because it is bottom-of-the-
+table on Single IP, Single AES, and Multi AES while being best on
+Single ID, Multi ID, and Multi IP. We therefore adopt the baseline as
+the main configuration: it has the most balanced per-metric profile
+of the family while preserving aesthetic quality and prompt-aligned
+IP. A practitioner who prioritizes identity over visual quality—for
+example, on a face-heavy benchmark or a multi-person editing
+pipeline—can shift to 𝑤id = 2.0 to gain Multi ID at the AES cost
+reported here. Overall, however, the sweep reshapes the per-metric
+trade-off (identity vs. quality) rather than the aggregate score: no
+single-weight perturbation either substantially degrades or substan-
+tially improves Overall, indicating that CRAFT does not depend on
+fine-grained reward-weight tuning to remain competitive.
+Sensitivity to non-weight design choices. Beyond the reward
+weights, we vary the three remaining manual choices raised in
+review—the Gaussian smoothing𝜎applied to the attention maps, the
+Table 12. Sensitivity to non-weight design choices on XVerseBench: Gauss-
+ian smoothing 𝜎and mask top-𝑘threshold. Each row re-trains the main
+recipe with a single knob changed. Overall stays within 0.59 of the baseline.
+Variant
+Single AVG
+Multi AVG
+Overall (Δ)
+Baseline (𝜎=2.0, 𝑘=0.5)
+81.62
+71.32
+76.47
+𝜎=1.0 (0.5×)
+81.19
+71.03
+76.11 (−0.36)
+𝜎=4.0 (2×)
+80.72
+71.05
+75.88 (−0.59)
+mask 𝑘=0.3
+80.69
+71.30
+76.00 (−0.47)
+mask 𝑘=0.7
+81.12
+71.13
+76.12 (−0.34)
+Table 13. Sensitivity to LoRA rank on XVerseBench. Doubling the rank
+(64→128) leaves Overall nearly unchanged.
+LoRA rank
+Single AVG
+Multi AVG
+Overall (Δ)
+64 (default)
+81.85
+71.30
+76.57
+128 (2×)
+81.41
+70.97
+76.19 (−0.38)
+top-𝑘threshold of the attention-derived masks, and the LoRA rank—
+one at a time, re-training each under the main recipe (Section H) and
+evaluating on XVerseBench. Table 12 varies 𝜎and the mask thresh-
+old about the main configuration (baseline Overall 76.47): halving or
+doubling 𝜎(1.0/4.0) and moving the mask threshold (𝑘=0.3/0.7) shift
+Overall by at most 0.59. Table 13 varies the LoRA rank at a fixed
+training seed: doubling it (64→128) changes Overall by only −0.38.
+The reward-locus selection (Section A) is likewise stable across all
+four ranking criteria. Together with the reward-weight sweep above,
+no single design knob moves Overall by more than 0.9, so CRAFT is
+robust to its design choices rather than dependent on finely tuned
+settings.
+J
+Limitations
+CRAFT has three main limitations.
+Multi-subject identity separation. On the single-subject split,
+CRAFT achieves its clearest gains; on the multi-subject split, its
+advantage is smaller—CRAFT still attains the best multi-subject
+IP, but Multi ID in particular trails the strongest composed-target
+baseline (MOSAIC; Table 1). This multi-subject identity gap is in
+part a deliberate identity–quality operating point rather than a hard
+limit: raising the identity weight 𝑤id closes much of it at a modest
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
+
+
+8
+•
+Park et al.
+aesthetic cost (Section I), and we report the balanced point in the
+main paper. Stronger multi-subject identity preservation is left to
+future work.
+Requires a reference-aware backbone. CRAFT presupposes a
+backbone that natively accepts reference image tokens alongside
+text and noise: the Where to look principle is realized as constraints
+on the cross-modal attention sub-blocks A𝑁2𝑅𝑘and A𝑁2𝑃𝑘, which
+exist only when reference tokens are present in the joint sequence.
+Text-only T2I backbones cannot be fine-tuned with CRAFT without
+first attaching a reference-conditioning module.
+Performance bounded by the initial backbone. As a reward-
+based fine-tuning recipe, CRAFT amplifies the routing behavior
+already present in the base model rather than rebuilding it from
+scratch, so the achievable absolute performance is largely deter-
+mined by the base model’s initial state. This is visible in Section 5.5
+(Table 3): applied to UNO [Wu et al. 2025b]—a FLUX.1-dev-based
+reference adapter—CRAFT improves consistently over the UNO
+baseline but does not reach the absolute scores of FLUX.2-klein-9B
++ CRAFT, since UNO has weaker reference-conditioning capacity
+than FLUX.2-klein-9B. Composing CRAFT on top of UMO [Cheng
+et al. 2025] (an already identity-tuned UNO LoRA) partially closes
+this gap, confirming that a stronger initial state translates into a
+stronger final model under the same recipe.
+ACM Trans. Graph., Vol. 1, No. 1, Article . Publication date: August 2026.
