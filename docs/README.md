@@ -6,28 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-22
-- 运行时间：2026-08-22 19:19:09 UTC
+- 最新运行日期：2026-08-23
+- 运行时间：2026-08-23 19:13:42 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 本次总论文数：3
+- 精读区：0
+- 速读区：3
 
 ### 今日简报（AI）
-今日精读高分论文《TextRefine》，聚焦产品海报文本编辑的保真度、空间布局与字形渲染；另速读一篇主体个性化生成研究。  
-最值得关注：TextRefine 以9.0分显著高于另一篇，是提升海报文字编辑质量的关键方向。  
-建议深入复现或试用 TextRefine，优先解决文字扭曲和错位痛点。
-- 详情：[/202608/22/README](/202608/22/README)
+今日速读3篇论文，均聚焦AI与机器人系统效率优化，暂无精读文章。  
+最值得关注的是VLA策略优化加速（Prism-GRPO）与视觉策略蒸馏提速（批处理雅可比方法），两者均获6.0分。  
+后续可重点复现或对比这两种加速方案的实际收益，尤其适合关注训练效率的读者。
+- 详情：[/202608/23/README](/202608/23/README)
 
 ### 精读区论文标签
-1. [TextRefine: Improving Textual Fidelity, Spatial Placement, and Glyph Rendering for Text Editing in Product Posters](/202608/22/2608.19637v1-textrefine-improving-textual-fidelity-spatial-placement-and-glyph-rendering-for-text-editing-in-product-posters)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：面向产品海报文本编辑的操作特定奖励优化及文本跨度级奖励设计
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [CRAFT: Constrained Reward via Attention Fine-Tuning for Subject Personalization without Composed Targets](/202608/22/2608.14403v1-craft-constrained-reward-via-attention-fine-tuning-for-subject-personalization-without-composed-targets)  
+1. [Prism-GRPO: Faster VLA Policy Optimization via Splitting Same-outcome Groups](/202608/23/2608.17423v1-prism-grpo-faster-vla-policy-optimization-via-splitting-same-outcome-groups)  
    标签：评分：6.0/10、query:image-gen-rl
-   evidence：面向主体驱动图像个性化任务设计约束奖励，无需组合目标
+   evidence：面向策略优化的GRPO奖励细化，可应用于图像生成强化学习
+2. [Accelerating Visual On-Policy Distillation with Batched Speculative Jacobi Rollouts](/202608/23/2608.18183v1-accelerating-visual-on-policy-distillation-with-batched-speculative-jacobi-rollouts)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：面向视觉自回归图像生成的在线策略蒸馏
+3. [Reward-Guided Autoregressive Graph Generation for Efficient Multi-Agent Communication Topology Design](/202608/23/2608.20099v1-reward-guided-autoregressive-graph-generation-for-efficient-multi-agent-communication-topology-design)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：RLHF式奖励引导的自回归生成，可迁移至图像生成
 
 
 <div class="dpr-home-promo-card">
