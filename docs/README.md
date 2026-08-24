@@ -6,32 +6,24 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-23
-- 运行时间：2026-08-23 19:13:42 UTC
+- 最新运行日期：2026-08-24
+- 运行时间：2026-08-24 19:32:55 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：0
-- 速读区：3
+- 本次总论文数：1
+- 精读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日速读3篇论文，均聚焦AI与机器人系统效率优化，暂无精读文章。  
-最值得关注的是VLA策略优化加速（Prism-GRPO）与视觉策略蒸馏提速（批处理雅可比方法），两者均获6.0分。  
-后续可重点复现或对比这两种加速方案的实际收益，尤其适合关注训练效率的读者。
-- 详情：[/202608/23/README](/202608/23/README)
+今日精读1篇高分论文，聚焦紧凑统一图像生成模型的性能前沿。最值得关注的是该研究如何在小模型规模下逼近生成质量与效率的平衡。建议后续可追踪其开源代码与在轻量设备上的实际部署效果。
+- 详情：[/202608/24/README](/202608/24/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Exploring the Performance Frontier of Compact Unified Image Generation Models](/202608/24/2608.20334v2-exploring-the-performance-frontier-of-compact-unified-image-generation-models)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：将强化学习应用于图像生成模型的后训练
 
 ### 速读区论文标签
-1. [Prism-GRPO: Faster VLA Policy Optimization via Splitting Same-outcome Groups](/202608/23/2608.17423v1-prism-grpo-faster-vla-policy-optimization-via-splitting-same-outcome-groups)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：面向策略优化的GRPO奖励细化，可应用于图像生成强化学习
-2. [Accelerating Visual On-Policy Distillation with Batched Speculative Jacobi Rollouts](/202608/23/2608.18183v1-accelerating-visual-on-policy-distillation-with-batched-speculative-jacobi-rollouts)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：面向视觉自回归图像生成的在线策略蒸馏
-3. [Reward-Guided Autoregressive Graph Generation for Efficient Multi-Agent Communication Topology Design](/202608/23/2608.20099v1-reward-guided-autoregressive-graph-generation-for-efficient-multi-agent-communication-topology-design)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：RLHF式奖励引导的自回归生成，可迁移至图像生成
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">

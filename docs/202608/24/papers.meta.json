@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-24",
+  "date": "2026-08-24",
+  "generated_at": "2026-08-24T19:32:59",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/24/2608.20334v2-exploring-the-performance-frontier-of-compact-unified-image-generation-models",
+      "section": "deep",
+      "title_en": "Exploring the Performance Frontier of Compact Unified Image Generation Models",
+      "authors": "Taihang Hu, Zhao Wang, Zuan Gao, Tao Liu, Hao Yan, Zhengze Xu, Yuhang Yu, Yongchao Du, Xingjian Wang, Jun Zheng, Qinye Zhou, Yaqi Cai, Zhengrui Chen, Chao Lin, Yefeng Shen, Yuan Wang, Zhengtao Wu, Ge Wu, Xiaoli Xu, Denghui Yang, Huayu Zhang, Mingzhou Zhang, Mengting Chen",
+      "date": "2026-08-20",
+      "pdf": "https://arxiv.org/pdf/2608.20334v2",
+      "score": "9.0",
+      "evidence": "将强化学习应用于图像生成模型的后训练",
+      "tldr": "紧凑统一图像生成模型面临性能与资源约束，难以兼顾生成、编辑等异构任务。为此，Swift-Image采用高效6B单流DiT架构，通过从语义覆盖到高质量生成与统一监督的渐进训练，并利用并行专家强化学习与多教师在线蒸馏缓解目标冲突。结合提示增强器解耦推理与渲染，以及剪枝和少步蒸馏实现高效部署。实验表明，仅用6B参数和243K GPU训练小时即达到领先聚合性能，压缩至3B几乎无损，少步蒸馏还改善了编辑效果。该工作系统探索了小模型性能极限，为架构、数据、训练、压缩提供了实用经验。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "We present Swift-Image, a compact unified model for text-to-image generation, single-image editing, and multi-image editing. Our goal is to explore how far a relatively small visual generator can be pushed through systematic training engineering under a constrained computational budget. Swift-Image adopts an efficient 6B single-stream DiT and a progressive training pipeline that evolves from broad semantic coverage to higher resolution, stronger visual quality, and unified generation-editing supervision. For post-training, we employ parallel expert reinforcement learning followed by multi-teacher on-policy distillation to alleviate interference among heterogeneous objectives. We further decouple high-level reasoning from pixel-level rendering with a Prompt Enhancer that translates user requests into generator-aligned visual specifications. For efficient deployment, structural pruning and few-step distillation produce 3B and accelerated variants. Swift-Image achieves leading aggregate performance among evaluated open-source models with only 6B parameters and 243K GPU training hours; the compressed 3B model incurs nearly no loss, while few-step distillation further improves aggregate editing performance with substantially fewer sampling steps. Our study also summarizes practical lessons for architecture, data curriculum, post-training, prompt enhancement, and model compression.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

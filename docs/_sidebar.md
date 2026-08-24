@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-08-24 <!--dpr-date:20260824-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/24/2608.20334v2-exploring-the-performance-frontier-of-compact-unified-image-generation-models" data-sidebar-item="{&quot;title&quot;: &quot;Exploring the Performance Frontier of Compact Unified Image Generation Models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.20334v2-exploring-the-performance-frontier-of-compact-unified-image-generation-models&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;将强化学习应用于图像生成模型的后训练&quot;}">Exploring the Performance Frontier of Compact Unified Image Generation Models</a>
   * 2026-08-23 <!--dpr-date:20260823-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/23/2608.17423v1-prism-grpo-faster-vla-policy-optimization-via-splitting-same-outcome-groups" data-sidebar-item="{&quot;title&quot;: &quot;Prism-GRPO: Faster VLA Policy Optimization via Splitting Same-outcome Groups&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.17423v1-prism-grpo-faster-vla-policy-optimization-via-splitting-same-outcome-groups&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;面向策略优化的GRPO奖励细化，可应用于图像生成强化学习&quot;}">Prism-GRPO: Faster VLA Policy Optimization via Splitting Same-outcome Groups</a>
