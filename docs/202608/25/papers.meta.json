@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-25",
+  "date": "2026-08-25",
+  "generated_at": "2026-08-25T20:37:28",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/25/2608.22780v1-can-we-perform-online-rl-for-image-editing-without-editing-rewards",
+      "section": "deep",
+      "title_en": "Can We Perform Online RL for Image Editing without Editing Rewards?",
+      "authors": "Qichao Ma, Jikang Cheng, Ling Liang, Zhaofei Yu, Tiejun Huang, Renye Yan",
+      "date": "2026-08-24",
+      "pdf": "https://arxiv.org/pdf/2608.22780v1",
+      "score": "9.0",
+      "evidence": "直接研究图像编辑的在线强化学习并复用文本到图像奖励以避免专用奖励设计。",
+      "tldr": "图像编辑的强化学习通常依赖专门的编辑奖励，但其收集成本高且难以泛化。本文提出将成熟的文生图奖励迁移到编辑任务，通过两阶段框架Lever-Edit学习与奖励对齐的描述器，生成反事实目标描述，并冻结后仅用迁移奖励优化编辑策略。实验表明该方法在编辑对齐和源图保持上堪比基于编辑奖励的微调，且优于直观迁移基线。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning (RL) enables direct preference optimization for image editing through editing-specific rewards, which remain less developed due to costly triplet supervision and complex task-dependent calibration. In contrast, text-to-image (T2I) generation benefits from a mature and diverse reward ecosystem spanning semantic alignment, aesthetics, realism, glyph shape, and other visual preferences. Extending this ecosystem to image editing would substantially broaden the range of visual preferences accessible to RL-based optimization, prompting the central question: \\emph{Can We Perform Image Editing RL without Editing Rewards?} In this paper, we argue that the standard image editing dimensions have potential to be mapped to the T2I reward space: image quality can transfer directly, prompt following can be aligned through a description of the desired visual state, and reference consistency admits a coarse semantic conversion by encoding the source content to preserve. However, editing instructions specify relative changes, whereas T2I rewards require self-contained target descriptions; moreover, semantically valid captions from generic vision-language models may be incompatible with the frozen reward. Hence, we further introduce Lever-Edit, a two-stage framework that learns a reward-aligned captioner for counterfactual target descriptions, freezes it, and optimizes the editing policy solely with the transferred T2I reward. Experiments show competitive editing alignment and source preservation against editing-reward-based fine-tuning, while outperforming intuitive transfer baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

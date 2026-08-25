@@ -6,21 +6,23 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-24
-- 运行时间：2026-08-24 19:32:55 UTC
+- 最新运行日期：2026-08-25
+- 运行时间：2026-08-25 20:37:22 UTC
 - 运行状态：成功
 - 本次总论文数：1
 - 精读区：1
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读1篇高分论文，聚焦紧凑统一图像生成模型的性能前沿。最值得关注的是该研究如何在小模型规模下逼近生成质量与效率的平衡。建议后续可追踪其开源代码与在轻量设备上的实际部署效果。
-- 详情：[/202608/24/README](/202608/24/README)
+今日精读一篇 9.0 分论文，聚焦“无编辑奖励时图像编辑的在线强化学习是否可行”。
+值得关注的是，它挑战了传统依赖编辑奖励的 RL 训练范式，可能提出替代奖励信号或自监督策略。
+普通读者可留意其方法能否降低图像编辑 RL 的应用门槛，并结合自身场景做小规模验证。
+- 详情：[/202608/25/README](/202608/25/README)
 
 ### 精读区论文标签
-1. [Exploring the Performance Frontier of Compact Unified Image Generation Models](/202608/24/2608.20334v2-exploring-the-performance-frontier-of-compact-unified-image-generation-models)  
+1. [Can We Perform Online RL for Image Editing without Editing Rewards?](/202608/25/2608.22780v1-can-we-perform-online-rl-for-image-editing-without-editing-rewards)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：将强化学习应用于图像生成模型的后训练
+   evidence：直接研究图像编辑的在线强化学习并复用文本到图像奖励以避免专用奖励设计。
 
 ### 速读区论文标签
 - 本次无速读推荐。
