@@ -6,23 +6,21 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-25
-- 运行时间：2026-08-25 20:37:22 UTC
+- 最新运行日期：2026-08-26
+- 运行时间：2026-08-26 20:49:53 UTC
 - 运行状态：成功
 - 本次总论文数：1
 - 精读区：1
 - 速读区：0
 
 ### 今日简报（AI）
-今日精读一篇 9.0 分论文，聚焦“无编辑奖励时图像编辑的在线强化学习是否可行”。
-值得关注的是，它挑战了传统依赖编辑奖励的 RL 训练范式，可能提出替代奖励信号或自监督策略。
-普通读者可留意其方法能否降低图像编辑 RL 的应用门槛，并结合自身场景做小规模验证。
-- 详情：[/202608/25/README](/202608/25/README)
+今日精读1篇扩散模型新研究，聚焦策略自蒸馏方法，评分高达9.0。最值得关注的是扩散模型通过自蒸馏提升采样效率的方向，并给出强基线结论。普通读者可优先追踪该论文后续工作，或对比其与现有蒸馏技术的差异。
+- 详情：[/202608/26/README](/202608/26/README)
 
 ### 精读区论文标签
-1. [Can We Perform Online RL for Image Editing without Editing Rewards?](/202608/25/2608.22780v1-can-we-perform-online-rl-for-image-editing-without-editing-rewards)  
+1. [On-Policy Self-Distillation in Diffusion Models](/202608/26/2608.24646v1-on-policy-self-distillation-in-diffusion-models)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：直接研究图像编辑的在线强化学习并复用文本到图像奖励以避免专用奖励设计。
+   evidence：将图像级奖励转化为去噪目标的强化学习框架
 
 ### 速读区论文标签
 - 本次无速读推荐。

@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-08-26 <!--dpr-date:20260826-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/26/2608.24646v1-on-policy-self-distillation-in-diffusion-models" data-sidebar-item="{&quot;title&quot;: &quot;On-Policy Self-Distillation in Diffusion Models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.24646v1-on-policy-self-distillation-in-diffusion-models&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;将图像级奖励转化为去噪目标的强化学习框架&quot;}">On-Policy Self-Distillation in Diffusion Models</a>
   * 2026-08-25 <!--dpr-date:20260825-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/25/2608.22780v1-can-we-perform-online-rl-for-image-editing-without-editing-rewards" data-sidebar-item="{&quot;title&quot;: &quot;Can We Perform Online RL for Image Editing without Editing Rewards?&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.22780v1-can-we-perform-online-rl-for-image-editing-without-editing-rewards&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;直接研究图像编辑的在线强化学习并复用文本到图像奖励以避免专用奖励设计。&quot;}">Can We Perform Online RL for Image Editing without Editing Rewards?</a>

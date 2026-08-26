@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-26",
+  "date": "2026-08-26",
+  "generated_at": "2026-08-26T20:49:59",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/26/2608.24646v1-on-policy-self-distillation-in-diffusion-models",
+      "section": "deep",
+      "title_en": "On-Policy Self-Distillation in Diffusion Models",
+      "authors": "Wei Zhou, Xiongwei Zhu, Lingdong Kong, Bo Chen, Lei Zhang, Yongyuan Liang, Xiaoxia Hou, Ye Tian, Xian Sun, Yingshuo Wang, Linfeng Li, Shengqiong Wu, Leigang Qu, Feng Li, Wei Liu, Julian McAuley, Tat-Seng Chua",
+      "date": "2026-08-25",
+      "pdf": "https://arxiv.org/pdf/2608.24646v1",
+      "score": "9.0",
+      "evidence": "将图像级奖励转化为去噪目标的强化学习框架",
+      "tldr": "针对扩散模型后训练中端点奖励无法指导中间去噪预测的问题，提出DiffusionOPSD框架。该方法利用奖励梯度为行为策略采样的查询构造有界正负目标，通过有限拟合更新策略，并经EMA刷新行为策略。在SD 3.5-M和Z-Image-Turbo上，20个奖励匹配设置中取得19个最优，最高提升44%，训练GPU耗时减少40%-63%。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning can align diffusion models with human preferences and task-specific objectives, but endpoint rewards do not specify how an intermediate denoising prediction should change. We introduce DiffusionOPSD as an on-policy self-distillation framework that converts image-level reward guidance into explicit targets for clean-output predictions at sampled queries. At each outer iteration, a frozen behavior policy generates trajectories and supplies query states and anchors. Reward gradients construct bounded positive and negative targets around each anchor. The trainable policy fits these targets as detached supervision through finite fitting before an exponential moving average update refreshes the behavior policy. This setup lets us measure target construction and finite realization separately. Controlled same-query experiments show that larger target-construction gains do not necessarily translate into larger realized gains after a single fitting update. Across SD 3.5-M and the step-distilled Z-Image-Turbo, our approach achieves the best final held-out scores in 19 of 20 reward-matched settings across two backbones and ten evaluators. It outperforms the strongest competing method by up to 44.0% and reduces training GPU-hours relative to DiffusionNFT by 40% on SD 3.5-M and 63% on Z-Image-Turbo. These results support on-policy self-distillation as an efficient and analyzable approach to diffusion post-training by converting image-level reward guidance into explicit and continually refreshed intermediate supervision, thereby opening a path toward more efficient and diagnosable alignment.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
