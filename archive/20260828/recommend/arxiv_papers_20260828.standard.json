@@ -1,0 +1,134 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-28T02:23:21.280791+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2608.26956v1",
+      "source": "arxiv",
+      "title": "RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing",
+      "abstract": "Reward models play an essential role in aligning visual generative models, yet most existing visual reward models use a single scalar score or rely on fixed criteria that cannot adapt to different instructions. This limits both interpretability and task sensitivity, especially for text-to-image generation and instruction-based image editing, where different inputs require different evaluation dimensions. We propose RubricRM, a pairwise generative reward modeling framework that first produces an input-specific rubric with evaluation dimensions, weights, and scoring criteria, and then applies the rubric to score candidate images. We train dedicated RubricRM models for text-to-image generation and image editing using a two-stage training pipeline: supervised fine-tuning teaches the model the rubric-based scoring paradigm, while GRPO further improves scoring through fine-grained dimension-level rewards. Experiments on multiple generation and editing benchmarks show that RubricRM outperforms existing specialized reward models and remains competitive with strong proprietary MLLM judges despite using smaller backbones. Our models, data, and code are available at https://github.com/zijiankan/RubricRM.",
+      "authors": [
+        "Zijian Kan",
+        "Wei Wang",
+        "Long Luo",
+        "Bing Zhao",
+        "Xuan Ren",
+        "Weixu Qiao",
+        "Wenbo Li",
+        "Hu Wei",
+        "Lin Qu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-27T10:56:47+00:00",
+      "link": "https://arxiv.org/pdf/2608.26956v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reward modeling for image generation and editing",
+      "llm_evidence_cn": "面向图像生成与编辑的奖励建模",
+      "llm_evidence": "面向图像生成与编辑的奖励建模",
+      "canonical_evidence": "面向图像生成与编辑的奖励建模",
+      "llm_tldr_en": "Existing visual reward models rely on fixed single scalars, lacking adaptability to diverse instructions. RubricRM generates input-specific rubrics and then scores candidates, improving reward quality and interpretability for text-to-image and image editing via two-stage training.",
+      "llm_tldr_cn": "现有视觉奖励模型通常输出单一标量或依赖固定准则，难以适配多样化的文生图和指令编辑输入。RubricRM提出成对生成式奖励建模，先为每个输入生成包含维度、权重和评分标准的动态准则，再据此评价候选图像。在文生图与图像编辑上的两阶段训练表明，该方法在奖励准确性、解释性和对指令的敏感性上均优于传统视觉奖励模型。这项工作为视觉生成模型的对齐提供了更具适应性和可解释性的奖励信号。",
+      "llm_tldr": "现有视觉奖励模型通常输出单一标量或依赖固定准则，难以适配多样化的文生图和指令编辑输入。RubricRM提出成对生成式奖励建模，先为每个输入生成包含维度、权重和评分标准的动态准则，再据此评价候选图像。在文生图与图像编辑上的两阶段训练表明，该方法在奖励准确性、解释性和对指令的敏感性上均优于传统视觉奖励模型。这项工作为视觉生成模型的对齐提供了更具适应性和可解释性的奖励信号。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.25350v1",
+      "source": "arxiv",
+      "title": "Beyond Pairwise Feedback: Listwise Vision-Language Supervision for Preference-Based Reward Learning",
+      "abstract": "Vision-language models (VLMs) have emerged as a powerful source of supervision for reinforcement learning, enabling agents to leverage rich semantic knowledge during training. Inspired by the success of preference-based reward learning (PbRL) in reinforcement learning from human feedback (RLHF), vision-language model generated image-based preferences provide an effective source for learning reward functions. This can be done by visually comparing two outcomes through the Bradley-Terry (BT) model. However, this pairwise formulation utilizes only two observations at a time, despite VLMs being capable of ranking multiple candidates. The Plackett-Luce (PL) formulation can shape a reward model with listwise rankings as opposed to pairwise preferences, allowing for a more suited use of a VLM based ranking. In this work, to our knowledge, we introduce the first framework that combines VLM-generated preferences with the Plackett-Luce model for reward learning. We evaluate our approach on Meta-World manipulation tasks and show that Plackett-Luce (PL) reward models can train robotic policies from VLM-generated rankings as effectively as pairwise Bradley-Terry, $K$-wise Bradley-Terry, and RL-VLM-F baselines. Across all environments, at least one PL ranking size ($K \\in \\{3,4,5\\}$) consistently performs with or outperforms other methods in mean success rate. Unlike pairwise methods, which are restricted to $K=2$, PL supports different ranking sizes and can therefore be adapted to the environment and desired feedback format. Our best PL configuration achieves an 86% mean final success rate and matches the Oracle baseline on Drawer Open. Overall, these results demonstrate that listwise VLM preference supervision is a competitive and flexible approach to reward learning for reinforcement learning.",
+      "authors": [
+        "Srivalli Katkuri",
+        "Maxwell Kawada",
+        "Juan Wachs"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-08-26T04:09:21+00:00",
+      "link": "https://arxiv.org/pdf/2608.25350v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "listwise vision-language reward learning from image preferences for RL",
+      "llm_evidence_cn": "基于图像偏好的列表式视觉-语言奖励学习，用于强化学习奖励函数设计",
+      "llm_evidence": "基于图像偏好的列表式视觉-语言奖励学习，用于强化学习奖励函数设计",
+      "canonical_evidence": "基于图像偏好的列表式视觉-语言奖励学习，用于强化学习奖励函数设计",
+      "llm_tldr_en": "Proposes listwise Plackett-Luce reward learning from VLM rankings instead of pairwise Bradley-Terry, improving reward model accuracy and downstream RL performance.",
+      "llm_tldr_cn": "针对成对偏好反馈每次只能利用两个观测、无法充分利用视觉语言模型排序能力的问题，提出基于Plackett-Luce模型的列表式偏好奖励学习方法，直接对多个候选图像进行排序来学习奖励函数，为强化学习提供更准确的反馈信号；实验表明列表式方法优于成对基线，能够提升奖励模型和下游任务表现，也适用于图像生成等需要图像偏好监督的奖励设计场景。",
+      "llm_tldr": "针对成对偏好反馈每次只能利用两个观测、无法充分利用视觉语言模型排序能力的问题，提出基于Plackett-Luce模型的列表式偏好奖励学习方法，直接对多个候选图像进行排序来学习奖励函数，为强化学习提供更准确的反馈信号；实验表明列表式方法优于成对基线，能够提升奖励模型和下游任务表现，也适用于图像生成等需要图像偏好监督的奖励设计场景。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.24372v1",
+      "source": "arxiv",
+      "title": "Bridging Adversarial and Collaborative Learning for AI-Generated Image Quality Assessment",
+      "abstract": "AI-generated image quality assessment (AIGIQA) requires jointly reasoning about perceptual fidelity and prompt alignment, two quality dimensions that are often treated as independent in existing AIGIQA models. However, by re-examining human ratings, we uncover a previously overlooked phenomenon: the two dimensions are interdependent and exhibit both competitive and cooperative interactions during human rating. This observation suggests that a unified model should neither collapse the two dimensions nor rigidly separate them, but rather adaptively negotiate their interplay. Motivated by this insight, we introduce an interaction-aware learning framework that models perception-alignment relations through adversarial and collaborative inference pathways. Instead of designing a rigid dual-branch architecture, our method employs a gated interaction module that dynamically routes features according to the inferred relationship between the two dimensions. Task-aware prompts further modulate the gating behaviour, enabling the model to switch between competition and cooperation when necessary. Experiments across multiple AIGIQA benchmarks demonstrate that our approach not only achieves state-of-the-art accuracy but also yields interpretable interaction patterns, offering a more faithful approximation of human judgment. The codes are available at https://github.com/LQAMEI/ACL-IQA.",
+      "authors": [
+        "Baoliang Chen",
+        "Qing Lin",
+        "Sijie Mai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-25T10:31:00+00:00",
+      "link": "https://arxiv.org/pdf/2608.24372v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Jointly models perceptual fidelity and prompt alignment for AI-generated image quality, directly usable as reward function",
+      "llm_evidence_cn": "联合建模感知质量与提示对齐的AI生成图像质量评估，可直接用作奖励函数",
+      "llm_evidence": "联合建模感知质量与提示对齐的AI生成图像质量评估，可直接用作奖励函数",
+      "canonical_evidence": "联合建模感知质量与提示对齐的AI生成图像质量评估，可直接用作奖励函数",
+      "llm_tldr_en": "This paper introduces an interaction-aware learning framework for AI-generated image quality assessment that adaptively negotiates perceptual fidelity and prompt alignment via adversarial and collaborative learning, bridging the gap between quality assessment and reward modeling.",
+      "llm_tldr_cn": "AI生成图像质量评估需要同时考虑感知保真度和提示对齐，而现有模型将两者独立处理。本文揭示二者在人类评分中存在竞争与协作关系，提出对抗与协作交互感知的学习框架，自适应建模两者关系。该框架可生成更符合人类感知与文本一致性的质量评分。这样的质量评估模型可作为图像生成强化学习的奖励函数，服务奖励设计需求。",
+      "llm_tldr": "AI生成图像质量评估需要同时考虑感知保真度和提示对齐，而现有模型将两者独立处理。本文揭示二者在人类评分中存在竞争与协作关系，提出对抗与协作交互感知的学习框架，自适应建模两者关系。该框架可生成更符合人类感知与文本一致性的质量评分。这样的质量评估模型可作为图像生成强化学习的奖励函数，服务奖励设计需求。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

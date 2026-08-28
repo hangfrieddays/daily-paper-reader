@@ -6,24 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-26
-- 运行时间：2026-08-26 20:49:53 UTC
+- 最新运行日期：2026-08-28
+- 运行时间：2026-08-28 02:28:03 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：1
-- 速读区：0
+- 本次总论文数：3
+- 精读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读1篇扩散模型新研究，聚焦策略自蒸馏方法，评分高达9.0。最值得关注的是扩散模型通过自蒸馏提升采样效率的方向，并给出强基线结论。普通读者可优先追踪该论文后续工作，或对比其与现有蒸馏技术的差异。
-- 详情：[/202608/26/README](/202608/26/README)
+今天精读两篇高分论文，探索生成模型奖励建模新范式，并速读一篇AI图像质量评估方法。最值得关注：动态规则奖励建模（9.0）与列表式偏好学习（8.0）突破传统成对反馈局限，可更精准驱动图像生成与编辑。下步建议：可将动态规则或列表监督思路应用到生成模型调优，提升图像质量与用户偏好对齐。
+- 详情：[/202608/28/README](/202608/28/README)
 
 ### 精读区论文标签
-1. [On-Policy Self-Distillation in Diffusion Models](/202608/26/2608.24646v1-on-policy-self-distillation-in-diffusion-models)  
+1. [RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing](/202608/28/2608.26956v1-rubricrm-generative-reward-modeling-via-dynamic-rubrics-for-image-generation-and-editing)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：将图像级奖励转化为去噪目标的强化学习框架
+   evidence：面向图像生成与编辑的奖励建模
+2. [Beyond Pairwise Feedback: Listwise Vision-Language Supervision for Preference-Based Reward Learning](/202608/28/2608.25350v1-beyond-pairwise-feedback-listwise-vision-language-supervision-for-preference-based-reward-learning)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：基于图像偏好的列表式视觉-语言奖励学习，用于强化学习奖励函数设计
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Bridging Adversarial and Collaborative Learning for AI-Generated Image Quality Assessment](/202608/28/2608.24372v1-bridging-adversarial-and-collaborative-learning-for-ai-generated-image-quality-assessment)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：联合建模感知质量与提示对齐的AI生成图像质量评估，可直接用作奖励函数
 
 
 <div class="dpr-home-promo-card">

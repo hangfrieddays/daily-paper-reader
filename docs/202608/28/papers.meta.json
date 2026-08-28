@@ -1,0 +1,54 @@
+{
+  "label": "2026-08-28",
+  "date": "2026-08-28",
+  "generated_at": "2026-08-28T02:28:09",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202608/28/2608.26956v1-rubricrm-generative-reward-modeling-via-dynamic-rubrics-for-image-generation-and-editing",
+      "section": "deep",
+      "title_en": "RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing",
+      "authors": "Zijian Kan, Wei Wang, Long Luo, Bing Zhao, Xuan Ren, Weixu Qiao, Wenbo Li, Hu Wei, Lin Qu",
+      "date": "2026-08-27",
+      "pdf": "https://arxiv.org/pdf/2608.26956v1",
+      "score": "9.0",
+      "evidence": "面向图像生成与编辑的奖励建模",
+      "tldr": "现有视觉奖励模型多采用单一标量或固定标准，难以适应不同指令，可解释性和任务敏感性不足。为此提出RubricRM，先根据输入生成包含评估维度、权重和评分准则的动态rubric，再据此对候选图像成对评分。通过SFT和GRPO两阶段训练，RubricRM在多个图像生成与编辑基准上超越专用奖励模型，并以更小骨干与强MLLM裁判相当。代码、数据与模型已开源。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reward models play an essential role in aligning visual generative models, yet most existing visual reward models use a single scalar score or rely on fixed criteria that cannot adapt to different instructions. This limits both interpretability and task sensitivity, especially for text-to-image generation and instruction-based image editing, where different inputs require different evaluation dimensions. We propose RubricRM, a pairwise generative reward modeling framework that first produces an input-specific rubric with evaluation dimensions, weights, and scoring criteria, and then applies the rubric to score candidate images. We train dedicated RubricRM models for text-to-image generation and image editing using a two-stage training pipeline: supervised fine-tuning teaches the model the rubric-based scoring paradigm, while GRPO further improves scoring through fine-grained dimension-level rewards. Experiments on multiple generation and editing benchmarks show that RubricRM outperforms existing specialized reward models and remains competitive with strong proprietary MLLM judges despite using smaller backbones. Our models, data, and code are available at https://github.com/zijiankan/RubricRM.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/28/2608.25350v1-beyond-pairwise-feedback-listwise-vision-language-supervision-for-preference-based-reward-learning",
+      "section": "deep",
+      "title_en": "Beyond Pairwise Feedback: Listwise Vision-Language Supervision for Preference-Based Reward Learning",
+      "authors": "Srivalli Katkuri, Maxwell Kawada, Juan Wachs",
+      "date": "2026-08-26",
+      "pdf": "https://arxiv.org/pdf/2608.25350v1",
+      "score": "8.0",
+      "evidence": "基于图像偏好的列表式视觉-语言奖励学习，用于强化学习奖励函数设计",
+      "tldr": "现有基于VLM的奖励学习多采用成对偏好经Bradley-Terry模型，效率受限。本文首次将VLM生成的列表排名与Plackett-Luce模型结合，实现列表式奖励学习。在Meta-World任务上，PL方法达到86%平均成功率，与成对BT及Oracle基线相当，且可灵活调整排名大小。该范式为偏好奖励学习提供了更具扩展性的替代方案。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Vision-language models (VLMs) have emerged as a powerful source of supervision for reinforcement learning, enabling agents to leverage rich semantic knowledge during training. Inspired by the success of preference-based reward learning (PbRL) in reinforcement learning from human feedback (RLHF), vision-language model generated image-based preferences provide an effective source for learning reward functions. This can be done by visually comparing two outcomes through the Bradley-Terry (BT) model. However, this pairwise formulation utilizes only two observations at a time, despite VLMs being capable of ranking multiple candidates. The Plackett-Luce (PL) formulation can shape a reward model with listwise rankings as opposed to pairwise preferences, allowing for a more suited use of a VLM based ranking. In this work, to our knowledge, we introduce the first framework that combines VLM-generated preferences with the Plackett-Luce model for reward learning. We evaluate our approach on Meta-World manipulation tasks and show that Plackett-Luce (PL) reward models can train robotic policies from VLM-generated rankings as effectively as pairwise Bradley-Terry, $K$-wise Bradley-Terry, and RL-VLM-F baselines. Across all environments, at least one PL ranking size ($K \\in \\{3,4,5\\}$) consistently performs with or outperforms other methods in mean success rate. Unlike pairwise methods, which are restricted to $K=2$, PL supports different ranking sizes and can therefore be adapted to the environment and desired feedback format. Our best PL configuration achieves an 86% mean final success rate and matches the Oracle baseline on Drawer Open. Overall, these results demonstrate that listwise VLM preference supervision is a competitive and flexible approach to reward learning for reinforcement learning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/28/2608.24372v1-bridging-adversarial-and-collaborative-learning-for-ai-generated-image-quality-assessment",
+      "section": "quick",
+      "title_en": "Bridging Adversarial and Collaborative Learning for AI-Generated Image Quality Assessment",
+      "authors": "Baoliang Chen, Qing Lin, Sijie Mai",
+      "date": "2026-08-25",
+      "pdf": "https://arxiv.org/pdf/2608.24372v1",
+      "score": "6.0",
+      "evidence": "联合建模感知质量与提示对齐的AI生成图像质量评估，可直接用作奖励函数",
+      "tldr": "现有AIGIQA模型常将感知质量与提示对齐视为独立维度，但人类评分显示二者存在竞争与协作的交互。本文提出交互感知学习框架，通过对抗与协作推理路径建模关系，用门控交互模块动态路由特征，并以任务感知提示调节门控行为，实现竞争/协作切换。在多个基准上达到SOTA，并产生可解释的交互模式，更贴近人类判断。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "AI-generated image quality assessment (AIGIQA) requires jointly reasoning about perceptual fidelity and prompt alignment, two quality dimensions that are often treated as independent in existing AIGIQA models. However, by re-examining human ratings, we uncover a previously overlooked phenomenon: the two dimensions are interdependent and exhibit both competitive and cooperative interactions during human rating. This observation suggests that a unified model should neither collapse the two dimensions nor rigidly separate them, but rather adaptively negotiate their interplay. Motivated by this insight, we introduce an interaction-aware learning framework that models perception-alignment relations through adversarial and collaborative inference pathways. Instead of designing a rigid dual-branch architecture, our method employs a gated interaction module that dynamically routes features according to the inferred relationship between the two dimensions. Task-aware prompts further modulate the gating behaviour, enabling the model to switch between competition and cooperation when necessary. Experiments across multiple AIGIQA benchmarks demonstrate that our approach not only achieves state-of-the-art accuracy but also yields interpretable interaction patterns, offering a more faithful approximation of human judgment. The codes are available at https://github.com/LQAMEI/ACL-IQA.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
