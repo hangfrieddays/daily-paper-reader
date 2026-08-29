@@ -1,21 +1,21 @@
 {
   "label": "2026-08-29",
   "date": "2026-08-29",
-  "generated_at": "2026-08-29T02:31:58",
+  "generated_at": "2026-08-29T22:17:58",
   "count": 1,
   "papers": [
     {
-      "paper_id": "202608/29/2608.21748v1-calibrate-what-you-ship-post-selection-risk-control-for-verifier-guided-text-to-image-generation",
+      "paper_id": "202608/29/2608.26105v1-vbvr-pro-a-scalable-and-verifiable-suite-for-native-visual-reasoning",
       "section": "quick",
-      "title_en": "Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation",
-      "authors": "Xuanhua Yin, Shunqi Mao, Wei Guo, Chuanzhi Xu, Weidong Cai",
-      "date": "2026-08-22",
-      "pdf": "https://arxiv.org/pdf/2608.21748v1",
+      "title_en": "VBVR-Pro: A Scalable and Verifiable Suite for Native Visual Reasoning",
+      "authors": "Junxiang Xu, Ruisi Wang, Fanyi Pu, Maijunxian Wang, Ran Ji, Tongxi Zhou, Chenyang Gu, Jing Zuo, Hongcan Xiao, Yimeng Geng, Wanqi Yin, Wei Chen, Oscar Qian, Zhengan Yan, Ziqi Huang, Haiwen Diao, Liang Pan, Bo Li, Xiangyu Fan, Dezhi Luo, Fengyuan Yu, Zehong Zhao, Qingying Gao, Tinghui Zhu, Yilan Zhang, Jingqi Tong, Pinyuan Feng, Zhengze Jiang, Letian Wang, Ziyu Guo, Renrui Zhang, Jieneng Chen, Sonia Joseph, Constantin Venhoff, Saman Motamed, Mengyue Yang, Chandra Sripada, Alan Yuille, Philip Torr, Lvmin Zhang, Vikash Kumar, Daniel Khashabi, Nikolaus Kriegeskorte, Raphaël Millière, Vincent C. Müller, Anyi Rao, Quan Wang, Ziwei Liu, Dahua Lin, Lei Yang, Hokin Deng, Zhongang Cai",
+      "date": "2026-08-26",
+      "pdf": "https://arxiv.org/pdf/2608.26105v1",
       "score": "7.0",
-      "evidence": "对验证器引导的文生图做选择感知的发布风险校准，控制最终输出质量与可靠性",
-      "tldr": "基于验证器的文生图系统在测试时搜索中，发布阈值常按单个图像校准，导致候选级风险控制无法保证发布输出的风险。本文提出SHIP方法，通过重放完整部署策略并评估实际发布图像，选择满足风险预算的最宽松阈值。实验显示SHIP在GenEval2上显著降低风险，并实现固定网格的有限样本有效性。",
+      "evidence": "构建使视觉生成可训练、可验证、可优化的闭环测试床，直接支持图像生成中的强化学习",
+      "tldr": "原生视觉推理将图像视频作为推理媒介，但缺乏可扩展训练任务与可靠反馈。VBVR-Pro提出包含300个程序化任务的闭环测试平台，提供可验证奖励评分器，发现VLM裁判的缺陷，并支持跨图像、视频、交错生成器的机制研究。训练模型在多项外部基准上表现优异，视频生成擅长时空追踪，交错生成更高效，并揭示视觉原生轨迹的关键作用。",
       "tags": "query:image-gen-rl",
-      "abstract_en": "Verifier-guided text-to-image systems increasingly use test-time search to select, refine, or stop among multiple candidates, yet release thresholds are often calibrated on individual images. This creates a candidate-to-policy calibration mismatch: search changes both which prompts receive an output and which candidate is released, so candidate-level risk control need not imply control of released-output risk. We formalize this estimand shift through prompt reweighting and within-prompt selection, and introduce SHIP, Selection-aware Held-out calibration of Inference Policies. SHIP runs or replays the complete deployed policy on held-out prompts, evaluates the image it actually releases using an independent target judge, and selects the most permissive threshold whose risk upper bound satisfies a prescribed budget. For replayable policies with a prespecified threshold grid, simultaneous confidence control provides finite-sample validity. Experiments across fixed, sequential, and adaptive T2I inference procedures show that policy-level calibration recovers lower-risk operating points while exposing policy-dependent tradeoffs among risk, coverage, and compute. On GenEval2 with FLUX at N=16, a pooled-candidate threshold yields released risk 0.310, whereas SHIP reduces it to 0.162. Across 200 cached-stream splits, the fixed-grid certificate has no target crossing. Reliable inference-time scaling therefore requires calibrating the output distribution induced by the complete deployed policy.",
+      "abstract_en": "Native visual reasoning treats visual generation as the medium of reasoning itself: visual states (i.e. images and videos) are not merely inputs to be understood or outputs to be rendered, but first-class substrates for problem solving beyond language. Yet progress remains bottlenecked by the lack of scalable training tasks, reliable feedback, and controlled comparisons across generative substrates. In this work, we introduce VBVR-Pro, a closed-loop testbed that makes native visual reasoning through generation trainable, verifiable, optimizable, and experimentally controllable. 1) Task scaling. VBVR-Pro turns visual reasoning into a controlled task space of 300 procedurally generated tasks. Models trained on VBVR-Pro show strong transfer beyond the proposed suite across seven external visual reasoning benchmarks such as RISE-Video, MME-CoF-Pro, and BabyVision. 2) Verifiable rewards. VBVR-Pro provides verifiable reward scorers for task-grounded evaluation. Through a systematic study of leading MLLMs as judges, we identify recurring failure modes of the prevalent VLM-as-a-judge paradigm. In contrast, the proposed scorers are grounded in deterministic, task-specific rules, achieve fine-grained alignment with human judgments. Importantly, they serve as reliable reward signals for large-scale multi-task reinforcement learning and demonstrate stronger post-RL performance across visual reasoning tasks. 3) Mechanism study. VBVR-Pro enables controlled modality studies across more than 30 image, video, and interleaved generators. Our analysis shows that video generation remains strongest for tasks requiring persistent spatiotemporal state tracking, while interleaved generation provides a compute-efficient alternative. Critically, ablations and probing suggest the presence of vision-native trajectories that are crucial to visual reasoning. We release all data, models, scorers, and code.",
       "source": "arxiv",
       "selection_source": "fresh_fetch"
     }
