@@ -6,29 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-28
-- 运行时间：2026-08-28 02:28:03 UTC
+- 最新运行日期：2026-08-29
+- 运行时间：2026-08-29 02:31:53 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：2
+- 本次总论文数：1
+- 精读区：0
 - 速读区：1
 
 ### 今日简报（AI）
-今天精读两篇高分论文，探索生成模型奖励建模新范式，并速读一篇AI图像质量评估方法。最值得关注：动态规则奖励建模（9.0）与列表式偏好学习（8.0）突破传统成对反馈局限，可更精准驱动图像生成与编辑。下步建议：可将动态规则或列表监督思路应用到生成模型调优，提升图像质量与用户偏好对齐。
-- 详情：[/202608/28/README](/202608/28/README)
+今日速读一篇论文，聚焦验证器引导的文本到图像生成中的风险控制问题。  
+该研究提出“后选择风险控制”思路，值得关注生成质量校准与验证器结合的方向。  
+建议对文本生成图像可靠性感兴趣的读者，可延伸了解风险控制相关方法。
+- 详情：[/202608/29/README](/202608/29/README)
 
 ### 精读区论文标签
-1. [RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing](/202608/28/2608.26956v1-rubricrm-generative-reward-modeling-via-dynamic-rubrics-for-image-generation-and-editing)  
-   标签：评分：9.0/10、query:image-gen-rl
-   evidence：面向图像生成与编辑的奖励建模
-2. [Beyond Pairwise Feedback: Listwise Vision-Language Supervision for Preference-Based Reward Learning](/202608/28/2608.25350v1-beyond-pairwise-feedback-listwise-vision-language-supervision-for-preference-based-reward-learning)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：基于图像偏好的列表式视觉-语言奖励学习，用于强化学习奖励函数设计
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Bridging Adversarial and Collaborative Learning for AI-Generated Image Quality Assessment](/202608/28/2608.24372v1-bridging-adversarial-and-collaborative-learning-for-ai-generated-image-quality-assessment)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：联合建模感知质量与提示对齐的AI生成图像质量评估，可直接用作奖励函数
+1. [Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation](/202608/29/2608.21748v1-calibrate-what-you-ship-post-selection-risk-control-for-verifier-guided-text-to-image-generation)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：对验证器引导的文生图做选择感知的发布风险校准，控制最终输出质量与可靠性
 
 
 <div class="dpr-home-promo-card">

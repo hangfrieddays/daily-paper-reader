@@ -1,0 +1,755 @@
+Title: Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation
+
+URL Source: https://arxiv.org/pdf/2608.21748v1
+
+Published Time: Tue, 25 Aug 2026 00:21:37 GMT
+
+Number of Pages: 17
+
+Markdown Content:
+# Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation 
+
+# Xuanhua Yin, Shunqi Mao, Wei Guo, Chuanzhi Xu, Weidong Cai ∗
+
+School of Computer Science, The University of Sydney 
+
+{xuanhua.yin, shunqi.mao, wei.guo, chuanzhi.xu, tom.cai}@sydney.edu.au 
+
+Abstract 
+
+Verifier-guided text-to-image systems increasingly use test-time search to select, refine, or stop among multiple can-didates, yet release thresholds are often calibrated on indi-vidual images. This creates a candidate-to-policy calibration mismatch: search changes both which prompts receive an output and which candidate is released, so candidate-level risk control need not imply control of released-output risk. We formalize this estimand shift through prompt reweighting and within-prompt selection, and introduce SHIP , Selection-aware Held-out calibration of Inference Policies . SHIP runs or replays the complete deployed policy on held-out prompts, evaluates the image it actually releases using an independent target judge, and selects the most permissive threshold whose risk upper bound satisfies a prescribed budget. For replayable policies with a prespecified threshold grid, simultaneous con-fidence control provides finite-sample validity. Experiments across fixed, sequential, and adaptive T2I inference procedures show that policy-level calibration recovers lower-risk operat-ing points while exposing policy-dependent tradeoffs among risk, coverage, and compute. On GenEval2 with FLUX at 
+
+N = 16 , a pooled-candidate threshold yields released risk 
+
+0.310 , whereas SHIP reduces it to 0.162 . Across 200 cached-stream splits, the fixed-grid certificate has no target crossing. Reliable inference-time scaling therefore requires calibrating the output distribution induced by the complete deployed pol-icy. 
+
+# 1 Introduction 
+
+Modern text-to-image (T2I) systems increasingly allocate test-time compute to search over multiple generation paths rather than returning a single independently sampled image. Depending on the inference procedure, the system may ex-plore different noise seeds, rank partially denoised drafts, rewrite prompts, refine unmet requirements, edit intermedi-ate images, stop early, or abstain (Ma et al. 2025; Kim, Kim, and Park 2025; Li et al. 2025; Zhuo et al. 2025; Chen et al. 2025; Guo, Wei, and Jing 2026; Jiang et al. 2026; Rawal et al. 2026; Qu et al. 2026). Fine-grained vision-language evaluators guide these decisions by assessing object counts, attributes, spatial relations, and actions (Hu et al. 2023; Cho et al. 2024; Lin et al. 2024; Wiles et al. 2025; Kamath et al. 2025). Consequently, the image delivered to the user is jointly 
+
+> ∗
+
+Corresponding author. On Top Behind    
+
+> 2 / 3 3 / 3
+> A clock to the left of three glass pigs A stone mushroom behind an elephant
+> Selected from N = 4 Selected from N = 16
+> prompt satisfied prompt violated
+> Selector-preferred Not selector-preferred
+> within budget violation
+> 𝛼 risk budget
+
+Figure 1: Search can break candidate-level calibration. SHIP calibrates the output released by the complete policy. determined by generation, verification, search, and stopping. Reliability should therefore be evaluated on the outputs re-leased by the complete inference procedure, rather than on independently generated candidates. A common approach to improving reliability is to cali-brate a verifier threshold on held-out candidate images and release only candidates that pass this threshold (Angelopou-los et al. 2024). Such calibration controls the expected loss of an individual candidate conditioned on passing. In de-ployment, however, the system does not release a generic passing candidate. It releases the image returned by the com-plete search, selection, and stopping procedure. Because this procedure changes the distribution of released images, con-trolling candidate-level risk does not in general guarantee arXiv:2608.21748v1 [cs.CV] 22 Aug 2026 control of the risk of the deployed inference policy. We re-fer to this discrepancy as the candidate-to-policy calibration mismatch .Search creates this mismatch through two distinct mech-anisms. First, it changes which prompts receive an output. Under sequential stopping, for example, a prompt is accepted if any attempt passes, so prompts with different candidate-level pass probabilities have different probabilities of ap-pearing among the released outputs. Second, search changes which image is released for each accepted prompt. Best-of-
+
+N selection, first-hit stopping, tournaments, rewriting, and refinement select or modify candidates according to an im-perfect online verifier (Gao, Schulman, and Hilton 2023; Coste et al. 2024), so the released image need not follow the same conditional loss distribution as a generic passing candidate. Search therefore changes both the distribution of prompts represented among released outputs and the condi-tional distribution of the image released for each prompt. To this end, we introduce SHIP , Selection-aware Held-out calibration of Inference Policies . SHIP runs or replays the complete policy on held-out prompts, evaluates the out-put it actually releases using an independent target judge, and selects the most permissive threshold whose upper con-fidence bound satisfies a prescribed risk budget. Threshold-independent candidate streams support efficient replay, while history-dependent search is evaluated through complete pol-icy trajectories. For prespecified threshold grids, simulta-neous confidence bounds provide finite-sample control for replayable policies (Angelopoulos et al. 2025). Figure 1 illustrates how verifier-guided search may pre-fer an output that still violates the prompt, whereas SHIP calibrates the final release decision under a target risk bud-get. We evaluate SHIP across fixed, sequential, and adaptive T2I inference procedures, including tournament selection, re-finement, prompt rewriting, trajectory selection, and image editing. The results recover feasible released-output operat-ing points and reveal policy-dependent tradeoffs among risk, coverage, and inference cost. More broadly, search deter-mines the attainable performance frontier, while calibration determines which points on that frontier can be released un-der a risk constraint. Our contributions are summarized as follows: 
+
+• We characterize a T2I-specific candidate-to-policy cali-bration mismatch, decompose it into prompt reweighting and within-prompt selection, and show that candidate-level risk control need not control released-output risk. 
+
+• We introduce SHIP , which calibrates complete release policies on held-out prompts and selects the most per-missive threshold satisfying a prescribed released-output risk budget. 
+
+• We validate SHIP across fixed, sequential, and adaptive T2I search policies, multiple models and benchmarks, and human evaluation, revealing policy-dependent tradeoffs among risk, coverage, and inference cost. 
+
+# 2 Related Work 
+
+Text-to-Image Generation and Verification. Modern T2I systems span diffusion and flow-based generators, including SDXL, Stable Diffusion 3, and FLUX (Rombach et al. 2022; Podell et al. 2024; Esser et al. 2024; Lipman et al. 2023; Black Forest Labs 2024). Their prompt following is increas-ingly assessed through fine-grained question answering, as in TIFA, DSG, VQAScore, Gecko, and GenEval2 (Hu et al. 2023; Cho et al. 2024; Lin et al. 2024; Wiles et al. 2025; Kamath et al. 2025), or through learned reward models such as ImageReward, PickScore, and CycleReward (Xu et al. 2023; Kirstain et al. 2023; Bahng et al. 2025). These evalua-tors provide useful candidate-ranking signals, but do not by themselves characterize the loss of the image released after search. SHIP therefore treats the verifier as an interchange-able selector and evaluates policy outputs with a held-out target judge. 
+
+Verifier-Guided Inference-Time Scaling. Inference-time scaling searches seeds or trajectories, revises prompts, and edits images using verifier feedback (Ma et al. 2025; Kim, Kim, and Park 2025; Li et al. 2025; Zhuo et al. 2025; Chen et al. 2025). Recent adaptive policies include RAISE refine-ment, ProbeSelect trajectory pruning, Flash-BoN draft tour-naments, and ADE-CoT image editing (Jiang et al. 2026; Guo, Wei, and Jing 2026; Rawal et al. 2026; Qu et al. 2026). These methods improve how candidates are produced or se-lected. SHIP addresses the complementary reliability ques-tion of whether the output released by the resulting policy satisfies a target risk budget. We test this composition across fixed search, sequential stopping, refinement, rewriting, early trajectory selection, and editing. Because verifier bias and self-consistency can distort selection (Zheng et al. 2023; Wang et al. 2024), our protocol separates the online selector from the offline target judge. 
+
+Selective Risk Control for Deployed Policies. Confor-mal prediction and its risk-controlling extensions calibrate decisions on exchangeable data (Vovk, Gammerman, and Shafer 2005; Bates et al. 2021; Angelopoulos et al. 2025, 2024), while selective classification trades coverage for con-ditional accuracy through abstention (Chow 1970; El-Yaniv and Wiener 2010; Geifman and El-Yaniv 2017). Recent work extends these ideas to bounded selective risks and gener-ated outputs (Xu, Guo, and Wei 2025; Bai and Jin 2026; Yu and Liu 2026; Kladny, Schölkopf, and Muehlebach 2025; Wang, Fan, and Wang 2026). TRON jointly controls sam-pling and filtering risks for multimodal response sets, but its output is a set rather than one image selected by a re-lease policy (Wang et al. 2025). Most closely, BOKBO calibrates execute-or-abstain decisions for verifier-best K-sample vision-language-action policies (Singh et al. 2026). We therefore do not claim policy-level calibration or its con-fidence bounds as new. Our contribution is the T2I-specific estimand analysis, its prompt-reweighting and within-prompt decomposition, and evidence across first-hit release, best-of-
+
+N , and history-dependent policies with continuous released-output loss. 3 Method 
+
+3.1 Overview and Setting 
+
+Let p ∼ P be a deployment prompt and let ω collect the internal randomness of generation and search. A thresholded release policy πτ (p, ω ) executes its complete inference pro-cedure and returns either an image or the abstention symbol 
+
+⊥, where τ ∈ T ⊂ [0 , 1] is a selector-risk threshold. Its trajectory may contain sampled images, partially denoised drafts, verifier feedback, rewritten prompts, or intermediate edits. Every completed image Y has an online selector risk 
+
+s(Y, p ) ∈ [0 , 1] and a held-out target loss ℓ(Y, p ) ∈ [0 , 1] ,where lower values are better and the policy never observes 
+
+ℓ.We write Aτ (p, ω ) = 1{πτ (p, ω )̸ = ⊥} , where Aτ indi-cates whether the policy releases an output. The goal is to control the target loss among released outputs at level α with confidence 1 − δ, where α ∈ (0 , 1) is the risk budget and 
+
+δ ∈ (0 , 1) is the calibration failure probability. A fixed can-didate stream is the important special case ω = Y = Y1: N
+
+with Yk ∼ G(· | p), where N is the maximum budget and 
+
+k ∈ [N ] indexes candidates. SHIP aligns the calibration unit with the release policy. Each exchangeable observation is a held-out prompt together with a complete policy rollout, rather than one candidate pooled across prompts. As illustrated in Figure 2, SHIP eval-uates the exact release rule and returns the most permis-sive threshold τ ⋆ whose policy-level risk bound satisfies α.Threshold-independent streams support counterfactual re-play of many thresholds from one cache. History-dependent procedures are instead evaluated from complete trajectories generated by the deployed adaptive policy. This distinction changes computational reuse, not the released-output esti-mand. 
+
+3.2 Atomic Prompt Verification 
+
+To localize compositional failures, we represent each prompt by A(p) = {aj (p)}mp
+
+> j=1
+
+, where aj (p) is the j-th atomic requirement and mp = |A (p)|. The atoms cover exis-tence, count, attribute binding, spatial relation, and action. Each atom becomes a yes/no question following TIFA and DSG (Hu et al. 2023; Cho et al. 2024). For a candidate Y , the continuous atom score is: 
+
+q(v) 
+
+> j
+
+(Y, p ) = Pr 
+
+> Vv
+
+(“Yes” | Y, a j (p)) , v ∈ { sel , tgt },
+
+(1) where Vsel is the selector VLM available at deployment, 
+
+Vtgt is an independent target VLM used only offline, and 
+
+q(v) 
+
+> j
+
+(Y, p ) ∈ [0 , 1] is the next-token probability that judge Vv
+
+assigns to a positive answer. Continuous probabilities avoid the brittleness of hard yes/no decoding (Lin et al. 2024). We aggregate atom scores using Soft-TIFA geometric-mean (Soft-TIFA-GM) risk: 
+
+s(Y, p ) = 1 −
+
+
+
+> mp
+
+Y
+
+> j=1
+
+q(sel)  
+
+> j
+
+(Y, p )
+
+
+
+> 1/m p
+
+,ℓ(Y, p ) = 1 −
+
+
+
+> mp
+
+Y
+
+> j=1
+
+q(tgt)  
+
+> j
+
+(Y, p )
+
+
+
+> 1/m p
+
+,
+
+(2) where s(Y, p ) is the online selector risk and ℓ(Y, p ) is the held-out target loss. The geometric mean penalizes a low atom score multiplicatively, which is appropriate when one violated requirement can invalidate prompt following. We use Qwen2.5-VL (Bai et al. 2025b) for Vsel and Qwen3-VL (Bai et al. 2025a) for Vtgt . InternVL3 provides an alternative-architecture robustness check (Chen et al. 2024; Zhu et al. 2025). Because the policy never observes ℓ, cali-bration measures held-out risk rather than the selector’s self-score. 
+
+3.3 Candidate-to-Policy Calibration Mismatch 
+
+Candidate-level calibration and deployment control different random variables: 
+
+Rimg (τ ) = E[ℓ(Y, p ) | s(Y, p ) ≤ τ ] ,Rπ (τ ) = E[ℓ(πτ (p, ω ), p ) | Aτ (p, ω ) = 1] ,Cπ (τ ) = Pr[ Aτ (p, ω ) = 1] ,
+
+(3) where Y ∼ G(· | p) is one candidate, Rimg (τ ) is candidate risk conditional on passing, Rπ (τ ) is released-output risk, and Cπ (τ ) is coverage. Accept/reject evaluates only Y1. Best-of-N with rejection releases the minimum-risk candidate if it passes. Sequential stopping releases the first passing candidate. Adaptive policies may alter later candidates using earlier verifier feedback. The same threshold can therefore induce different released distributions across policies. For a prompt p, let qτ (p) = Pr[ s(Y, p ) ≤ τ | p]
+
+and rimg ,τ (p) = E[ℓ(Y, p ) | s(Y, p ) ≤ τ, p ], where these terms are the candidate pass probability and conditional loss. Likewise, let aπ,τ (p) = Pr[ Aτ (p, ω ) = 1 | p] and 
+
+rπ,τ (p) = E[ℓ(πτ (p, ω ), p ) | Aτ (p, ω ) = 1 , p ], where these terms are the policy acceptance probability and released-output loss. 
+
+Proposition 1 (Candidate calibration is not policy calibra-tion) . Conditioning on the prompt gives :
+
+Rimg (τ ) = Ep[qτ (p)rimg ,τ (p)] 
+
+Ep[qτ (p)] ,Rπ (τ ) = Ep[aπ,τ (p)rπ,τ (p)] 
+
+Ep[aπ,τ (p)] ,
+
+(4) 
+
+where Ep denotes expectation over deployment prompts. Consequently, Rimg (τ ) ≤ α does not imply Rπ (τ ) ≤ α.Selection changes the prompt weights from qτ to aπ,τ and the conditional loss from rimg ,τ to rπ,τ . The latter term incorpo-rates extreme-score selection, first-hit stopping, tournament outcomes, and history-dependent refinement. YNY3Y2 
+
+> “three purple candles”
+> x3 object count attribute
+> Prompt atoms
+> Generator x3
+
+…   
+
+> Y1
+> x3 x3 x3
+> Selector Target • offline
+
+… ……               
+
+> 𝑠 !⋯ 𝑠 "ℓ!⋯ ℓ "𝑠 "
+> Selector Target
+> Held-out prompts
+> Threshold tokens
+> 𝜏 !,𝜏 ",𝜏 #,…
+> 𝑠 !≤ 𝜏? Y2
+> Y2
+> Y2
+> Y3
+> ℓℓ
+> Policy risk bound Released outputs Candidate stream Sequential first-pass
+> policy
+> policy gate
+> RELEASE RELEASE ABSTAIN
+> “three purple candles”
+> x3 object count attribute YN
+> Selector 𝑠 )≤ 𝜏 ∗?
+> RELEASE
+> ABSTAIN
+> 𝑘 = 𝐾 𝑠 )
+> Generate 𝑌 )Continue
+> 𝑘 ← 𝑘 + 1
+> Budget counter: )*𝑘 < 𝐾
+> risk-budget
+> infeasible feasible points
+> 𝒯 𝒯 ∗
+> 𝛼
+> Replay the same policy (a) Offline policy calibration Largest safe threshold (b) Online sequential stopping
+
+Figure 2: SHIP calibration and deployment. a Offline, the selector and held-out target score a candidate stream. SHIP replays the same sequential first-pass policy on held-out prompts across prespecified thresholds and selects the largest τ ⋆ whose released-output risk bound does not exceed α. b Online, sequential stopping releases the first candidate whose selector risk is at most τ ⋆,or abstains when the candidate budget is exhausted. 
+
+3.4 Policy-Level Calibration and Validity 
+
+SHIP evaluates the policy on Pcal = {pi}Mi=1 , where M is the number of held-out calibration prompts. For each τ ∈ T ,it executes or exactly replays the policy with randomness ωi,τ 
+
+and sets Ai(τ ) = Aτ (pi, ω i,τ ). When Ai(τ ) = 1 , it records 
+
+Li(τ ) = ℓ(πτ (pi, ω i,τ ), p i), where Li(τ ) ∈ [0 , 1] is the loss of the released output. Replayable policies may share a cached trajectory across thresholds. History-dependent poli-cies use complete rollouts that preserve their native state transitions. Then: 
+
+nτ =
+
+> M
+
+X
+
+> i=1
+
+Ai(τ ),
+
+bRπ (τ ) = 1
+
+nτ
+
+X 
+
+> i:Ai(τ)=1
+
+Li(τ ),
+
+(5) where nτ is the accepted calibration count and bRπ (τ ) is the empirical policy risk for nτ > 0.SHIP computes: 
+
+Uδ′ (τ ) = bRπ (τ ) + 
+
+s
+
+log(1 /δ ′)2nτ
+
+,τ ⋆ = max {τ ∈ T : Uδ′ (τ ) ≤ α},
+
+(6) where δ′ ∈ (0 , 1) is the failure level assigned to one thresh-old, Uδ′ (τ ) is the Hoeffding upper bound, and τ ⋆ is the most permissive feasible threshold. We set Uδ′ (τ ) = + ∞
+
+for nτ = 0 and return ⊥ if none is feasible. For finite-sample certification, SHIP fixes T before cal-ibration and sets δ′ = δ/ |T | , where |T | is the number of thresholds. This Bonferroni allocation makes all threshold bounds simultaneously valid and is a standard Learn-then-Test procedure (Angelopoulos et al. 2025; Bates et al. 2021). The confidence construction is not our methodological claim. Our contribution is to apply valid threshold selection to the losses produced by complete policy replay. Sharper selective-risk certificates (Bai and Jin 2026; Yu and Liu 2026) can re-place the Hoeffding bound without changing the policy-level estimand. Certification is inexpensive when one threshold-independent stream can be replayed. If a threshold changes the state transitions of a history-dependent policy, exact evaluation may instead require a complete rollout for every prompt and threshold, giving naive offline cost proportional to M |T | . We therefore report formal fixed-grid certification for replayable streams and treat the adaptive-policy operat-ing points as descriptive. Reducing valid calibration cost for threshold-dependent search remains an open problem. 
+
+Proposition 2 (Finite-sample validity) . Assume the calibra-tion prompts and their complete policy rollouts are indepen-dent and identically distributed draws from the deployment procedure, and let T be fixed independently of them. With 
+
+δ′ = δ/ |T | , any threshold τ ⋆ returned by (6) satisfies :
+
+Pr[ Rπ (τ ⋆) ≤ α] ≥ 1 − δ, (7) 
+
+where the probability is over the calibration prompts and policy randomness. Algorithm 1 SHIP calibration and sequential stopping 
+
+Require: Pcal = {pi}Mi=1 , generator G, selector s, target loss ℓ
+
+Require: budget N , target risk α, failure level δ, prespeci-fied threshold grid T 
+
+> 1:
+
+Sample Yi = ( Yi1, . . . , Y iN ) from G(· | pi) for every 
+
+pi 
+
+> 2:
+
+Set δ′ ← δ/ |T |  
+
+> 3:
+
+τ ⋆ ← ⊥  
+
+> 4:
+
+for τ ∈ T in increasing order do  
+
+> 5:
+
+for i = 1 , . . . , M do  
+
+> 6:
+
+ki(τ ) ← Kτ (pi, Yi) 
+
+> 7:
+
+if ki(τ ) ≤ N then  
+
+> 8:
+
+Ai(τ ) ← 1 and Li(τ ) ← ℓ(Yi,k i(τ ), p i) 
+
+> 9:
+
+else  
+
+> 10:
+
+Ai(τ ) ← 0 
+
+> 11:
+
+end if  
+
+> 12:
+
+end for  
+
+> 13:
+
+nτ ← PMi=1 Ai(τ ) 
+
+> 14:
+
+if nτ > 0 then  
+
+> 15:
+
+Compute bRπ (τ ) by (5) and Uδ′ (τ ) by (6)  
+
+> 16:
+
+if Uδ′ (τ ) ≤ α then  
+
+> 17:
+
+τ ⋆ ← τ 
+
+> 18:
+
+end if  
+
+> 19:
+
+end if  
+
+> 20:
+
+end for  
+
+> 21:
+
+return τ ⋆ 
+
+> 22:
+
+deploy: abstain if τ ⋆ = ⊥. Otherwise release the first Yk
+
+with s(Yk, p ) ≤ τ ⋆ for k ≤ N , or abstain if none passes A proof is provided in the Supplementary Material. 
+
+3.5 Sequential Calibrated Stopping 
+
+Let Kτ (p, Y) = min( {k ∈ [N ] : s(Yk, p ) ≤ τ } ∪ { +∞} ),where Kτ is the first passing index and equals +∞ if none passes. The sequential policy is: 
+
+πseq  
+
+> τ
+
+(p, Y) = 
+
+YKτ (p, Y), Kτ (p, Y) ≤ N, 
+
+⊥, Kτ (p, Y) > N, Aseq  
+
+> τ
+
+(p, Y) = 1{Kτ (p, Y) ≤ N } ,
+
+(8) where πseq  
+
+> τ
+
+releases the first passing candidate and Aseq  
+
+> τ
+
+in-dicates whether one exists within budget. Easy prompts stop early. Difficult prompts use up to N attempts and otherwise abstain. Calibration evaluates this same first-hit rule, aligning the offline estimand with the online release. Algorithm 1 summarizes calibration and deployment. For calibration prompt pi, let ki(τ ) = Kτ (pi, Yi), where ki(τ )
+
+is its first passing index at threshold τ . The threshold grid is fixed before calibration so that the returned threshold inherits Proposition 2. 
+
+# 4 Experiments and Results 
+
+4.1 Experimental Protocol 
+
+Models and Benchmarks. GenEval2 (Kamath et al. 2025) provides the primary 800 -prompt evaluation. FLUX.1-dev (Black Forest Labs 2024) supports the main fixed and adaptive comparisons. Stable Diffusion 3 Medium, SD3.5-Large (Esser et al. 2024), and SDXL (Podell et al. 2024) test backbone transfer. FLUX.1-Kontext-dev (Black Forest Labs et al. 2025) supports image editing. GenAI-Bench (Li et al. 2024), T2I-CompBench (Huang et al. 2023), DSG-1k (Cho et al. 2024), and DPG-Bench (Hu et al. 2024) test prompt-distribution transfer. By default, Qwen2.5-VL-7B-Instruct and Qwen3-VL-8B-Instruct provide selector risk and tar-get loss, respectively. InternVL3-8B is the alternative-family target. 
+
+Protocol and Metrics. All primary comparisons use dis-joint 400 /400 calibration and test prompts, target risk 
+
+α=0 .30 , and calibration failure probability δ=0 .10 . The main tables report less conservative empirical operating points obtained with pointwise Hoeffding bounds. We call an operating point calibration-feasible when its calibration UCB does not exceed α. This empirical designation does not inherit Proposition 2 because pointwise bounds do not account for threshold search. The finite-sample certifica-tion study applies Algorithm 1 with the prespecified grid 
+
+T = {0, 0.005 , . . . , 1} and |T | = 201 . Coverage is the frac-tion of prompts receiving an output. Released-output risk is mean held-out target loss conditioned on release. Com-pute is reported as full-generation equivalents, total online VLM calls, and wall-clock time. Prompt bootstrap intervals preserve complete policy trajectories. 
+
+Comparisons. Fixed-search comparisons include random release, best-of-N rejection, and sequential first-pass re-lease. Adaptive policies include the Flash-BoN VLM tour-nament (Rawal et al. 2026), RAISE refinement (Jiang et al. 2026), history-dependent prompt rewriting, ProbeS-elect early trajectory selection (Guo, Wei, and Jing 2026), and ADE-CoT image editing (Qu et al. 2026). The pooled-candidate heuristic fits a threshold after treating all com-pleted candidates as observations, although candidates from the same prompt are dependent. It is included as a common descriptive practice rather than a prompt-level certificate. A one-candidate-per-prompt sensitivity removes this pseu-doreplication. SHIP instead fits the threshold to outputs of the complete policy under the same split, selector, and target judge. The Supplementary Document reports the prompt-unit sensitivity and compares our adaptive-policy reproduc-tions with their original metrics. 
+
+4.2 Candidate-to-Policy Mismatch across Search Policies 
+
+Sequential Search Exposes the Estimand Shift. Fig-ure 3a isolates the effect on a fixed FLUX candidate stream. The naive pooled threshold gives sequential released risks of 
+
+0.234 , 0.278 , and 0.310 as N grows from 4 to 16 . At N =16 ,the interval [0 .267 , 0.355] overlaps the target, so the crossing is not statistically resolved. Pooling also confounds the esti-mand shift with within-prompt dependence: one-candidate-per-prompt calibration gives risk 0.196 , versus 0.162 for pol-icy calibration. Thus the magnitude is design-sensitive, but the candidate and policy objectives remain distinct. The Sup-plementary Document gives prompt-unit and independent-Figure 3: Calibration depends on the statistical unit. a,b Released risk with prompt-bootstrap intervals. Pooling ignores within-prompt dependence, whereas SHIP calibrates policy outputs. c SHIP risk–coverage frontier. d Sequential compute reduction relative to best-of-N at matched risk.   
+
+> (a) Stop sign above bed
+> Reject First passing candidate
+> (b) Chair beside chair
+> Reject First passing candidate
+
+Figure 4: Four-image filtering examples at τ =0 .30 . SHIP rejects the left candidates and releases the first passing can-didates on the right. stream analyses plus a controlled example approaching gap 
+
+1 − α.
+
+The Mismatch Generalizes beyond Fixed Search. Ta-ble 1 applies the same descriptive protocol to four FLUX poli-cies. Naive pooled thresholds produce pointwise UCBs from 
+
+0.355 to 0.472 . Sequential first-pass release, Flash-BoN, and history-dependent rewriting have test risks of 0.310 , 0.361 ,and 0.328 , respectively. RAISE has a lower test point estimate 
+
+Figure 5: Calibration-selected SHIP tradeoffs at test risk 
+
+0.166 . Higher is better, leftward is faster, and marker area de-notes VLM calls. RAISE maximizes coverage, while Flash-BoN minimizes time. Thresholds are fit without test outputs. of 0.244 , although its calibration UCB is 0.355 . These rows diagnose how a pooled threshold behaves after deployment search. They do not constitute a valid prompt-level candidate certificate. SHIP reduces every descriptive policy-level UCB to at most 0.299 , with test risk at most 0.208 . Search design sets the attainable coverage and cost profile, while policy-level calibration determines which outputs may be released, as illustrated in Figure 4. Search policy Cal. unit UCB ↓ Cov. ↑ Risk [95% CI] ↓ Gen. ↓ VLM ↓ Sec. ↓                                                
+
+> Naive pooled-candidate threshold, within-prompt dependence ignored
+> Sequential first-pass Pooled cand. 0.420 0.573 0.310 [0.267, 0.355] 9.10 75.3 66.7 Flash-BoN tournament Pooled cand. 0.472 0.598 0.361 [0.317, 0.405] 4.52 133.8 45.2 RAISE refinement Pooled cand. 0.355 0.688 0.244 [0.207, 0.281] 18.60 146.8 142.3 History-dependent rewriting Pooled cand. 0.439 0.535 0.328 [0.282, 0.374] 5.40 46.0 49.4
+> Threshold calibrated on the complete deployed policy
+> Sequential SHIP Policy 0.299 0.438 0.162 [0.125, 0.203] 10.68 87.6 78.2 Flash-BoN + SHIP Policy 0.298 0.462 0.167 [0.130, 0.204] 4.52 133.8 45.2
+> RAISE + SHIP Policy 0.297 0.612 0.208 [0.172, 0.244] 18.60 146.8 142.3 Rewriting + SHIP Policy 0.299 0.401 0.176 [0.134, 0.218] 5.40 46.0 49.4
+
+Table 1: Policy-level calibration across adaptive FLUX search on the shared GenEval2 split ( α=0 .30 , δ=0 .10 ). Intervals use prompt bootstrap. UCBs are descriptive. Pooled rows also ignore within-prompt dependence and are not certificates. VLM calls include search verification.             
+
+> Policy Cov. ↑Atomic loss ↓Any-failure ↓
+> Pooled-candidate 0.573 0.112 0.380
+> Sequential SHIP 0.438 0.076 0.280
+> ∆−0.135 −0.036 −0.100
+
+Table 2: Human audit of released outputs. ∆ is SHIP minus the pooled-candidate baseline. 
+
+4.3 Risk, Coverage, and Compute Tradeoffs 
+
+Coverage Is a Tunable Operating Characteristic. Fig-ure 3c sweeps α rather than selecting a favorable threshold. Coverage rises from 0.253 to 0.557 as α increases from 0.20 
+
+to 0.50 , while risk tracks the requested budget. Best-of-4
+
+rejection covers more prompts but always uses four gener-ations. Lower coverage at a strict budget therefore reflects deliberate abstention. 
+
+Search Policy Determines the Efficiency Profile. At risk 
+
+0.166 , Figure 5 shows that Flash-BoN is fastest, RAISE has the highest coverage, and rewriting uses the fewest VLM calls. Sequential SHIP is intermediate, and no policy is best under every cost measure. 
+
+4.4 Robustness and Generalization 
+
+Adaptive Policies Transfer across Backbones and Tasks. 
+
+On SD3.5-Large, ProbeSelect with SHIP reaches risk 0.196 ,UCB 0.298 , and coverage 0.428 using 1.80 rather than 5.00 
+
+full-denoise equivalents. On FLUX.1-Kontext-dev, ADE-CoT with SHIP reaches edit loss 0.171 and UCB 0.298 , while candidate calibration is infeasible. These results support cal-ibration transfer, not lower native editing cost. Complete op-erating points appear in the Supplementary Document. 
+
+Additional Robustness Checks. Sequential SHIP remains below target across backbones, but SDXL coverage falls to 
+
+0.113 and SD3 transfer requires recalibration at risk 0.303 .At N =16 , the certificate shows no target crossing across 
+
+200 cached-stream splits with mean risk 0.148 and coverage 
+
+0.391 . These splits reuse generations and omit rerun vari-ability. Full results are supplementary. 
+
+Human Released-Output Audit. Human atomic loss falls from 0.112 to 0.076 and strict any-failure from 0.380 to 
+
+0.280 (Table 2). Because calibration uses machine loss, this corroborates improvement but is not a human-risk certificate. The Supplementary Document reports the audit protocol, aggregation definitions, and aggregate agreement statistics. 
+
+4.5 Evaluator and Failure Analysis 
+
+Why Fine-Grained Risk Matters. Soft-TIFA-GM gives Spearman 0.928 , AUROC 0.975 , and the lowest non-oracle risk. Scalar rewards yield no feasible set, so ranking alone is insufficient. 
+
+Residual Failures. Failures concentrate in counting, spa-tial, and action. Prompts with 9 to 10 atoms reach risk 0.398 
+
+at 0.05 coverage, showing that average control does not en-sure subgroup service. 
+
+# 5 Conclusion 
+
+Verifier-guided generation releases a policy-selected output rather than an independent candidate. SHIP calibrates this deployed object by replaying the policy on held-out prompts and bounding released-image loss. Across fixed and adaptive search, policy-level calibration better characterized released-output risk than pooled-candidate thresholds and recovered feasible risk, coverage, and compute tradeoffs. Search de-termines the attainable quality, coverage, and cost frontier, while calibration determines which operating points may be released. Validity requires a prespecified grid, exchangeability, bounded loss, and faithful replay. Threshold-dependent adap-tive search remains descriptive because exact calibration may require a rollout per prompt and threshold. A held-out VLM defines loss, making the human audit corroborative rather than a human-risk certificate. SHIP controls average rather than subgroup risk. Evaluator drift, hard-prompt abstention, and distribution shift remain boundaries. Future work should develop sharper bounds, group-aware objectives, and shift detection. More broadly, reliability should be calibrated on the complete deployed decision pro-cess that releases an output, not on upstream candidates. References 
+
+Angelopoulos, A. N.; Bates, S.; Candès, E. J.; Jordan, M. I.; and Lei, L. 2025. Learn Then Test: Calibrating Predictive Algorithms to Achieve Risk Control. The Annals of Applied Statistics , 19(2): 1641–1662. Angelopoulos, A. N.; Bates, S.; Fisch, A.; Lei, L.; and Schuster, T. 2024. Conformal Risk Control. In International Conference on Learning Representations (ICLR) .Bahng, H.; Chan, C.; Durand, F.; and Isola, P. 2025. Cycle Consis-tency as Reward: Learning Image-Text Alignment without Human Preferences. In IEEE/CVF International Conference on Computer Vision (ICCV) , 22934–22946. Bai, S.; Cai, Y.; Chen, R.; Chen, K.; Chen, X.; Cheng, Z.; et al. 2025a. Qwen3-VL Technical Report. arXiv preprint arXiv:2511.21631 .Bai, S.; Chen, K.; Liu, X.; Wang, J.; Ge, W.; Song, S.; et al. 2025b. Qwen2.5-VL Technical Report. arXiv preprint arXiv:2502.13923 .Bai, T.; and Jin, Y. 2026. Conformal Selective Prediction with General Risk Control. arXiv preprint arXiv:2603.24704 .Bates, S.; Angelopoulos, A.; Lei, L.; Malik, J.; and Jordan, M. I. 2021. Distribution-Free, Risk-Controlling Prediction Sets. Journal of the ACM , 68(6): 1–34. Black Forest Labs. 2024. FLUX.1-dev. Official model repository and model card. Black Forest Labs; Batifol, S.; Blattmann, A.; Boesel, F.; Consul, S.; Diagne, C.; et al. 2025. FLUX.1 Kontext: Flow Matching for In-Context Image Generation and Editing in Latent Space. arXiv preprint arXiv:2506.15742 .Chen, C.-Y.; Shi, M.; Zhang, G.; and Shi, H. 2025. T2I-Copilot: A Training-Free Multi-Agent Text-to-Image System for Enhanced Prompt Interpretation and Interactive Generation. In IEEE/CVF In-ternational Conference on Computer Vision (ICCV) , 19396–19405. Chen, Z.; Wu, J.; Wang, W.; Su, W.; Chen, G.; Xing, S.; et al. 2024. InternVL: Scaling Up Vision Foundation Models and Aligning for Generic Visual-Linguistic Tasks. In IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 24185–24198. Cho, J.; Hu, Y.; Baldridge, J. M.; Garg, R.; Anderson, P.; Krishna, R.; Bansal, M.; Pont-Tuset, J.; and Wang, S. 2024. Davidsonian Scene Graph: Improving Reliability in Fine-Grained Evaluation for Text-to-Image Generation. In International Conference on Learn-ing Representations (ICLR) .Chow, C. K. 1970. On Optimum Recognition Error and Reject Tradeoff. IEEE Transactions on Information Theory , 16(1): 41–46. Coste, T.; Anwar, U.; Kirk, R.; and Krueger, D. 2024. Reward Model Ensembles Help Mitigate Overoptimization. In International Conference on Learning Representations (ICLR) .El-Yaniv, R.; and Wiener, Y. 2010. On the Foundations of Noise-Free Selective Classification. Journal of Machine Learning Re-search , 11: 1605–1641. Esser, P.; Kulal, S.; Blattmann, A.; Entezari, R.; Müller, J.; Saini, H.; et al. 2024. Scaling Rectified Flow Transformers for High-Resolution Image Synthesis. In International Conference on Ma-chine Learning (ICML) , 12606–12633. Gao, L.; Schulman, J.; and Hilton, J. 2023. Scaling Laws for Reward Model Overoptimization. In International Conference on Machine Learning (ICML) , 10835–10866. Geifman, Y.; and El-Yaniv, R. 2017. Selective Classification for Deep Neural Networks. In Advances in Neural Information Pro-cessing Systems (NeurIPS) .Guo, H.; Wei, H.; and Jing, B. 2026. Toward Early Quality Assess-ment of Text-to-Image Diffusion Models. In IEEE/CVF Confer-ence on Computer Vision and Pattern Recognition (CVPR) , 38410– 38419. Hu, X.; Wang, R.; Fang, Y.; Fu, B.; Cheng, P.; and Yu, G. 2024. ELLA: Equip Diffusion Models with LLM for Enhanced Semantic Alignment. arXiv preprint arXiv:2403.05135 .Hu, Y.; Liu, B.; Kasai, J.; Wang, Y.; Ostendorf, M.; Krishna, R.; and Smith, N. A. 2023. TIFA: Accurate and Interpretable Text-to-Image Faithfulness Evaluation with Question Answering. In 
+
+IEEE/CVF International Conference on Computer Vision (ICCV) ,20406–20417. Huang, K.; Sun, K.; Xie, E.; Li, Z.; and Liu, X. 2023. T2I-CompBench: A Comprehensive Benchmark for Open-world Com-positional Text-to-image Generation. In Advances in Neural Infor-mation Processing Systems (NeurIPS) .Jiang, L.; Chen, R.; Gao, C.; and Niu, D. 2026. RAISE: Requirement-Adaptive Evolutionary Refinement for Training-Free Text-to-Image Alignment. In IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 22038–22048. Kamath, A.; Chang, K.-W.; Krishna, R.; Zettlemoyer, L.; Hu, Y.; and Ghazvininejad, M. 2025. GenEval 2: Addressing Benchmark Drift in Text-to-Image Evaluation. arXiv preprint arXiv:2512.16853 .Kim, S.; Kim, M.; and Park, D. 2025. Test-Time Alignment of Dif-fusion Models without Reward Over-Optimization. In International Conference on Learning Representations (ICLR) .Kirstain, Y.; Polyak, A.; Singer, U.; Matiana, S.; Penna, J.; and Levy, O. 2023. Pick-a-Pic: An Open Dataset of User Preferences for Text-to-Image Generation. In Advances in Neural Information Processing Systems (NeurIPS) .Kladny, K.-R.; Schölkopf, B.; and Muehlebach, M. 2025. Confor-mal Generative Modeling with Improved Sample Efficiency through Sequential Greedy Filtering. In International Conference on Learn-ing Representations (ICLR) .Li, B.; Lin, Z.; Pathak, D.; Li, J.; Fei, Y.; Wu, K.; Xia, X.; Zhang, P.; Neubig, G.; and Ramanan, D. 2024. Evaluating and Improv-ing Compositional Text-to-Visual Generation. In IEEE/CVF Con-ference on Computer Vision and Pattern Recognition Workshops (CVPRW) , 5290–5301. Li, S.; Kallidromitis, K.; Gokul, A.; Koneru, A.; Kato, Y.; Kozuka, K.; and Grover, A. 2025. Reflect-DiT: Inference-Time Scaling for Text-to-Image Diffusion Transformers via In-Context Reflection. In 
+
+IEEE/CVF International Conference on Computer Vision (ICCV) ,15657–15668. Lin, Z.; Pathak, D.; Li, B.; Li, J.; Xia, X.; Neubig, G.; Zhang, P.; and Ramanan, D. 2024. Evaluating Text-to-Visual Generation with Image-to-Text Generation. In European Conference on Computer Vision (ECCV) , 366–384. Lipman, Y.; Chen, R. T. Q.; Ben-Hamu, H.; Nickel, M.; and Le, M. 2023. Flow Matching for Generative Modeling. In International Conference on Learning Representations (ICLR) .Ma, N.; Tong, S.; Jia, H.; Hu, H.; Su, Y.-C.; Zhang, M.; et al. 2025. Scaling Inference Time Compute for Diffusion Models. In 
+
+IEEE/CVF Conference on Computer Vision and Pattern Recogni-tion (CVPR) , 2523–2534. Podell, D.; English, Z.; Lacey, K.; Blattmann, A.; Dockhorn, T.; Müller, J.; Penna, J.; and Rombach, R. 2024. SDXL: Improving Latent Diffusion Models for High-Resolution Image Synthesis. In 
+
+International Conference on Learning Representations (ICLR) .Qu, X.; Yuan, Z.; Tang, J.; Chen, R.; Tang, D.; Yu, M.; et al. 2026. From Scale to Speed: Adaptive Test-Time Scaling for Image Editing. In IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 23272–23282. Rawal, R.; Shirkavand, R.; Paul, S.; Wen, Y.; Huang, H.; Chen, Y.; Goldstein, T.; and Somepalli, G. 2026. Flash-BoN: Instant Drafts for Inference-Time Scaling in Diffusion Models. arXiv preprint arXiv:2607.04461 .Rombach, R.; Blattmann, A.; Lorenz, D.; Esser, P.; and Ommer, B. 2022. High-Resolution Image Synthesis with Latent Diffusion Models. In IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) .Singh, A.; Happi, C.; Relan, J.; Nair, V.; and Baradwaj, V. 2026. BOKBO (Best of K Bad Options): Calibrated Abstention for VLA Policies. arXiv preprint arXiv:2605.30660 .Vovk, V.; Gammerman, A.; and Shafer, G. 2005. Algorithmic Learn-ing in a Random World . Springer. Wang, P.; Li, L.; Chen, L.; Cai, Z.; Zhu, D.; Lin, B.; et al. 2024. Large Language Models are not Fair Evaluators. In Annual Meeting of the Association for Computational Linguistics (ACL) , 9440–9450. Wang, Q.; Fan, Y.; and Wang, X. 2026. SAFER: Risk-Constrained Sample-then-Filter in Large Language Models. In International Conference on Learning Representations (ICLR) .Wang, Q.; Geng, T.; Wang, Z.; Wang, T.; Fu, B.; and Zheng, F. 2025. Sample then Identify: A General Framework for Risk Con-trol and Assessment in Multimodal Large Language Models. In 
+
+International Conference on Learning Representations (ICLR) .Wiles, O.; Zhang, C.; Albuquerque, I.; Kajić, I.; Wang, S.; Bugliarello, E.; Onoe, Y.; Papalampidi, P.; Ktena, I.; Knutsen, C.; Rashtchian, C.; Nawalgaria, A.; Pont-Tuset, J.; and Nematzadeh, A. 2025. Revisiting Text-to-Image Evaluation with Gecko: On Met-rics, Prompts, and Human Rating. In International Conference on Learning Representations (ICLR) .Xu, J.; Liu, X.; Wu, Y.; Tong, Y.; Li, Q.; Ding, M.; Tang, J.; and Dong, Y. 2023. ImageReward: Learning and Evaluating Human Preferences for Text-to-Image Generation. In Advances in Neural Information Processing Systems (NeurIPS) .Xu, Y.; Guo, W.; and Wei, Z. 2025. Selective Conformal Risk Control. arXiv preprint arXiv:2512.12844 .Yu, X.; and Liu, J. 2026. A Joint Finite-Sample Certificate for Adaptive Selective Conformal Risk Control. arXiv preprint arXiv:2606.08517 .Zheng, L.; Chiang, W.-L.; Sheng, Y.; Zhuang, S.; Wu, Z.; Zhuang, Y.; et al. 2023. Judging LLM-as-a-Judge with MT-Bench and Chat-bot Arena. In Advances in Neural Information Processing Systems (NeurIPS) , volume 36, 46595–46623. Zhu, J.; Wang, W.; Chen, Z.; Liu, Z.; Ye, S.; Gu, L.; et al. 2025. InternVL3: Exploring Advanced Training and Test-Time Recipes for Open-Source Multimodal Models. arXiv preprint arXiv:2504.10479 .Zhuo, L.; Zhao, L.; Paul, S.; Liao, Y.; Zhang, R.; Xin, Y.; Gao, P.; Elhoseiny, M.; and Li, H. 2025. From Reflection to Perfection: Scaling Inference-Time Optimization for Text-to-Image Diffusion Models via Reflection Tuning. In IEEE/CVF International Confer-ence on Computer Vision (ICCV) , 15329–15339. Supplementary Material 
+
+# Overview 
+
+This document expands the evidence behind the main paper without changing its evaluation protocol or reported operat-ing points. Section A specifies the generation, verification, calibration, and uncertainty procedures. Section B states the formal scope of SHIP and proves Proposition 2. Sec-tion C diagnoses the candidate-to-policy mismatch through mechanism, calibration-unit and independent-stream analy-ses. Section D gives the adaptive-policy results and Section E tests robustness. Sections F to I provide qualitative, fixed-search, human, and evaluator evidence. Section J states the remaining deployment boundaries. Unless stated otherwise, experiments use GenEval2 with FLUX.1-dev, Qwen2.5-VL Soft-TIFA-GM selector risk, Qwen3-VL Soft-TIFA-GM tar-get loss, α=0 .30 , δ=0 .10 , and disjoint sets of 400 calibration prompts and 400 test prompts. 
+
+# A Evaluation Protocol and Implementation Details 
+
+Generation and verification. FLUX.1-dev uses 28 de-noising steps, guidance 3.5, and 1024 × 1024 resolution. SD3 Medium uses 28 steps and classifier-free guidance 7.0.SDXL uses 30 steps and guidance 7.0 at the same reso-lution. Candidate index k corresponds to generation seed 
+
+k − 1. The selector checkpoint is Qwen2.5-VL-7B-Instruct and the primary target is Qwen3-VL-8B-Instruct. InternVL3-8B supplies the alternative-family target. Atom questions and expected answers are frozen in the GenEval2 metadata. Each query appends “Answer in one word.” The evaluator sums the next-token probabilities of valid capitalization, whitespace, and numeric variants before geometric-mean aggregation. 
+
+Calibration units and statistical summaries. One prompt and its complete policy trajectory form one exchange-able unit for SHIP. The pooled-candidate heuristic instead treats completed images as observations even when several images share a prompt. We label this heuristic naive and em-pirical throughout. The one-candidate-per-prompt sensitivity restores the prompt as the sampling unit, but its pointwise threshold scan is not a simultaneous certificate. Test intervals use prompt bootstrap resampling of complete release or ab-stention outcomes. Human-policy differences use the same prompt-level paired resampling. Zero coverage denotes an infeasible operating point and is never interpreted as zero deployment risk. Unless a table states otherwise, each fixed-stream operating point is computed once on the frozen can-didate stream and each interval uses 5000 prompt-level boot-strap replicates with a fixed analysis seed. Candidate-stream replications and cached-stream split studies state their seed ranges and repetition counts separately. Bootstrap resampling quantifies prompt-sampling uncertainty and is not counted as an independent generation run. 
+
+Hardware. Core generation and scoring runs use one NVIDIA RTX 5090 with 32 GB memory, driver 580.159.03, CUDA 12.8, and PyTorch 2.10.0. Baseline-specific environ-ments use the package versions required by their official im-plementations. Reported seconds are single-GPU wall-clock measurements. 
+
+Adaptive-Policy Implementations. Flash-BoN uses its full VLM tournament over inexpensive drafts. RAISE uses its analyzer, rewriter, verifier, generation, and editing actions. The history-dependent rewriting ablation retains failure-conditioned prompt rewriting and generation while disabling image editing. ProbeSelect launches five SD3.5-Large trajec-tories and retains one after the probe at 20% of denoising. It uses 28 steps and classifier-free guidance 7.0. ADE-CoT follows its official N =32 editing protocol. Every completed candidate and released output in the common comparison is rescored by the same selector and target judge. Reported VLM calls include search-native verification and the release gate. 
+
+# B Formal Scope and Finite-Sample Validity 
+
+Proof of Proposition 2. For any fixed τ and nτ > 0, the accepted losses are bounded in [0 , 1] . Hoeffding’s inequality therefore gives Pr[ Rπ (τ ) > U δ′ (τ )] ≤ δ′. A union bound over the |T | prespecified thresholds makes every bound valid simultaneously with probability at least 1 − δ. On this event, the selected threshold obeys Rπ (τ ⋆) ≤ Uδ′ (τ ⋆) ≤ α. □
+
+Table 3 separates the statistical tool from the paper’s application-level contribution. Learn-then-Test supplies si-multaneous parameter selection. SHIP defines the calibrated observation as the output of the complete T2I release policy. SCOPE-Gen and SAFER control set-valued or filtered gen-eration objects. BOKBO controls an execute-or-abstain de-cision for verifier-best actions. These objects are related, but none makes a candidate-level threshold automatically valid after a different search and stopping policy is composed with it. Method Calibration unit Released object and loss Policy family Statistical statement Learn-then-Test Exchangeable ex-amples for a pa-rameterized algo-rithm User-defined bounded risk Any prespecified al-gorithm family Multiple-testing risk control over parame-ters SCOPE-Gen Generated candi-date sets At least one admissi-ble set member Sequential genera-tion and greedy set filters Conformal admissi-bility control SAFER Open-ended lan-guage prompts Correct-answer in-clusion in a filtered set Abstention-aware sampling and filter-ing Separate sampling and filtering risk controls BOKBO VLA instruction with K actions Unsafe execu-tion among non-abstained decisions Verifier-best action and abstention Finite-sample decision-level risk bound SHIP Prompt with com-plete policy rollout Continuous loss of one released image Fixed or history-dependent search with abstention Learn-then-Test applied to policy-output loss 
+
+Table 3: Formal scope comparison. SHIP does not introduce a new concentration inequality or the general idea of decision-level calibration. Its contribution is the candidate-to-policy estimand analysis and a T2I instantiation that covers fixed and adaptive release policies. 
+
+# C Diagnosing the Candidate-to-Policy Mismatch 
+
+Mechanism decomposition. Table 4 implements the de-composition in Proposition 1. For sequential release at 
+
+N =16 , changing candidate pass weights to policy accep-tance weights contributes +0 .108 to risk. Prompt bootstrap gives an interval from 0.083 to 0.133 . Replacing the mean passing-candidate loss by the first released candidate con-tributes −0.009 , with an interval from −0.035 to 0.017 .The observed sequential mismatch is therefore dominated by prompt reweighting in this experiment. Best-of-N selection has a more negative within-prompt component, which offsets part of the same reweighting. 
+
+Sensitivity to the candidate calibration unit. The pooled heuristic combines 16 correlated candidates from each prompt and thus reports 6400 calibration observations. Ta-ble 5 compares it with two prompt-level alternatives and direct policy replay on the same fixed N =16 stream. The pooled sequential row reproduces the risk 0.310 in the main paper. Choosing one fixed candidate per prompt reduces the point estimate to 0.196 , so the numerical budget crossing depends on the candidate calibration design. Direct policy replay targets the deployed first-pass output and gives risk 
+
+0.162 . The comparison supports an estimand distinction, not a claim that every candidate-level construction must cross α
+
+on every finite dataset. 
+
+Independent candidate-stream replication. To test de-pendence on generation randomness, we repeat the N =16 
+
+comparison on two nonoverlapping seed streams over the same frozen subset of 96 calibration and 104 test prompts. Table 6 shows the same ordering in both streams. The smaller subset produces wider intervals, so this is replication ev-idence rather than a replacement for the full 800 -prompt experiment. 
+
+Representative release decisions. Figure 6 shows two real prompt-level candidate streams with different relation fail-ures. In each case, the policy rejects an early high-risk image and releases a later candidate that satisfies the stated relation. The examples visualize the released object evaluated by SHIP rather than serving as additional quantitative evidence. 
+
+Figure 6: Real FLUX release decisions. a The first image omits the stop sign, while the released image places it above the bed. b The first image contains only one chair, while the released image contains two chairs side by side. Borders and labels encode the frozen selector decision. Image content is shown without retouching or regeneration. N Policy Candidate Reweighted Released Prompt weights Within prompt Total gap 4 Sequential 0.195 0.246 0.234 +0.051 -0.012 +0.038 8 Sequential 0.204 0.295 0.278 +0.091 -0.018 +0.073 16 Sequential 0.211 0.319 0.310 +0.108 -0.009 +0.099 4 Best-of-N 0.195 0.246 0.195 +0.051 -0.051 0.000 8 Best-of-N 0.204 0.295 0.227 +0.091 -0.069 +0.022 16 Best-of-N 0.211 0.319 0.225 +0.108 -0.094 +0.014 
+
+Table 4: Mechanism decomposition at the pooled candidate threshold. Candidate risk uses candidate pass weights. Reweighted risk substitutes policy acceptance weights while retaining each prompt’s mean passing-candidate loss. Released risk then substitutes the policy-selected loss. Prompt bootstrap intervals for the main N =16 sequential components are reported in the text.                                              
+
+> Policy Calibration design Cal. units τCov. ↑Risk and 95% CI ↓Cal. UCB ↓
+> Sequential Naive pooled candidates 6400 0.450 0.573 0.310 [0.267, 0.355] 0.300 Sequential One fixed candidate per prompt 400 0.322 0.473 0.196 [0.156, 0.239] 0.292 Sequential One hash-selected candidate per prompt 400 0.268 0.453 0.183 [0.143, 0.225] 0.297
+> Sequential SHIP Complete policy replay 400 0.244 0.438 0.162 [0.125, 0.203] 0.299
+> Best-of-16 Naive pooled candidates 6400 0.450 0.573 0.225 [0.186, 0.267] 0.300 Best-of-16 + SHIP Complete policy replay 400 0.348 0.495 0.166 [0.127, 0.206] 0.299
+
+Table 5: Calibration-unit sensitivity on the fixed FLUX N =16 stream. All thresholds use a pointwise Hoeffding scan on the same 400 calibration prompts and are evaluated on the same 400 test prompts. The pooled heuristic ignores within-prompt dependence. These empirical operating points do not inherit the simultaneous guarantee of Proposition 2.                 
+
+> Seeds Pooled cov. Pooled risk SHIP cov. SHIP risk
+> 0to 15 0.587 0.340 0.413 0.182
+> 16 to 31 0.510 0.299 0.327 0.103
+
+Table 6: Independent N =16 candidate-stream replica-tion. The paired risk differences are −0.158 with interval 
+
+[−0.242 , −0.079] for seeds 0 to 15 , and −0.196 with inter-val [−0.298 , −0.097] for seeds 16 to 31 .
+
+# D Adaptive Search and Editing Policies 
+
+The adaptive results distinguish search quality from release calibration. Table 7 shows that the policies occupy differ-ent points on the same matched-risk frontier. Tables 8 and 9 then test early trajectory selection and iterative image edit-ing. SHIP changes which completed policy outcomes are released. It does not claim the native search contributions or their internal compute savings. 
+
+# E Robustness across Models, Data, Judges, and Splits 
+
+Prompt-distribution transfer. Table 10 expands the mid-dle panel of Figure 7. The release threshold τ =0 .322 is fit on GenEval2 seed-0 calibration images and transferred un-changed to the seed-0 FLUX images for each prompt set. Transfer remains below the nominal budget in these four cases, but the coverage and risk shifts show why the result should not be interpreted as a distribution-shift guarantee. 
+
+Alternative target judge. Table 11 replaces the Qwen3 target with InternVL3 while keeping the Qwen2.5 selec-tor fixed. The selector correlates strongly with both targets, and policy-level calibration preserves the ordering of accept or reject, best-of-4, and sequential policies. Absolute risks change, which reinforces the interpretation that the target judge defines the measured loss. 
+
+Pointwise operating points and fixed-grid certification. 
+
+Table 12 separates the practical pointwise scan used in the main result tables from the prespecified-grid procedure in Proposition 2. Both rows use one prompt trajectory as one observation and average over 200 cached-stream splits at 
+
+N =16 . The fixed-grid row has no empirical target crossing and is the only row in this comparison with simultaneous finite-sample validity. The pointwise row attains higher mean coverage but is reported only as an empirical operating rule. 
+
+# F Qualitative Evidence from Real Generations 
+
+Figure 8 makes the release rule visible at the image level. The candidate streams contain both clear failures and faith-ful generations for counting, contextual, and structural re-quirements. The figure is diagnostic rather than a selected success rate. Quantitative evidence is always computed over the complete held-out prompt set. Policy with SHIP Risk ↓ Cov. ↑ Gen-eq. ↓ VLM/p ↓ Sec./p ↓ Primary profile Best-of-16 0.166 0.495 16.00 120.3 116.0 Reference Sequential 0.166 0.448 10.61 87.1 77.7 Balanced Flash-BoN 0.166 0.459 4.52 133.8 45.0 Fastest RAISE 0.166 0.571 18.60 146.8 142.3 Highest coverage Rewriting 0.166 0.394 5.40 46.0 48.9 Fewest VLM calls 
+
+Table 7: Matched-risk efficiency across FLUX policies. Operating points are selected on the calibration split to match best-of-16 .Their test risks round to 0.166 . The table reports complementary costs without assigning one Pareto label across incompatible resource axes.                                                         
+
+> Search policy Calibration unit Cal. UCB ↓Cov. ↑Risk and 95% CI ↓Denoise-eq. ↓QA/p ↓Sec./p ↓
+> Full-denoise best-of-5Candidate 0.394 0.512 0.283 [0.236, 0.331] 5.00 37.6 41.3 ProbeSelect 5→1None N/A 1.000 0.377 [0.339, 0.416] 1.80 0.0 13.8 ProbeSelect 5→1Candidate 0.429 0.598 0.312 [0.267, 0.358] 1.80 7.5 14.6 Full-denoise best-of-5+ SHIP Policy 0.298 0.445 0.191 [0.148, 0.235] 5.00 37.6 41.3 Sequential SHIP Policy 0.299 0.406 0.184 [0.139, 0.230] 3.42 25.7 28.3
+> ProbeSelect 5→1+ SHIP Policy 0.298 0.428 0.196 [0.152, 0.241] 1.80 7.5 14.6
+
+Table 8: SHIP with ProbeSelect on SD3.5-Large. All rows use GenEval2 and the same 400 /400 split. Full-denoise equivalents normalize denoising cost. Empirical UCB values describe calibration feasibility rather than the fixed-grid certificate. 
+
+# G Fixed Search, Evaluators, and Failure Diagnostics 
+
+Risk and coverage across target budgets. Table 14 re-ports every operating point shown on the risk-coverage fron-tier in the main paper. The threshold is calibrated separately for each target budget. Sequential stopping and best-of-4
+
+rejection use the same candidate bank and target judge. Se-quential stopping reduces generation and QA cost because accepted prompts may terminate before the fourth attempt. 
+
+Budget sweep. Table 15 varies the maximum number of candidates at the default risk budget. Coverage rises with N ,while compute grows more slowly than the maximum budget because the sequential policy stops after its first pass. 
+
+Cross-Backbone Operating Points. Table 16 gives the per-backbone numbers summarized in the main text. Held-out risk is below budget for all three generators, while achiev-able coverage varies substantially. 
+
+Where Failures Concentrate. Table 17 breaks accepted-output quality down by atom type, showing that counting, spatial, and verb atoms are the bottleneck while object exis-tence is nearly solved. 
+
+Adaptive-policy generalization. Tables 7, 8, and 9 pro-vide the complete operating points summarized in the main paper. Table 13 separately checks each reproduction on its native benchmark before applying the shared SHIP evalua-tion protocol.                         
+
+> NCov. ↑Risk ↓Gen/p ↓QA/p ↓
+> 10.207 0.128 1.00 7.5 20.297 0.151 1.78 13.7 40.347 0.147 3.18 25.1 80.390 0.168 5.80 46.8 16 0.438 0.162 10.68 87.6
+
+Table 15: Budget sweep for the empirical sequential operat-ing point on FLUX. The risk budget is α=0 .30 . Each budget is calibrated on the complete first-pass policy.             
+
+> Backbone Cov. ↑Risk ↓Gen/p ↓
+> FLUX.1-dev 0.347 0.147 3.18 SD3 Medium 0.335 0.236 3.29 SDXL 0.113 0.198 3.76
+
+Table 16: Cross-backbone empirical operating points for the sequential policy at α=0 .30 . Held-out risk is below the bud-get on all three backbones, while coverage varies substan-tially.           
+
+> Atom type Target score ↑Failure rate ↓
+> Object existence 0.956 4.3% Counting 0.706 29.6% Spatial position 0.523 47.6% Verb / action 0.264 70.7%
+
+Table 17: Accepted-output quality by atom type under best-of-8 with calibrated rejection. Counting, spatial, and verb atoms dominate residual failures. Editing policy Calibration unit Cov. ↑ Edit loss ↓ Cal. UCB ↓ NFE ↓ VLM/p ↓ Sec./edit ↓
+
+Best-of-N editing None 1.000 0.281 N/A 896 192 208.6 ADE-CoT Native stopping 1.000 0.274 N/A 441 94 102.7 ADE-CoT Candidate 0.564 0.243 0.408 441 94 102.7 
+
+ADE-CoT + SHIP Policy 0.472 0.171 0.298 441 94 102.7 
+
+Table 9: Cross-task policy calibration for image editing. FLUX.1-Kontext-dev and N =32 follow the ADE-CoT protocol. SHIP changes the release rule without changing the native ADE-CoT trajectory cost. 
+
+Figure 7: Robustness summary. a Held-out coverage and risk across three T2I backbones. b Fixed-threshold transfer from GenEval2 to four FLUX prompt sets. c Mean coverage and target-crossing rates over 200 cached-stream splits. 
+
+Prompt set Cov. ↑ Risk ↓
+
+GenEval2 test 0.207 0.128 GenAI-Bench 0.633 0.294 T2I-CompBench 0.619 0.144 DSG-1k 0.443 0.173 DPG-Bench 0.576 0.224 
+
+Table 10: Single-candidate FLUX prompt-distribution trans-fer with a fixed GenEval2-calibrated threshold. No transfer set is used to select the displayed threshold. 
+
+# H Human Released-Output Audit 
+
+The audit evaluates both N =16 sequential policies on the same 400 test prompts. Their released sets contain 267 dis-tinct images and share 137 outputs. Blinded views omit poli-cies, thresholds, and machine scores. Two annotators label each atom as yes, no, or uncertain, followed by adjudica-tion of disagreements. Shared outputs are labeled once and reused. Atomic loss is the fraction of adjudicated atoms not labeled yes. Any-failure marks an image with at least one no or uncertain atom. Intervals resample the full prompt universe while preserving release and abstention. Because machine loss selects the thresholds, Table 18 corroborates the result but does not certify human risk. 
+
+Target and policy ρ Cov. ↑ Risk ↓ Gen/p ↓
+
+Qwen3, accept or reject 0.922 0.210 0.127 1.00 Qwen3, best-of-4 + SHIP 0.922 0.403 0.192 4.00 Qwen3, sequential SHIP 0.922 0.347 0.147 3.18 InternVL3, accept or reject 0.897 0.290 0.166 1.00 InternVL3, best-of-4 + SHIP 0.897 0.573 0.232 4.00 InternVL3, sequential SHIP 0.897 0.438 0.172 2.95 
+
+Table 11: Alternative-target robustness at N =4 . The symbol 
+
+ρ is the Spearman correlation between Qwen2.5 selector risk and the stated target loss over 12800 candidates. Each target is calibrated separately.                             
+
+> Metric Pooled SHIP Difference Released outputs 229 175 N/A Coverage 0.573 0.438 −0.135
+> Atomic loss 0.112 0.076 −0.036 95% CI [0.090, 0.134] [0.057, 0.095] [−0.057 ,−0.015 ]Any-failure 0.380 0.280 −0.100 95% CI [0.315, 0.445] [0.212, 0.348] [−0.147 ,−0.053 ]Uncertain atoms 0.031 0.021 −0.010
+
+Table 18: Human audit of released policy outputs on the same 400 prompts. The difference is SHIP minus pooled-candidate sequential release. Atomic loss uses 1550 pooled-policy atoms and 1102 SHIP-policy atoms. Intervals use prompt bootstrap. a bFigure 8: Qualitative gallery of real FLUX candidate streams with Qwen2.5 selector risk. Top : for “three purple candles,” four-candle renders are rejected and three-candle renders are accepted. Bottom left : an open-ocean shark is rejected for a swimming-pool prompt. Bottom right : ordinary or bean-filled cups are rejected for a cup-full-of-holes prompt. The held-out target agrees on every displayed decision. Sequential stopping releases the first passing candidate in each row.          
+
+> Threshold rule Mean cov. Mean risk Crossings Pointwise Hoeffding 0.474 0.226 2/200
+> Fixed-grid SHIP 0.391 0.148 0/200
+
+Table 12: Sequential N =16 split stability at α=0 .30 . The fixed-grid rule uses 201 prespecified thresholds with Bon-ferroni allocation. Crossings count held-out test risk point estimates above α across cached-stream splits.         
+
+> Statistic Value Raw agreement 0.880 Cohen’s κ0.460 PABAK 0.760 Gwet’s AC1 0.865 Positive specific agreement 0.610 Adjudication rate 0.120
+
+Table 19: Human annotation reliability. Two primary labels were collected for each of 1,806 unique atom decisions, pro-ducing 3,612 primary annotations. 
+
+# I Evaluator Ablations and Modular Cascades                                              
+
+> Selector ρ↑AUROC ↑Cov. ↑Risk ↓
+> Fine-grained atom-wise risk
+> Soft-TIFA-GM 0.928 0.975 0.403 0.192
+> Soft-TIFA-AM 0.860 0.950 0.400 0.229 Max-atom risk 0.814 0.976 0.390 0.195 Learned linear aggregation 0.884 0.978 0.420 0.222
+> Holistic similarity or preference
+> VQAScore 0.741 0.911 0.000 N/A ImageReward 0.420 0.685 0.000 N/A HPSv2 0.351 0.685 0.000 N/A PickScore 0.346 0.659 0.000 N/A CLIPScore 0.135 0.474 0.000 N/A Target-loss oracle 1.000 1.000 0.510 0.229
+
+Table 20: Selector ablation on the held-out target. The symbol 
+
+ρ denotes Spearman correlation. Coverage and risk are mea-sured for best-of-4 policy-level rejection at α=0 .30 . Only fine-grained atom-wise selectors yield a nonempty release set under the empirical feasibility criterion. 
+
+Cheap-to-expensive selector cascades. The release gate need not score every candidate with the fine-grained evalua-tor. Table 21 first ranks four candidates with a cheaper holistic score, then sends only the top one or two candidates to the Soft-TIFA-GM gate. Every row uses the same target judge and policy-level release calibration. Sending two candidates improves coverage while using half of the 30 .1 atom-level Baseline Native benchmark Official metric Paper Reproduced Rel. gap Fidelity note ProbeSelect SD3.5-Large ImageReward, base to selected 1.14 to 1.83 1.16 to 1.74 −4.9% Probe head retrained ProbeSelect SD3.5-Large HPSv2.1, base to selected 30.29 to 31.81 30.34 to 31.55 −0.8% Same probe head ProbeSelect SD3.5-Large Analytic cost ratio 0.36 0.36 0.0% Exact Flash-BoN GenAI-Bench Normalized AUC 0.68 0.65 −4.4% Hardware-dependent time RAISE GenEval Overall score 0.94 0.92 −2.1% Rewriter sampling RAISE GenEval Samples per prompt 18.6 19.4 +4 .3% Verifier variation RAISE GenEval VLM calls per prompt 7.3 7.8 +6 .8% Verifier variation RAISE DrawBench VQAScore 0.885 0.877 −0.9% Exact protocol RAISE DrawBench ImageReward 1.15 1.11 −3.5% Exact protocol RAISE DrawBench HPS-v2 0.305 0.302 −1.0% Exact protocol ADE-CoT GEdit-Bench GO , base to ADE-CoT 6.641 to 6.695 6.52 to 6.58 −1.7% Judge-version drift ADE-CoT Kontext NFE 418 441 +5 .5% Difficulty estimator 
+
+Table 13: Reproduction fidelity for adaptive baselines. Official metrics are evaluated on each method’s native benchmark before the common SHIP protocol. Small residual gaps arise from the stated implementation or hardware difference. 
+
+α Policy Cov. ↑ Risk ↓ Gen/p ↓ QA/p ↓
+
+0.15 Sequential SHIP 0.185 0.033 3.62 28.0 0.20 Sequential SHIP 0.253 0.068 3.43 26.8 0.25 Sequential SHIP 0.320 0.119 3.25 25.7 0.30 Sequential SHIP 0.347 0.147 3.18 25.1 0.35 Sequential SHIP 0.403 0.226 3.05 24.2 0.40 Sequential SHIP 0.438 0.295 2.95 23.4 0.50 Sequential SHIP 0.557 0.425 2.68 21.2 0.15 Best-of-4 + SHIP 0.185 0.032 4.00 30.1 0.20 Best-of-4 + SHIP 0.273 0.063 4.00 30.1 0.25 Best-of-4 + SHIP 0.330 0.102 4.00 30.1 0.30 Best-of-4 + SHIP 0.403 0.192 4.00 30.1 0.35 Best-of-4 + SHIP 0.485 0.280 4.00 30.1 0.40 Best-of-4 + SHIP 0.552 0.339 4.00 30.1 0.50 Best-of-4 + SHIP 0.680 0.442 4.00 30.1 
+
+Table 14: Complete empirical risk, coverage, and cost frontier for FLUX at N =4 . These are pointwise operating points. The requested risk budget changes by row and is not a shared horizontal constraint across the table. QA calls required by scoring all four candidates. 
+
+Prefilter Top k Cov. ↑ Risk ↓ QA/p ↓
+
+VQAScore 1 0.340 0.176 7.5 VQAScore 2 0.388 0.187 15.0 CLIPScore 1 0.225 0.099 7.5 CLIPScore 2 0.320 0.168 15.0 HPSv2 1 0.260 0.166 7.5 HPSv2 2 0.352 0.195 15.0 PickScore 1 0.255 0.137 7.5 PickScore 2 0.320 0.165 15.0 ImageReward 1 0.250 0.119 7.5 ImageReward 2 0.340 0.158 15.0 
+
+Table 21: Cheap-to-expensive cascade at N =4 and α=0 .30 .Every prefilter uses four cheap calls. Soft-TIFA-GM still makes the calibrated release decision. 
+
+# J Controlled Study and Deployment Boundaries 
+
+Synthetic controlled study and a lower bound. To isolate selection from any particular T2I verifier, Figure 9a uses a two-component prompt mixture. A hard prompt occurs with probability 0.5 and has candidate failure probability 
+
+0.9, while an easy prompt has failure probability 0.05 . The selector score is s = ℓ + ε, where ε ∼ N (0 , 0.72). For every candidate budget, we choose τ so E[ℓ | s ≤ τ ] = α
+
+and then deploy best-of-N or sequential selection. Candidate calibration remains at 0.30 , yet released risk can exceed the target. Policy calibration stays at or below the target. Figure 9b studies the limiting construction used below. A prompt is hard with probability ρ. Every hard-prompt candidate has loss 1, every easy-prompt candidate has loss 
+
+0, and ε ∼ N (0 , 1.52). With N =256 , released risk reaches 
+
+0.64 at ρ=0 .7 while candidate risk remains 0.30 .
+
+Proposition 3 (Lower bound on the post-selection gap) . In the deterministic-loss mixture of Figure 9b, fix any candidate-1 2 4 8 16 32 64          
+
+> Candidate budget N
+> 0.2 0.3 0.4
+> Released risk
+> α= 0.30
+> (a) Selection mismatch
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> Hard-prompt rate ρ
+> 0.00 0.25 0.50 0.75 1.00
+> Released risk
+> α= 0.30
+> (b) Risk approaches one
+> Candidate, best-of-N
+> Candidate, sequential Policy calibrated Hard base rate
+
+Figure 9: Controlled study. a Candidate calibration meets α,but released risk after selection can exceed it. b Best-of-N
+
+risk tracks the hard-prompt rate ρ and approaches the lower bound in Proposition 3. 
+
+level threshold τ with E[ℓ | s ≤ τ ] = α. As N → ∞ , the best-of-N released-output risk under τ converges to the hard-prompt share ρ among accepted prompts, while candidate-level risk remains α. Hence the gap Rπ (τ ) − Rimg (τ ) can be driven to 1 − α by increasing ρ. Proof sketch. As N → ∞ ,
+
+min k∈[N ] s(Yk, p ) → −∞ , so acceptance approaches one. Hard prompts then release loss 1 and easy prompts release loss 0, giving Rπ (τ ) → ρ, while the fixed candidate risk remains α. Taking ρ → 1 yields a gap approaching 1 − α. □
+
+Thus candidate calibration cannot in general be patched into a policy guarantee. 
+
+Group-Conditional Risk Control. A global threshold controls average released risk, not subgroup risk. Table 22 groups prompts by atomicity. The 9 to 10 atom group has risk 
+
+0.398 at 0.05 coverage from five releases. Group-SHIP cali-brates each group separately and abstains where no threshold is feasible, so it remains a diagnostic rather than a service guarantee. 
+
+Per-Deployment Recalibration. The GenAI-Bench trans-fer is the tightest case. On SD3, the transferred risk point estimate reaches 0.303 > α . Table 23 shows that a small deployment-side calibration set returns the average held-out risk below α, with coverage recovering as ncal grows. 
+
+Sensitivity and Finite-Sample Certification. The thresh-old is stable across tested resolutions. Coverage is 0.36 at 
+
+|T | =25 and 0.39 at full resolution. Calibration sets of 200 to 
+
+400 prompts yield coverage from 0.36 to 0.39 , with cached-
+
+Global τ Group-SHIP Atoms Cov. ↑ Risk ↓ Cov. ↑ Risk ↓
+
+3 to 4 0.66 0.097 0.73 0.150 5 to 6 0.50 0.147 0.40 0.112 7 to 8 0.18 0.263 0.00 N/A 9 to 10 0.05 0.398 0.00 N/A 
+
+Table 22: Group-conditional sequential risk at α=0 .30 . The hardest group has risk 0.398 from five releases. Group-SHIP abstains where no threshold is feasible. 
+
+ncal 50 100 200 Test risk ↓ 0.053 0.139 0.197 Coverage ↑ 0.173 0.419 0.544 
+
+Table 23: GenAI-Bench recalibration with SD3 Medium over 
+
+200 splits. stream crossing rates below δ. Policy recalibration lowers released risk over pooled calibration by 0.087 for FLUX, 
+
+0.096 for SD3, and 0.166 for SDXL at N =4 . One fixed candidate per prompt gives τ =0 .322 and, under sequential 
+
+N =16 reuse, risk 0.196 with interval [0 .156 , 0.239] at cov-erage 0.473 . Thus the empirical crossing depends on the candidate design, while the population non-implication re-mains. Empirical-Bernstein did not improve coverage under grid correction. Anytime-valid betting increased coverage but did not reliably remain below δ. Sharper selection-aware concentration remains future work.

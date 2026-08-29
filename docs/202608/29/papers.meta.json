@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-29",
+  "date": "2026-08-29",
+  "generated_at": "2026-08-29T02:31:58",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/29/2608.21748v1-calibrate-what-you-ship-post-selection-risk-control-for-verifier-guided-text-to-image-generation",
+      "section": "quick",
+      "title_en": "Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation",
+      "authors": "Xuanhua Yin, Shunqi Mao, Wei Guo, Chuanzhi Xu, Weidong Cai",
+      "date": "2026-08-22",
+      "pdf": "https://arxiv.org/pdf/2608.21748v1",
+      "score": "7.0",
+      "evidence": "对验证器引导的文生图做选择感知的发布风险校准，控制最终输出质量与可靠性",
+      "tldr": "基于验证器的文生图系统在测试时搜索中，发布阈值常按单个图像校准，导致候选级风险控制无法保证发布输出的风险。本文提出SHIP方法，通过重放完整部署策略并评估实际发布图像，选择满足风险预算的最宽松阈值。实验显示SHIP在GenEval2上显著降低风险，并实现固定网格的有限样本有效性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Verifier-guided text-to-image systems increasingly use test-time search to select, refine, or stop among multiple candidates, yet release thresholds are often calibrated on individual images. This creates a candidate-to-policy calibration mismatch: search changes both which prompts receive an output and which candidate is released, so candidate-level risk control need not imply control of released-output risk. We formalize this estimand shift through prompt reweighting and within-prompt selection, and introduce SHIP, Selection-aware Held-out calibration of Inference Policies. SHIP runs or replays the complete deployed policy on held-out prompts, evaluates the image it actually releases using an independent target judge, and selects the most permissive threshold whose risk upper bound satisfies a prescribed budget. For replayable policies with a prespecified threshold grid, simultaneous confidence control provides finite-sample validity. Experiments across fixed, sequential, and adaptive T2I inference procedures show that policy-level calibration recovers lower-risk operating points while exposing policy-dependent tradeoffs among risk, coverage, and compute. On GenEval2 with FLUX at N=16, a pooled-candidate threshold yields released risk 0.310, whereas SHIP reduces it to 0.162. Across 200 cached-stream splits, the fixed-grid certificate has no target crossing. Reliable inference-time scaling therefore requires calibrating the output distribution induced by the complete deployed policy.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

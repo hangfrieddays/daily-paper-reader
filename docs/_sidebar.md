@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-08-29 <!--dpr-date:20260829-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/29/2608.21748v1-calibrate-what-you-ship-post-selection-risk-control-for-verifier-guided-text-to-image-generation" data-sidebar-item="{&quot;title&quot;: &quot;Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.21748v1-calibrate-what-you-ship-post-selection-risk-control-for-verifier-guided-text-to-image-generation&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;对验证器引导的文生图做选择感知的发布风险校准，控制最终输出质量与可靠性&quot;}">Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation</a>
   * 2026-08-28 <!--dpr-date:20260828-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202608/28/2608.26956v1-rubricrm-generative-reward-modeling-via-dynamic-rubrics-for-image-generation-and-editing" data-sidebar-item="{&quot;title&quot;: &quot;RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.26956v1-rubricrm-generative-reward-modeling-via-dynamic-rubrics-for-image-generation-and-editing&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;面向图像生成与编辑的奖励建模&quot;}">RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing</a>

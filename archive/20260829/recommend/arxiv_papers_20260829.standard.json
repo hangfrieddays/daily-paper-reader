@@ -1,0 +1,56 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-29T02:31:12.101969+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.21748v1",
+      "source": "arxiv",
+      "title": "Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation",
+      "abstract": "Verifier-guided text-to-image systems increasingly use test-time search to select, refine, or stop among multiple candidates, yet release thresholds are often calibrated on individual images. This creates a candidate-to-policy calibration mismatch: search changes both which prompts receive an output and which candidate is released, so candidate-level risk control need not imply control of released-output risk. We formalize this estimand shift through prompt reweighting and within-prompt selection, and introduce SHIP, Selection-aware Held-out calibration of Inference Policies. SHIP runs or replays the complete deployed policy on held-out prompts, evaluates the image it actually releases using an independent target judge, and selects the most permissive threshold whose risk upper bound satisfies a prescribed budget. For replayable policies with a prespecified threshold grid, simultaneous confidence control provides finite-sample validity. Experiments across fixed, sequential, and adaptive T2I inference procedures show that policy-level calibration recovers lower-risk operating points while exposing policy-dependent tradeoffs among risk, coverage, and compute. On GenEval2 with FLUX at N=16, a pooled-candidate threshold yields released risk 0.310, whereas SHIP reduces it to 0.162. Across 200 cached-stream splits, the fixed-grid certificate has no target crossing. Reliable inference-time scaling therefore requires calibrating the output distribution induced by the complete deployed policy.",
+      "authors": [
+        "Xuanhua Yin",
+        "Shunqi Mao",
+        "Wei Guo",
+        "Chuanzhi Xu",
+        "Weidong Cai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-22T03:05:44+00:00",
+      "link": "https://arxiv.org/pdf/2608.21748v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Selection-aware calibration of verifier-guided text-to-image generation to control release risk and improve output quality",
+      "llm_evidence_cn": "对验证器引导的文生图做选择感知的发布风险校准，控制最终输出质量与可靠性",
+      "llm_evidence": "对验证器引导的文生图做选择感知的发布风险校准，控制最终输出质量与可靠性",
+      "canonical_evidence": "对验证器引导的文生图做选择感知的发布风险校准，控制最终输出质量与可靠性",
+      "llm_tldr_en": "Identifies candidate-to-policy calibration mismatch in verifier-guided text-to-image generation and introduces SHIP, a selection-aware held-out calibration method controlling risk of actually released outputs.",
+      "llm_tldr_cn": "验证器引导的文生图系统在测试时搜索选择或拒绝候选图，但发布阈值常按单图校准，导致候选级风险控制无法保证最终发布图的风险。作者提出SHIP，一种选择感知的留出校准方法，在留出提示上运行或回放完整部署策略，用独立目标评判器评估实际发布的图像。该方法修正了估计目标偏移，使发布级风险得到有效控制。这项工作为带验证器的图像生成系统提供了可靠的推理期风险控制框架。",
+      "llm_tldr": "验证器引导的文生图系统在测试时搜索选择或拒绝候选图，但发布阈值常按单图校准，导致候选级风险控制无法保证最终发布图的风险。作者提出SHIP，一种选择感知的留出校准方法，在留出提示上运行或回放完整部署策略，用独立目标评判器评估实际发布的图像。该方法修正了估计目标偏移，使发布级风险得到有效控制。这项工作为带验证器的图像生成系统提供了可靠的推理期风险控制框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
