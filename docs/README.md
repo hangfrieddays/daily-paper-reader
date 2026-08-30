@@ -6,28 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-29
-- 运行时间：2026-08-29 22:17:53 UTC
+- 最新运行日期：2026-08-30
+- 运行时间：2026-08-30 21:31:51 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：0
+- 本次总论文数：2
+- 精读区：1
 - 速读区：1
 
 ### 今日简报（AI）
-今日速读1篇视觉推理相关论文，暂无精读内容。
-
-最值得关注的是《VBVR-Pro》提出的可扩展且可验证的视觉推理套件，评分为7.0/10。
-
-建议普通读者先了解其核心设计思路，暂不需深入精读细节。
-- 详情：[/202608/29/README](/202608/29/README)
+今日精读扩散模型强化学习新方法，速读验证器风险控制，共读2篇。最值得关注的是《Scaling Reinforcement Learning for Diffusion Models via Velocity Matching》9.0高分，为扩散模型训练提供高效扩展路径。若想跟进前沿，可优先精读该文，并留意其与校准类方法的协同可能。
+- 详情：[/202608/30/README](/202608/30/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Scaling Reinforcement Learning for Diffusion Models via Velocity Matching](/202608/30/2608.23664v1-scaling-reinforcement-learning-for-diffusion-models-via-velocity-matching)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：利用强化学习奖励微调扩散模型，直接面向图像生成的质量优化
 
 ### 速读区论文标签
-1. [VBVR-Pro: A Scalable and Verifiable Suite for Native Visual Reasoning](/202608/29/2608.26105v1-vbvr-pro-a-scalable-and-verifiable-suite-for-native-visual-reasoning)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：构建使视觉生成可训练、可验证、可优化的闭环测试床，直接支持图像生成中的强化学习
+1. [Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation](/202608/30/2608.21748v1-calibrate-what-you-ship-post-selection-risk-control-for-verifier-guided-text-to-image-generation)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：验证器引导的文生图生成，用独立评判器作为发布质量的奖励
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,98 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-30T21:29:22.600406+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2608.23664v1",
+      "source": "arxiv",
+      "title": "Scaling Reinforcement Learning for Diffusion Models via Velocity Matching",
+      "abstract": "Reward fine-tuning is becoming an important tool for adapting diffusion models to human preferences and task-specific objectives, but existing methods largely inherit policy-gradient machinery from large language models. Unlike autoregressive models, diffusion models do not provide tractable likelihoods for generated samples. As a result, current approaches either construct trajectory likelihoods from stochastic denoising transitions or approximate endpoint likelihoods with evidence lower bound, introducing additional computation and algorithmic complexity. We demonstrate that this likelihood-based machinery is not necessary for effective diffusion reward fine-tuning. We propose reward-based velocity matching (RVM), a simple trajectory-free update that acts directly on the velocity field. RVM reinforces directions associated with high-reward generations, suppresses those with low reward, and involves an optional anchor term controlling drift from a reference velocity. Notably, it provides a general framework that recovers recent fine-tuning methods, including RAM and DiffusionNFT, as special cases. Across various large-scale diffusion models reward fine-tuning tasks, RVM is competitive with or outperforms trajectory-based policy-gradient methods under substantially reduced training cost. We further find that, once the velocity update is simplified, the particular loss variant matters less than reward and anchor design. For video generation, standard preference rewards can favor visually clean but nearly static outputs; introducing a new dynamic-tracking reward that substantially improve motions while improving overall VBench performance. These results suggest that scalable reward fine-tuning for diffusion models is better posed in the native velocity representation than as likelihood-based policy optimization.",
+      "authors": [
+        "Jaemoo Choi",
+        "Wei Guo",
+        "Yuchen Zhu",
+        "Arash Vahdat",
+        "Molei Tao",
+        "Julius Berner",
+        "Yongxin Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-08-24T17:13:43+00:00",
+      "link": "https://arxiv.org/pdf/2608.23664v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Reward-based velocity matching for scaling RL fine-tuning of diffusion models in image generation",
+      "llm_evidence_cn": "利用强化学习奖励微调扩散模型，直接面向图像生成的质量优化",
+      "llm_evidence": "利用强化学习奖励微调扩散模型，直接面向图像生成的质量优化",
+      "canonical_evidence": "利用强化学习奖励微调扩散模型，直接面向图像生成的质量优化",
+      "llm_tldr_en": "Presents reward-based velocity matching (RVM), a simple trajectory-free update for reward fine-tuning of diffusion models. It avoids likelihood-based policy-gradient machinery, scales RL for diffusion models, and effectively adapts image generation to human preferences or task objectives.",
+      "llm_tldr_cn": "现有扩散模型奖励微调方法大多继承自大语言模型的策略梯度机制，需要构造轨迹似然或ELBO近似，带来额外计算。本文提出基于奖励的速度匹配（RVM），用无轨迹的简单更新替代似然机器，实现对扩散模型的高效强化学习奖励微调。在图像生成任务上验证了该方法的扩展性和有效性，表明无需似然建模即可用任意奖励显著改进生成效果与偏好对齐。",
+      "llm_tldr": "现有扩散模型奖励微调方法大多继承自大语言模型的策略梯度机制，需要构造轨迹似然或ELBO近似，带来额外计算。本文提出基于奖励的速度匹配（RVM），用无轨迹的简单更新替代似然机器，实现对扩散模型的高效强化学习奖励微调。在图像生成任务上验证了该方法的扩展性和有效性，表明无需似然建模即可用任意奖励显著改进生成效果与偏好对齐。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.21748v1",
+      "source": "arxiv",
+      "title": "Calibrate What You SHIP: Post-Selection Risk Control for Verifier-Guided Text-to-Image Generation",
+      "abstract": "Verifier-guided text-to-image systems increasingly use test-time search to select, refine, or stop among multiple candidates, yet release thresholds are often calibrated on individual images. This creates a candidate-to-policy calibration mismatch: search changes both which prompts receive an output and which candidate is released, so candidate-level risk control need not imply control of released-output risk. We formalize this estimand shift through prompt reweighting and within-prompt selection, and introduce SHIP, Selection-aware Held-out calibration of Inference Policies. SHIP runs or replays the complete deployed policy on held-out prompts, evaluates the image it actually releases using an independent target judge, and selects the most permissive threshold whose risk upper bound satisfies a prescribed budget. For replayable policies with a prespecified threshold grid, simultaneous confidence control provides finite-sample validity. Experiments across fixed, sequential, and adaptive T2I inference procedures show that policy-level calibration recovers lower-risk operating points while exposing policy-dependent tradeoffs among risk, coverage, and compute. On GenEval2 with FLUX at N=16, a pooled-candidate threshold yields released risk 0.310, whereas SHIP reduces it to 0.162. Across 200 cached-stream splits, the fixed-grid certificate has no target crossing. Reliable inference-time scaling therefore requires calibrating the output distribution induced by the complete deployed policy.",
+      "authors": [
+        "Xuanhua Yin",
+        "Shunqi Mao",
+        "Wei Guo",
+        "Chuanzhi Xu",
+        "Weidong Cai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-22T03:05:44+00:00",
+      "link": "https://arxiv.org/pdf/2608.21748v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Verifier-guided text-to-image generation with an independent judge as reward for released image quality",
+      "llm_evidence_cn": "验证器引导的文生图生成，用独立评判器作为发布质量的奖励",
+      "llm_evidence": "验证器引导的文生图生成，用独立评判器作为发布质量的奖励",
+      "canonical_evidence": "验证器引导的文生图生成，用独立评判器作为发布质量的奖励",
+      "llm_tldr_en": "SHIP introduces selection-aware held-out calibration for verifier-guided text-to-image generation. It accounts for prompt reweighting and within-prompt selection, ensuring released-image risk is controlled using an independent judge, resolving the candidate-to-policy calibration mismatch.",
+      "llm_tldr_cn": "验证器引导的文本到图像系统在测试时通过搜索选择或精炼候选图，但硬性阈值常按单图校准，导致候选级风险控制不一定保证最终发布输出的风险。SHIP提出选择感知的留出校准方法，运行或回放完整部署策略，并用独立目标评判器评估实际发布的图像。该方法从统计上纠正了候选到策略的校准失配，使发布风险的预测在候选选择和提示重加权下依然有效，为图像生成提供可靠的发布决策与奖励评估工具。",
+      "llm_tldr": "验证器引导的文本到图像系统在测试时通过搜索选择或精炼候选图，但硬性阈值常按单图校准，导致候选级风险控制不一定保证最终发布输出的风险。SHIP提出选择感知的留出校准方法，运行或回放完整部署策略，并用独立目标评判器评估实际发布的图像。该方法从统计上纠正了候选到策略的校准失配，使发布风险的预测在候选选择和提示重加权下依然有效，为图像生成提供可靠的发布决策与奖励评估工具。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
