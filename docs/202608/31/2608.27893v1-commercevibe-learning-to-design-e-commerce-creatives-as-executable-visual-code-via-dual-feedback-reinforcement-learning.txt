@@ -1,0 +1,557 @@
+Title: CommerceVibe: Learning to Design E-Commerce Creatives as Executable Visual Code via Dual-Feedback Reinforcement Learning
+
+URL Source: https://arxiv.org/pdf/2608.27893v1
+
+Published Time: Mon, 31 Aug 2026 00:28:56 GMT
+
+Number of Pages: 20
+
+Markdown Content:
+# CommerceVibe: Learning to Design E-Commerce Creatives as Executable Visual Code via Dual-Feedback Reinforcement Learning 
+
+## Yajiao Xu 1,2 , Jin Zhang 2, Jiangbo Ai 2, Tao Jiang 2,Mo Xu 2, Lina Huang 2, Chengfu Huo 2
+
+> 1
+
+Tongji University 
+
+> 2
+
+Alibaba Group 
+
+Abstract 
+
+High-quality e-commerce creatives are essential for present-ing products and conveying marketing messages. Recent dif-fusion models enable scalable creative generation and produce visually compelling images, but their flattened raster outputs often contain distorted text and inconsistent product details, requiring refinement before deployment. Moreover, without explicit structure, the resulting creatives are difficult to edit and reuse, while complex design requirements remain chal-lenging to encode as verifiable training signals. To address these challenges, we present CommerceVibe , which repre-sents creatives as executable visual code and formulates gen-eration as conditional HTML/CSS program synthesis. Given product images, design requirements, and product informa-tion, it produces renderable, editable, and reusable creatives. We further introduce dual-feedback reinforcement learning, in which rule-based feedback evaluates rendered programs for text readability, product visibility, and layout validity, while vi-sual feedback from a vision-language model (VLM) assesses rendered creatives against input specifications across six per-ceptual and commercial dimensions. Together, these comple-mentary feedback signals improve both constraint satisfac-tion and perception-dependent quality. We perform supervised fine-tuning (SFT) of Qwen3.5-9B on over 28,000 e-commerce examples, followed by dual-feedback reinforcement learning. On a 1,300-case benchmark, the optimized CommerceVibe 
+
+model achieves a weighted score of 94.0/100, compared with 87.3 for the SFT-only variant, and outperforms strong ex-ternal models. Blind evaluations by five e-commerce design experts further validate these improvements. CommerceVibe 
+
+supports controllable, editable, and scalable e-commerce cre-ative production. 
+
+## Introduction 
+
+E-commerce creatives combine supplied product images, marketing copy, and graphic elements within a limited can-vas. To be production-ready, a creative must preserve product appearance, present the required information accurately, and organize the content clearly. However, creating such materi-als manually for large product catalogs, frequent campaigns, and multiple output formats is difficult, while fixed template-based generation methods limit design diversity. These chal-lenges call for generation methods that are reliable, control-lable, and directly editable. Diffusion models have substantially improved visual real-ism and controllable image synthesis through various condi-tioning strategies (Rombach et al. 2022; Saharia et al. 2022; Zhang, Rao, and Agrawala 2023; Li et al. 2023a), enabling large-scale creative generation. However, the resulting im-ages may still contain incorrect text, altered product features, or fabricated selling points. Such issues are not merely vi-sual defects, as they may misrepresent products, mislead cus-tomers, and make the creatives unsuitable for direct deploy-ment. Moreover, diffusion models generate flattened raster images in which products, text, and backgrounds are not preserved as separate, editable elements. As a result, modi-fying textual content, replacing product images, or adjusting layouts often requires costly refinement or complete regen-eration. Structured visual representations preserve the identity of individual products, text blocks, and graphic elements, en-abling element-level editing and reuse (Cheng et al. 2025; Wang, Shimose, and Takamatsu 2025; Liu et al. 2026a). Be-yond editability, executable representations further provide a way to verify whether generated creatives satisfy explicit con-straints. An HTML/CSS document naturally supports such verification: after rendering, its visible content, image refer-ences, element positions, and boundaries can be inspected automatically. This allows errors such as text overflow, ele-ment occlusion, and out-of-bounds elements to be measured by rule-based checks and assigned severity scores (Pan et al. 2026). However, converting these measurements into effective training signals for structured e-commerce creative genera-tion raises two challenges. (1) The set of checks and their weights must align with the number of supplied product images. For example, with one product image, the product should be visually prominent. With multiple product images, all supplied products should be included in the creative, and occlusion between products must be detected. (2) Rule-based checks can identify structural errors such as text overflow, element occlusion, and out-of-bounds elements, but cannot fully judge the visual quality of a creative. Learned preference evaluators assess the rendered creative as a whole (Xu et al. 2023), but are less precise about element-level errors. These limitations motivate combining rule-based feedback for ex-plicit structural constraints with learned preference feedback for overall visual quality. To address these challenges, CommerceVibe represents e-commerce creative generation as conditional HTML/CSS arXiv:2608.27893v1 [cs.CV] 28 Aug 2026 Figure 1: Overview of CommerceVibe . Supervised fine-tuning establishes basic creative generation ability, while dual-feedback reinforcement learning combines rule-based feedback with VLM-based preference feedback to optimize the policy through GRPO. The resulting policy generates executable HTML/CSS creatives in one pass. program synthesis (Figure 1). A fixed preprocessing pro-cedure is first used to convert each free-form user request into a consistent structured format. The normalized request, supplied product images, and product information are then provided to the policy under a fixed system instruction that defines the generator role and required output structure. The policy generates one complete HTML/CSS document in a single decoding pass. Supplied product images are directly referenced rather than regenerated, and text is represented as native HTML elements rather than synthesized in a raster image, so that product appearance is preserved and text dis-tortion is avoided. 
+
+CommerceVibe is trained in two stages. First, the Qwen3.5-9B backbone (Qwen Team 2026) is fine-tuned on 28,568 quality-controlled examples to establish a basic abil-ity to generate e-commerce creatives. Second, the SFT pol-icy is optimized with GRPO (Shao et al. 2024) under dual-feedback reinforcement learning to further improve compli-ance with design requirements and overall visual quality. To systematically evaluate model performance in e-commerce creative generation, we construct a 1,300-case benchmark using product images collected from real-world e-commerce scenarios, with cases containing varying num-bers of input images. On this benchmark, CommerceVibe 
+
+is compared with three leading external models—GPT-5.5 (OpenAI 2026), Claude Opus 4.8 (Anthropic 2026), and Gemini 3.5 Flash (Google DeepMind 2026)—under a single-pass generation setting. CommerceVibe achieves the highest weighted score and outperforms all three external models. An independent blind evaluation conducted by five e-commerce design experts also confirms the overall creative quality of 
+
+CommerceVibe and its alignment with human expert judg-ments. These results demonstrate the effectiveness of exe-cutable HTML/CSS generation for e-commerce creatives. Our contributions are: 
+
+• We introduce CommerceVibe , which represents e-commerce creative generation as conditional HTML/CSS program synthesis, producing editable and executable creatives that directly reuse supplied product images, ren-der text as native HTML elements, and provide verifiable structures for reinforcement learning optimization. 
+
+• We introduce dual-feedback reinforcement learning, which combines rule-based checks for Text, Product, and Layout errors with VLM-based preference feedback for visual and commercial quality. 
+
+• We construct a 1,300-case benchmark for e-commerce creative generation and show that CommerceVibe out-performs leading external models in both automatic eval-uation and independent expert assessment. 
+
+## Related Work 
+
+E-Commerce Creative Generation 
+
+Template-based systems place supplied assets into prede-fined layouts, whereas generative approaches support prod-uct staging, poster generation, and product–background syn-thesis (Chen et al. 2021; Ku et al. 2023; Lin et al. 2023; Cao et al. 2024; Wang et al. 2025). Multi-stage pipelines and recent joint-control systems further coordinate layouts and generated backgrounds with supplied product subjects, glyphs, and visual styles (Li et al. 2023b; Chen et al. 2025a; Gao et al. 2026; Qin et al. 2026; Gao et al. 2025; Chen and Yang 2026; Chen et al. 2026). Feedback- and behavior-driven methods improve reliability or commercial effective-ness through human annotations, click-through objectives, or personalization (Du et al. 2024; Yang et al. 2024; Fan et al. 2026; Xu et al. 2026). These methods improve the visual di-versity and commercial relevance of e-commerce creatives, but their evaluation systems mainly assess the final image as a whole rather than the individual elements within it. With-out a structured representation of these elements, errors such as distorted text and incorrect product features are difficult to detect and trace back to a specific requirement. 
+
+Structured and Executable Visual Code 
+
+Structured visual representations keep products, text, and graphic elements separate, enabling element-level editing and reuse. Prior work has generated HTML layouts, JSON design specifications, Figma and SVG components, and HTML posters (Tang et al. 2024; Cheng et al. 2025; Wang, Shimose, and Takamatsu 2025; Liu et al. 2026a). Poster-Verse uses an MLLM-powered HTML engine for scalable commercial-poster typography (Liu et al. 2026a). Desig-nAsCode formulates graphic design as HTML/CSS synthe-sis and repairs visual defects through render-and-reflect it-erations (Liu et al. 2026c). Among these representations, HTML/CSS serves as a bridge between editable source code and the final rendered output: the same document can be rendered for inspection and revised at the element level (Guo et al. 2026). However, a document can be correctly rendered while using the wrong product image, clipping required text, or placing supplied images improperly. Verification therefore needs to compare the rendered document with the supplied assets and requirements. In CommerceVibe, rule profiles in-stantiate checks and weights by input-image count, and some checks can be performed only after rendering. This routing is a task-specific design; alternative weighting schemes are not compared. 
+
+Verifiable Rule-Based and Preference Feedback 
+
+In rendering-aware reinforcement learning, structured graph-ics are optimized with validity, fidelity, semantic, and geo-metric signals; AeSlides, for example, converts slide-layout violations into verifiable rewards (Rodriguez et al. 2025; Chen et al. 2025b; Xing et al. 2025; Li et al. 2026; Pan et al. 2026). In contrast, learned evaluators have been used to provide supervision for qualities that are difficult to fully en-code as rules, including rendered equivalence, typography, and aesthetics (Xu et al. 2023; Liu et al. 2026b; Lai et al. 2026). The two feedback types are complementary but indi-vidually incomplete. Rule-based feedback is able to identify explicit structural errors, but the required checks and weights vary with the number of supplied product images. Learned preference feedback assesses the visual quality of a rendered creative as a whole, but may miss localized errors such as missing products or overlapping elements. CommerceVibe assigns the two signals different roles. Rules target localized constraints; the fixed VLM Judge scores holistic quality. Taken together, prior work has established creative gener-ators, editable visual representations, and rendering-aware feedback. However, optimization of one-shot executable HTML/CSS for reference-conditioned e-commerce creatives remains underexplored. CommerceVibe uses task-specific rule feedback for localized constraints and a fixed VLM Judge for perceptual qualities. 
+
+## CommerceVibe 
+
+This section describes how CommerceVibe generates e-commerce creatives as HTML/CSS documents and how rule-based and VLM-based feedback are used for optimization. 
+
+HTML/CSS Creative Generation 
+
+Let r = ( I, u, m ) denote the supplied product images, free-form user request, and optional product information. Be-fore generation, a fixed preprocessing procedure converts the free-form request into a consistent structured format, 
+
+˜u = Normalize( I, u, m ). The normalized request is pro-vided as input context and is not updated during model opti-mization. A fixed system instruction s defines the generator role and required output structure; its full text is provided in the supplementary material. The policy context is therefore given by x = ( s, I, ˜u, m ). With n = |I| , inputs with n = 1 are referred to as Single , and those with n ≥ 2 as Multi . Only the parameters of the LLM policy are optimized. The policy generates a sequence c = ( y1, . . . , y T ) that contains a complete HTML/CSS document and ends with an end-of-turn token. Each token is generated from the input context and the preceding tokens: 
+
+πθ (c | x) = 
+
+> T
+
+Y
+
+> t=1
+
+πθ (yt | x, y <t ). (1) Each SFT example consists of an input r and a reference HTML/CSS document c∗. The policy is trained by minimiz-ing the negative log-likelihood of target tokens: 
+
+LSFT (θ) = −E(r,c ∗)∼D SFT 
+
+" T ∗
+
+X
+
+> t=1
+
+log πθ (y∗ 
+
+> t
+
+| x, y ∗
+
+> <t
+
+)
+
+#
+
+.
+
+(2) Only the tokens in the reference HTML/CSS document and the end-of-turn token are supervised. SFT therefore learns to imitate reference documents but does not directly optimize the properties of rendered creatives. During reinforcement learning, K candidate documents are sampled from the policy, ck ∼ πθ (· | x). Each candidate is rendered and captured once by a predefined browser-based procedure. The procedure adapts to the document size and waits for all design elements and images to load before cap-turing the screenshot. It produces zk = Render( ck), which contains the DOM, element boxes, visible text, visible image references, and the final screenshot. These rendered outputs are used only to compute the two reward signals. 
+
+Rule-Based Checks for Rendered Creatives 
+
+Rule-based checks are divided into three common error types that are unacceptable in e-commerce creatives: Text, Product, and Layout errors, as illustrated in Figure 2. This division separates the main types of production errors and allows each to be measured from the rendered document. 
+
+Text Readability checks whether required information can be read clearly. It detects text overflow and overlap from rendered text boxes and clipping containers, and evaluates font size and luminance contrast for different text roles so that text remains legible on mobile screens. It also identifies text placed over a product, which can obscure product details. 
+
+Product Visibility checks whether the supplied products are correctly used and clearly shown. Visible img references are matched to the supplied product URLs, while product pres-ence, visibility, crop, prominence, and occlusion are mea-sured from the rendered document. Layout Validity checks whether elements remain within the canvas, whether the vi-sual center is balanced, and whether lower-page whitespace is appropriate, so that the creative has a clear and reasonable composition. Rule settings are selected according to the number of sup-plied product images. For a Single input, the main product is expected to be visually prominent. For a Multi input, all supplied products are expected to appear, and occlusion is evaluated when at least two products have sufficient visi-ble evidence. Each setting specifies the applicable checks, thresholds, weights, and critical violations. After rendering, only checks with the required evidence are applied, and the remaining scores are aggregated with their corresponding weights. 
+
+Rule Reward and Safeguards 
+
+Before rendering, malformed or incomplete HTML receives a negative reward. After rendering, hard gates reject outputs with an empty page, missing required product images, or severe product undercoverage. A soft text-sparsity penalty is applied when copy is largely omitted, preventing candi-dates from bypassing Text checks by leaving out required information. For candidates that pass the hard gates, scores are com-puted only for the active dimensions and aggregated accord-ing to the selected rule setting. Critical errors, including text overflow, text overlap, elements outside the canvas, and product occlusion beyond the specified threshold, incur an additional penalty that increases with the number of errors. The resulting score is normalized as the rule reward Rrule .The three safeguards and their penalties are used only dur-ing reinforcement learning; automatic evaluation retains the same rule dimensions and weighted aggregation. Detailed detector definitions, rule settings, weights, and reward con-struction are provided in Supplementary Sections “Partially Conditional Rule Verifier” and “Reward Construction and Gates.” 
+
+VLM Preference Feedback and GRPO 
+
+Figure 2 summarizes the two feedback branches. Rule-based checks identify explicit structural errors but cannot fully assess visual hierarchy, style coherence, product presenta-tion, or marketing expression. A fixed Qwen3-VL-Plus Judge therefore evaluates the visual and commercial quality of the rendered creative along six dimensions: visual appeal , prod-uct presentation , perceptual readability , marketing rel-evance , commercial usability , and copy faithfulness . The Judge receives a screenshot of the rendered creative, the sup-plied product images, the normalized request, product infor-mation, and a scoring prompt that specifies the 1–5 criteria for each dimension. The six ratings are aggregated with low-rating penalties and normalized as the preference reward 
+
+Rpref . The complete prompt, scoring criteria, and reward mapping are provided in Supplementary Section “Preference Judge and Combined Reward.” All three reinforcement-learning variants are initialized from the same SFT policy and trained on the same data with identical sampling and optimization settings. They differ only in the feedback used for optimization: rule-based feedback, VLM-based preference feedback, or their combination. For each input, the rewards of the K sampled candidates are standardized to obtain within-group relative advantages: 
+
+bAk = Rk − mean( R1: K )std( R1: K ) + ϵ . (3) The policy is updated with the standard clipped GRPO ob-jective and reference-policy KL regularization. 
+
+## Experiments 
+
+Experimental Setup 
+
+Data. Each SFT example consists of product images, as-sociated product information, and a user design request collected from real-world e-commerce design scenarios. These inputs are provided to the model, while a reference HTML/CSS document serves as the SFT target. After quality filtering, the SFT corpus contains 28,568 training examples and 3,174 validation examples. The same normalized input contexts are reused in all RL runs. To systematically evaluate model performance in e-commerce creative generation, we construct a 1,300-case benchmark. It contains 1,140 Single-image and 160 Multi-image cases and covers 34 common e-commerce categories, including home goods, beauty products, consumer electron-ics, food and beverages, apparel, and pet products. The bench-mark is separated from the training data at the product level, with a unique product set for each case. User design requests are normalized using the same procedure as in training. The full category distribution is provided in the supplementary material. 
+
+Compared Methods. Compared methods include the base Qwen3.5-9B policy, the SFT policy, three RL variants, and three external models—GPT-5.5 (OpenAI 2026), Claude Opus 4.8 (Anthropic 2026), and Gemini 3.5 Flash (Google DeepMind 2026). The external comparison focuses on mul-timodal models capable of generating complete HTML/CSS documents under the same instruction. For each case, all methods receive the same normalized request, product im-ages, and product information, and generate one complete creative without iterative correction or candidate reranking. Unless otherwise specified, CommerceVibe refers to the Rule+Preference RL policy. HTML/CSS Candidate HTML Check  
+
+> pre-render
+> Chromium Render DOM · Boxes Screenshot
+> HTML/CSS <main />
+> Rule Safeguards
+
+(a) Rule-Based Feedback (b) VLM Preference Feedback       
+
+> Rule Setting by Image Count Check Applicability Multi n≥2 Rule-Based Checks
+> Text Readability Product Visibility Layout Validity
+> ×3
+> Text Over fl ow ×3 Text Overlap ×1 Image Occlusion · 56.9% Element Bounds ×3
+> Rule Reward R rule
+> Qwen3-VL-Plus
+> Six Judge Dimensions
+> Visual Appeal Product Presentation Perceptual Readability Marketing Relevance Commercial Usability Copy Faithfulness Sampled Candidates
+> Preference Reward R pref
+
+(c) Combined Dual Reward    
+
+> · malformed HTML × · empty page × · missing products × · sparse-text penalty
+> Rules Pass Preferred
+> Combined Reward
+> ½R rule + ½R pref
+
+Rrule + Rpref GRPO Update    
+
+> Page Products
+> Normalized Request Product Info Fixed Rubric Per-Candidate Scoring
+
+Figure 2: Dual-feedback reward design. (a) Rule-based feedback measures Text, Product, and Layout errors from rendered documents. (b) VLM-based preference feedback assesses visual and commercial quality independently of rule outputs. (c) The two terminal rewards are combined with equal weights and used for GRPO optimization. 
+
+Metrics. Automatic evaluation is performed offline us-ing the same checks as reinforcement learning, except that safeguards and penalties are not applied. For each case, scores for the active rule dimensions are aggregated into 
+
+Srule ∈ [0 , 50] . The fixed VLM Judge rates the six prefer-ence dimensions on a 1–5 scale; the ratings are rescaled and aggregated into Spref ∈ [0 , 50] . The overall score is defined as Soverall = Srule + Spref ∈ [0 , 100] . For the reported au-tomatic results, we average scores from three API calls for each external model, three inference runs for Qwen3.5-9B, and three checkpoints trained with different seeds for each RL variant; SFT is evaluated once. To complement automatic evaluation, an independent blind evaluation of the benchmark is conducted by five e-commerce design experts with 1–5 years of professional ex-perience. For each case, outputs from all eight methods are anonymized and presented in random order, while all auto-matic scores are withheld. The ratings are aggregated with predefined weights into Sexpert ∈ [0 , 100] .
+
+Implementation. The Qwen3.5-9B policy is fine-tuned for three epochs with an effective batch size of 32, a learning rate of 1×10 −5, and a maximum sequence length of 16,384. Each GRPO variant starts from this SFT policy and uses K = 8 ,a maximum completion length of 3,584, a maximum total length of 20,480, temperature 0.7, a learning rate of 5×10 −5,and an effective completion batch size of 64. Training uses 8 NVIDIA H20 GPUs with 96 GB of memory each; the fixed Qwen3-VL-Plus Judge uses temperature 0. 
+
+Main Results 
+
+Overall performance and external comparison. Table 1 reports reward-aligned automatic scores, followed by in-dependent expert evaluation. The overall score increases from 70.1 for the base policy to 87.3 after SFT, and Rule+Preference RL achieves the highest score of 94.0. Among the external models, GPT-5.5 performs best, fol-lowed by Claude Opus 4.8 and Gemini 3.5 Flash. As shown in Figure 3, CommerceVibe achieves the strongest results across all three rule families and five of the six Judge di-mensions. GPT-5.5 retains an advantage in copy faithful-ness. Claude Opus 4.8 performs relatively well in Product and Layout, whereas Gemini 3.5 Flash achieves compara-ble rule compliance but lower preference quality. The base policy mainly uses supplied product images and basic text, resulting in relatively high rule compliance but limited visual quality. In contrast, the external models and CommerceVibe 
+
+generate more complex visual elements, which place greater demands on spatial organization and boundary control. The final CommerceVibe policy combines richer designs with the strongest structural and perceptual performance. 
+
+Complementary feedback across input complexity. All RL variants improve upon the shared SFT policy, while Rule+Preference RL achieves the highest rule, preference, and overall scores. Relative to the stronger single-feedback Method Overall ( N = 1 ,300 ) Single ( N = 1 ,140 ) Multi ( N = 160 )
+
+Srule ↑Spref ↑Soverall ↑Sexpert ↑Srule ↑Spref ↑Soverall ↑Sexpert ↑Srule ↑Spref ↑Soverall ↑Sexpert ↑
+
+External models 
+
+GPT-5.5 42.4 37.7 80.1 78.9 42.1 37.6 79.7 77.9 44.7 38.4 83.1 86.8 Claude Opus 4.8 41.5 36.3 77.7 78.4 41.0 36.3 77.3 78.4 44.6 36.0 80.6 78.7 Gemini 3.5 Flash 42.1 33.1 75.3 75.9 41.8 33.2 75.0 75.8 44.8 32.6 77.4 76.2 
+
+CommerceVibe variants 
+
+Qwen3.5-9B 41.1 29.0 70.1 59.0 41.2 28.9 70.1 58.3 40.6 29.5 70.1 64.1 + SFT 48.0 39.3 87.3 81.6 48.2 39.2 87.4 82.1 46.2 40.0 86.2 78.2 + Rule-RLVR 48.9 43.4 92.4 87.3 49.3 43.8 93.1 87.9 46.2 40.6 86.8 83.0 + Preference-RL 48.5 41.9 90.4 84.4 48.9 42.0 90.9 85.7 46.1 41.0 87.1 75.5 + Rule+Preference RL 49.2 44.8 94.0 90.0 49.4 44.9 94.3 90.4 47.8 44.1 91.9 87.3 
+
+Table 1: Overall and Single/Multi results. Srule and Spref are out of 50; the other scores are out of 100. Indentation denotes SFT initialization; bold and underline mark the best and second-best scores in each column. TPLVA PP PR MR CU CF 
+
+> 050 100 GPT-5.5 Claude Opus 4.8 Gemini 3.5 Flash
+> CommerceVibe
+
+Figure 3: Nine-dimensional comparison with exter-nal models. T/P/L denote the three rule families, VA/PP/PR/MR/CU/CF denote the six Judge dimensions. All dimensions are normalized to 0–100. variant in each setting, Rule+Preference RL gains 4.8 points on Multi-image cases and 1.2 points on Single-image cases. This larger Multi-image gain indicates stronger complemen-tarity between the two feedback sources within the evaluated benchmark. 
+
+Expert and qualitative validation. The blind expert eval-uation provides independent support for the automatic re-sults, as shown in Figure 4. CommerceVibe achieves the highest overall expert score of 90.0 and ranks first on both the Single-image and Multi-image subsets. The expert rat-ings also show high inter-rater agreement, with ICC(A , 5) = 0.811 .Expert scores provide clearer separation among the meth-ods, particularly for the base policy, whose simple out-0 25 50 75 100 
+
+Automatic score (overall)   
+
+> 025 50 75 100
+> Expert score
+> equal scores Spearman ρ= 0.612
+> 95% CI [0.562, 0.657] GPT-5.5 SFT Claude Rule-RLVR Gemini Pref.-RL Base Combined
+
+Figure 4: Automatic–expert alignment on the benchmark. Gray points and colored markers denote individual cases and method means, respectively. The inset gives Spearman ρ with a 95% case-cluster bootstrap CI; the diagonal marks equality. puts satisfy many rule-based checks but receive substan-tially lower expert ratings, consistent with the preceding analysis. The improvement of CommerceVibe over Rule-RLVR further shows that VLM-based preference feedback complements rule-based feedback in improving perceptual quality. Figure 5 provides representative comparisons across Single- and Multi-image cases. The examples show that 
+
+CommerceVibe more consistently preserves required infor-mation, presents supplied products clearly, and maintains coherent layouts, while producing more polished creatives with fewer localized errors than the compared methods. 
+
+Rule-Family Ablations 
+
+Table 2 shows that all three rule families contribute to their intended objectives. Removing Layout rules causes the largest within-family degradation, highlighting the impor-User Requirement SFT GPT-5.5 Claude Opus 4.8 Gemini 3.5 Flash CommerceVibe (Ours) 
+
+> (a)
+> Please help me create a
+> 1024 × 1365 mobile portrait main visual. Enlarge the product; highlight New-Chinese Zen style and metallic texture; keep a simple, clean background.
+> Product: metal-acrylic screen
+> 3 sizes · New-Chinese style
+> (b)
+> Please help me create a
+> 1024 × 1024 beautiful main visual. Enlarge the lipstick; show its color clearly and emphasize its texture. Keep the background clean.
+> Product: LANHOU lipstick
+> Mirror finish · 4 shades
+> (c)
+> Please help me create a
+> 1024 × 1024 set-combination display for a detail-page SKU area. Clearly show four-piece bedding sets in different colorways and bed sizes.
+> Product: washed-ice-silk set
+> 3 colorways · sheet/fitted sizes
+> (d)
+> Please help me create a
+> 1200 × 1600 portrait specification graphic. Clearly show swimsuit, pants, and set side by side. Add a few color and style labels; keep it simple and refreshing.
+> Product: swimsuit · pants · set
+> Sizes S–XL · pants one-size
+
+Text Rule 
+
+readability · placement 
+
+Product Rule 
+
+crop · occlusion 
+
+Layout Rule 
+
+balance · bounds 
+
+VLM Feedback 
+
+copy · presentation Figure 5: Qualitative comparison on two Single-image and two Multi-image cases. Paper cards summarize user requirements. Colored and patterned outline overlays localize representative issues: red, cyan, gray, and violet denote Text, Product, Layout, and VLM feedback, respectively. The underlying model outputs are otherwise unmodified; green checks indicate that no localized issue was identified in the audited categories. Variant Text ∆Prod. ∆Layout ∆∆ Spref ∆Soverall 
+
+Rule-RLVR – – – – –w/o Text rules −2.15 +1 .50 +1 .45 −0.9 −1.6
+
+w/o Product rules −0.12 −0.50 +0 .38 0.0 −0.1
+
+w/o Layout rules +0 .49 +0 .33 −4.47 −0.1 −0.2
+
+Table 2: Rule-family ablation on 1,300 cases. Values are paired changes from Rule-RLVR (0–100); bold marks the removed family. tance of explicit geometric constraints. Removing Product rules causes a smaller but targeted decrease in the Prod-uct score, suggesting that SFT already establishes a strong product-presentation capability that is further refined by rule-based feedback. Removing Product rules also slightly lowers the Text score, possibly because product prominence and placement affect the space available to copy. 
+
+## Conclusion 
+
+In this paper, we present CommerceVibe , an e-commerce creative generation model that produces exe-cutable HTML/CSS documents, enabling scalable produc-tion, direct editing, and structural verification. To optimize 
+
+CommerceVibe , we introduce a dual-feedback reinforce-ment learning method that combines rule-based feedback for Text, Product, and Layout with VLM-based preference feedback. On our 1,300-case benchmark, CommerceVibe 
+
+outperforms external models and generates creatives that sat-isfy design requirements while maintaining high visual qual-ity. Future work will extend the proposed approach toward closed-loop self-improvement through iterative generation, evaluation, and refinement, and evaluate it with additional policy backbones, independent VLM Judges, and broader Multi-image settings. References 
+
+Anthropic. 2026. Introducing Claude Opus 4.8. https://www. anthropic.com/news/claude-opus-4-8. Accessed: 2026-07-29. Cao, T.; Kong, J.; Zhao, X.; Yao, W.; Ding, J.; Zhu, J.; and Zhang, J. 2024. Product2IMG: Prompt-Free E-Commerce Product Background Generation with Diffusion Model and Self-Improved LMM. In Proceedings of the 32nd ACM Inter-national Conference on Multimedia , 10774–10783. ACM. Chen, H.; Zhou, M.; Jiang, J.; Chen, J.; Lu, Y.; Lin, Z.; Xiao, B.; Ge, T.; and Zheng, B. 2025a. T-Stars-Poster: A Framework for Product-Centric Advertising Image Design. In Proceedings of the 34th ACM International Conference on Information and Knowledge Management , CIKM ’25, 5583– 5591. ACM. Chen, J.; Ge, T.; Jiang, G.; Zhang, Z.; Lian, D.; and Zheng, K. 2021. Efficient Optimal Selection for Composited Ad-vertising Creatives with Tree Structure. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 35, 3967–3975. Chen, S.; Lai, J.; Gao, J.; Ye, T.; Chen, H.; Shi, H.; Shao, S.; Lin, Y.; Fei, S.; Xing, Z.; Jin, Y.; Luo, J.; Wei, X.; and Zhu, L. 2026. PosterCraft: Rethinking High-Quality Aesthetic Poster Generation in a Unified Framework. In International Conference on Learning Representations .Chen, Y.; and Yang, W. 2026. RefAdGen: High-Fidelity Advertising Image Generation. Proceedings of the AAAI Conference on Artificial Intelligence , 40(4): 3138–3146. Chen, Y.; Zhang, H.; Huang, Y.; Qiu, Z.; Zhang, K.; Wen, Y.; and Liu, W. 2025b. Symbolic Graphics Programming with Large Language Models. arXiv:2509.05208. Cheng, Y.; Zhang, Z.; Yang, M.; Nie, H.; Li, C.; Wu, X.; and Shao, J. 2025. Graphic Design with Large Multimodal Model. Proceedings of the AAAI Conference on Artificial Intelligence , 39(3): 2473–2481. Du, Z.; Feng, W.; Wang, H.; Li, Y.; Wang, J.; Li, J.; Zhang, Z.; Lv, J.; Zhu, X.; Jin, J.; Shen, J.; Lin, Z.; and Shao, J. 2024. Towards Reliable Advertising Image Generation Us-ing Human Feedback. In Computer Vision – ECCV 2024 ,volume 15078 of Lecture Notes in Computer Science , 399– 415. Springer Nature Switzerland. Fan, J.; Qin, Y.; Feng, W.; Chen, Y.; Li, Y.; Ma, A.; Li, Y.; Zhuang, L.; Bian, H.; Zhang, Z.; Lv, J.; Shen, J.; and Law, C. 2026. AutoPP: Towards Automated Product Poster Genera-tion and Optimization. Proceedings of the AAAI Conference on Artificial Intelligence , 40(5): 3768–3776. Gao, J.; Das Gupta, M.; Li, Q.; Kshatriya, R.; Wilson, A. D.; Chang, K.-h.; and Kumaravel, B. T. 2026. Multi-Object Advertisement Creative Generation. arXiv:2603.13745. Gao, Y.; Lin, Z.; Liu, C.; Zhou, M.; Ge, T.; Zheng, B.; and Xie, H. 2025. PosterMaker: Towards High-Quality Prod-uct Poster Generation with Accurate Text Rendering. In 
+
+2025 IEEE/CVF Conference on Computer Vision and Pat-tern Recognition (CVPR) , 8083–8093. IEEE. Google DeepMind. 2026. Gemini 3.5 Flash: Model Card. https://deepmind.google/models/model-cards/gemini-3-5-flash/. Accessed: 2026-07-29. Guo, J.; Fang, S.; Qu, Y.; and Xie, H. 2026. Seeing is Improv-ing: Visual Feedback for Iterative Text Layout Refinement. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 25893–25903. Ku, Y.-N.; Kuznetsov, M.; Mishra, S.; and de Juan, P. 2023. Staging E-Commerce Products for Online Advertising Using Retrieval Assisted Image Generation. In Proceedings of the Workshop on Data Mining for Online Advertising (AdKDD 2023) .Lai, J.; Chen, S.; Gao, J.; Shi, H.; Liu, Z.; Zhai, F.; Luo, J.; Wei, X.; Wang, L.; and Zhu, L. 2026. PosterReward: Unlock-ing Accurate Evaluation for High-Quality Graphic Design Generation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 7762– 7772. Li, S.; Cai, Y.; Chen, H.; and Wang, Y. 2026. GeoSVG-RL: Geometry-Aware Reinforcement Learning for Layout-Constrained Text-to-SVG Diagram Generation. arXiv:2605.25447. Li, Y.; Liu, H.; Wu, Q.; Mu, F.; Yang, J.; Gao, J.; Li, C.; and Lee, Y. J. 2023a. GLIGEN: Open-Set Grounded Text-to-Image Generation. In Proceedings of the IEEE/CVF Confer-ence on Computer Vision and Pattern Recognition , 22511– 22521. Li, Z.; Li, F.; Feng, W.; Zhu, H.; Li, Y.; Zhang, Z.; Lv, J.; Shen, J.; Lin, Z.; Shao, J.; and Yang, Z. 2023b. Planning and Rendering: Towards Product Poster Generation with Diffu-sion Models. arXiv:2312.08822. Lin, J.; Zhou, M.; Ma, Y.; Gao, Y.; Fei, C.; Chen, Y.; Yu, Z.; and Ge, T. 2023. AutoPoster: A Highly Automatic and Content-Aware Design System for Advertising Poster Gen-eration. In Proceedings of the 31st ACM International Con-ference on Multimedia , 1250–1260. Liu, J.; Zhang, P.; Zhang, Y.; Yan, P.; Zhou, H.; Zhou, X.; Guo, F.; and Jin, L. 2026a. PosterVerse: A Full-Workflow Framework for Commercial-Grade Poster Generation with HTML-Based Scalable Typography. Proceedings of the AAAI Conference on Artificial Intelligence , 40(9): 7197– 7205. Liu, Z.; Ding, S.; Fang, X.; Dai, X.; Yang, P.; Liang, J.; Wang, J.; Chen, K.; Lin, D.; and Zang, Y. 2026b. Visual-ERM: Re-ward Modeling for Visual Equivalence. arXiv:2603.13224. Liu, Z.; Sun, S.; Huang, D.; Shi, Y.; Zhang, M.; Li, J.; Yu, J.; and Bian, J. 2026c. DesignAsCode: Bridging Structural Editability and Visual Fidelity in Graphic Design Generation. arXiv:2602.17690. OpenAI. 2026. GPT-5.5 System Card. https://openai.com/ index/gpt-5-5-system-card/. Accessed: 2026-07-29. Pan, Y.; Hu, C.; Huang, X.; Huang, C.; Zhao, M.; Bi, Y.; Zhang, X.; Zeng, A.; and Hu, L. 2026. AeSlides: Incentiviz-ing Aesthetic Layout in LLM-Based Slide Generation via Verifiable Rewards. arXiv:2604.22840. Qin, Y.; Cao, K.; Liu, H.; Ma, A.; Li, F.; Zhu, H.; Zhang, Z.; Ling, R.; Feng, W.; He, X.; Zhang, Z.; Guo, Z.; Bian, H.; Lv, J.; Shen, J.; and Law, C. 2026. InnoAds-Composer: Efficient Condition Composition for E-Commerce Poster Generation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 32988–32999. Qwen Team. 2026. Qwen3.5: Towards Native Multimodal Agents. https://qwen.ai/blog?id=qwen3.5. Accessed: 2026-07-29. Rodriguez, J.; Zhang, H.; Puri, A.; Pramanik, R.; Feizi, A.; Wichmann, P.; Mondal, A.; Samsami, M. R.; Awal, R.; Taslakian, P.; Gella, S.; Mudumba, S. R.; Vazquez, D.; Pal, C.; and Pedersoli, M. 2025. Rendering-Aware Reinforcement Learning for Vector Graphics Generation. In Advances in Neural Information Processing Systems , volume 38, 60496– 60534. Curran Associates, Inc. Rombach, R.; Blattmann, A.; Lorenz, D.; Esser, P.; and Om-mer, B. 2022. High-Resolution Image Synthesis with La-tent Diffusion Models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition ,10684–10695. Saharia, C.; Chan, W.; Saxena, S.; Li, L.; Whang, J.; Denton, E. L.; Ghasemipour, K.; Lopes, R. G.; Ayan, B. K.; Salimans, T.; Ho, J.; Fleet, D. J.; and Norouzi, M. 2022. Photorealistic Text-to-Image Diffusion Models with Deep Language Un-derstanding. In Advances in Neural Information Processing Systems , volume 35, 36479–36494. Shao, Z.; Wang, P.; Zhu, Q.; Xu, R.; Song, J.; Bi, X.; Zhang, H.; Zhang, M.; Li, Y. K.; Wu, Y.; and Guo, D. 2024. DeepSeekMath: Pushing the Limits of Mathematical Rea-soning in Open Language Models. arXiv:2402.03300. Tang, Z.; Wu, C.; Li, J.; and Duan, N. 2024. LayoutNUWA: Revealing the Hidden Layout Expertise of Large Language Models. In International Conference on Learning Represen-tations .Wang, H.; Feng, W.; Li, Y.; Zhang, Z.; Lv, J.; Shen, J.; Lin, Z.; and Shao, J. 2025. Generate E-Commerce Prod-uct Background by Integrating Category Commonality and Personalized Style. In 2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) , 1–5. IEEE. Wang, H.; Shimose, Y.; and Takamatsu, S. 2025. Banner-Agency: Advertising Banner Design with Multimodal LLM Agents. In Proceedings of the 2025 Conference on Empir-ical Methods in Natural Language Processing , 4304–4329. Association for Computational Linguistics. Xing, X.; Xue, Z.; Guan, Y.; Zhang, J.; Xu, D.; and Yu, Q. 2025. Reason-SVG: Enhancing Structured Reasoning for Vector Graphics Generation with Reinforcement Learning. arXiv:2505.24499. Xu, J.; Liu, X.; Wu, Y.; Tong, Y.; Li, Q.; Ding, M.; Tang, J.; and Dong, Y. 2023. ImageReward: Learning and Evalu-ating Human Preferences for Text-to-Image Generation. In 
+
+Advances in Neural Information Processing Systems , vol-ume 36, 15903–15935. Curran Associates, Inc. Xu, Y.; Feng, W.; Zhang, S.; Wang, H.; Qin, Y.; Li, Y.; Ma, A.; Luo, Y.; Wang, L.; Ren, X.; Wang, H.; Ling, R.; Zhang, Z.; Lv, J.; Shen, J.; Law, C.; Wang, L.; and Guo, Y. 2026. Design Your Ad: Personalized Advertising Image and Text Generation with Unified Autoregressive Models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 472–483. Yang, H.; Yuan, J.; Yang, S.; Xu, L.; Yuan, S.; and Zeng, Y. 2024. A New Creative Generation Pipeline for Click-Through Rate with Stable Diffusion Model. In Companion Proceedings of the ACM Web Conference 2024 , WWW ’24, 180–189. ACM. Zhang, L.; Rao, A.; and Agrawala, M. 2023. Adding Con-ditional Control to Text-to-Image Diffusion Models. In Pro-ceedings of the IEEE/CVF International Conference on Com-puter Vision , 3836–3847. Supplementary Material 
+
+This appendix describes the data construction, rule-based checks and rewards, training implementation, and expanded evaluation of CommerceVibe . Each complete HTML/CSS candidate is rendered once to obtain visible text, image ele-ments, geometry, and the final screenshot for reward compu-tation. These rendered outputs are not returned to the policy. 
+
+## SFT Data Construction 
+
+The SFT corpus consists of product images, associated prod-uct information, and user design requests collected from real-world e-commerce design scenarios. Each raw exam-ple therefore comprises the user request, available product images, structured product information when available, and a reference HTML/CSS target. A fixed system instruction constrains the model role and the structure of the generated response. 
+
+Request normalization. Free-form user requests vary substantially in organization and level of detail. Before HTML/CSS generation, a fixed rewriting procedure extracts the supplied requirements into a structured representation. The procedure introduces no additional product facts, re-mains fixed throughout SFT, RL, and evaluation, and is shared by all CommerceVibe variants. The schematic pseu-docode below summarizes the normalization structure with-out reproducing a complete policy input. Quality control removes failed or incomplete examples. The data loader rejects embedded base64 payloads and short single-image wrappers, removes repeated image URLs within an example, and retains only input–target pairs. The training split contains 28,568 quality-controlled ex-amples: 23,726 with Single-image inputs and 4,842 with Multi-image inputs. A separate validation split contains 3,174 examples, yielding an approximately 9:1 train-to-validation ratio. Figure S1 reports both the Single/Multi com-position of the training split and the cardinality distribution within its Multi subset. 
+
+Generator System Instruction 
+
+The following English translation preserves the content of the fixed system instruction used to define the generator role and constrain the response: 
+
+Role. You are an e-commerce visual-design HTML generator. 
+
+Input. A product design specification containing product images, design requirements, a layout plan, and related information. 
+
+Output. One complete HTML file that can be rendered directly. 
+
+Requirements. Output only HTML code, without ex-planations or Markdown wrapping. Do not output rea-soning or emit <think> or </think> tags. Ref-erence the product-image URLs supplied in the in-put through <img> elements. Strictly follow all di-mensions, layouts, colors, and copy requirements in the design specification. Present every listed selling point, text item, and information module, including size charts, without omission or reduction. 
+
+## Task and Benchmark 
+
+For product images I, free-form request u, and optional structured product information m, request normalization gives ˜u = Normalize( I, u, m ). The policy context is x =(s, I, ˜u, m ), where s is the fixed generator system instruction above. A shared multimodal policy generates one complete HTML/CSS document c ∼ πθ (c | x). We define Single by 
+
+|I| = 1 and Multi by |I| ≥ 2. This definition uses the number of input product images, not the number of image elements produced by the candidate. The benchmark is constructed independently using prod-uct images, associated product information, and user design requests collected from real-world e-commerce scenarios. It contains 1,300 cases: 1,140 Single cases (87.69%) and 160 Multi cases (12.31%). At the product level, the benchmark is disjoint from all SFT and RL data, and products do not repeat across benchmark cases. Within the Multi stratum, 48, 46, 31, 16, 8, 6, and 5 cases contain 2, 3, 4, 5, 6, 7, and 8 input images, respectively. Results are reported both overall and by stratum. Rule settings are selected solely by the number of input product images. 
+
+## Partially Conditional Rule Verifier 
+
+The verifier organizes continuous measurements into Text, Product, and Layout families, but it does not apply one fixed vector of rules to every example. The selected profile deter-mines which dimensions are present, their weights, critical dimensions, font thresholds, prominence semantics, and se-lected detector settings. The rendered state then determines whether image-dependent measurements are applicable. Ta-ble S2 separates these continuous families from the safe-guards that precede reward aggregation. 
+
+Profile Routing 
+
+The reward path routes a case only by the number of input product images: 
+
+p = ρ(|I|) = 
+
+Single , |I| = 1 ,
+
+Multi , |I| ≥ 2. (S1) The generation request and product information remain con-ditioning inputs to the policy and the Judge, but neither se-lects the rule setting. Table S3 gives the two weight vectors selected by this cardinality branch. For Single, an applicable occlusion detector receives weight 3 while preserving the profile total. The implemen-tation transfers up to two points from prominence, followed by one point from contrast, font size, or text-on-product as needed. Multi declares weight 4 directly. Bottom blank fol-lows the same state-conditioned aggregation: it receives a weight only when applicable, and otherwise contributes nei-ther a score nor a weight. Thus, the profile depends only on the input count, whereas detector applicability depends on the rendered candidate. 1 Input: product images I, free-form request u, and optional product information m.2 PRIMARY_IDEA ← summarize the requested visual concept, comparison goal, and reading order. 3 SOURCE_ANCHORS ← extract only visual and product evidence grounded in (I, m ).4 CORE_PROOF ← bind each required product, variant, and claim to its supporting source evidence. 5 COMPOSITION_AND_TITLE ← specify layout order, title placement, product-safe regions, background, and block-ing constraints. 6 DESIGN_PAYOFF ← define PRIMARY_TREATMENT , ELEMENT_SYSTEM , VISIBLE_GAIN , and ORNAMENT .7 TYPOGRAPHY ← specify font family and weight, hierarchy, colors, background treatment, and small-screen readabil-ity. 8 RISK_CONSTRAINTS ← record design risks, source-evidence strength, and forbidden changes. 9 PROTECTED_RELATIONS , SUCCESS_CONDITION , and PRIMARY_RELATION ← preserve required relations and define acceptance conditions. 10 FALLBACK_LAYOUT ← define a simpler composition used only when the primary layout cannot preserve the required relations. 11 Output: ˜u = Phase2Plan (PRIMARY_IDEA , . . . , FALLBACK_LAYOUT ), with no unsupported product facts. Schematic pseudocode for request normalization. Each field preserves supplied requirements and source-grounded relations while making the generation constraints explicit. 
+
+Figure S1: Training and evaluation distributions by input product-image count. 
+
+Thresholds and Detector Semantics 
+
+Table S4 reports the profile-dependent font and prominence settings. A font entry has the form absolute pixels / canvas-short-side ratio / deduction. A text element is penalized when it falls below both size thresholds. Prominence uses a smooth score below the area threshold; an image whose width or height reaches the listed canvas ratio receives a score of at least 80. Image crop receives full credit up to 30% crop and zero at 50%, with smooth interpolation in between. For transpar-ent images, the detector estimates cropped non-transparent subject pixels; otherwise it uses rendered-box geometry. Im-age occlusion considers visible, loaded, nontrivial <img> 
+
+elements, excludes full-bleed scene images, and becomes applicable only when at least two eligible images remain. Its safe and zero-score overlap ratios are 0.02 and 0.18, with a minimum overlap area of 80 pixels. When alpha masks can be read, overlap is measured on non-transparent pixels; otherwise, the implementation falls back to box geometry. Visual balance is always computed, but its representation depends on the profile. Multi uses ink-level text geometry, text weight 0.70, and smooth thresholds 0.12–0.30. Single uses text boxes, text weight 1.0, thresholds 0.15–0.45, and removes decorative backing panels that largely coincide with product images. When applicable, bottom blank is computed from rendered geometry, with full credit below 5% blank area and zero at 15%. It enters the active weight vector with raw weight 1 and is then included in the profile-total renor-malization. Bottom blank is not critical, so a failure loses only its weighted contribution and incurs no additive critical penalty. The visible-image filter counts unique <img> URLs only when the element is not hidden, has opacity at least 0.05, has rendered dimensions of at least 40 × 40 pixels, and in-tersects the canvas. CSS background-image resources do not count. Input coverage matches input URLs to visible rendered <img> URLs. When an image-dependent detector is inapplicable, its dimension is removed from the aggrega-Category Cases Category Cases Shoes 69 Underwear 67 Storage and cleaning supplies 58 Home improvement and building materials 42 Household essentials 52 Fashion accessories and jewelry 56 Women’s clothing 54 Pet and gardening products 51 Sports and outdoors 50 Kitchenware and tableware 47 Home appliances 47 Children’s clothing 48 Home textiles and decor 47 Consumer electronics and computers 44 Bags and leather goods 44 Food and beverages 43 Men’s clothing 42 Automotive supplies 41 Beauty and cosmetics 41 Toys 40 Office and stationery 40 Personal care and household cleaning 37 Packaging 34 Agriculture 35 Lighting 34 Media and broadcasting 31 Fresh food and catering 27 Safety and protective equipment 25 Electrical equipment 21 Automotive and motorcycle parts 15 Instruments and meters 12 Adult products 3Textiles and leather 2 Hardware and tools 1
+
+Table S1: Category distribution of the 1,300-case benchmark. The 34 categories sum to 1,300 cases. 
+
+Component Dimensions Conditional behavior Text text overflow, text overlap, text on product, minimum font size, contrast Weights and font thresholds differ between Single and Multi. Text-on-product is evaluated only when a visible <img> is available. Product subject prominence, image crop, image oc-clusion Prominence uses the largest matched image for Single and summed matched-image area for Multi. Crop uses alpha-aware subject pixels when available. Occlusion is applicable only with at least two eligible rendered images. Layout element bounds, visual balance, bottom blank Bounds and balance settings differ between Single and Multi. Multi uses ink-level text mass and tighter balance thresholds, whereas Single uses text boxes and excludes image backing panels. Bottom blank is activated and weighted only in ren-dered states for which it applies. Safeguards HTML validity, empty body, zero visible im-ages, URL coverage, sparse text, critical vi-olations These checks act before or after continuous aggregation. They provide fixed negative rewards or additive penalties and are not members of the Text, Product, or Layout ablations. 
+
+Table S2: Conditional rule families and safeguards. Inapplicable image-dependent detectors are removed from aggregation, and the remaining applicable weights are renormalized within the selected profile; shared safeguards are excluded from the three rule-family ablations. tion; it contributes neither a score nor a weight. The weights of the remaining applicable dimensions are renormalized to the continuous total of the selected Single or Multi profile after any rendered-state adjustment. 
+
+## Reward Construction and Gates 
+
+Let p be the routed profile, Ap,s the dimensions applicable to profile p in rendered state s, qd ∈ [0 , 100] the score of di-mension d, and wd(p, s ) its profile/state-specific weight after renormalization over Ap,s . The nominal continuous score is 
+
+Brule = X
+
+> d∈Ap,s
+
+wd(p, s )qd
+
+100 . (S2) Equation S2 gives the continuous rule score before additive penalties. For a rule-family ablation, let Dp,s be all dimen-sions present before ablation and Ap,s ⊆ Dp,s the remaining enabled dimensions. The implementation preserves the orig-inal total weight by applying 
+
+α =
+
+P 
+
+> d∈Dp,s
+
+wd
+
+P 
+
+> d∈Ap,s
+
+wd
+
+, Babl rule = X
+
+> d∈Ap,s
+
+αw dqd
+
+100 . (S3) Dimensions disabled through RLVR_DISABLED_DIMS or 
+
+RLVR_DISABLED_DIM_GROUPS are excluded from both the weighted score and critical-violation penalties. 
+
+Critical-violation penalty. A critical dimension is penal-ized twice. Its score qd is first set to zero before weighted aggregation, removing its own weighted contribution. An additional penalty is then computed from its violation count 
+
+cd ≥ 1:
+
+Pd = bd + ed(cd − 1) . (S4) The configured base penalty bd and per-extra penalty ed are: Profile Ov Ol Tp Bd Pr Cr Fs Ct Io Ba Bb Critical dimensions Single 9 9 6 9 9 2 2 2 – 2 – Ov, Ol, Bd, Io Multi 10 10 7 9 2 3 2 1 4 2 – Ov, Ol, Bd, Io 
+
+Table S3: Single- and Multi-profile rule weights. Each row has nominal weight 50 before rendered-state adjustments. Abbrevi-ations are: Ov, overflow; Ol, text overlap; Tp, text on product; Bd, element bounds; Pr, prominence; Cr, crop; Fs, font size; Ct, contrast; Io, image occlusion; Ba, visual balance; Bb, bottom blank. A dash denotes no nominal profile weight; detectors such as Single-image occlusion and bottom blank receive state-conditioned weights only when applicable.              
+
+> Profile Title Subtitle Normal Fallback Prominence W/H Other settings Single 56/.060/30 28/.025/15 22/.020/8 16/.014/20 .20 (max) .78 box balance; strict bounds Multi 48/.050/30 28/.025/15 20/.018/8 14/.012/20 .20 (sum) .70 ink balance; clipped exclusion
+
+Table S4: Profile-specific font and prominence thresholds. Prominence mode max uses the largest matched input image, while 
+
+sum uses the summed area of matched input images.             
+
+> Dimension bded
+> text_overflow 33
+> text_overlap 33
+> element_bounds 33
+> subject_prominence 30Other/default 33
+
+forbidden_price_info uses the default (3 , 3) setting. Thus, dimensions with (bd, e d) = (3 , 3) incur penalties of 3, 6, and 9 for one, two, and three violations, whereas the subject-prominence penalty remains 3. Image occlusion uses a separate nonlinear penalty. For overlap ratio r, let 
+
+v = clip 
+
+ r − 0.02 0.18 − 0.02 , 0, 1
+
+
+
+. (S5) With h violating image pairs, its penalty is 
+
+Pocclusion = 6 + 20 v + 4 max(0 , h − 1) . (S6) Each critical dimension is included once after de-duplication, and penalties from different critical dimensions are added without decay or an upper cap: 
+
+Pcritical = X
+
+> d∈Cp,s
+
+Pd, (S7) where the image-occlusion term uses Eq. S6. For exam-ple, two text-overflow violations contribute 6 points and one element-bounds violation contributes 3 points, for an additive penalty of 9, in addition to zeroing both dimension scores. The penalized score passed to the reward mapping is 
+
+eSrule = Brule − Pcritical − Psparse ,Rrule = clip eSrule − 40 10 , −1, 1
+
+!
+
+. (S8) The intermediate score eSrule is not clipped and may be neg-ative; only the final reward mapping is clipped, reaching −1
+
+when eSrule ≤ 30 . Visible body text containing fewer than 10 characters incurs Psparse = 25 for both Single and Multi. This is a soft penalty: scoring continues rather than returning immediately. Before continuous scoring, malformed outputs receive fixed rewards: HTML shorter than 50 characters receives 
+
+−1.0, non-HTML text receives −0.8, and a candidate with-out a closing body or HTML tag receives −0.5. After ren-dering, an empty body or no visible <img> receives −1.0.Product-coverage gates depend on input cardinality: a Single candidate receives −1.0 when its sole input URL is miss-ing, while a Multi candidate receives −1.0 when at least two distinct input URLs are missing. 
+
+## Preference Judge and Combined Reward 
+
+The fixed preference scorer is Qwen3-VL-Plus. Under the summary-free protocol, the Judge receives the rendered screenshot, normalized request, structured product informa-tion, and input product images. It receives neither rule scores nor rule issues. The Judge is not updated during SFT or RL. The Judge assigns an integer score sj ∈ { 1, . . . , 5} to visual appeal, product presentation, perceptual readability, marketing relevance, commercial usability, and copy faith-fulness. The first five dimensions have weight 8 and copy faithfulness has weight 10. With n(s) = 25( s − 1) , the pref-erence score is 
+
+V = X
+
+> j
+
+wj n(sj )100 − X 
+
+> j:sj≤2
+
+λj (5 − sj ), (S9) where λj = 12 for copy faithfulness and 8 otherwise. The mapped preference reward is 
+
+Rpref = clip 
+
+ V − 25 12 .5 , −1, 1
+
+
+
+. (S10) After the shared validity and content gates, Rule-RLVR uses Rrule , Preference-RL uses Rpref from Eq. S10, and Rule+Preference RL uses 
+
+Rcomb = 12 Rrule + 12 Rpref . (S11) 
+
+VLM Judge Scoring Prompt 
+
+The following English rendering records the complete scor-ing instruction, input fields, and anchors supplied to the fixed Judge. You are a strict evaluator of e-commerce creatives. Evaluate the final rendered creative against the user request, product information, and reference product images. Judge only the supplied evidence. Return one integer score from 1 to 5 for each of the following six dimensions, together with a concise reason. Do not add dimensions or return an overall score. 
+
+Input fields. User request: [USER REQUEST]. Product in-formation: [PRODUCT INFORMATION]. Reference prod-uct images: [REFERENCE IMAGES]. Rendered creative: [SCREENSHOT]. 
+
+1. Visual appeal ( visual_appeal ). 5: polished, harmo-nious, and suitable as a high-quality commercial creative; 4: attractive with only minor generic or locally unrefined details; 3: acceptable but visually ordinary; 2: visibly rough, with color, texture, or decoration that harms the composi-tion; 1: cheap-looking, chaotic, or commercially unusable. 
+
+2. Product presentation ( product_presentation ). 
+
+For Single inputs, the product should form a clear primary focus. For Multi inputs, the supplied set should be clearly covered, visually coordinated, and separable without requir-ing one product to dominate. 5: clear, complete, attractive, and naturally integrated; 4: clear and complete with minor integration or quality limitations; 3: visible but ordinary in scale, position, angle, or integration; 2: insufficiently prominent or incomplete for Single, or incompletely cov-ered, poorly separated, or awkwardly coordinated for Multi; 1: severely cropped, missing, obscured, or otherwise unable to support product understanding. 
+
+3. Perceptual readability ( perceptual_ readability ). 5: clear hierarchy and reading path, im-mediately readable core information, balanced composition, and orderly Multi-image arrangement; 4: mostly clear hier-archy with only minor effort required for secondary infor-mation; 3: understandable but with a weak focal hierarchy, marginal type size or contrast, or slightly uneven arrange-ment; 2: competing hierarchy, partially unreadable overlap or overflow, image occlusion, or visibly disordered arrange-ment; 1: failed composition or unreadable core information. 
+
+4. Marketing relevance ( marketing_relevance ). 5: style, copy, color, typography, and graphic language strongly match the product category, target audience, and intended scene; 4: coherent and relevant with minor weaknesses; 3: broadly relevant but generic or slightly collage-like; 2: no-ticeable mismatch or conflicting visual styles; 1: off-topic or visually incoherent for the product and intended use. 
+
+5. Commercial usability ( commercial_usability ). 
+
+5: directly suitable for a business candidate pool; 4: us-able after minor revision; 3: usable as a draft but requiring substantial refinement; 2: low business usability because of multiple visible problems; 1: unusable. 
+
+6. Copy faithfulness ( copy_faithfulness ). 5: all vis-ible titles, selling points, prices, sizes, and other copy agree with the supplied information and contain no visible cor-ruption; 4: a minor noncritical difference that does not affect understanding; 3: a visible but noncritical inconsistency; 2: an incorrect title, price, size, or central selling point; 1: ex-tensive incorrect, corrupted, or hallucinated copy. Account for visible cropping, overlap, overflow, occlusion, or malformed text through the relevant perceptual dimen-sion; do not create separate defect fields. Return strict JSON containing the six dimension keys, an integer score and one-sentence reason for each key, and an issues list for copy faithfulness. Return no Markdown or explanatory text outside the JSON object. 
+
+## Training and Evaluation Implementation 
+
+Table S6 summarizes the core settings for the Qwen3.5-9B policy. Beyond the entries in the table, SFT uses a cosine schedule with warmup ratio 0.1, weight de-cay 0.01, gradient clipping at 1.0, BF16, gradient check-pointing, and seed 42. SFT performs a full language-model update with LoRA disabled; LoRA with rank 8 is used for all RL variants. The vision encoder is frozen, and DeepSpeed ZeRO-2 with CPU optimizer offload uses 
+
+sft/ds_config_zero2_offload.json . The maxi-mum image-pixel budget is 100,000. During SFT, structured product information is independently dropped with proba-bility 0.3 to model requests in which users do not provide product information. We implement all GRPO runs with MS-SWIFT 4.3.0 through the swift rlhf entry point with 
+
+rlhf_type=grpo . Each RL variant is trained in three in-dependent runs with seeds 42, 25, and 999. All runs use a co-sine schedule with warmup ratio 0.01, KL coefficient 0.001, gradient clipping at 1.0, BF16, gradient checkpointing, and DeepSpeed ZeRO-2. Rollout generation is accelerated with vLLM 0.17.1 in colocated mode with memory utilization 0.4. The maximum image-pixel budget is 100,000 and thinking is disabled. Reported automatic scores are averaged across the three independent runs using their fixed step-900 check-points; step 900 is selected before benchmark evaluation and independently of benchmark scores. Figures S2, S6, and S7 visualize the seed-42 runs. For benchmark and standalone inference by the Com-merceVibe policies, the system prompt is identical to the training system prompt and is used unchanged. Decoding uses no temperature and no top-p sampling, with a maximum of 8,192 output tokens. These inference settings are shared by the SFT and all RL variants; GRPO rollout sampling uses the separate training setting reported above. 
+
+External-model inference. GPT-5.5, Claude Opus 4.8, and Gemini 3.5 Flash are evaluated on all 1,300 benchmark cases through their APIs between July 16, 2026 and July 17, 2026. All three models use the same fixed generator system instruction as the CommerceVibe policies and receive the same normalized request, product images, and product infor-mation. Their model-specific request profiles differ only in the model identifier and request header. The system instruc-tion requires one complete, directly renderable HTML file without explanations, Markdown fences, or hidden reason-ing. Table S5 summarizes the common API settings. Temper-ature, top-p, reasoning or thinking controls, and a random seed are not included in the API payload; the APIs do not ex-pose a seed through this evaluation interface. Each supplied image is converted to a base64 data URL with a maximum pixel count of 100,000. If a response is invalid, at most two retries are made, giving at most three attempts per case. Re-tries use a linearly increasing delay capped at 30 seconds and do not provide the preceding response or error message to the model. Thus, they handle invalid API outputs with-Item Setting Models GPT-5.5; Claude Opus 4.8; Gemini 3.5 Flash Evaluation 1,300 cases; July 16–17, 2026 (UTC+8) Input Shared system instruction, normalized request, product images, and product in-formation Sampling payload Temperature and top-p omitted; no rea-soning/thinking parameter; no seed pa-rameter Output limit 8,192 tokens Image encoding Base64 data URLs; maximum 100,000 pixels per image Invalid responses At most two retries after the initial call; increasing delay capped at 30 seconds; no response feedback or reranking Post-processing Uniform removal of content through  
+
+> </think> when present
+
+Table S5: Common API inference settings for the three ex-ternal models. out iterative correction or candidate reranking. Although the system instruction explicitly prohibits reasoning traces and 
+
+<think> tags, a uniform clean_html() step removes any content through a closing </think> tag if one is re-turned. 
+
+RL Training Dynamics 
+
+Figure S2 reports the seed-42 terminal-reward trajectories of the three main RL variants through training step 900, with each scalar objective shown on its native scale. The displayed trend uses a debiased exponential moving average with smoothing coefficient 1, corresponding to an internal weight of 0.999, to match the maximum W&B setting. Figure S7 complements the reward curves with KL-divergence and clipping diagnostics from the same three seed-42 variant runs. Automatic evaluation reuses the rendered-state component scores but reports a pure-weighted view. For the Rule branch, active profile weights are normalized to 50 and aggregated without the additive critical-violation or sparse-text penalties in Eq. S8; detector-produced zeros remain zero. For the VLM branch, the six weighted dimensions are summed without the low-score penalties in Eq. S9. The reported Text, Product, and Layout family scores are equal-weight means over applica-ble dimensions in the corresponding family, while Srule uses the profile-weighted Brule . Both retain profile-dependent di-mension presence, thresholds, detector semantics, and appli-cability handling. 
+
+## Expanded Automatic Results 
+
+Table S7 provides the rule-family scores omitted from the compact main-paper table. These measurements use the pure-weighted evaluation view described above. Figures S3 and S4 provide the fine-grained measurements underlying the aggregate rule and preference scores. The rule breakdown contains every detector dimension reported                                 
+
+> Item Setting Policy backbone Qwen3.5-9B multimodal model Parameterization SFT: full language-model update; RL: LoRA (rank 8); vision encoder frozen SFT 28,568 training and 3,174 validation ex-amples; 3 epochs; per-device batch 1
+> ×8 GPUs ×grad. accum. 4 =effec-tive batch 32; LR 1×10 −5; max length 16,384; max pixels 100,000 GRPO (all variants) Three independent runs (seeds 42, 25, 999); LR 5×10 −5; temperature 0.7; effective batch of 64 completions (8 prompt groups with K= 8 )Terminal reward Rule-RLVR: Rrule ;Preference-RL:
+> Rpref ; Rule+Preference RL: (Rrule +
+> Rpref )/2
+> RL data and length Identical normalized training contexts across variants; max completion 3,584; total max length 20,480 Renderer Headless Chromium through Play-wright Preference Judge Fixed Qwen3-VL-Plus; temperature 0; summary-free protocol Hardware Eight NVIDIA H20 GPUs (96 GB each)
+
+Table S6: Training settings for SFT and the three GRPO variants. for the Single and Multi profiles; detector applicability varies with the input profile and rendered state, and the two strata are therefore reported separately. The VLM breakdown reports the unweighted mean of the original 1–5 ratings for the six Judge dimensions. 
+
+Rule-Family Ablation Effects 
+
+Figure S5 visualizes the paired changes summarized in the main ablation table. Positive off-family changes reflect redis-tribution among jointly optimized dimensions. Figure S6 reports the seed-42 training rewards of the three ablation policies; the paired held-out scores are reported in the main-paper ablation table. 
+
+Additional RL Optimization Diagnostics 
+
+Figure S7 reports KL divergence and clipping-region ra-tio for the seed-42 runs of the three main GRPO variants. The small updates are consistent with the strong SFT ini-tialization. Earlier tuning trials with larger learning rates or stronger KL settings produced more severe reward hacking and degraded instruction following, suggesting partial for-getting. Preference-RL has the lowest clipping ratio, whereas Rule+Preference RL has the largest, but still small, KL trend. 
+
+## Expert Evaluation 
+
+Evaluation protocol. We conduct an expert evaluation on the benchmark. For each case, one fixed render from each of the eight methods is used: the three RL variants use outputs from their seed-42 checkpoints, Qwen3.5-9B and the three external models use the second of their three inference out-puts, and SFT uses its single inference output. These fixed Figure S2: Seed-42 terminal rewards for the three RL variants through step 900. Light lines show per-step values; dark lines show maximum-smoothed, debiased EMA trends.                                      
+
+> Single Multi Method Text Product Layout Text Product Layout Qwen3.5-9B 87.2 89.0 74.7 80.3 91.3 75.5 + SFT 96.1 98.6 95.2 94.4 89.4 95.3 + Rule-RLVR 98.5 98.9 97.4 94.3 91.1 91.6 + Preference-RL 98.2 98.3 94.4 94.1 92.5 93.9 + Rule+Preference RL 98.8 98.9 98.0 96.7 96.3 95.5
+
+Table S7: Rule-family scores for 1,140 Single and 160 Multi cases. Each family is the equal-weight mean of its applicable dimensions; higher is better. choices are applied uniformly across all cases without candi-date selection or reranking. Each render is assigned an anony-mous identifier and presented in random order. Five experts, denoted A–E, evaluate the anonymized renders. All have one to five years of professional experience in e-commerce creative production. The evaluation interface provides the product images, normalized request, product information, and rendered candidate; method identities, verifier outputs, VLM Judge scores, and aggregate automatic scores are with-held. 
+
+Ratings and aggregation. Experts rate every applicable dimension on a five-point Likert scale. For the rule-aligned defect dimensions, the anchors are 1 (severe), 2 (major), 3 (moderate), 4 (minor), and 5 (no problem). These dimensions are text overflow, text overlap, text on product, minimum font size, text–background contrast, product prominence, prod-uct crop, inter-product occlusion, element bounds, visual balance, and bottom whitespace. For the preference dimen-sions, the anchors are 1 (very poor), 2 (poor), 3 (fair), 4 (good), and 5 (very good). The six dimensions are visual ap-peal, product presentation, perceptual readability, marketing relevance, commercial usability, and copy faithfulness. The interface presents a rule-aligned dimension only when it is active for the case; otherwise it is marked unavailable rather than assigned a low score. Each raw rating ℓ ∈ {1, . . . , 5} is mapped to z =(ℓ − 1) /4 ∈ [0 , 1] . For every expert–case–method tuple, rule-aligned ratings use the profile-conditioned active di-mensions and weights of the automatic rule evaluator; un-available dimensions are excluded and the remaining weights are renormalized. The six preference ratings use the fixed Judge-dimension weights. The two mapped branch scores are equally weighted and rescaled to Sexpert ∈ [0 , 100] . Struc-tural gate overrides and automatic low-score penalties are not included in this human composite. 
+
+Statistical analysis. The case is the statistical unit for method means, confidence intervals, paired tests, and corre-lations. The five expert composites are first averaged within each case–method pair, followed by an unweighted mean over the 1,300 benchmark cases. Each 95% confidence interval is the percentile interval from 10,000 bootstrap replicates of the 1,300 case identifiers; all eight method scores associated with a resampled case are retained together. Inter-rater agree-ment is measured using a two-way random-effects, absolute-agreement, average-measures intraclass correlation. The re-sulting ICC(A , 5) is 0.811. Rule+Preference RL is compared with SFT, Rule-RLVR, Preference-RL, and GPT-5.5 using asymptotic two-sided paired Wilcoxon signed-rank tests. Automatic- and expert-score tests use the same 1,300 benchmark cases for each pair. Zero differences are omitted by the signed-rank statis-tic, and p-values are Holm-corrected across the four prespec-Figure S3: Detector-level rule scores for 1,140 Single and 160 Multi cases. Values are means on a 0–100 scale; the orange outline marks + Rule+Preference RL. ified comparisons within each evaluation source. Automatic and expert scores are associated at the case level by Spear-man correlation. A 10,000-replicate case-cluster bootstrap, which resamples case identifiers while retaining all eight methods, gives ρ = 0 .612 with a 95% confidence interval of [0 .562 , 0.657] . The median method-specific correlation is 0.385 (range: 0.075–0.492). Table S8 reports the method means and case-bootstrap confidence intervals. Figure S8 provides the corresponding visual summary. Figure S4: VLM Judge dimensions for 1,140 Single and 160 Multi cases. Values are unweighted mean ratings on the original 1–5 scale; the orange outline marks + Rule+Preference RL. 
+
+Figure S5: Paired changes in Text, Product, and Layout scores after removing each rule family. Values are means relative to Rule-RLVR on the same 1,300 cases; negative values indicate degradation. Figure S6: Seed-42 terminal rewards for the three rule-family ablations through step 900. Light lines show per-step values; dark lines show maximum-smoothed, debiased EMA trends. 0.000 0.010 0.020 0.030 0.040 
+
+> KL divergence
+
+(a) + Rule-RLVR (b) + Preference-RL (c) + Rule+Preference RL              
+
+> 0200 400 600 800
+> Training step
+> 0.000 0.002 0.003 0.005 0.006
+> Clipping-region ratio
+> 0200 400 600 800
+> Training step
+> 0200 400 600 800
+> Training step Per-step value Maximum-smoothed trend
+
+Figure S7: Seed-42 GRPO diagnostics through step 900. Rows show KL divergence and mean clipping-region ratio; light and dark lines denote per-step values and maximum-smoothed, debiased EMA trends. Method Sexpert ↑ 95% CI 
+
+External models 
+
+GPT-5.5 78.9 [76.9, 80.9] Claude Opus 4.8 78.4 [76.2, 80.5] Gemini 3.5 Flash 75.9 [73.7, 78.0] 
+
+CommerceVibe variants 
+
+Qwen3.5-9B 59.0 [56.3, 61.7] + SFT 81.6 [79.9, 83.2] + Rule-RLVR 87.3 [85.9, 88.5] + Preference-RL 84.4 [82.8, 85.8] + Rule+Preference RL 90.0 [88.5, 91.3] 
+
+Table S8: Five-expert scores on the 1,300-case benchmark. Sexpert is reported on a 0–100 scale with 95% case-bootstrap confidence intervals. 
+
+Comparator ∆Soverall pHolm ∆Sexpert pHolm 
+
++ SFT +6 .7 1.3 × 10 −91 +8 .4 2.4 × 10 −14 
+
++ Rule-RLVR +1 .6 9.1 × 10 −13 +2 .8 4.2 × 10 −8
+
++ Preference-RL +3 .6 3.1 × 10 −39 +5 .6 2.1 × 10 −13 
+
+GPT-5.5 +13 .9 9.0 × 10 −165 +11 .1 1.5 × 10 −12 
+
+Table S9: Paired comparisons with Rule+Preference RL on the 1,300-case benchmark. Differences are Rule+Preference RL minus the comparator. Reported p-values are from asymptotic two-sided Wilcoxon signed-rank tests with Holm correction. 0 20 40 60 80 100 
+
+Sexpert 
+
+GPT-5.5 Claude Opus 4.8 Gemini 3.5 Flash Qwen3.5-9B + SFT + Rule-RLVR + Preference-RL 
+
++ Rule+Preference RL 
+
+78.9 78.4 75.9 59.0 81.6 87.3 84.4 
+
+90.0 
+
+Five-expert evaluation 
+
+Figure S8: Five-expert mean scores and 95% case-bootstrap confidence intervals for all eight methods on the benchmark.

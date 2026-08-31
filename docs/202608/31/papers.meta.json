@@ -1,0 +1,39 @@
+{
+  "label": "2026-08-31",
+  "date": "2026-08-31",
+  "generated_at": "2026-08-31T23:53:31",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202608/31/2608.27893v1-commercevibe-learning-to-design-e-commerce-creatives-as-executable-visual-code-via-dual-feedback-reinforcement-learning",
+      "section": "deep",
+      "title_en": "CommerceVibe: Learning to Design E-Commerce Creatives as Executable Visual Code via Dual-Feedback Reinforcement Learning",
+      "authors": "Yajiao Xu, Jin Zhang, Jiangbo Ai, Tao Jiang, Mo Xu, Lina Huang, Chengfu Huo",
+      "date": "2026-08-28",
+      "pdf": "https://arxiv.org/pdf/2608.27893v1",
+      "score": "9.0",
+      "evidence": "将创意图生成建模为条件HTML/CSS程序合成，并通过双反馈强化学习优化生成质量，直接契合图像生成中的强化学习与奖励设计主题",
+      "tldr": "电商创意图生成常依赖扩散模型，但输出为扁平栅格，存在文字扭曲与产品细节不一致，且难以编辑复用。本文提出CommerceVibe，将创意图建模为条件HTML/CSS程序合成，并设计双反馈强化学习框架，使生成过程具备可验证的结构化训练信号。实验表明该方法能生成更准确、可编辑的创意图，验证了强化学习在图像生成与奖励设计中的有效性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "High-quality e-commerce creatives are essential for presenting products and conveying marketing messages. Recent diffusion models enable scalable creative generation and produce visually compelling images, but their flattened raster outputs often contain distorted text and inconsistent product details, requiring refinement before deployment. Moreover, without explicit structure, the resulting creatives are difficult to edit and reuse, while complex design requirements remain challenging to encode as verifiable training signals. To address these challenges, we present CommerceVibe, which represents creatives as executable visual code and formulates generation as conditional HTML/CSS program synthesis. Given product images, design requirements, and product information, it produces renderable, editable, and reusable creatives. We further introduce dual-feedback reinforcement learning, in which rule-based feedback evaluates rendered programs for text readability, product visibility, and layout validity, while visual feedback from a vision-language model (VLM) assesses rendered creatives against input specifications across six perceptual and commercial dimensions. Together, these complementary feedback signals improve both constraint satisfaction and perception-dependent quality. We perform supervised fine-tuning (SFT) of Qwen3.5-9B on over 28,000 e-commerce examples, followed by dual-feedback reinforcement learning. On a 1,300-case benchmark, the optimized CommerceVibe model achieves a weighted score of 94.0/100, compared with 87.3 for the SFT-only variant, and outperforms strong external models. Blind evaluations by five e-commerce design experts further validate these improvements. CommerceVibe supports controllable, editable, and scalable e-commerce creative production.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/31/2608.24300v1-contrastive-branch-policy-optimization",
+      "section": "quick",
+      "title_en": "Contrastive Branch Policy Optimization",
+      "authors": "Ying Wang, Changlin Qiu, Bang Lin, Linbo Jin, Wen Jiang, Zhe Sun, Jingli Yang",
+      "date": "2026-08-25",
+      "pdf": "https://arxiv.org/pdf/2608.24300v1",
+      "score": "6.0",
+      "evidence": "面向生成任务稀疏奖励的对比分支策略优化方法",
+      "tldr": "针对带可验证奖励的强化学习在工具增强语言模型训练中面临稀疏结果奖励、难以定位关键中间决策的问题，CBPO将分支采样中的预算分配与token级信用分配解耦：用生成熵筛选候选分支位置，用路径级和节点级衰减控制探索分布，并基于精确前缀组的奖励差异定义对比分支价值CBV以重缩放连续优势。在十个数学与搜索基准上跨两个模型规模取得最优平均精度。方法仅需结果奖励，无需过程级标注，为工具集成智能体提供细粒度信用分配方案。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning with verifiable rewards (RLVR) enables language models to learn multi-turn interaction with external tools, yet its sparse outcome rewards provide no signal for identifying which intermediate decisions are responsible for success. Branch sampling induces local comparisons among alternative continuations, but existing methods tend to conflate two distinct problems: allocating a fixed rollout budget and translating branch outcomes into token-level credit. We introduce Contrastive Branch Policy Optimization (CBPO), which disentangles these two problems and assigns a dedicated mechanism to each. Generation entropy screens candidate branch positions across the entire response, while path-level and node-level decay distribute a fixed budget across trajectories and positions to prevent exploration from collapsing onto a few paths or adjacent tokens. A parent trajectory together with the branches that share an identical token prefix forms an exact-prefix group, and the reward variation within this controlled group defines the Contrastive Branch Value (CBV), an outcome-based estimate of local decision sensitivity that rescales continuation advantages without altering their sign. When multiple nodes are selected along the same trajectory, CBPO partitions it into non-overlapping credit segments, thereby avoiding duplicated gradients on shared tokens. Requiring only outcome rewards and no process-level annotation, CBPO provides a practical solution for fine-grained credit assignment in tool-integrated agent training. Extensive experiments on ten benchmarks, including five for mathematical reasoning and five for knowledge-intensive search, show that CBPO consistently outperforms state-of-the-art policy-optimization and branch-based methods, attaining the highest macro-average accuracy in both domains and across two model scales.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
