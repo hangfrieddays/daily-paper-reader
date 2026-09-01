@@ -1,0 +1,54 @@
+{
+  "label": "2026-09-01",
+  "date": "2026-09-01",
+  "generated_at": "2026-09-01T22:00:41",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202609/01/2608.26956v2-rubricrm-generative-reward-modeling-via-dynamic-rubrics-for-image-generation-and-editing",
+      "section": "deep",
+      "title_en": "RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing",
+      "authors": "Zijian Kan, Wei Wang, Long Luo, Bing Zhao, Xuan Ren, Weixu Qiao, Wenbo Li, Hu Wei, Lin Qu",
+      "date": "2026-08-27",
+      "pdf": "https://arxiv.org/pdf/2608.26956v2",
+      "score": "9.0",
+      "evidence": "提出面向图像生成与编辑的动态评分标准奖励建模",
+      "tldr": "现有视觉奖励模型常输出单一标量或采用固定标准，难以适应不同指令的评估重点，限制了可解释性和任务敏感性。本文提出RubricRM，一种成对生成式奖励建模框架，首先生成包含评估维度、权重和评分准则的输入特定评分标准，再据此对候选图像打分。两阶段训练得到适用于文生图和指令式图像编辑的专用模型。实验表明RubricRM能够提升奖励模型的自适应能力和可解释性，为视觉生成模型对齐提供了更灵活的奖励信号。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reward models play an essential role in aligning visual generative models, yet most existing visual reward models use a single scalar score or rely on fixed criteria that cannot adapt to different instructions. This limits both interpretability and task sensitivity, especially for text-to-image generation and instruction-based image editing, where different inputs require different evaluation dimensions. We propose RubricRM, a pairwise generative reward modeling framework that first produces an input-specific rubric with evaluation dimensions, weights, and scoring criteria, and then applies the rubric to score candidate images. We train dedicated RubricRM models for text-to-image generation and image editing using a two-stage training pipeline: supervised fine-tuning teaches the model the rubric-based scoring paradigm, while GRPO further improves scoring through fine-grained dimension-level rewards. Experiments on multiple generation and editing benchmarks show that RubricRM outperforms existing specialized reward models and remains competitive with strong proprietary MLLM judges despite using smaller backbones. Our models, data, and code are available at https://github.com/zijiankan/RubricRM.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/01/2608.29647v1-reward-guided-fine-tuning-of-one-step-generative-models-via-wasserstein-gradient-flow",
+      "section": "deep",
+      "title_en": "Reward-guided Fine-Tuning of One-Step Generative Models via Wasserstein Gradient Flow",
+      "authors": "Hoseong Hwang, Woorim Han, Joungin Chun, Jinseong Park, Jaewoong Choi",
+      "date": "2026-08-30",
+      "pdf": "https://arxiv.org/pdf/2608.29647v1",
+      "score": "9.0",
+      "evidence": "通过Wasserstein梯度流对一步生成模型进行奖励引导微调，支持不可微奖励",
+      "tldr": "一步生成模型直接从噪声映射到数据，但奖励引导的微调方法尚属空白。该论文从最优传输视角出发，利用Wasserstein梯度流在概率空间中建模平滑可控的分布演化，提出了一种无需奖励梯度的奖励引导微调方法。该方法能够同时处理不可微与可微奖励，实验表明其能在保持生成速度的同时显著提升样本质量。这一工作为将任意奖励信号引入一步生成模型提供了通用途径。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "To mitigate the time complexity of generative models, one-step generative models have recently emerged through direct mapping from noise to data in a single forward pass. However, the reward-guided fine-tuning method of one-step generative models remains largely unexplored. To address this, we consider one-step generators from an optimal transport view, investigating Wasserstein Gradient Flow (WGF) for modeling smooth and controlled distributional evolution in probability space. We then propose a novel reward-guided fine-tuning of a one-step generative model via WGF. We derive a practical training method that requires no reward gradients, thereby handling both non-differentiable and differentiable rewards. Moreover, our method provides smooth and stable reward-guided distributional updates while mitigating reward hacking and mode collapse. Experiments on 2D synthetic data, CIFAR-10, and ImageNet 256$\\times$256 with diverse rewards, including JPEG (in)compressibility, class probability, Black-and-White and CLIP alignment, show that our method achieves better reward alignment compared to baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/01/2608.30194v1-noiseasier-test-time-noise-optimization-for-text-to-video-generation",
+      "section": "deep",
+      "title_en": "NoisEasier: Test-Time Noise Optimization for Text-to-Video Generation",
+      "authors": "Yujiang Pu, Yu Kong",
+      "date": "2026-08-31",
+      "pdf": "https://arxiv.org/pdf/2608.30194v1",
+      "score": "9.0",
+      "evidence": "使用可微奖励引导噪声优化和多目标奖励设计提升文生视频生成质量",
+      "tldr": "文本到视频生成在属性绑定、空间关系等细粒度对齐上仍有不足，基于奖励的微调又容易奖励黑客。为此提出NoisEasier，在测试时通过可微奖励引导噪声优化，无需修改底层模型，并结合高效短步生成器和多目标奖励设计，在现实推理预算下实现稳定优化。实验表明该方法能有效提升合成对齐质量，为生成模型的测试时奖励优化提供了实用方案。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Diffusion models have recently advanced text-to-video (T2V) generation, yet they still struggle with fine-grained compositional alignment, such as attribute binding, spatial relations, and object interactions. While reward-based fine-tuning improves alignment, it is susceptible to reward hacking and adapts poorly to new prompt distributions. In this work, we propose NoisEasier, a test-time scaling framework that improves T2V generation through differentiable reward-guided noise optimization without modifying the underlying model. By combining efficient short-step generators with a multi-objective reward formulation, NoisEasier enables stable and practical test-time optimization under realistic inference budgets. Our key insight is that jointly optimizing the entire stochastic trajectory accelerates reward convergence and improves compositional alignment over optimizing only the initial latent, with negligible additional computational and time cost. Experiments on VBench and T2V-CompBench demonstrate consistent improvements across multiple backbones, achieving over 10% average gains on challenging dimensions such as attribute binding, object interaction, and numeracy. Overall, NoisEasier serves as both a flexible alternative and a complementary enhancement to reward-based fine-tuning, establishing test-time scaling as an effective paradigm for controllable text-to-video generation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

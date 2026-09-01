@@ -6,26 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-31
-- 运行时间：2026-08-31 23:53:27 UTC
+- 最新运行日期：2026-09-01
+- 运行时间：2026-09-01 22:00:33 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 本次总论文数：3
+- 精读区：3
+- 速读区：0
 
 ### 今日简报（AI）
-今日精读电商创意生成新框架，速读一篇策略优化方法，共梳理2篇论文。最值得关注的是《CommerceVibe》，将电商创意设计为可执行视觉代码并用双反馈强化学习，得分9.0。若关注生成式设计，可优先精读该文；速读文章仅作策略优化背景参考。
-- 详情：[/202608/31/README](/202608/31/README)
+- 今日共生成 3 篇推荐（精读 3 篇，速读 0 篇）
+- 精读：《RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing》（9.0/10）, 《Reward-guided Fine-Tuning of One-Step Generative Models via Wasserstein Gradient Flow》（9.0/10）
+- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
+- 详情：[/202609/01/README](/202609/01/README)
 
 ### 精读区论文标签
-1. [CommerceVibe: Learning to Design E-Commerce Creatives as Executable Visual Code via Dual-Feedback Reinforcement Learning](/202608/31/2608.27893v1-commercevibe-learning-to-design-e-commerce-creatives-as-executable-visual-code-via-dual-feedback-reinforcement-learning)  
+1. [RubricRM: Generative Reward Modeling via Dynamic Rubrics for Image Generation and Editing](/202609/01/2608.26956v2-rubricrm-generative-reward-modeling-via-dynamic-rubrics-for-image-generation-and-editing)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：将创意图生成建模为条件HTML/CSS程序合成，并通过双反馈强化学习优化生成质量，直接契合图像生成中的强化学习与奖励设计主题
+   evidence：提出面向图像生成与编辑的动态评分标准奖励建模
+2. [Reward-guided Fine-Tuning of One-Step Generative Models via Wasserstein Gradient Flow](/202609/01/2608.29647v1-reward-guided-fine-tuning-of-one-step-generative-models-via-wasserstein-gradient-flow)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：通过Wasserstein梯度流对一步生成模型进行奖励引导微调，支持不可微奖励
+3. [NoisEasier: Test-Time Noise Optimization for Text-to-Video Generation](/202609/01/2608.30194v1-noiseasier-test-time-noise-optimization-for-text-to-video-generation)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：使用可微奖励引导噪声优化和多目标奖励设计提升文生视频生成质量
 
 ### 速读区论文标签
-1. [Contrastive Branch Policy Optimization](/202608/31/2608.24300v1-contrastive-branch-policy-optimization)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：面向生成任务稀疏奖励的对比分支策略优化方法
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
