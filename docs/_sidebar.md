@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-12 <!--dpr-date:20260912-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/12/2609.06758v1-agentic-visual-generation-from-generative-models-to-agentic-control" data-sidebar-item="{&quot;title&quot;: &quot;Agentic Visual Generation: From Generative Models to Agentic Control&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.06758v1-agentic-visual-generation-from-generative-models-to-agentic-control&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;综述视觉生成领域，明确讨论强化学习作为智能体性信号&quot;}">Agentic Visual Generation: From Generative Models to Agentic Control</a>
   * 2026-09-10 <!--dpr-date:20260910-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/10/2609.02813v1-gdb-reward-from-evaluation-metrics-to-training-rewards-for-graphic-design" data-sidebar-item="{&quot;title&quot;: &quot;GDB-Reward: From Evaluation Metrics to Training Rewards for Graphic Design&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.02813v1-gdb-reward-from-evaluation-metrics-to-training-rewards-for-graphic-design&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;将设计评估指标转化为文本到图像生成的强化学习奖励&quot;}">GDB-Reward: From Evaluation Metrics to Training Rewards for Graphic Design</a>

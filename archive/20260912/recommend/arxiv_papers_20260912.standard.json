@@ -1,0 +1,61 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-12T21:26:05.743466+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.06758v1",
+      "source": "arxiv",
+      "title": "Agentic Visual Generation: From Generative Models to Agentic Control",
+      "abstract": "Visual generation is evolving from generative models used through a single invocation into agentic control processes that can plan, select tools, inspect intermediate synthesized outputs, revise failures, and reuse prior experience. In most existing systems, the controller is an LLM or VLM, while visual generation models serve as tools or executors. However, existing work lacks a consistent criterion for determining when a generation system becomes agentic. Planning depth, tool use, multi-role collaboration, and reinforcement learning are often treated as evidence of agenticity, even though none of them necessarily determines which generation decisions the controller can make. We organize the field according to what the controller can directly control in the generation process. At L1 Conditioning Control, the controller prepares the input to a predetermined generator but does not control which visual operation is executed. At L2 Execution Control, it selects and invokes actual generation, editing, rendering, or other content-modifying operations. At L3 Outcome-Adaptive Control, it observes an intermediate outcome and uses that observation to change a subsequent operation within the current task. At L4 Experience-Adaptive Control, it retains experience from completed tasks and uses that experience to change decisions on future tasks. L0 Fixed Support separately denotes generators, editors, evaluators, reward models, benchmarks, and fixed pipelines without a deployed controller that makes generation-level decisions. These levels describe a progressively broader decision-making scope rather than model size, system complexity, output quality, tool or role count, or training method. Applying this framework across image, video, editing, 3D, world, slide, and user-interface generation reveals how controller capabilities have evolved and how their mechanisms are distributed across levels.",
+      "authors": [
+        "Yinming Huang",
+        "Shuyuan Tu",
+        "Xi Yan",
+        "Jiahao Zhan",
+        "Zihan Yang",
+        "Zhen Xing",
+        "Hui Zhang",
+        "Tiehua Zhang",
+        "Yu-Gang Jiang",
+        "Zuxuan Wu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-06T17:59:24+00:00",
+      "link": "https://arxiv.org/pdf/2609.06758v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "survey organizing visual generation, explicitly discussing reinforcement learning as a signal of agenticity",
+      "llm_evidence_cn": "综述视觉生成领域，明确讨论强化学习作为智能体性信号",
+      "llm_evidence": "综述视觉生成领域，明确讨论强化学习作为智能体性信号",
+      "canonical_evidence": "综述视觉生成领域，明确讨论强化学习作为智能体性信号",
+      "llm_tldr_en": "This survey organizes agentic visual generation, arguing that planning depth, tool use, and reinforcement learning do not by themselves determine agenticity, and classifies the field by what the controller can control.",
+      "llm_tldr_cn": "视觉生成正从单次调用的生成模型演变为能够规划、选择工具、检查中间输出并修正失败的智能体控制过程。本文系统梳理该领域，指出当前缺乏判定生成系统何时成为智能体的统一标准，并质疑将规划深度、工具使用与强化学习直接等同于智能体性的做法。作者按控制器可直接控制的生成决策来组织文献，提出更清晰的分类视角。该综述为理解视觉生成的智能体化路径提供了统一框架。",
+      "llm_tldr": "视觉生成正从单次调用的生成模型演变为能够规划、选择工具、检查中间输出并修正失败的智能体控制过程。本文系统梳理该领域，指出当前缺乏判定生成系统何时成为智能体的统一标准，并质疑将规划深度、工具使用与强化学习直接等同于智能体性的做法。作者按控制器可直接控制的生成决策来组织文献，提出更清晰的分类视角。该综述为理解视觉生成的智能体化路径提供了统一框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "survey of reinforcement learning in image synthesis",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
