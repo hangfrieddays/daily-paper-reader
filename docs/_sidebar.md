@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-13 <!--dpr-date:20260913-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/13/2609.11270v1-beyond-noise-steering-dual-latent-space-reinforcement-learning-for-generative-robot-policy" data-sidebar-item="{&quot;title&quot;: &quot;Beyond Noise Steering: Dual-Latent Space Reinforcement Learning for Generative Robot Policy&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.11270v1-beyond-noise-steering-dual-latent-space-reinforcement-learning-for-generative-robot-policy&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;对冻结生成模型潜空间进行强化学习引导，可迁移至图像生成&quot;}">Beyond Noise Steering: Dual-Latent Space Reinforcement Learning for Generative Robot Policy</a>
   * 2026-09-12 <!--dpr-date:20260912-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/12/2609.06758v1-agentic-visual-generation-from-generative-models-to-agentic-control" data-sidebar-item="{&quot;title&quot;: &quot;Agentic Visual Generation: From Generative Models to Agentic Control&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.06758v1-agentic-visual-generation-from-generative-models-to-agentic-control&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;综述视觉生成领域，明确讨论强化学习作为智能体性信号&quot;}">Agentic Visual Generation: From Generative Models to Agentic Control</a>

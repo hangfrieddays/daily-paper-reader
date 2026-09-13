@@ -1,0 +1,24 @@
+{
+  "label": "2026-09-13",
+  "date": "2026-09-13",
+  "generated_at": "2026-09-13T21:18:33",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202609/13/2609.11270v1-beyond-noise-steering-dual-latent-space-reinforcement-learning-for-generative-robot-policy",
+      "section": "quick",
+      "title_en": "Beyond Noise Steering: Dual-Latent Space Reinforcement Learning for Generative Robot Policy",
+      "authors": "Pengfei Zhang, Teng Sun, Xianchao Xiu",
+      "date": "2026-09-10",
+      "pdf": "https://arxiv.org/pdf/2609.11270v1",
+      "score": "6.0",
+      "evidence": "对冻结生成模型潜空间进行强化学习引导，可迁移至图像生成",
+      "tldr": "针对现有强化学习仅能在噪声空间引导预训练生成式策略、无法调制中间动作表示的问题，论文提出双潜空间强化学习DLSRL框架。其actor同时预测用于行为生成的初始噪声潜变量和用于中间特征调制的动作表示潜变量，在冻结生成器内部实现表示级控制。该工作将强化学习从噪声引导扩展到生成过程的表示调制，为生成式策略的高效优化提供新范式，其思路对生成模型潜空间强化学习具有迁移价值。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Pretrained generative robot policies learn expressive action priors from demonstrations. However, existing reinforcement learning methods only steer the noisy space but fail to modulate intermediate action representations during the generation process, resulting in performance degradation and inefficiency. To address this limitation, we propose a novel Dual-Latent Space Reinforcement Learning (DLSRL) framework, which complements initial-noise steering with representation-level control inside the frozen generator. Specifically, our actor network predicts two distinct latent variables: an initial-noise latent variable that steers behavior generation, and an action-representation latent variable for intermediate feature modulation. Moreover, this representation latent variable is mapped to adapter features and ingeniously injected into the hidden states of intermediate action tokens via residual connections. Our dual-control design enables direct adjustment of action representations without updating the base policy. Experiments across generative policy architectures and robotic manipulation tasks show that DLSRL effectively accelerates online robot policy adaptation and achieves competitive performance. Our code is available at \\href{https://github.com/xianchaoxiu/DLSRL}{https://github.com/xianchaoxiu/DLSRL}.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
