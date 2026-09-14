@@ -1,0 +1,95 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-14T22:35:23.652943+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2609.12830v1",
+      "source": "arxiv",
+      "title": "Balancing Emotional Alignment and Semantic Consistency in Image Generation via Reinforcement Learning with Valence-Arousal Anchoring",
+      "abstract": "Continuous emotion control in text-to-image generation requires a model to improve affective alignment without changing the objects, layout, or scene described by the prompt. Existing supervised emotion-injection methods often optimize feature-space proxies and may therefore exhibit emotion-semantic drift, in which stronger emotional conditioning is accompanied by unintended content changes. We address this problem with a flow-matching image-generation framework that combines continuous valence-arousal (VA) conditioning, Group Relative Policy Optimization (GRPO), and a neutral semantic anchor. The deterministic probability-flow ODE is converted into a marginal-preserving SDE, yielding non-degenerate transition densities for trajectory sampling and policy-ratio estimation. A frozen CLIP-based VA regressor supplies a terminal reward measuring the distance between the predicted and target VA coordinates, while an image generated from the same prompt under zero VA conditioning provides a feature-space reference for semantic preservation. A reduced denoising schedule is used for online RL sampling, whereas the original schedule is retained at inference. Experiments on 3,300 prompt-emotion combinations show substantially lower valence and arousal errors than the VA-conditioned baseline and an improved CLIPScore relative to EmotiCrafter, with a measurable trade-off in reference-free image quality. The results support anchor-regularized Flow-GRPO as a practical approach to balancing emotional alignment and semantic consistency in continuous-affect image synthesis.",
+      "authors": [
+        "Jisheng Dang",
+        "Zhenxuan Wang",
+        "Bin Li",
+        "Ronghao Lin",
+        "Bin Hu",
+        "Tat-Seng Chua"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-11T13:24:35+00:00",
+      "link": "https://arxiv.org/pdf/2609.12830v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses GRPO reinforcement learning for text-to-image generation",
+      "llm_evidence_cn": "用GRPO强化学习做文本到图像生成",
+      "llm_evidence": "用GRPO强化学习做文本到图像生成",
+      "canonical_evidence": "用GRPO强化学习做文本到图像生成",
+      "llm_tldr_en": "To avoid emotion-semantic drift in text-to-image, this work combines valence-arousal conditioning with GRPO reinforcement learning and a neutral semantic anchor in a flow-matching framework, improving affective alignment while preserving content.",
+      "llm_tldr_cn": "文本到图像的连续情感控制常面临情感-语义漂移，即增强情感条件时提示描述的对象、布局与场景被意外改变。本文提出流匹配图像生成框架，结合连续效价-唤醒条件、组相对策略优化GRPO与中性语义锚，并将确定性概率流ODE转换为保边缘SDE。实验表明该方法在提升情感对齐的同时保持语义一致性，为可控情感图像生成提供了强化学习新方案。",
+      "llm_tldr": "文本到图像的连续情感控制常面临情感-语义漂移，即增强情感条件时提示描述的对象、布局与场景被意外改变。本文提出流匹配图像生成框架，结合连续效价-唤醒条件、组相对策略优化GRPO与中性语义锚，并将确定性概率流ODE转换为保边缘SDE。实验表明该方法在提升情感对齐的同时保持语义一致性，为可控情感图像生成提供了强化学习新方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.12691v1",
+      "source": "arxiv",
+      "title": "Semantically Aligned Gradient-Driven Context-Preserving Image Editing",
+      "abstract": "Instruction-guided image editing has a training-time blind spot. Generative editors are never required to semantically verify whether their outputs actually satisfy the instruction. Supervision stops at reconstruction and input textual-level conditioning. This produces incomplete edits, spatial spillover, and poor localization. We present IABEdit, a model-agnostic framework that embeds differentiable semantic verification into training. A frozen vision-language model extracts spatially-aware descriptors from the ground-truth edit. A trainable aligner then reproduces them from the generated output. The residual between the two becomes a gradient that teaches the generator both what to edit and where, with no inference-time VLM cost. IABEdit is compatible with diverse backbones, including U-Net (Stable Diffusion) and MMDiT (FLUX), without altering their inference pipelines. On MagicBrush, it improves structural fidelity by +3.49 DINO-I over the best diffusion baseline and +1.26 over the best overall baseline, while remaining competitive on instruction alignment. It also achieves state-of-the-art instruction adherence performance on RealEdit and EMU Edit benchmarks based on embedding-based metrics. Most consequentially, on the D-LORD surveillance benchmark, it surpasses the proprietary Gemini agent by +5.13 DINO-P under heavy occlusion, where preserving identity is hardest. This shows that gradient-aligned VLM distillation holds up under real-world-like surveillance and occlusion conditions. Human and GPT-4o evaluations confirm perceptually precise, well-localized edits.",
+      "authors": [
+        "Chiranjeev Chiranjeev",
+        "Muskan Dosi",
+        "Mayank Vatsa",
+        "Richa Singh"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-11T10:37:32+00:00",
+      "link": "https://arxiv.org/pdf/2609.12691v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable semantic verification used as a gradient training signal for generative image editing",
+      "llm_evidence_cn": "用可微语义验证作为生成式图像编辑的梯度训练信号",
+      "llm_evidence": "用可微语义验证作为生成式图像编辑的梯度训练信号",
+      "canonical_evidence": "用可微语义验证作为生成式图像编辑的梯度训练信号",
+      "llm_tldr_en": "IABEdit addresses image editing's training-time blind spot by embedding differentiable semantic verification: a frozen VLM and a trainable aligner yield a residual gradient teaching what and where to edit, with no inference-time VLM cost.",
+      "llm_tldr_cn": "指令引导图像编辑存在训练期盲点：生成器从不被要求语义验证输出是否真正满足指令，导致编辑不完整与空间溢出。本文提出IABEdit，将可微语义验证嵌入训练，由冻结视觉语言模型提取真值编辑的空间描述子，再用可训练对齐器从生成结果重建，残差作为梯度指导编辑内容与位置。该框架模型无关，且无需推理期VLM开销，为生成式编辑的语义监督提供新思路。",
+      "llm_tldr": "指令引导图像编辑存在训练期盲点：生成器从不被要求语义验证输出是否真正满足指令，导致编辑不完整与空间溢出。本文提出IABEdit，将可微语义验证嵌入训练，由冻结视觉语言模型提取真值编辑的空间描述子，再用可训练对齐器从生成结果重建，残差作为梯度指导编辑内容与位置。该框架模型无关，且无需推理期VLM开销，为生成式编辑的语义监督提供新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

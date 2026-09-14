@@ -1,0 +1,39 @@
+{
+  "label": "2026-09-14",
+  "date": "2026-09-14",
+  "generated_at": "2026-09-14T22:38:06",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202609/14/2609.12830v1-balancing-emotional-alignment-and-semantic-consistency-in-image-generation-via-reinforcement-learning-with-valence-arousal-anchoring",
+      "section": "deep",
+      "title_en": "Balancing Emotional Alignment and Semantic Consistency in Image Generation via Reinforcement Learning with Valence-Arousal Anchoring",
+      "authors": "Jisheng Dang, Zhenxuan Wang, Bin Li, Ronghao Lin, Bin Hu, Tat-Seng Chua",
+      "date": "2026-09-11",
+      "pdf": "https://arxiv.org/pdf/2609.12830v1",
+      "score": "9.0",
+      "evidence": "用GRPO强化学习做文本到图像生成",
+      "tldr": "文本到图像生成中，连续情绪控制常因监督式特征注入导致情绪-语义漂移，难以在增强情感对齐的同时保持内容不变。本文提出锚定效价-唤醒（VA）的 Flow-GRPO 框架：将概率流 ODE 转为保边际 SDE，用冻结 CLIP VA 回归器提供终端奖励，并以零 VA 条件图像作中性语义锚。在 3,300 组提示-情绪组合上，VA 误差显著低于 VA 条件基线，CLIPScore 优于 EmotiCrafter，但无参考图像质量存在权衡。结果表明，锚正则化 Flow-GRPO 能有效平衡连续情感图像合成中的情绪对齐与语义一致性。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Continuous emotion control in text-to-image generation requires a model to improve affective alignment without changing the objects, layout, or scene described by the prompt. Existing supervised emotion-injection methods often optimize feature-space proxies and may therefore exhibit emotion-semantic drift, in which stronger emotional conditioning is accompanied by unintended content changes. We address this problem with a flow-matching image-generation framework that combines continuous valence-arousal (VA) conditioning, Group Relative Policy Optimization (GRPO), and a neutral semantic anchor. The deterministic probability-flow ODE is converted into a marginal-preserving SDE, yielding non-degenerate transition densities for trajectory sampling and policy-ratio estimation. A frozen CLIP-based VA regressor supplies a terminal reward measuring the distance between the predicted and target VA coordinates, while an image generated from the same prompt under zero VA conditioning provides a feature-space reference for semantic preservation. A reduced denoising schedule is used for online RL sampling, whereas the original schedule is retained at inference. Experiments on 3,300 prompt-emotion combinations show substantially lower valence and arousal errors than the VA-conditioned baseline and an improved CLIPScore relative to EmotiCrafter, with a measurable trade-off in reference-free image quality. The results support anchor-regularized Flow-GRPO as a practical approach to balancing emotional alignment and semantic consistency in continuous-affect image synthesis.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/14/2609.12691v1-semantically-aligned-gradient-driven-context-preserving-image-editing",
+      "section": "quick",
+      "title_en": "Semantically Aligned Gradient-Driven Context-Preserving Image Editing",
+      "authors": "Chiranjeev Chiranjeev, Muskan Dosi, Mayank Vatsa, Richa Singh",
+      "date": "2026-09-11",
+      "pdf": "https://arxiv.org/pdf/2609.12691v1",
+      "score": "6.0",
+      "evidence": "用可微语义验证作为生成式图像编辑的梯度训练信号",
+      "tldr": "指令引导图像编辑存在训练盲区：生成器从未被要求语义验证输出是否真正满足指令，导致编辑不完整、空间溢出与定位差。IABEdit将可微语义验证嵌入训练，用冻结VLM从真值编辑提取空间感知描述子，再让可训练对齐器从生成输出复现，残差梯度同时指导编辑内容与位置，且推理时无VLM开销。在MagicBrush上DINO-I较最佳扩散基线提升3.49，在D-LORD遮挡监控上较Gemini agent提升5.13 DINO-P。该模型无关框架兼容U-Net与MMDiT，为语义对齐的上下文保持编辑提供新范式。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Instruction-guided image editing has a training-time blind spot. Generative editors are never required to semantically verify whether their outputs actually satisfy the instruction. Supervision stops at reconstruction and input textual-level conditioning. This produces incomplete edits, spatial spillover, and poor localization. We present IABEdit, a model-agnostic framework that embeds differentiable semantic verification into training. A frozen vision-language model extracts spatially-aware descriptors from the ground-truth edit. A trainable aligner then reproduces them from the generated output. The residual between the two becomes a gradient that teaches the generator both what to edit and where, with no inference-time VLM cost. IABEdit is compatible with diverse backbones, including U-Net (Stable Diffusion) and MMDiT (FLUX), without altering their inference pipelines. On MagicBrush, it improves structural fidelity by +3.49 DINO-I over the best diffusion baseline and +1.26 over the best overall baseline, while remaining competitive on instruction alignment. It also achieves state-of-the-art instruction adherence performance on RealEdit and EMU Edit benchmarks based on embedding-based metrics. Most consequentially, on the D-LORD surveillance benchmark, it surpasses the proprietary Gemini agent by +5.13 DINO-P under heavy occlusion, where preserving identity is hardest. This shows that gradient-aligned VLM distillation holds up under real-world-like surveillance and occlusion conditions. Human and GPT-4o evaluations confirm perceptually precise, well-localized edits.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -6,28 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-13
-- 运行时间：2026-09-13 21:18:29 UTC
+- 最新运行日期：2026-09-14
+- 运行时间：2026-09-14 22:38:04 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：0
+- 本次总论文数：2
+- 精读区：1
 - 速读区：1
 
 ### 今日简报（AI）
-2026-09-13 日报完成，共收录 1 篇速读论文，无精读，整体聚焦生成式机器人策略学习。
-
-唯一入选的是《Beyond Noise Steering: Dual-Latent Space Reinforcement Learning for Generative Robot Policy》（6.0/10），亮点在于用双潜在空间强化学习替代单纯噪声引导来优化生成式机器人策略，评分中等，可作方向性参考而非定论。
-
-建议普通读者先把它当作了解"生成式策略如何与强化学习结合"的入门线索，读摘要与实验设置即可，不必深究细节，等后续有更高分或精读文献再投入时间。
-- 详情：[/202609/13/README](/202609/13/README)
+今日精读1篇、速读1篇，聚焦图像生成与编辑中的语义一致性。
+最值得看的是9.0分的《Balancing Emotional Alignment and Semantic Consistency in Image Generation via Reinforcement Learning with Valence-Arousal Anchoring》，用效价—唤醒锚定的强化学习兼顾情感对齐与语义一致；6.0分的《Semantically Aligned Gradient-Driven Context-Preserving Image Editing》则关注梯度驱动下的上下文保留编辑。
+普通读者可优先了解前者，观察"情感可控"会如何影响你日常使用的AI绘图工具。
+- 详情：[/202609/14/README](/202609/14/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Balancing Emotional Alignment and Semantic Consistency in Image Generation via Reinforcement Learning with Valence-Arousal Anchoring](/202609/14/2609.12830v1-balancing-emotional-alignment-and-semantic-consistency-in-image-generation-via-reinforcement-learning-with-valence-arousal-anchoring)  
+   标签：评分：9.0/10、query:image-gen-rl
+   evidence：用GRPO强化学习做文本到图像生成
 
 ### 速读区论文标签
-1. [Beyond Noise Steering: Dual-Latent Space Reinforcement Learning for Generative Robot Policy](/202609/13/2609.11270v1-beyond-noise-steering-dual-latent-space-reinforcement-learning-for-generative-robot-policy)  
+1. [Semantically Aligned Gradient-Driven Context-Preserving Image Editing](/202609/14/2609.12691v1-semantically-aligned-gradient-driven-context-preserving-image-editing)  
    标签：评分：6.0/10、query:image-gen-rl
-   evidence：对冻结生成模型潜空间进行强化学习引导，可迁移至图像生成
+   evidence：用可微语义验证作为生成式图像编辑的梯度训练信号
 
 
 <div class="dpr-home-promo-card">
