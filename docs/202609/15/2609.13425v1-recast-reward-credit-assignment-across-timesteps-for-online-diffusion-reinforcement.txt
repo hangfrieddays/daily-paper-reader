@@ -1,0 +1,3194 @@
+ReCAST: Reward Credit Assignment across
+Timesteps for Online Diffusion Reinforcement
+Yihang Chen1,∗
+Yuanhao Ban1,2,∗
+Kuei-Chun Kao1,2
+Cho-Jui Hsieh1,2
+1University of California, Los Angeles
+2Arena AI
+{yhangchen,banyh2000}@cs.ucla.edu
+Abstract
+Training diffusion models with multiple rewards requires distinguishing user pref-
+erence from reward informativeness. User preference determines how much each
+reward should contribute to the overall objective; reward informativeness deter-
+mines when its feedback is useful during denoising. Some rewards can meaning-
+fully evaluate a sample as soon as global structure emerges, but others become
+informative only when the sample is nearly clean. To address both questions
+jointly, we propose ReCAST (Reward Credit ASsignment across Timesteps), the
+first method, to our knowledge, for per-reward, timestep-dependent credit assign-
+ment in diffusion reward fine-tuning. ReCAST separates user preferences from
+temporal allocation through a reward-by-timestep weight matrix W , whose row
+sums match the user-specified reward budgets λ, while its column sums are equal,
+assigning the same total weight to each denoising step. Under these marginal con-
+straints, ReCAST allocates weight according to each reward’s informativeness,
+quantified by its R´enyi discriminability gain at each step. These gains telescope
+to the total discriminability between the reward-induced positive policy and the
+current policy, providing a basis for temporal credit assignment. We evaluate Re-
+CAST by training SD3.5-Medium under two distinct four-reward settings, each
+across five reward budgets λ. ReCAST improves the training rewards in one set-
+ting and matches them in the other, improves every held-out judge in both, and
+is preferred by an independent LLM-as-a-Judge. Overall, these results show that
+ReCAST achieves improvements that generalize beyond the training rewards and
+support its core principle: assigning each reward greater weight at the denoising
+timesteps where its feedback is most informative.
+1
+Introduction
+Reward-based post-training has become a standard way to align diffusion and flow models with
+human intent, via policy gradient over the denoising chain [1, 7], backpropagation through a dif-
+ferentiable reward [3, 29], preference optimization [37, 43], group-relative objectives [24, 41], or
+negative-aware fine-tuning on the forward process [42]. In practice, a single reward is rarely suffi-
+cient: standard training recipes mix prompt alignment [12], learned human preference [18, 39, 40],
+and rule-based correctness [9] by linear scalarization r(x0, c) = P
+i λi ri(x0, c) with hand-set
+λi ≥0, P
+i λi = 1. Over-optimizing any single proxy can easily lead to reward hacking [8, 34].
+However, static scalarization makes an implicit but imperfect assumption: once a reward is assigned
+an overall budget λi, its relative influence remains the same across all diffusion timesteps. Instead,
+we want a reward to have greater influence when it is more informative. Multi-reward alignment
+therefore involves two allocation problems: how much budget each reward receives, and when that
+budget should be spent. More specifically, given a user-specified reward budget λ, can we allocate
+each reward’s weights across timesteps more efficiently?
+∗Equal contribution.
+Preprint.
+arXiv:2609.13425v1  [cs.LG]  11 Sep 2026
+
+
+Our key intuition is that each reward measures a different visual property, and those properties do
+not become visible at the same point in the denoising trajectory. A reward for prompt alignment
+or rule-based correctness [9, 12] can already grade a sample once coarse layout and composition
+exist, while a reward for aesthetic or fine local detail cannot say much until the sample is nearly
+clean. Diffusion timesteps govern different aspects of generation by construction, with high-noise
+steps fixing global composition and low-noise steps refining local detail [2, 10]. A static, timestep-
+independent λi ignores this and forces every reward to contribute uniformly across t regardless
+of whether it can discriminate there. Although timestep-dependent treatment is well established
+for likelihood training [15, 17] and reward fine-tuning [11, 20, 21], these methods apply a single
+reward-agnostic schedule, not the per-reward one we study.
+Credit assignment is widely analyzed for language-model reasoning [16, 22, 36] but largely unex-
+plored in the diffusion denoising chain. We propose ReCAST (Reward Credit ASsignment across
+Timesteps), the first per-reward timestep-dependent credit assignment method for diffusion reward
+fine-tuning, to our knowledge. More specifically, for rewards r1, . . . , rm and T steps, we replace
+the static convex weighting by an automatically designed weight matrix W ∈Rm×T
+≥0
+, whose entry
+Wi,t is the weight reward i carries at step t, and define the reward at timestep t as
+rt(x0, c) =
+m
+X
+i=1
+T · Wi,t ri(x0, c),
+P
+t Wi,t = λi
+|
+{z
+}
+inter-reward row budget
+,
+P
+i Wi,t = 1/T
+|
+{z
+}
+per-step column budget
+.
+(1)
+The row marginal λi ≥0 (P
+i λi = 1) is the inter-reward budget set by the user, and states how
+much reward i counts. The column marginal enforces that every step receives the same total weight
+1/T, so no step is starved or over-optimized. Together the two marginals fix the totals but not
+the shape: how row i spreads its budget λi across t is precisely when reward i counts, and that is
+what we estimate rather than hand-set. We first measure each reward’s own per-step gain in R´enyi
+discriminability along the trajectory (Sec. 3.2–3.3), then build a kernel from these gains and project
+it onto the feasible set of Eq. (1) to give the desired W ⋆(Sec. 3.4).
+2
+Related work
+RL in diffusion and flow models.
+Reward fine-tuning is central to current text-to-image models.
+DanceGRPO [41] extends group-relative optimization to both diffusion and rectified-flow image
+and video generators within a single framework; Flow-GRPO [24] converts the flow-matching ODE
+into an SDE so group sampling and its advantage estimator stay well defined; DiffusionNFT [42]
+regresses implicit positive/negative velocity fields with a forward-only loss. Our work is built upon
+DiffusionNFT due to its performance and efficiency.
+Combining multiple rewards.
+How multiple reward signals are combined has received wide at-
+tention in areas not limited to text-to-image tasks. SafeRLHF [5] decouples helpfulness and harm-
+lessness into separate reward/cost models balanced via a Lagrange multiplier rather than a fixed
+scalar; Personalized Soups [14] instead trains one policy per preference dimension and merges them
+post-hoc, avoiding scalarization altogether, and Rewarded Soups [30] takes the same merging route
+for reward proxies to reach Pareto trade-offs by interpolating weights. ALaRM [19] organizes re-
+wards hierarchically rather than flattening them into one sum, and large reasoning models combine
+a rule-based outcome reward, a length penalty, and a language consistency reward within a single
+objective. GDPO [25] shows that summing rewards before GRPO’s group normalization collapses
+into near-identical advantages, and fixes this by normalizing per reward before recombining. None
+of this work varies a reward’s weight across denoising timesteps: our contribution is orthogonal to
+how the mixture itself is formed.
+Timestep weighting in diffusion training.
+Existing works have adopted unequal treatment of
+denoising steps in diffusion training, such as ELBO-consistent weightings [17, 35], perception-
+prioritized and Min-SNR schedules [2, 10], EDM weighting [15], and importance sampling of t [28].
+On the reward side, step-by-step preference optimization [21] supervises every denoising step sep-
+arately through a step-aware preference model, while MixGRPO’s sliding ODE/SDE window [20]
+and TempFlow-GRPO’s noise-aware weighting [11] concentrate the reward signal on high-noise
+2
+
+
+steps. All show that when a signal is applied matters, but each shares one heuristic curve across
+rewards; ours is per-reward, from its own discriminability curve.
+3
+Method
+This section builds the per-step gain in reward discriminability, then turns those gains into the weight
+matrix W . In Sec. 3.2–3.3 we look at one reward, asking only how the per-step gain is shaped across
+t; Sec. 3.4 then puts the per-reward shapes into a matrix that satisfies both marginals of Eq. (1).
+We work in the rectified-flow setup and with the DiffusionNFT objective, and put the background in
+App. A.1. Throughout this section we assume ri ≥0.
+3.1
+Setup and the density ratio
+For each reward ri, i ∈{1, . . . , m}, let π+
+i (x0 | c) be the positive policy induced by reward i on
+the old policy πold,
+π+
+i (x0 | c) :=
+ri(x0, c)
+Eπold(x0|c)[ri(x0, c)] πold(x0 | c)
+(2)
+and let π+
+i,t(xt | c) and πold
+t
+(xt | c) be the marginals at diffusion timestep t. Define the density ratio
+of ri, ρi,t(xt) := π+
+i,t(xt | c)/πold
+t
+(xt | c). Marginalizing the forward kernel and applying Bayes’
+rule, πold(x0 | xt, c) = p(xt | x0)πold(x0 | c) / πold
+t
+(xt | c), gives the ratio at timestep t as a
+posterior expected reward normalized by the marginal one:
+ρi,t(xt) :=
+π+
+i,t(xt | c)
+πold
+t
+(xt | c) =
+R
+p(xt | x0) π+
+i (x0 | c) dx0
+πold
+t
+(xt | c)
+= Eπold(x0|xt,c)
+
+ri(x0, c)
+
+Eπold(x0|c)
+
+ri(x0, c)
+ .
+(3)
+Everything on the right-hand side is a reward evaluation under the current policy, so the ratio
+is theoretically computable without ever directly sampling from π+
+i .
+For simplicity, we write
+µi,t(xt) := Eπold(x0|xt,c)[ri] for the conditional reward and Zi := Eπold(x0|c)[ri] for its marginal,
+so ρi,t(xt) = µi,t(xt)/Zi.
+3.2
+Reward discriminability
+We first ask one question: how distinguishable is the positive policy from the current one at a given
+timestep? We measure this by the R´enyi divergence [31] of order α > 1. The cumulative reward
+discriminability at timestep t for reward i is therefore
+Di,t := Dα
+ π+
+i,t
+ πold
+t
+
+=
+1
+α −1 log Eπ+
+i,t
+h
+ρi,t(xt)α−1i
+.
+(4)
+It vanishes exactly when the two marginals agree, grows as reward i separates them, and is nonde-
+creasing in α. Its α →1+ limit is the KL divergence between the same two marginals,
+lim
+α→1+ Di,t = KL
+ π+
+i,t
+ πold
+t
+
+= Eπ+
+i,t
+
+log ρi,t(xt)
+
+.
+(5)
+Sec. 3.3 shows why we choose R´enyi instead of the KL divergence.
+At pure noise (t = T) the forward map has σT = 1 and discards x0 entirely, so π+
+i,T = πold
+T
+=
+N(0, I) and Di,T = 0 for every reward. At clean data the divergence reaches its maximum Di,0 =
+Dα(π+
+i,0 ∥πold
+0 ), the full data-level discriminability reward i induces.
+Discriminability gain.
+Cumulative discriminability Di,t contains all signal accumulated from T
+to t, so weighting by it would repeatedly count earlier gains. Therefore, we use the per-step gain
+∆Di,t := Di,t−1 −Di,t,
+(6)
+which isolates the new discriminability contributed by reward i at transition t →t −1. The gains
+telescope along the denoising trajectory:
+T
+X
+t=1
+∆Di,t = Di,0 −Di,T = Di,0 = Dα
+ π+
+i,0
+ πold
+0
+
+.
+(7)
+3
+
+
+Thus, ∆Di,t decomposes the reward’s total data-level discriminability across timesteps without
+double-counting: rewards sensitive to global structure concentrate at large t, while those sensitive to
+fine details concentrate at small t.
+One basic property is that ∆Di,t ≥0, so at each denoising step (t →t−1) the discriminability does
+not decrease. This ensures the soundness of our definition of ∆Di,t. We prove a general theorem.
+Theorem 3.1 (R´enyi dissipation under shared diffusion). Let πa
+t and πb
+t be positive, sufficiently
+smooth probability densities on Rd that both evolve under the same forward Fokker–Planck equation
+∂tπt = −∇·
+ u(x, t) πt
+
++
+g(t)2
+2
+∆πt,
+(8)
+for a shared drift u and spatially constant diffusion coefficient g(t). Assume the displayed moments
+and derivatives are integrable and that the boundary terms in the integrations by parts vanish. Let
+ρ := πa/πb denote the density ratio, and define the R´enyi-tilted distribution of order α:
+π(α)
+t
+(x) :=
+ρ(x)α
+Eπb
+t [ρα] πb
+t(x) ∝
+ πa
+t
+α  πb
+t
+1−α.
+(9)
+This geometric family recovers πb
+t at α = 0 and πa
+t at α = 1; in the regime used here, α > 1, it
+extrapolates beyond πa
+t . Then for every α > 0 with α̸ = 1,
+d
+dt Dα
+ πa
+t ∥πb
+t
+
+= −g(t)2
+2
+· α · Eπ(α)
+t
+
+∥∇log πa
+πb ∥2
+,
+(10)
+where Eπ(α)
+t
+[∥∇log πa
+πb ∥2] is the Fisher information of the log-density ratio measured under the
+tilted distribution π(α)
+t
+.
+The proof of the theorem is deferred to App. A.2. Both π+
+i,t and πold
+t
+evolve according to Eq. (8) with
+the same coefficients because the diffusion kernel p(xt | x0) is independent of the policy. Away
+from the singular endpoint σt = 1, the forward process xt = (1 −σt)x0 + σtϵ is the transition
+law of a linear SDE, and therefore satisfies Eq. (8) with u(x, t) = −
+˙σt
+1−σt x,
+g(t)2 = 2σt ˙σt
+1−σt .
+Since Eq. (8) is linear in πt, and the reward tilt ri acts only on the initial state x0, the tilt changes
+only the initial distribution rather than the evolution coefficients. Hence, π+
+i,t and πold
+t
+follow the
+same Fokker–Planck dynamics from different initial conditions. Theorem 3.1 therefore applies with
+πa = π+
+i,t, πb = πold
+t
+, and ρ = ρi,t, yielding d
+dtDα
+ π+
+i,t ∥πold
+t
+
+≤0.
+3.3
+Estimation details
+Why we use α > 1 rather than the KL limit.
+The exact KL in Eq. (5) is well defined under the
+usual absolute-continuity and integrability conditions: states with ρi,t = π+
+i,t/πold
+t
+= 0 have zero
+probability under π+
+i,t and therefore do not cause the expectation to diverge. However, empirically
+in finite-sample rollouts, the estimated conditional reward ˆEπold(x0|xt,c)
+
+ri(x0, c)
+
+, and hence ˆρi,t,
+can be exactly zero, in which case averaging log ˆρi,t introduces −∞values. For example, consider
+a noisy state xt that has already committed to a two-object layout when the prompt requires only
+one. Such an xt will likely be denoised under πold into samples x0 that keep that structure, so
+ri(x0, c) = 0 for multiple x0. Simply swapping the two marginals does not resolve this issue:
+KL
+ πold
+t
+ π+
+i,t
+
+= −Eπold
+t
+
+log ρi,t(xt)
+
+may also diverge for the same reason.
+This motivates using the R´enyi divergence with α > 1. In this case, the logarithm in Eq. (4)
+is applied only after the empirical moment ˆEπ+
+i,t
+
+ˆρi,t(xt)α−1
+. Consequently, a zero conditional
+reward estimate, corresponding to a state xt for which ˆρi,t(xt) = 0, contributes zero to the empirical
+moment rather than producing an infinite logarithmic term. The estimate therefore remains finite
+whenever the empirical moment itself is positive, which is usually satisfied in practical estimation.
+At the same time, Dα retains a useful relation to the original objective: because R´enyi divergence
+is nondecreasing in its order, Dα upper-bounds the KL for α > 1. App. B.2 examines how the
+resulting discriminability curve varies with α. We use α = 2 in all training experiments for its
+simplicity: the exponent in Eq. (4) is then α −1 = 1.
+Importance sampling from π+ to cover high-reward regimes.
+Revisiting Eq. (4), we find one
+problem: sampling xt from π+
+i,t is impractical since we cannot directly sample from the π+
+i of
+4
+
+
+Algorithm 1 Per-step R´enyi discriminability gain proxies \
+g
+∆Di,t from π+ samples
+Require: Prompt c, policy πold, stronger external generator π+(· | c) used as a common proposal, rewards
+r1:m, order α > 0 with α̸ = 1, samples N, rollouts K, schedule {σt}T
+t=0
+Ensure: Per-step gain proxies \
+g
+∆Di,t for every reward i and step t
+1: for n = 1, . . . , N do
+2:
+Draw ex(n)
+0
+∼π+(· | c); set x(n)
+t
+←(1 −σt)ex(n)
+0
++ σtϵt, ϵt ∼N(0, I), t = 0, . . . , T
+// x(n)
+t
+∼π+
+t
+3:
+ˆµ(n)
+i,t ←
+1
+Kt
+P
+k≤Kt ri(x(n,t,k)
+0
+, c) from Kt rollouts x(n)
+t
+→x(n,t,k)
+0
+under πold (K0=1, else K)
+4: end for
+5: d
+eDi,t ←
+1
+α−1 log
+ max{10−10, 1
+N
+P
+n[ˆµ(n)
+i,t ]α−1}
+
+for all i, t
+// numerical floor
+6: return \
+g
+∆Di,t ←
+ \
+eDi,t−1 −d
+eDi,t
+
++, t = 1, . . . , T
+// Eq. (12), clipped
+Eq. (2). One seemingly plausible solution is to sample from πold instead: since ρi,t = π+
+i,t/πold
+t
+, we
+have Eπold
+t [ρi,t(xt)α] = Eπ+
+i,t
+
+ρi,t(xt)α−1
+. This means we draw ex0 ∼πold(· | c), forward-noise
+it to xt ∼πold
+t
+by xt = (1 −σt)ex0 + σtϵ, and roll out multiple x0 from xt under πold. Here,
+x0 is used to estimate µi,t(xt) and ex0 is used to estimate Zi. However, if the current policy (πold)
+often produces low-quality outputs, then r(x0, c) ≈r(ex0, c), so ρi,t(xt) = µi,t(xt)/Zi ≈1 and
+Di,t ≈0: the high-reward regions are unestimated. The leftmost column of Fig. 3 shows exactly
+this: under πold the estimated Di,t curves for CLIPSCORE, HPSV2, and PICKSCORE are close to 0
+and significantly lower than their π+ counterparts (App. B.3).
+Therefore, we propose to use a single stronger external generator π+ as a common proposal for all
+of the π+
+i : we draw ex0 ∼π+(· | c), forward-noise it to xt ∼π+
+t by xt = (1 −σt)ex0 + σtϵ, and
+roll out x0 from xt under πold. Since we assume π+ generates higher-quality outputs than πold,
+ρi,t(xt) = µi,t(xt)/Zi will decrease to 1 as t increases. Because the ratio π+
+i,t/π+
+t is unknown,
+this is not an exact importance-sampling estimator of Di,t but a surrogate log-moment. App. A.3
+analyzes the error the surrogate induces: when KL(π+∥π+
+i ) is small, the error in the discriminability
+gain is O(
+q
+KL(π+∥π+
+i )) and propagates to the Sinkhorn weights. Furthermore, replacing π+ with
+πold self-rollouts yields far noisier curves in App. B.3, while choosing a different π+, either GPT
+IMAGE 1.5 or NANO BANANA PRO, leaves the estimated curves essentially unchanged in App. B.4.
+Denominator cancellation.
+Putting ρi,t(xt) = µi,t(xt)/Zi into Eq. (4), we have Di,t =
+1
+α−1 log Eπ+
+i,t[µi,t(xt)α−1] −log Zi. Because only the gain ∆Di,t = Di,t−1 −Di,t is needed,
+log Zi cancels entirely:
+∆Di,t =
+1
+α −1
+
+log Eπ+
+i,t−1
+
+µi,t−1(xt−1)α−1
+−log Eπ+
+i,t
+
+µi,t(xt)α−1
+.
+(11)
+Replacing the unknown positive marginals by the common proposal π+
+t leaves the quantity we
+actually compute,
+g
+∆Di,t =
+1
+α −1
+
+log Eπ+
+t−1
+
+µi,t−1(xt−1)α−1
+−log Eπ+
+t
+
+µi,t(xt)α−1
+,
+(12)
+which coincides with Eq. (11) only when π+
+t = π+
+i,t. Only µi,t has to be estimated, by rollouts under
+πold, and Zi is never formed. Alg. 1 is the resulting estimator, in compact form; App. B.1 writes out
+every index. For readability in the empirical sections we write the output \
+g
+∆Di,t simply as ∆Di,t,
+and identities involving Dα refer to the population quantity unless stated otherwise.
+3.4
+Sinkhorn projection
+The gains ∆Di,t measure the utility of each reward at every step, but they do not yet constitute valid
+weights: they neither satisfy the budget λ nor maintain equal per-step total weights across t. We
+formulate the two requirements as marginal constraints and single out a unique matrix satisfying
+them by entropic projection. We ablate the choice of equal per-step total weights in Sec. 4.5.
+5
+
+
+We first define the mean-normalized gain
+∆Di,t :=
+∆Di,t
+1
+T
+PT
+s=1 ∆Di,s
+,
+so that
+1
+T
+X
+t
+∆Di,t = 1 for every i.
+(13)
+Because the gains telescope (Eq. (7)), the denominator is Di,0/T, so the division removes the re-
+ward’s total discriminability and keeps only its shape in t to better capture the intra-timestep relation.
+From the normalized gains we build the affinity kernel
+Ki,t := exp
+ ∆Di,t
+
+(14)
+which is largest at the steps where reward i contributes most of its discriminability and carries no
+scale parameter of its own, since ∆Di,t is already mean-normalized. Theorem 3.1 gives ∆Di,t ≥0
+in population; in finite samples we clip, using [∆Di,t]+, so a step estimated as negative enters at
+Ki,t = 1, the smallest value the kernel takes.
+Recall the two marginal constraints from Eq. (1). Writing 1m, 1T for all-ones vectors, the feasible
+set is the transportation polytope
+U(λ) :=
+n
+W ∈Rm×T
+≥0
+: W 1T = λ, W ⊤1m = 1
+T 1T
+o
+.
+(15)
+The set is never empty, since the rank-one matrix λi/T always belongs to it. Among its elements
+we want the KL projection of K onto the polytope,
+W ⋆= arg min
+W ∈U(λ)
+KL
+ W ∥K
+
+= arg min
+W ∈U(λ)
+X
+i,t
+Wi,t log Wi,t
+Ki,t
+−Wi,t + Ki,t,
+(16)
+which, substituting Eq. (14), is an entropy-regularized transport problem with cost Ci,t := −∆Di,t
+and unit regularization strength:
+W ⋆= arg min
+W ∈U(λ)
+X
+i,t
+h
+Ci,t Wi,t + Wi,t log Wi,t
+i
+.
+(17)
+Since every Ki,t > 0, the objective is strictly convex and the minimizer is unique. Setting the
+Lagrangian gradient to zero gives the kernel rescaled by one factor per row and one per column,
+W ⋆
+i,t = ai Ki,t bt = ai · exp
+ ∆Di,t
+
+· bt,
+(18)
+where ai carries inter-reward scaling, and bt the per-step normalization. Sinkhorn’s theorem [4, 33]
+guarantees that a ∈Rm
+>0 and b ∈RT
+>0 exist and are unique up to the trivial rescaling (a, b) 7→
+(c a, b/c), and it finds them iteratively:
+ai ←
+λi
+P
+t Ki,t bt
+,
+bt ←
+1/T
+P
+i Ki,t ai
+,
+(19)
+which converges linearly; in the log domain it needs < 100 steps at m ≤4, T ≤25 (Alg. 3, App. C).
+A reward whose gain is flat in t has ∆Di,t ≡1, since Eq. (13) fixes the mean at 1; if this holds for
+every reward, the kernel is rank one and the entropic optimum is W ⋆
+i,t = λi/T, so the static baseline
+is exactly the case of flat estimated curves (App. C.2).
+3.5
+Empirical gain curves on SD3.5-Medium
+Setup.
+We instantiate Alg. 1 on SD3.5-Medium with α=2, 80 prompts from the training datasets,
+N=8 samples per prompt, and K=16 rollouts per xt. We approximate π+ by GPT IMAGE 1.5,
+VAE-encode its images into latent space, forward-noise to each step, and run batched rollouts under
+πold. We plot seven rewards: CLIPSCORE, HPSV2, PICKSCORE, AESTHETIC, and IMAGERE-
+WARD jointly on this shared T=10 grid, plus OCR and GENEVAL on their own prompt sets at
+the native T=25 schedule they are later trained under. Each reward’s architecture, checkpoint, and
+range are in Sec. 4.1 and App. E.1; App. B.2 conducts an ablation study on α.
+Results.
+In Fig. 1, the estimated curves are strongly reward-specific; the horizontal axis is the
+diffusion timestep, from the cleanest step t=1 (left) to the noisiest t=T (right). GENEVAL, OCR,
+and IMAGEREWARD peak the most sharply, concentrating their gain toward the noisy end, while
+the per-step gain of the others stays close to uniform. The first two are rule-based and, like IM-
+AGEREWARD, can score a sample once its global structure has emerged. The differences are large
+6
+
+
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+Di, t
+Per-step gain Di, t = [Di, t
+1
+Di, t] +
+Aesthetic
+CLIPScore
+HPSv2
+ImageReward
+PickScore
+OCR
+GenEval
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0
+1
+2
+3
+Di, t
+Mean-normalized gain: Di, t
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.01
+0.02
+0.03
+0.04
+0.05
+Wi, t
+Sinkhorn weight Wi, t, uniform 
+CLIPScore
+HPSv2
+PickScore
+OCR
+Figure 1: Gain curves and the weight matrix they project to. Left: per-step gain ∆Di,t. Center: mean-
+normalized gain ∆Di,t (Eq. (13)), the exponent of the affinity kernel (Eq. (14)). Right: the Sinkhorn matrix
+W ⋆
+i,t (Eq. (18)) at uniform λi=1/m, solved over the four rewards that are trained together in the OCR setting;
+both marginals hold exactly, every column summing to 1/T and every row to λi. In all panels the horizontal
+axis is t/T, running from the cleanest step t=1 (left) to the noisiest t=T (right). OCR and GENEVAL (dashed)
+are resampled onto the shared T=10 grid from their native T=25 curves, so the right panel is illustrative: the
+training-stage kernel is solved at T=25 on OCR’s own grid (Sec. 4.1).
+enough to matter: under uniform λ, the aggregate demand P
+i λi∆Di,t varies by 5.4× across the
+steps 2 ≤t ≤T, and still by 4.5× once GENEVAL is excluded. The right panel shows the Sinkhorn
+projection (Eq. (19)) over the four rewards in the OCR setting, correcting this imbalance by shifting
+each reward’s weight toward its own high-gain steps while both marginals stay exact.
+4
+Experiments
+Sec. 4.1 introduces the setup. Sec. 4.2 evaluates the training rewards on a held-out split, and Sec. 4.3
+the same checkpoints under held-out judges, to show generalizable improvement. Sec. 4.4 rescores
+those images with an independent LLM-as-a-Judge, and Sec. 4.5 ablates the Sinkhorn projection.
+4.1
+Training setup
+Reward models.
+We evaluate ReCAST with nine reward models in two distinct roles. Five are
+training rewards: CLIPSCORE [12], HPSV2 [39], PICKSCORE [18], OCR, and GENEVAL [9]. To
+evaluate generalization, four held-out judges score the checkpoints: AESTHETIC [32], IMAGERE-
+WARD [40], HPSV3 [27], and UNIFIEDREWARD-2 [38]. App. E.1 details architectures, check-
+points, and output ranges for all rewards.
+Training data and reward chain.
+Following DiffusionNFT [42], training runs in two stages.
+The warmup stage jointly optimizes CLIPSCORE, HPSV2, and PICKSCORE for 120 steps from
+the base model on Pick-a-Pic prompts (25,432 train/2,048 test); every later run resumes from its
+checkpoint. The training stage-OCR then adds an OCR reward on text-rendering prompts (19,652
+train/1,017 test) for 60 further steps (m=4). The training stage-GenEval branches from the same
+warmup parent on compositional GENEVAL prompts (50,000 train/2,211 test), swapping OCR for
+a rule-based GENEVAL reward on an identical schedule.
+Training configuration.
+Across all stages, we fine-tune LoRA adapters of Stable Diffusion 3.5-
+Medium. We use the DiffusionNFT objective with β=0.1, rolling out T=25 sampling steps per
+iteration at an effective batch size of 1152. We run the warmup stage at a balanced λ = (1, 1, 1)
+on three rewards: CLIPSCORE, HPSV2, and PICKSCORE. Then, we sweep each training-stage
+setting’s row marginals over λ ∈{(1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 1), (1, 2, 1, 1), (2, 1, 1, 1)}, the
+uniform budget together with each coordinate doubled in turn, where λ is ordered (CLIPSCORE,
+HPSV2, PICKSCORE, OCR/GENEVAL). Every λ is written unnormalized as an integer ratio be-
+tween rewards, and is divided by its own sum before use to satisfy P
+i λi = 1. Each budget gives
+one matched pair of ReCAST against a static baseline, and both settings are repeated end-to-end
+under 3 independent seeds, giving 15 matched (budget, seed) pairs per setting. For our weights
+configuration, we use Alg. 1 with α=2 for the kernel and Alg. 3 for the Sinkhorn projection. The
+training objective is detailed in App. A.1 and the remaining hyperparameters in App. E.2.
+Evaluation protocol.
+We evaluate at three levels: the training rewards on a held-out dataset
+(Sec. 4.2); held-out judge models (Sec. 4.3); and LLM-as-a-Judge (Sec. 4.4). All three score each
+7
+
+
+run’s final checkpoint at matched seeds, 5122 resolution, CFG 4.5, and 40 steps; we report means
+over each training-stage pair-set and win rates over its matched pairs.
+4.2
+Training rewards
+Table 1: Training-reward scores at the final checkpoint, reported as base / static / Ours, where base is the
+untuned SD3.5-Medium, static is static reweighting by λ, and Aggregate r is the sum of the individual rewards
+weighted by the integer λ. Both settings were trained end-to-end (warmup stage + training-stage sweep, both
+methods) under 3 seeds; entries are the mean of the three seed-level means, standard deviation as a subscript,
+and win pools all 15 matched (budget, seed) pairs. Bold marks the better of static and Ours, and both when the
+two agree at the reported precision. Per-λ results are in App. D.
+Training stage-OCR (5 budgets × 3 seeds) Training stage-GenEval (5 budgets × 3 seeds)
+Training reward
+base / static / Ours
+win
+base / static / Ours
+win
+Aggregate r
+1.642 / 2.867±0.026 / 2.920±0.028
+11/15
+1.784 / 2.881±0.021 / 2.878±0.015
+7/15
+CLIPSCORE
+0.271 / 0.313±0.002 / 0.320±0.002
+13/15
+0.240 / 0.299±0.001 / 0.299±0.001
+6/15
+HPSV2
+0.195 / 0.288±0.008 / 0.303±0.004
+12/15
+0.213 / 0.313±0.005 / 0.312±0.002
+5/15
+PICKSCORE
+0.773 / 0.888±0.002 / 0.899±0.003
+15/15
+0.790 / 0.911±0.004 / 0.908±0.003
+6/15
+Target reward
+0.129 / 0.893±0.014 / 0.900±0.032
+9/15
+0.244 / 0.873±0.011 / 0.874±0.007
+9/15
+Tab. 1 reports each training reward on a held-out dataset, averaged over the five budgets and three
+seed replicates, with win counting the matched pairs in which ReCAST beats static. ReCAST raises
+the aggregate score from 2.867 to 2.920 on average (+0.053±0.049 across seeds) and wins 11 of the
+15 matched (budget, seed) pairs. The gain is not obtained by sacrificing one objective for another:
+all four component rewards improve on average, with PICKSCORE winning all 15 pairs and CLIP-
+SCORE and HPSV2 winning 13 and 12. The target OCR reward carries the largest seed variance
+(+0.007±0.046, 9/15). Adaptive timing therefore uses a fixed multi-reward budget more efficiently,
+rather than merely changing the trade-off encoded by λ. On the GenEval setting the two meth-
+ods instead tie: every training reward shifts by less than one seed standard deviation (aggregate
+−0.003±0.031, target GENEVAL +0.001±0.017) and win rates are near chance (5 to 9 of 15). That
+setting therefore acts as a matched-training-reward control, where Sec. 4.3 still finds ReCAST pre-
+ferred by every held-out judge.
+4.3
+Held-out judges
+Table 2: Held-out judge scores at the final checkpoint, reported as base / static / Ours. Both settings cover 5
+budgets × 3 independent training seeds, and entries, subscripts, win, and the bolding rule are as in Tab. 1; the
+HPSV3 row is at two decimals because its scale is an order of magnitude larger. Per-λ results are in App. D.
+Training stage-OCR (15 pairs)
+Training stage-GenEval (15 pairs)
+Held-out model
+base / static / Ours
+win
+base / static / Ours
+win
+IMAGEREWARD
+1.140 / 1.422±0.037 / 1.482±0.030 13/15 1.024 / 1.198±0.165 / 1.289±0.122
+9/15
+AESTHETIC
+5.388 / 5.486±0.063 / 5.578±0.009 12/15 5.949 / 5.864±0.120 / 5.968±0.102 10/15
+HPSV3
+12.69 / 12.74±0.18 / 13.14±0.49
+11/15
+9.19 / 8.02±0.95 / 8.58±0.56
+10/15
+UNIFIEDREWARD-2 3.015 / 3.154±0.025 / 3.176±0.040 11/15 2.682 / 2.671±0.085 / 2.705±0.046
+9/15
+As shown in Tab. 2, on the OCR setting all four held-out judges score ReCAST higher on aver-
+age, winning 13, 12, 11, and 11 of the 15 matched (budget, seed) pairs. For the GenEval setting,
+although the two methods are tied there on every reward being optimized (Sec. 4.2), all four held-
+out judges still favor ReCAST (largest, HPSV3 +0.56±0.41), winning 9 or 10 of the 15 pairs. A
+held-out gain under an equal training reward is consistent with generalization rather than overfitting,
+and on the OCR setting the improved text rendering enhances rather than degrades broader image
+quality. The two settings differ against the untuned base model, however: the OCR setting clears
+it on all four judges under both methods, whereas in the GenEval setting static falls below it on
+AESTHETIC, HPSV3, and UNIFIEDREWARD-2. Optimizing compositional correctness therefore
+costs generic visual quality, and ReCAST recovers that cost on every judge, fully on AESTHETIC
+and UNIFIEDREWARD-2 and partly on HPSV3.
+8
+
+
+4.4
+LLM-as-a-Judge
+To assess general preference closer to real use, we use the MMRBv2 eval script [13] to compare
+the ReCAST checkpoints against static on a fixed 1,000-prompt subset of the held-out OCR set. A
+multimodal LLM judge (gemini-3.5-flash, temperature 0) picks the better of the two images
+per prompt according to a fixed rubric, and every pair is judged twice with positions swapped to
+cancel position bias; we also report the rubric’s faithfulness and aesthetics criteria. App. E.3 gives
+the full prompt and the debiasing procedure.
+Table 3: MMRBv2 pairwise evaluation of ReCAST against static on the same subset as Tab. 2, position-
+debiased over both presentation orders. Every entry is ReCAST’s win rate, overall and under the two rubric
+criteria, with 0.5 indicating parity; λ is ordered (CLIPSCORE, HPSV2, PICKSCORE, OCR).
+λ
+(1, 1, 1, 1) (1, 1, 1, 2) (1, 1, 2, 1) (1, 2, 1, 1) (2, 1, 1, 1)
+mean
+Overall
+0.6538
+0.5580
+0.4780
+0.5365
+0.6325
+0.5718
+Faithfulness
+0.6550
+0.5570
+0.5130
+0.5655
+0.6094
+0.5800
+Aesthetics
+0.6438
+0.5397
+0.4736
+0.4674
+0.6242
+0.5497
+As shown in Tab. 3, ReCAST obtains a mean overall win rate of 0.572 and is preferred at four of the
+five budgets, most strongly at (1, 1, 1, 1) and (2, 1, 1, 1) (0.654 and 0.633), where both faithfulness
+and aesthetics improve. App. G shows paired generations behind these judgments and their selection
+protocol.
+4.5
+Ablation study: the Sinkhorn projection
+We ablate the Sinkhorn projection of Sec. 3.4, which enforces a uniform total budget at each step,
+by training no-Sink R´enyi variants that keep the adaptive kernel but omit the column constraint: W ⋆
+becomes the row-normalized kernel Wi,t = λiKi,t/ P
+s Ki,s. Every reward still spends exactly its
+budget λi and the loss still consumes T ·Wi,t, but P
+i Wi,t is free, so each reward rides its own gain
+shape. All other training choices match the OCR experiment.
+Table 4: Aggregate training-reward score for each λ = (clip, hps, pick, ocr) budget in the training stage-OCR
+experiment, comparing static weighting, the adaptive kernel alone (no-Sink R´enyi), and the full method. Scores
+are on the held-out OCR dataset at the last checkpoint (step 180), single matched training seed.
+λ
+(1, 1, 1, 1) (1, 1, 1, 2) (1, 1, 2, 1) (1, 2, 1, 1) (2, 1, 1, 1)
+static
+2.3848
+3.2476
+3.2948
+2.5597
+2.6980
+no-Sink R´enyi
+2.4242
+3.3514
+3.3781
+2.6721
+2.6969
+ReCAST (Sinkhorn)
+2.4650
+3.3564
+3.3564
+2.7960
+2.7038
+As shown in Tab. 4, no-Sink R´enyi beats static on four of five budgets, and the full method beats
+no-Sink R´enyi on four of five. Averaged across budgets, the adaptive kernel accounts for +0.068
+of ReCAST’s total +0.099 gain over static, and the Sinkhorn projection for the remaining +0.031
+(this seed’s gap, not the three-seed mean of Tab. 1; both parts of the decomposition share the seed).
+Reward-specific timing therefore identifies useful optimization steps, while the shared column bud-
+get keeps the resulting weights from concentrating on a few of them.
+5
+Conclusion
+Multi-reward diffusion fine-tuning must decide both how much each reward matters and when it
+should act. ReCAST separates these decisions: the budget λ fixes each reward’s total contribution,
+and its R´enyi discriminability curve distributes it across timesteps.
+On SD3.5-Medium, this temporal reallocation improves the OCR setting’s aggregate training objec-
+tive across five budgets and three seeds, with all four training rewards increasing on average, and it
+transfers: every held-out judge improves over static, including on the GenEval setting where the two
+methods tie on the training rewards, and the pairwise LLM judge prefers ReCAST at four of five
+budgets. When a reward is applied can therefore matter as much as how much weight it receives. We
+discuss the limitations of our work in App. F.
+9
+
+
+References
+[1] Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, and Sergey Levine. Training diffusion
+models with reinforcement learning. arXiv preprint arXiv:2305.13301, 2023.
+[2] Jooyoung Choi, Jungbeom Lee, Chaehun Shin, Sungwon Kim, Hyunwoo Kim, and Sungroh
+Yoon. Perception prioritized training of diffusion models. In Proceedings of the IEEE/CVF
+Conference on Computer Vision and Pattern Recognition, 2022.
+[3] Kevin Clark, Paul Vicol, Kevin Swersky, and David J Fleet. Directly fine-tuning diffusion
+models on differentiable rewards. arXiv preprint arXiv:2309.17400, 2023.
+[4] Marco Cuturi. Sinkhorn distances: Lightspeed computation of optimal transport. In Advances
+in Neural Information Processing Systems, volume 26, 2013.
+[5] Josef Dai, Xuehai Pan, Ruiyang Sun, Jiaming Ji, Xinbo Xu, Mickel Liu, Yizhou Wang, and
+Yaodong Yang. Safe RLHF: Safe reinforcement learning from human feedback. arXiv preprint
+arXiv:2310.12773, 2023.
+[6] Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas M¨uller, Harry Saini,
+Yam Levi, Dominik Lorenz, Axel Sauer, Frederic Boesel, et al. Scaling rectified flow trans-
+formers for high-resolution image synthesis. In Forty-first international conference on machine
+learning, 2024.
+[7] Ying Fan, Olivia Watkins, Yuqing Du, Hao Liu, Moonkyung Ryu, Craig Boutilier, Pieter
+Abbeel, Mohammad Ghavamzadeh, Kangwook Lee, and Kimin Lee. Dpok: Reinforcement
+learning for fine-tuning text-to-image diffusion models. Advances in Neural Information Pro-
+cessing Systems, 36:79858–79885, 2023.
+[8] Leo Gao, John Schulman, and Jacob Hilton. Scaling laws for reward model overoptimization.
+In International Conference on Machine Learning, 2023.
+[9] Dhruba Ghosh, Hannaneh Hajishirzi, and Ludwig Schmidt.
+Geneval: An object-focused
+framework for evaluating text-to-image alignment. Advances in Neural Information Process-
+ing Systems, 36:52132–52152, 2023.
+[10] Tiankai Hang, Shuyang Gu, Chen Li, Jianmin Bao, Dong Chen, Han Hu, Xin Geng, and
+Baining Guo. Efficient diffusion training via min-snr weighting strategy. In Proceedings of the
+IEEE/CVF International Conference on Computer Vision, 2023.
+[11] Xiaoxuan He, Siming Fu, Yuke Zhao, Wanli Li, Jian Yang, Dacheng Yin, Fengyun Rao, and
+Bo Zhang. Tempflow-grpo: When timing matters for grpo in flow models. arXiv preprint
+arXiv:2508.04324, 2025.
+[12] Jack Hessel, Ari Holtzman, Maxwell Forbes, Ronan Le Bras, and Yejin Choi. Clipscore: A
+reference-free evaluation metric for image captioning. arXiv preprint arXiv:2104.08718, 2021.
+[13] Yushi Hu, Reyhane Askari-Hemmat, Melissa Hall, Emily Dinan, Luke Zettlemoyer, and Mar-
+jan Ghazvininejad. Multimodal RewardBench 2: Evaluating omni reward models for inter-
+leaved text and image. arXiv preprint arXiv:2512.16899, 2025.
+[14] Joel Jang, Seungone Kim, Bill Yuchen Lin, Yizhong Wang, Jack Hessel, Luke Zettlemoyer,
+Hannaneh Hajishirzi, Yejin Choi, and Prithviraj Ammanabrolu.
+Personalized soups: Per-
+sonalized large language model alignment via post-hoc parameter merging. arXiv preprint
+arXiv:2310.11564, 2023.
+[15] Tero Karras, Miika Aittala, Timo Aila, and Samuli Laine. Elucidating the design space of
+diffusion-based generative models. In Advances in Neural Information Processing Systems,
+volume 35, 2022.
+[16] Amirhossein Kazemnejad, Milad Aghajohari, Eva Portelance, Alessandro Sordoni, Siva
+Reddy, Aaron Courville, and Nicolas Le Roux. VinePPO: Unlocking RL potential for LLM
+reasoning through refined credit assignment. arXiv preprint arXiv:2410.01679, 2024.
+10
+
+
+[17] Diederik Kingma, Tim Salimans, Ben Poole, and Jonathan Ho. Variational diffusion models.
+Advances in Neural Information Processing Systems, 34:21696–21707, 2021.
+[18] Yuval Kirstain, Adam Polyak, Uriel Singer, Shahbuland Matiana, Joe Penna, and Omer Levy.
+Pick-a-pic: An open dataset of user preferences for text-to-image generation. Advances in
+Neural Information Processing Systems, 36:36652–36663, 2023.
+[19] Yuhang Lai, Siyuan Wang, Shujun Liu, Xuanjing Huang, and Zhongyu Wei. ALaRM: Align
+language models via hierarchical rewards modeling. In Findings of the Association for Com-
+putational Linguistics: ACL 2024, pp. 7817–7831, 2024.
+[20] Junzhe Li, Yutao Cui, Tao Huang, Weijie Kong, Yiming Cheng, Chuxuan Zeng, Yinping Ma,
+Chun Fan, Miles Yang, Zhao Zhong, and Liefeng Bo. Mixgrpo: Unlocking flow-based grpo
+efficiency with mixed ode-sde. arXiv preprint arXiv:2507.21802, 2025.
+[21] Zhanhao Liang, Yuhui Yuan, Shuyang Gu, Bohan Chen, Tiankai Hang, Mingxi Cheng, Ji Li,
+and Liang Zheng. Aesthetic post-training diffusion models from generic preferences with step-
+by-step preference optimization. In Proceedings of the IEEE/CVF Conference on Computer
+Vision and Pattern Recognition, pp. 13199–13208, 2025.
+[22] Hunter Lightman, Vineet Kosaraju, Yuri Burda, Harrison Edwards, Bowen Baker, Teddy Lee,
+Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe. Let’s verify step by step. In The
+Twelfth International Conference on Learning Representations, 2024.
+[23] Yaron Lipman, Ricky TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le. Flow
+matching for generative modeling. arXiv preprint arXiv:2210.02747, 2022.
+[24] Jie Liu, Gongye Liu, Jiajun Liang, Yangguang Li, Jiaheng Liu, Xintao Wang, Pengfei Wan,
+Di Zhang, and Wanli Ouyang. Flow-grpo: Training flow matching models via online rl. arXiv
+preprint arXiv:2505.05470, 2025.
+[25] Shih-Yang Liu, Xin Dong, Ximing Lu, Shizhe Diao, Peter Belcak, Mingjie Liu, Min-Hung
+Chen, Hongxu Yin, Yu-Chiang Frank Wang, Kwang-Ting Cheng, Yejin Choi, Jan Kautz, and
+Pavlo Molchanov.
+GDPO: Group reward-decoupled normalization policy optimization for
+multi-reward RL optimization. arXiv preprint arXiv:2601.05242, 2026.
+[26] Xingchao Liu, Chengyue Gong, and Qiang Liu. Flow straight and fast: Learning to generate
+and transfer data with rectified flow. arXiv preprint arXiv:2209.03003, 2022.
+[27] Yuhang Ma, Yunhao Shui, Xiaoshi Wu, Keqiang Sun, and Hongsheng Li. HPSv3: Towards
+wide-spectrum human preference score. arXiv preprint arXiv:2508.03789, 2025.
+[28] Alexander Quinn Nichol and Prafulla Dhariwal. Improved denoising diffusion probabilistic
+models. In International Conference on Machine Learning, 2021.
+[29] Mihir Prabhudesai, Anirudh Goyal, Deepak Pathak, and Katerina Fragkiadaki. Aligning text-
+to-image diffusion models with reward backpropagation. arXiv preprint arXiv:2310.03739,
+2023.
+[30] Alexandre Ram´e, Guillaume Couairon, Corentin Dancette, Jean-Baptiste Gaya, Mustafa
+Shukor, Laure Soulier, and Matthieu Cord. Rewarded soups: towards pareto-optimal align-
+ment by interpolating weights fine-tuned on diverse rewards. In Advances in Neural Informa-
+tion Processing Systems, volume 36, 2023.
+[31] Alfr´ed R´enyi. On measures of entropy and information. In Proceedings of the Fourth Berkeley
+Symposium on Mathematical Statistics and Probability, Volume 1: Contributions to the Theory
+of Statistics, pp. 547–561. University of California Press, 1961.
+[32] Christoph
+Schuhmann.
+Laion-aesthetics.
+https://laion.ai/blog/
+laion-aesthetics/, 2022.
+[33] Richard Sinkhorn and Paul Knopp. Concerning nonnegative matrices and doubly stochastic
+matrices. Pacific Journal of Mathematics, 21(2):343–348, 1967.
+11
+
+
+[34] Joar Skalse, Nikolaus Howe, Dmitrii Krasheninnikov, and David Krueger. Defining and char-
+acterizing reward gaming. In Advances in Neural Information Processing Systems, volume 35,
+2022.
+[35] Yang Song, Conor Durkan, Iain Murray, and Stefano Ermon. Maximum likelihood training
+of score-based diffusion models. In Advances in Neural Information Processing Systems, vol-
+ume 34, pp. 1415–1428, 2021.
+[36] Jonathan Uesato, Nate Kushman, Ramana Kumar, Francis Song, Noah Siegel, Lisa Wang,
+Antonia Creswell, Geoffrey Irving, and Irina Higgins.
+Solving math word problems with
+process- and outcome-based feedback. arXiv preprint arXiv:2211.14275, 2022.
+[37] Bram Wallace, Meihua Dang, Rafael Rafailov, Linqi Zhou, Aaron Lou, Senthil Purushwalkam,
+Stefano Ermon, Caiming Xiong, Shafiq Joty, and Nikhil Naik. Diffusion model alignment us-
+ing direct preference optimization. In Proceedings of the IEEE/CVF Conference on Computer
+Vision and Pattern Recognition, pp. 8228–8238, 2024.
+[38] Yibin Wang, Yuhang Zang, Hao Li, Cheng Jin, and Jiaqi Wang. Unified reward model for
+multimodal understanding and generation. arXiv preprint arXiv:2503.05236, 2025.
+[39] Xiaoshi Wu, Yiming Hao, Keqiang Sun, Yixiong Chen, Feng Zhu, Rui Zhao, and Hongsheng
+Li. Human preference score v2: A solid benchmark for evaluating human preferences of text-
+to-image synthesis. arXiv preprint arXiv:2306.09341, 2023.
+[40] Jiazheng Xu, Xiao Liu, Yuchen Wu, Yuxuan Tong, Qinkai Li, Ming Ding, Jie Tang, and Yuxiao
+Dong. Imagereward: Learning and evaluating human preferences for text-to-image generation.
+Advances in Neural Information Processing Systems, 36:15903–15935, 2023.
+[41] Zeyue Xue, Jie Wu, Yu Gao, Fangyuan Kong, Lingting Zhu, Mengzhao Chen, Zhiheng Liu,
+Wei Liu, Qiushan Guo, Weilin Huang, et al. Dancegrpo: Unleashing grpo on visual generation.
+arXiv preprint arXiv:2505.07818, 2025.
+[42] Kaiwen Zheng, Huayu Chen, Haotian Ye, Haoxiang Wang, Qinsheng Zhang, Kai Jiang, Hang
+Su, Stefano Ermon, Jun Zhu, and Ming-Yu Liu. DiffusionNFT: Online diffusion reinforcement
+with forward process. arXiv preprint arXiv:2509.16117, 2025.
+[43] Huaisheng Zhu, Teng Xiao, and Vasant G Honavar. Dspo: Direct score preference optimiza-
+tion for diffusion model alignment. In The Thirteenth International Conference on Learning
+Representations, 2025.
+12
+
+
+A
+Supplementary theory
+In App. A.1, we provide notations and basic properties on rectified flow matching and Diffusion-
+NFT. In App. A.2, we prove Theorem 3.1. In App. A.3, we bound the error induced by replac-
+ing each reward-specific positive policy π+
+i with the common surrogate π+, and show that it is
+O(
+q
+KL(π+∥π+
+i )) on the discriminability gain and propagates to the Sinkhorn weights.
+A.1
+Background: rectified flow matching and DiffusionNFT
+Rectified flow matching.
+All models in this paper are rectified-flow generators [6, 23, 26]. A
+clean sample x0 ∼π(· | c) and noise ϵ ∼N(0, I) are connected by the straight interpolation
+xt = αt x0 + σt ϵ,
+αt = 1 −σt,
+σ0 = 0,
+σT = 1,
+(20)
+so t=0 is clean data and t=T is pure noise. Here αt is the interpolation coefficient, distinct from
+the R´enyi order α of Sec. 3.2 and from the mixture coefficient α(xt) defined below. Differentiating
+Eq. (20) gives the target velocity v = ˙αt x0 + ˙σt ϵ, which for the linear path is simply v = ϵ −x0.
+A velocity model vθ is fit by regression on this target,
+LFM(θ) = Ec, x0, ϵ, t
+h vθ(xt, c, t) −v
+2
+2
+i
+,
+(21)
+and sampling integrates dx = vθ(xt, c, t) dσt backward from t=T to t=0 over a discrete schedule
+{σt}T
+t=0 of T steps. Two features of Eq. (21) matter for what follows: the expectation over t makes
+every timestep a separate regression problem, so a per-timestep coefficient can be attached to each
+without changing the estimator; and v depends on the data only through x0, so tilting the data
+distribution by a reward moves the target while leaving the forward path Eq. (20) untouched. The
+latter is what lets Theorem 3.1 apply to the reward-tilted marginals in Sec. 3.2.
+DiffusionNFT.
+We briefly review the DiffusionNFT framework [42], which forms the basis of
+our multi-reward training objective. Theorems A.1 and A.2 below are from DiffusionNFT [42]; we
+restate them here, without proof, for the notation our objective builds on.
+Positive Policy.
+Let πold(x0 | c) denote the current, or old, policy and r(x0, c) := p(o = 1 |
+x0, c) the optimality probability. The positive policy is defined as the old policy conditioned on
+optimality:
+π+(x0 | c) := πold(x0 | o = 1, c) =
+r(x0, c)
+pπold(o = 1 | c) πold(x0 | c).
+(22)
+With infinitely many samples from πold, π+ is simply the distribution of the positive subset: the old
+policy restricted to its “optimal” outputs.
+The Coefficient α(xt).
+A key quantity linking the diffused positive marginal to the diffused old
+marginal is the scalar coefficient α(xt) ∈[0, 1]:
+α(xt) :=
+π+
+t (xt | c)
+πold
+t
+(xt | c) · Eπold(x0|c)[r(x0, c)].
+(23)
+It comes out of a posterior decomposition: the old posterior splits into a mixture of the positive and
+negative posteriors, weighted by α(xt) and 1 −α(xt).
+Theorem A.1 (Improvement direction, [42]). Let v+, v−, and vold be the velocity models for
+the policies π+, π−, and πold, respectively. The directional differences between these models are
+proportional:
+∆:=
+
+1 −α(xt)
+ 
+vold(xt, c, t) −v−(xt, c, t)
+
+= α(xt)
+
+v+(xt, c, t) −vold(xt, c, t)
+
+, (24)
+where 0 ≤α(xt) ≤1 is defined in Eq. (23).
+So ∆is an improvement direction in velocity space: moving from vold toward v+ is the same
+direction as moving away from v−.
+Theorem A.2 (Policy optimization, [42]). Consider the training objective
+L(θ) = Ec, πold(x0|c), ϵ, t
+h
+r ∥v+
+θ (xt, c, t) −v∥2
+2 + (1 −r) ∥v−
+θ (xt, c, t) −v∥2
+2
+i
+,
+(25)
+13
+
+
+where v = ˙αt x0 + ˙σt ϵ is the target velocity from the forward process, and the implicit positive and
+negative policies are parameterized as
+v+
+θ (xt, c, t) := (1 −β) vold(xt, c, t) + β vθ(xt, c, t),
+(26)
+v−
+θ (xt, c, t) := (1 + β) vold(xt, c, t) −β vθ(xt, c, t).
+(27)
+Given unlimited data and model capacity, the optimal solution satisfies
+vθ∗(xt, c, t) = vold(xt, c, t) + 2
+β ∆(xt, c, t),
+(28)
+where ∆is defined in Eq. (24).
+The optimum therefore sits along the reinforcement-guidance direction ∆, at strength 2/β relative
+to vold, so the policy improves without any likelihood being estimated.
+A.2
+Proof of Theorem 3.1
+Proof. Let ρ := πa/πb and Mα := Eπb[ρα] =
+R
+ρα πb dx =
+R
+(πa)α (πb)1−α dx. By definition,
+Dα =
+1
+α−1 log Mα, so
+d
+dtDα =
+1
+α −1 ·
+˙Mα
+Mα
+.
+It suffices to show ˙Mα = −g2
+2 α(α −1)
+R
+ρα∥∇log ρ∥2 πb dx.
+Step 1: Differentiating Mα.
+Since ρ = πa/πb, we have ∂tρ = (∂tπa)/πb −ρ (∂tπb)/πb, so
+˙Mα =
+Z 
+α ρα−1 (∂tρ) πb + ρα ∂tπb
+dx = α
+Z
+ρα−1 ∂tπa dx −(α−1)
+Z
+ρα ∂tπb dx.
+Step 2: Substituting the Fokker–Planck equation.
+Both πa and πb satisfy ∂tπ = −∇· (uπ) +
+g2
+2 ∆π, so
+˙Mα = α
+Z
+ρα−1
+−∇· (uπa) + g2
+2 ∆πa
+dx
+|
+{z
+}
+=: Ia
+−(α−1)
+Z
+ρα
+−∇· (uπb) + g2
+2 ∆πb
+dx
+|
+{z
+}
+=: Ib
+.
+Step 3: Drift terms cancel.
+For the drift part of Ia, integrate by parts (boundary terms vanish by
+decay at infinity):
+−α
+Z
+ρα−1 ∇· (uπa) dx = α
+Z
+uπa·∇(ρα−1) dx = α(α−1)
+Z
+u·∇ρ ρα−2πa dx.
+Using πa = ρπb, this equals α(α−1)
+R
+u·∇ρ ρα−1πb dx. For the drift part of Ib:
+(α−1)
+Z
+ρα ∇· (uπb) dx = −(α−1)
+Z
+uπb·∇(ρα) dx = −α(α−1)
+Z
+u·∇ρ ρα−1πb dx.
+Hence the drift contributions from Ia and Ib sum to zero.
+Step 4: Diffusion terms via integration by parts.
+It remains to evaluate the diffusive parts. For
+the Ia diffusion term, apply Green’s first identity (integration by parts twice):
+g2
+2 α
+Z
+ρα−1 ∆πa dx = −g2
+2 α
+Z
+∇(ρα−1)·∇πa dx
+= −g2
+2 α(α−1)
+Z
+ρα−2 ∇ρ·∇πa dx.
+Now use ∇πa = ∇(ρπb) = πb∇ρ + ρ∇πb:
+= −g2
+2 α(α−1)
+Z
+ρα−2
+πb∥∇ρ∥2 + ρ ∇ρ·∇πb
+dx.
+14
+
+
+For the Ib diffusion term:
+−g2
+2 (α−1)
+Z
+ρα ∆πb dx =
+g2
+2 (α−1)
+Z
+∇(ρα)·∇πb dx
+=
+g2
+2 α(α−1)
+Z
+ρα−1 ∇ρ·∇πb dx.
+Adding the two diffusive contributions, the ∇ρ·∇πb terms cancel:
+−g2
+2 α(α−1)
+Z
+ρα−2 ρ ∇ρ·∇πb dx +
+g2
+2 α(α−1)
+Z
+ρα−1 ∇ρ·∇πb dx = 0,
+and we are left with
+˙Mα = −g(t)2
+2
+α(α−1)
+Z
+ρα−2 ∥∇ρ∥2 πb dx.
+Step 5: Rewrite in terms of ∇log ρ.
+Since ∇ρ = ρ ∇log ρ, we have ρα−2∥∇ρ∥2 =
+ρα∥∇log ρ∥2, giving
+˙Mα = −g(t)2
+2
+α(α−1)
+Z
+ρα ∥∇log ρ∥2 πb dx.
+Since d
+dtDα =
+1
+α−1 ·
+˙
+Mα
+Mα , the factor (α−1) cancels, giving d
+dtDα = −g(t)2
+2
+·α·
+R
+ρα∥∇log ρ∥2πb dx
+R
+ραπb dx
+=
+−g(t)2
+2
+· α · Eπ(α)[∥∇log ρ∥2], which is Eq. (10).
+A.3
+Error induced by the surrogate
+We quantify the error introduced by replacing the reward-specific positive policy π+
+i with a common
+external positive policy π+ when estimating the reward-specific temporal weights. The main result
+shows that this approximation is stable when π+ is close to π+
+i in KL divergence. Throughout this
+subsection we fix a prompt c, suppress it from the notation, and take α > 1 as in the main text.
+Bounding the discriminability error.
+Assume the reward is bounded, 0 ≤ri(x0) ≤Ri with
+Zi > 0, so that 0 ≤ρi,t(xt) ≤Mi := Ri/Zi for every t, and define the policy mismatch
+ϵi := KL
+ π+ ∥π+
+i
+
+.
+Because π+
+t
+and π+
+i,t are obtained by applying the same diffusion ker-
+nel, the data-processing inequality gives KL
+ π+
+t ∥π+
+i,t
+
+≤ϵi, and Pinsker’s inequality then gives
+TV
+ π+
+t , π+
+i,t
+
+≤
+p
+ϵi/2. Since fi,t := ρα−1
+i,t
+takes values in [0, M α−1
+i
+],
+Eπ+
+t [fi,t] −Eπ+
+i,t[fi,t]
+ ≤M α−1
+i
+TV
+ π+
+t , π+
+i,t
+
+≤M α−1
+i
+rϵi
+2 =: ηi.
+(29)
+Moreover Eπ+
+i,t[fi,t] = exp
+ (α −1)Di,t
+
+≥1. Write eDi,t :=
+1
+α−1 log Eπ+
+t [fi,t] for the surrogate
+log-moment, whose differences give the surrogate gain of Eq. (12). Whenever ηi < 1, Eq. (29)
+yields
+ eDi,t −Di,t
+ ≤bi := −log(1 −ηi)
+α −1
+= M α−1
+i
+α −1
+rϵi
+2 + O(ϵi),
+(30)
+so the surrogate divergence is accurate to O
+ √ϵi
+
+.
+Error in the per-timestep gain.
+Applying Eq. (30) at the two adjacent timesteps of the gain
+∆Di,t = Di,t−1 −Di,t and of its surrogate g
+∆Di,t = eDi,t−1 −eDi,t gives
+g
+∆Di,t −∆Di,t
+ ≤2bi ≲
+√
+2 M α−1
+i
+α −1
+√ϵi,
+(31)
+where the final comparison holds in the small-mismatch regime.
+Error after normalizing the temporal profile.
+The allocation uses the mean-normalized gain of
+Eq. (13), ∆Di,t = T ∆Di,t/Gi with Gi := P
+t ∆Di,t, and its surrogate g
+∆Di,t := T g
+∆Di,t/ eGi.
+15
+
+
+Because the gains telescope, Gi = Di,0 −Di,T and eGi = eDi,0 −eDi,T , so | eGi −Gi| ≤2bi. If
+Gi > 2bi, then for every t
+g
+∆Di,t −∆Di,t
+ ≤T |g
+∆Di,t −∆Di,t|
+eGi
++ ∆Di,t
+|Gi −eGi|
+eGi
+≤
+4T bi
+Gi −2bi
+= O
+ T M α−1
+i
+(α −1) Gi
+√ϵi
+
+.
+(32)
+Propagation to Sinkhorn weights.
+Finally, consider the entropy-regularized allocation, written
+with the cost notation of Eq. (17),
+W (C) = arg min
+W ∈U(λ,ν)
+X
+i,t
+h
+Ci,t Wi,t + τ Wi,t log Wi,t
+i
+,
+Ci,t := −∆Di,t,
+(33)
+where U(λ, ν) fixes the reward marginals to λ and the timestep marginals to ν, τ > 0 is the
+Sinkhorn temperature, and B := P
+i λi = P
+t νt is the total transported mass; at νt ≡1/T and
+τ = 1, Eq. (33) is exactly Eq. (17), with feasible set U(λ) of Eq. (15) and solution W ⋆. Let
+W ⋆:= W (C) and f
+W := W ( e
+C), where e
+C :=
+ −g
+∆Di,t
+
+i,t is the cost built from the surrogate
+gains. The entropic term is τ/B-strongly convex with respect to the ℓ1 norm on measures of mass B,
+so the optimality conditions for Eq. (33) at W ⋆and f
+W give τ
+B ∥f
+W −W ⋆∥2
+1 ≤⟨C−e
+C, f
+W −W ⋆⟩,
+and H¨older’s inequality then yields the stability estimate ∥f
+W −W ⋆∥1 ≤B
+τ ∥e
+C −C∥∞. Since
+∥e
+C −C∥∞is bounded by Eq. (32), the end-to-end bound for sufficiently small policy mismatch is
+∥f
+W −W ⋆∥1 ≤4BT
+τ
+max
+i
+bi
+Gi −2bi
+= O
+BT
+τ
+max
+i
+M α−1
+i
+(α −1) Gi
+q
+KL
+ π+∥π+
+i
+
+.
+(34)
+Eq. (34) gives a direct interpretation of the approximation: a shared positive policy produces similar
+temporal weights whenever it is close to the reward-specific positive policy, with the square root
+coming from Pinsker’s inequality. Rewards with larger total discriminability Gi are less sensitive to
+the approximation, while a smaller Sinkhorn temperature τ makes the final allocation more sensitive
+to errors in the estimated temporal profile.
+B
+Gain estimation: algorithm, α-sensitivity, and curve details
+B.1
+Algorithm
+Alg. 2 writes out Alg. 1 in full, separated into its three phases, and implements the estimator of
+Sec. 3.3. Phase 1 forward-noises clean π+ samples to obtain xt ∼π+
+t ; Phase 2 rolls out under
+πold to estimate the unnormalized conditional reward at each xt; Phase 3 differences the resulting
+log-moments, at which point the marginal Eold[ri | c] drops out and never has to be formed, leaving
+the surrogate gain of Eq. (12).
+B.2
+α-sensitivity of the R´enyi estimator
+To analyze the influence of α, we sweep α ∈{0.25, 0.5, 0.75, 1.5, 2, 4, 8} and plot per-step gain,
+mean-normalized gain, and the Sinkhorn matrix they project to in Fig. 2. The sweep covers the
+five rewards estimated jointly on the shared T=10 grid. For 0 < α < 1 the exponent (α −1) is
+negative, so the log-moment is dominated by the lower tail of ˆµi,t rather than the upper one. Of the
+two guarantees we rely on, only one needs α > 1: Theorem 3.1 gives ∆Di,t ≥0 for every α > 0
+with α̸ = 1, whereas Dα upper-bounds the KL only above 1. Below 1 the gain therefore keeps its
+monotonicity but loses its link to the original objective, and we report these orders only to show
+what the estimator does outside its intended range. Peak locations are stable through the middle of
+the range and move only at its ends: AESTHETIC peaks at the clean end for α ≤0.75 but near the
+noisy end for α ≥1.5, and at α=8 HPSV2 and PICKSCORE lose their own peaks closer to clean
+and collapse onto IMAGEREWARD’s at t=9. Raising α also localizes the gains: IMAGEREWARD’s
+normalized peak grows from 1.61× its own mean at α=0.25 to 2.12× at α=2 and 3.25× at α=8.
+The projected weights follow, and their excursions from uniform are mildest in the intermediate
+range, spanning 0.29 to 1.60 times 1/(mT) at α=2 against 0.24 to 1.89 at α=0.25 and 0.41 to 2.24
+at α=8, which is why we default to α = 2 in the main text.
+16
+
+
+0.00
+0.05
+0.10
+0.15
+0.20
+= 0.25
+Di, t
+Per-step gain Di, t = [Di, t
+1
+Di, t] +
+Aesthetic
+CLIPScore
+HPSv2
+ImageReward
+PickScore
+0
+1
+2
+3
+Di, t
+Mean-normalized gain: Di, t
+0.01
+0.02
+0.03
+0.04
+Wi, t
+Sinkhorn weight Wi, t, uniform 
+0.00
+0.05
+0.10
+0.15
+0.20
+= 0.5
+Di, t
+0
+1
+2
+3
+Di, t
+0.01
+0.02
+0.03
+0.04
+Wi, t
+0.00
+0.05
+0.10
+0.15
+0.20
+= 0.75
+Di, t
+0
+1
+2
+3
+Di, t
+0.01
+0.02
+0.03
+0.04
+Wi, t
+0.00
+0.05
+0.10
+0.15
+0.20
+= 1.5
+Di, t
+0
+1
+2
+3
+Di, t
+0.01
+0.02
+0.03
+0.04
+Wi, t
+0.00
+0.05
+0.10
+0.15
+0.20
+= 2
+Di, t
+0
+1
+2
+3
+Di, t
+0.01
+0.02
+0.03
+0.04
+Wi, t
+0.00
+0.05
+0.10
+0.15
+0.20
+= 4
+Di, t
+0
+1
+2
+3
+Di, t
+0.01
+0.02
+0.03
+0.04
+Wi, t
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.00
+0.05
+0.10
+0.15
+0.20
+= 8
+Di, t
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0
+1
+2
+3
+Di, t
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.01
+0.02
+0.03
+0.04
+Wi, t
+Figure 2: α-sensitivity of the π+-sampling R´enyi estimator on the SD3.5-Medium run of Sec. 3.5. Rows:
+α ∈{0.25, 0.5, 0.75, 1.5, 2, 4, 8}. Columns: the same three quantities as Fig. 1, per-step gain ∆Di,t (left),
+mean-normalized gain ∆Di,t (Eq. (13), center), and the Sinkhorn matrix W ⋆
+i,t (Eq. (18)) at uniform λi=1/m
+(right).
+17
+
+
+Algorithm 2 Estimation of per-step R´enyi discriminability gain proxies \
+g
+∆Di,t from π+ (the ex-
+panded form of Alg. 1)
+Require: Prompt c, current policy πold, external high-reward generator approximating π+(x0 | c),
+rewards r1, . . . , rm, R´enyi order α > 0 with α̸ = 1, number of π+ samples N, number of
+rollouts K, noise schedule {σt}T
+t=0
+Ensure: Per-step gain proxies \
+g
+∆Di,t for each reward i and timestep t
+1: Phase 1: Sample xt ∼π+
+t by forward-noising clean π+ samples
+2: for n = 1, . . . , N do
+3:
+Draw clean sample ex(n)
+0
+∼π+(· | c) from the stronger external generator
+4:
+for each timestep t ∈{0, 1, . . . , T} do
+5:
+Sample ϵ(n)
+t
+∼N(0, I) and set x(n)
+t
+←(1 −σt) ex(n)
+0
++ σt ϵ(n)
+t
+// x(n)
+t
+∼π+
+t
+6:
+end for
+7: end for
+8: Phase 2: Rollouts under πold from each x(n)
+t
+to estimate the conditional reward
+9: for n = 1, . . . , N do
+10:
+for each timestep t ∈{0, 1, . . . , T} do
+11:
+if t = 0 then
+// ex(n)
+0
+is already clean: no rollout, single deterministic evaluation
+12:
+ex(n,0,1)
+0
+←ex(n)
+0
+; evaluate ri(ex(n,0,1)
+0
+, c) for all i
+13:
+else
+14:
+for k = 1, . . . , K do
+15:
+Run independent rollout from x(n)
+t
+to completion under πold: x(n)
+t
+→x(n,t,k)
+0
+16:
+Evaluate ri(x(n,t,k)
+0
+, c) for all rewards i
+17:
+end for
+18:
+end if
+19:
+end for
+20: end for
+21: Phase 3: Per-step gains, with denominator cancellation
+22: for each reward i do
+23:
+for each timestep t ∈{0, 1, . . . , T} do
+24:
+for n = 1, . . . , N do
+25:
+ˆµ(n)
+i,t ←
+1
+Kt
+PKt
+k=1 ri(x(n,t,k)
+0
+, c), with Kt = 1 if t = 0 else K // Conditional reward at x(n)
+t
+26:
+end for
+27:
+d
+eDi,t ←
+1
+α−1 log
+
+max{10−10, 1
+N
+PN
+n=1
+
+ˆµ(n)
+i,t
+α−1}
+
+// Surrogate log-moment, with a
+numerical floor
+28:
+end for
+29:
+for t = 1, . . . , T do
+30:
+\
+g
+∆Di,t ←
+ \
+eDi,t−1 −d
+eDi,t
+
++
+// Eq. (12), clipped as in Sec. 3.4
+31:
+end for
+32: end for
+B.3
+π+ vs. πold self-rollout gain curves
+In this section, we validate the design of π+ sampling. To this end, we run the identical estimator
+and Sinkhorn recipe with πold self-rollouts in place of π+ samples, replacing the exponent α −1
+by α so that both runs target the same Di,t, since Eπold
+t [ρi,t(xt)α] = Eπ+
+i,t[ρi,t(xt)α−1] (Sec. 3.3),
+holding the training stage-OCR prompt set, the four training rewards (CLIPSCORE, HPSV2, OCR,
+PICKSCORE), α=2 and T=25 fixed, so the two runs differ only in the sampling distribution. As
+shown in Fig. 3, the π+-sampled ∆D curves (top) are smooth and single-peaked, with the peak
+location differing by reward, while the πold-sampled curves are jagged and non-monotonic step-
+to-step, with per-step gain repeatedly spiking and collapsing back to the zero clip. The leftmost
+column makes the same point quantitatively. At the clean end the πold estimate gives Di,t of 0.016,
+0.020, and 0.001 for CLIPSCORE, HPSV2, and PICKSCORE, against 0.245, 0.501, and 0.209 under
+π+: a 15–200× collapse, and precisely the ρi,t ≈1, Di,t ≈0 degeneracy anticipated in Sec. 3.3.
+OCR is the one reward that retains appreciable discriminability, but its ∆D curve is unstable in
+t. The Sinkhorn matrices built from these noisy curves (right column) are correspondingly noisy
+themselves, oscillating step-to-step rather than smoothly redistributing weight toward each reward’s
+18
+
+
+high-gain region. In short: π+ sampling is what makes the estimated curve usable as a Sinkhorn
+kernel input.
+The jaggedness is not an artifact of the budget.
+A natural objection is that the πold curves are
+jagged only because the estimation budget is small. The bottom row of Fig. 3 rules this out: it
+recomputes the same πold run at N=32 and K=64, a 4× increase in both the samples per prompt
+and the rollouts per xt and hence 16× the rollout cost, so the two πold rows differ in (N, K)
+alone. The ∆D curves stay just as jagged, so the shape the Sinkhorn kernel would consume is not
+yet stable. The extra budget therefore almost does not improve smoothness. π+ sampling instead
+reaches a usable curve at 1/16 of the rollout cost of this row.
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.0
+0.5
+1.0
+1.5
+2.0
+Di, t
+Cumulative discriminability Di, t
+CLIPScore
+HPSv2
+OCR
+PickScore
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+Di, t
+Per-step gain Di, t = [Di, t
+1
+Di, t] +
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+Di, t
+Mean-normalized gain: Di, t
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.005
+0.010
+0.015
+0.020
+Wi, t
+Sinkhorn weight Wi, t, uniform 
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.2
+0.0
+0.2
+0.4
+0.6
+0.8
+Di, t
+Cumulative discriminability Di, t
+CLIPScore
+HPSv2
+OCR
+PickScore
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.0
+0.1
+0.2
+0.3
+0.4
+Di, t
+Per-step gain Di, t = [Di, t
+1
+Di, t] +
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0
+2
+4
+6
+Di, t
+Mean-normalized gain: Di, t
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.000
+0.005
+0.010
+0.015
+0.020
+0.025
+0.030
+0.035
+Wi, t
+Sinkhorn weight Wi, t, uniform 
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+Di, t
+Cumulative discriminability Di, t
+CLIPScore
+HPSv2
+OCR
+PickScore
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+Di, t
+Per-step gain Di, t = [Di, t
+1
+Di, t] +
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0
+2
+4
+6
+8
+Di, t
+Mean-normalized gain: Di, t
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.00
+0.01
+0.02
+0.03
+Wi, t
+Sinkhorn weight Wi, t, uniform 
++ (external)
+N = 8, K = 16
+old (ablation)
+N = 8, K = 16
+old (ablation)
+N = 32, K = 64
+Figure 3: Cumulative discriminability Di,t, per-step gain ∆Di,t, mean-normalized gain ∆Di,t, and Sinkhorn
+matrix W ⋆
+i,t at uniform λi=1/m, left to right in the order they are derived, under the two sampling distributions.
+The leftmost column is the estimator’s own Di,t, shifted by the single t-independent constant that sets Di,T =0
+at pure noise, where π+
+i,T =πold
+T ; it is not a cumulative sum of the clipped gains beside it. Under πold almost
+all of the estimated discriminability sits on OCR, the other three rewards coming out nearly indiscriminable
+at every step, and the OCR curve is not even monotone in t: it dips below zero, which Theorem 3.1 rules
+out in population. Top: π+ samples from GPT IMAGE 1.5, at the N=8, K=16 budget used throughout the
+paper. Middle: πold self-rollouts at that same budget. Bottom: the same πold run at the full N=32, K=64
+estimation budget, 16× the rollout cost. All three rows are matched estimator runs on the training stage-OCR
+curve: same four training rewards (CLIPSCORE, HPSV2, OCR, PICKSCORE), same prompt set, same α=2
+and T=25; the top two differ only in the sampling distribution, the bottom two only in (N, K). Both πold rows
+are visibly noisier at every step than the π+ row, consistent with the higher-variance πold-side estimator, and
+the 16× budget does not smooth them.
+B.4
+Sensitivity to the π+ surrogate generator
+The curves above approximate π+ by a single external generator, GPT IMAGE 1.5. To test how
+much the resulting weights depend on the specific π+, we regenerate the training stage-OCR π+
+image set with an independent generator, NANO BANANA PRO (GEMINI 3 PRO IMAGE), same
+prompts and N=8 images per prompt, and rerun the identical estimator. Tab. 5 compares the two
+per-step curves reward-by-reward. The curves are highly correlated (Pearson r ∈[0.84, 0.92], Spear-
+man ρ ∈[0.82, 0.92]) and peak within 0–2 steps of each other. Fig. 4 shows the two curves side by
+side: the per-step gains, mean-normalized gains, and the Sinkhorn matrices they project to are visu-
+ally near-interchangeable. The gain curve, and hence the Sinkhorn weights built from it, is therefore
+largely a property of the reward and the trajectory, not of which strong external generator stands in
+for π+.
+19
+
+
+Table 5: Surrogate sensitivity of the training stage-OCR gain curve: GPT IMAGE 1.5 vs. NANO BANANA
+PRO as the π+ generator, all other estimator settings identical. r and ρ are Pearson and Spearman correlations
+between the two per-step curves over the T=25 steps. “Peak t” gives the argmax timestep of ∆Di,t in the
+paper’s convention (t=1 clean, t=T pure noise); “total gain” is the ratio of P
+t ∆Di,t under NANO BANANA
+PRO to that under GPT IMAGE 1.5.
+Reward
+Pearson r
+Spearman ρ
+Peak t
+Total gain
+CLIPSCORE
+0.879
+0.912
+17 →19
+0.94×
+HPSV2
+0.847
+0.829
+15 →16
+0.81×
+OCR
+0.862
+0.844
+17 →17
+0.92×
+PICKSCORE
+0.919
+0.915
+15 →16
+0.84×
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+Di, t
+Per-step gain Di, t = [Di, t
+1
+Di, t] +
+CLIPScore
+HPSv2
+OCR
+PickScore
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+Di, t
+Mean-normalized gain: Di, t
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.005
+0.010
+0.015
+0.020
+Wi, t
+Sinkhorn weight Wi, t, uniform 
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.00
+0.05
+0.10
+0.15
+0.20
+0.25
+Di, t
+Per-step gain Di, t = [Di, t
+1
+Di, t] +
+CLIPScore
+HPSv2
+OCR
+PickScore
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+Di, t
+Mean-normalized gain: Di, t
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.005
+0.010
+0.015
+0.020
+Wi, t
+Sinkhorn weight Wi, t, uniform 
++: GPT Image 1.5
++: Nano Banana Pro
+Figure 4: Per-step gain ∆Di,t, mean-normalized gain ∆Di,t, and Sinkhorn matrix W ⋆
+i,t at uniform λi=1/m,
+for the training stage-OCR curve under the two π+ surrogate generators. Top: GPT IMAGE 1.5. Bottom:
+NANO BANANA PRO. The two rows produce near-identical reward-specific shapes and peak orderings (quan-
+tified in Tab. 5).
+B.5
+Closing the divergence to π+ over a training stage
+In this section, we measure how much of the divergence the curve is built from survives training
+against it. We rerun the identical training stage-OCR estimator with πold set to checkpoint-180 of
+the λ=(1, 1, 1, 1) ReCAST stage-OCR run, keeping the GPT IMAGE 1.5 π+ samples and every
+other estimator setting fixed, so the policy the gains are measured at is the only thing that changes.
+By Eq. (7), the total gain P
+t ∆Di,t is the data-level divergence Dα
+ π+
+i,0 ∥πold
+0
+
+still separating the
+policy from the reward-induced positive distribution, so it reads directly as how much of reward i’s
+gap is left to close. Tab. 6 shows that by checkpoint-180 almost none of it is: the total gain falls
+to 0.14× its base-policy value for CLIPSCORE and to 0.01–0.11× for the other three rewards, and
+to 0.03× summed over all four. Fig. 5 shows the same collapse in Di,t itself: on a shared vertical
+axis, the trained policy’s curves sit near zero across the whole trajectory. Because R´enyi divergence
+is nondecreasing in α, the α=2 quantity we measure upper-bounds KL
+ π+
+i,0 ∥πold
+0
+
+, so the KL gap
+to the positive distribution is closed at least as far. Training under the reweighted objective therefore
+closes almost all of the gap the curve is built from, and it does so for all four rewards simultaneously
+rather than closing one reward’s gap at another’s expense.
+C
+Sinkhorn projection: solver and alternatives
+C.1
+The log-domain iteration
+Alg. 3 is the solver of Eq. (16). It normalizes the gains per reward, exponentiates them into the
+kernel, and alternates the two marginal updates of Eq. (19) in the log domain, which keeps the
+scaling vectors stable when a kernel entry is tiny. Convergence is linear and in practice takes fewer
+20
+
+
+Table 6: Total discriminability gain P
+t ∆Di,t of the training stage-OCR curve with πold at the untrained base
+policy vs. at the trained checkpoint-180, with the GPT IMAGE 1.5 π+ samples and all other estimator settings
+identical. By Eq. (7) each entry is the data-level divergence remaining between that policy and the reward’s
+positive distribution.
+Reward
+Base policy
+ckpt-180
+Remaining
+CLIPSCORE
+0.252
+0.036
+0.14×
+HPSV2
+0.501
+0.024
+0.05×
+OCR
+2.278
+0.028
+0.01×
+PICKSCORE
+0.209
+0.024
+0.11×
+All four
+3.241
+0.113
+0.03×
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+0.0
+0.5
+1.0
+1.5
+2.0
+Di, t
+i
+Di, 0 = 3.24
+old: untrained base
+CLIPScore
+HPSv2
+OCR
+PickScore
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+timestep t/T  (clean 
+ noise)
+i
+Di, 0 = 0.11
+old: trained ckpt-180
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+0.00
+0.01
+0.02
+0.03
+own scale
+Figure 5: Cumulative discriminability Di,t of the training stage-OCR curve at the two policies, with π+ set
+to GPT IMAGE 1.5 and all other estimator settings identical. Left: πold at the untrained base. Right: πold
+at checkpoint-180 of the λ=(1, 1, 1, 1) ReCAST stage-OCR run, drawn on the same vertical axis; the inset
+repeats it at its own scale. Each curve telescopes the per-step gains up from Di,T = 0 (Eq. (7)), so its clean
+endpoint Di,0 is the full data-level divergence between that policy and reward i’s positive distribution. Training
+leaves Di,t smaller at every timestep, for every reward.
+than 100 iterations at m ≤4, T ≤25; the cost is negligible next to a single training step, and the
+matrix is computed once per λ before training.
+Algorithm 3 Sinkhorn construction of the reward-by-timestep weight matrix W
+Require: Per-step gains {∆Di,t} (Alg. 1, Sec. 3.3), inter-reward budget λ ∈∆m−1, tolerance εtol,
+max iterations L
+Ensure: weight matrix W ∈U(λ), used in the loss as T ·Wi,t
+1: for each reward i do
+2:
+∆Di,t ←∆Di,t /
+  1
+T
+P
+s ∆Di,s
+
+// Eq. (13): per-reward mean-normalize
+3:
+log Ki,t ←∆Di,t
+// Eq. (14); log Ki,t ←0 if reward i has no gain estimate
+4: end for
+5: log a ←0m, log b ←0T
+6: for ℓ= 1, . . . , L do
+7:
+log ai ←log λi −logsumexpt
+ log Ki,t + log bt
+
+// row marginals →λi
+8:
+log bt ←−log T −logsumexpi
+ log Ki,t + log ai
+
+// column marginals →1/T
+9:
+Wi,t ←exp
+ log ai + log Ki,t + log bt
+
+10:
+break if maxi
+ P
+t Wi,t −λi
+ < εtol and maxt
+ P
+i Wi,t −1
+T
+ < εtol
+11: end for
+12: return W
+C.2
+Boundary cases
+Our construction sits between the alternatives one might have used instead, and each of them is
+instructive.
+21
+
+
+A flat kernel: the static baseline.
+If no gain curve has any shape in t, then ∆Di,t ≡1 for every
+reward, so Ki,t ≡e is rank one and the entropic optimum over U(λ) is W ⋆
+i,t = λi/T, which is the
+standard static convex combination.
+No entropic term: hard assignment.
+Dropping the entropy from Eq. (17) leaves an unregular-
+ized transport LP, whose solutions are vertices of U(λ): each timestep’s budget goes essentially to
+the single reward with the largest normalized gain there. Committing that hard to argmax gains esti-
+mated from finite samples is brittle, so we keep the entropic term, which is what makes the solution
+the smooth, strictly positive matrix of Eq. (18).
+An uncurved reward.
+Because Eq. (13) normalizes each reward to mean 1, the kernel needs no
+scale or sharpness parameter, and Sec. 3.5’s shapes give smooth, non-degenerate matrices. If a
+reward has no estimated curve at all, we set Ki,t = 1 for every t: it still receives its full row budget
+λi, spread uniformly up to the shared bt.
+D
+Per-λ results
+Tabs. 1 and 2 pool the five budgets; this appendix resolves both of them per λ, static vs. ReCAST at
+matched λ, every entry the mean over the 3 seed replicates with its standard deviation as a subscript.
+Each budget also carries a Pareto verdict: Ours ≻static if the ReCAST mean is at least as high as
+the static mean on every reward in that table and strictly higher on at least one, static ≻Ours if static
+(weakly) dominates ReCAST in the same sense, mixed otherwise. Every cell scores the run’s final
+checkpoint.
+D.1
+Training rewards
+Tabs. 7 and 8 give the per-λ training rewards behind Tab. 1. In training stage-OCR (Tab. 7) ReCAST
+Pareto-dominates static at 3 of the 5 budgets, namely (1, 1, 1, 1), (1, 1, 1, 2), and (1, 1, 2, 1), and is
+dominated at none; the aggregate is higher at 4 of 5. The two mixed budgets fail the test on the
+same coordinate: (1, 2, 1, 1) raises CLIPSCORE, HPSV2, and PICKSCORE while conceding OCR
+by 0.039, and (2, 1, 1, 1) raises CLIPSCORE and PICKSCORE, ties HPSV2, and concedes OCR by
+0.026. This is the per-budget form of the pattern in Tab. 1, where the target reward carries by far the
+largest seed variance of the four.
+Training stage-GenEval (Tab. 8) is a tie budget by budget as well as on average. ReCAST dominates
+at no λ, static dominates at none, and all 5 budgets are mixed; at every one of them the aggregate
+shifts by less than the seed standard deviation of either method there. The target GENEVAL reward
+moves in both directions across budgets, up at 3 of 5 and down at (1, 1, 1, 2) and (1, 2, 1, 1), so no
+budget in this setting resolves the two methods.
+D.2
+Held-out judges
+Tabs. 9 and 10 resolve Tab. 2 the same way. In training stage-OCR (Tab. 9) ReCAST Pareto-
+dominates static across all four judges at 3 of the 5 budgets, (1, 1, 2, 1), (1, 2, 1, 1), and (2, 1, 1, 1),
+and is dominated at none. IMAGEREWARD, AESTHETIC, and HPSV3 improve at every budget with-
+out exception; the two mixed budgets, (1, 1, 1, 1) and (1, 1, 1, 2), concede only UNIFIEDREWARD-2,
+by 0.025 and 0.017. The generalization gain of Sec. 4.3 is therefore not carried by a subset of the
+budgets.
+Training stage-GenEval (Tab. 10) is the setting whose training rewards tie, and its judge scores favor
+ReCAST at a majority of budgets: ReCAST dominates at (1, 1, 1, 2), (1, 1, 2, 1), and (1, 2, 1, 1),
+static dominates at none, and (1, 1, 1, 1) and (2, 1, 1, 1) are mixed. The seed standard deviations here
+are up to an order of magnitude wider than in training stage-OCR, wide enough that the individual
+budgets are not resolved by three replicates even where the means separate; the pooled comparison
+in Tab. 2, which averages the same runs, still favors ReCAST on all four judges.
+22
+
+
+Table 7: Training stage-OCR, per-λ training rewards on the held-out dataset at each run’s final checkpoint,
+static vs. ReCAST. Every entry is the mean over the 3 seed replicates with its standard deviation as a subscript,
+Aggregate r is the λ-weighted sum as in Tab. 1, and bold marks the better method per cell, neither when the
+two agree at the reported precision. Pareto is the verdict over the four training rewards.
+λ
+Method
+Aggregate r
+CLIPSCORE
+HPSV2
+PICKSCORE
+OCR
+Pareto
+(1, 1, 1, 1)
+static
+2.387±0.058
+0.315±0.003
+0.288±0.007
+0.890±0.002
+0.894±0.051
+Ours ≻static
+Ours
+2.435±0.058
+0.321±0.001
+0.306±0.006
+0.900±0.004
+0.908±0.055
+(1, 1, 1, 2)
+static
+3.251±0.030
+0.308±0.004
+0.255±0.022
+0.869±0.008
+0.910±0.001
+Ours ≻static
+Ours
+3.383±0.031
+0.319±0.004
+0.290±0.022
+0.887±0.011
+0.944±0.006
+(1, 1, 2, 1)
+static
+3.259±0.039
+0.313±0.003
+0.296±0.004
+0.898±0.002
+0.854±0.035
+Ours ≻static
+Ours
+3.338±0.043
+0.320±0.004
+0.306±0.008
+0.903±0.005
+0.907±0.056
+(1, 2, 1, 1)
+static
+2.709±0.130
+0.314±0.005
+0.299±0.028
+0.889±0.010
+0.908±0.060
+mixed
+Ours
+2.720±0.081
+0.318±0.002
+0.314±0.008
+0.906±0.001
+0.869±0.065
+(2, 1, 1, 1)
+static
+2.727±0.038
+0.317±0.001
+0.302±0.008
+0.892±0.001
+0.900±0.030
+mixed
+Ours
+2.723±0.017
+0.323±0.003
+0.302±0.007
+0.901±0.005
+0.874±0.012
+Table 8: Training stage-GenEval, per-λ training rewards on the held-out dataset at each run’s final checkpoint,
+static vs. ReCAST. Entries, subscripts, bolding, and the Pareto verdict are as in Tab. 7.
+λ
+Method
+Aggregate r
+CLIPSCORE
+HPSV2
+PICKSCORE
+GENEVAL
+Pareto
+(1, 1, 1, 1)
+static
+2.390±0.003
+0.298±0.001
+0.316±0.005
+0.914±0.002
+0.861±0.002
+mixed
+Ours
+2.392±0.022
+0.298±0.003
+0.308±0.007
+0.909±0.006
+0.877±0.014
+(1, 1, 1, 2)
+static
+3.300±0.017
+0.299±0.001
+0.309±0.004
+0.908±0.008
+0.892±0.007
+mixed
+Ours
+3.290±0.045
+0.299±0.000
+0.307±0.007
+0.906±0.005
+0.889±0.019
+(1, 1, 2, 1)
+static
+3.321±0.026
+0.298±0.001
+0.319±0.006
+0.914±0.007
+0.875±0.014
+mixed
+Ours
+3.322±0.014
+0.297±0.004
+0.322±0.001
+0.913±0.004
+0.877±0.009
+(1, 2, 1, 1)
+static
+2.715±0.006
+0.299±0.002
+0.313±0.003
+0.915±0.001
+0.876±0.007
+mixed
+Ours
+2.715±0.021
+0.299±0.002
+0.322±0.003
+0.908±0.003
+0.865±0.017
+(2, 1, 1, 1)
+static
+2.677±0.071
+0.301±0.003
+0.309±0.015
+0.904±0.008
+0.863±0.042
+mixed
+Ours
+2.671±0.029
+0.300±0.002
+0.302±0.013
+0.906±0.004
+0.864±0.012
+Table 9: Training stage-OCR, per-λ held-out judge scores at each run’s final checkpoint, static vs. ReCAST.
+Entries, subscripts, bolding, and the Pareto verdict are as in Tab. 7, now over the four judges; the HPSV3
+column is at two decimals because its scale is an order of magnitude larger.
+λ
+Method
+IMAGEREWARD
+AESTHETIC
+HPSV3
+UNIFIEDREWARD-2
+Pareto
+(1, 1, 1, 1)
+static
+1.433±0.056
+5.493±0.096
+12.86±0.33
+3.179±0.071
+mixed
+Ours
+1.476±0.027
+5.574±0.063
+13.16±0.50
+3.154±0.030
+(1, 1, 1, 2)
+static
+1.341±0.060
+5.411±0.036
+12.06±0.71
+3.146±0.061
+mixed
+Ours
+1.420±0.096
+5.542±0.027
+12.44±0.81
+3.129±0.055
+(1, 1, 2, 1)
+static
+1.438±0.042
+5.525±0.083
+13.00±0.18
+3.159±0.008
+Ours ≻static
+Ours
+1.499±0.029
+5.571±0.045
+13.25±0.61
+3.190±0.065
+(1, 2, 1, 1)
+static
+1.434±0.066
+5.481±0.093
+12.67±0.54
+3.129±0.071
+Ours ≻static
+Ours
+1.517±0.003
+5.622±0.075
+13.44±0.39
+3.181±0.006
+(2, 1, 1, 1)
+static
+1.461±0.032
+5.521±0.025
+13.13±0.35
+3.158±0.028
+Ours ≻static
+Ours
+1.499±0.025
+5.581±0.046
+13.41±0.40
+3.226±0.070
+23
+
+
+Table 10: Training stage-GenEval, per-λ held-out judge scores at each run’s final checkpoint, static vs. Re-
+CAST. Entries, subscripts, bolding, and the Pareto verdict are as in Tab. 9.
+λ
+Method
+IMAGEREWARD
+AESTHETIC
+HPSV3
+UNIFIEDREWARD-2
+Pareto
+(1, 1, 1, 1)
+static
+1.372±0.011
+6.057±0.020
+8.73±0.51
+2.745±0.025
+mixed
+Ours
+1.358±0.046
+6.006±0.076
+9.30±0.12
+2.741±0.025
+(1, 1, 1, 2)
+static
+1.268±0.073
+5.882±0.128
+8.43±1.01
+2.705±0.065
+Ours ≻static
+Ours
+1.317±0.106
+5.938±0.129
+8.61±0.72
+2.709±0.042
+(1, 1, 2, 1)
+static
+1.234±0.203
+5.913±0.228
+8.19±1.58
+2.698±0.125
+Ours ≻static
+Ours
+1.386±0.061
+6.040±0.090
+8.70±0.62
+2.736±0.030
+(1, 2, 1, 1)
+static
+0.990±0.562
+5.699±0.380
+7.23±2.74
+2.588±0.250
+Ours ≻static
+Ours
+1.369±0.033
+6.054±0.037
+8.46±0.42
+2.706±0.025
+(2, 1, 1, 1)
+static
+1.127±0.190
+5.768±0.223
+7.49±1.01
+2.618±0.096
+mixed
+Ours
+1.014±0.540
+5.800±0.337
+7.81±2.33
+2.633±0.182
+E
+Experiment details
+E.1
+Reward models
+Tab. 11 documents every reward model used anywhere in the paper: its architecture, checkpoint or
+backbone, and native output range. Two roles recur: train, entering the training objective through
+the weight matrix W ; held-out, scoring checkpoints it never influenced. Sec. 3.5 also estimates gain
+curves for two of the held-out judges (AESTHETIC, IMAGEREWARD), to show what the estimator
+produces on rewards of a different type; they enter no training kernel and no training loss.
+The training-stage kernels are built from OCR’s and GENEVAL’s own gain curves, estimated exactly
+as in Sec. 3.5 but on their own prompt sets and their own T=25 schedule. Fig. 1 also overlays both,
+linearly resampled T=25 onto the T=10 grid of the other five, purely for visual comparison.
+Positivity of the training rewards.
+The analysis of Sec. 3.2 assumes ri ≥0, so we state how each
+training reward is computed. Write cos(u, v) for the cosine similarity of an image embedding u and
+a text embedding v. CLIPSCORE is cos between the CLIP ViT-L/14 image and text embeddings.
+HPSV2 is cos between the ℓ2-normalized image and text embeddings of the preference-fine-tuned
+ViT-H/14, with no logit scale applied. PICKSCORE is the preference head’s cos rescaled by the
+model’s own learned logit scale and a fixed constant, (es/26) cos with es ≈98.9, so ≈3.80 cos.
+OCR is 1 −min{Lev(ˆs, s), |s|}/|s|, where s is the target string quoted in the prompt, ˆs is the
+recognized text after lowercasing and removing whitespace, Lev is the Levenshtein distance, and
+the distance is taken as 0 whenever s occurs as a substring of ˆs. GENEVAL is the fraction of the
+prompt’s object, count, color, and position clauses that the detector confirms.
+OCR and GENEVAL are therefore non-negative by construction, one a distance ratio capped at 1 and
+the other a fraction of satisfied clauses. The remaining three are cosine similarities up to a positive
+scale, so they are sign-indefinite in principle, with ranges [−1, 1], [−1, 1], and ≈[−3.80, 3.80]. We
+clamp the reward at 0. This clamping has no effect in estimation, because on our prompt sets they
+are positive throughout and with a wide margin: over every trained checkpoint we evaluate, the
+smallest CLIPSCORE is 0.26, the smallest HPSV2 is 0.23, and the smallest PICKSCORE is 0.77,
+against a floor of 0. This reflects a property of CLIP-style encoders rather than a coincidence, since
+image and text embeddings occupy separate cones and their cosines concentrate in a narrow positive
+band. We apply a sigmoid to IMAGEREWARD, whose raw output is a signed comparison scalar,
+when estimating its gain curve in Sec. 3.5.
+E.2
+Training hyperparameters and compute
+Architecture and optimization.
+All runs fine-tune LoRA adapters (rank 32, scale 64, Gaus-
+sian initialization) inserted into the eight attention-projection modules of the SD3.5-Medium joint-
+attention transformer block; the transformer backbone itself is frozen. The optimizer is AdamW
+with learning rate 3 × 10−4, (β1, β2) = (0.9, 0.999), ϵ = 10−8, weight decay 10−4, and a decayed
+learning-rate schedule (decay type=1) shared by every stage. The DiffusionNFT coefficient is
+β = 0.1 throughout, sampling uses T = 25 steps, and the rollout batch is 24 images/prompt on
+each of 8 GPUs with 6 gradient-accumulation steps, for an effective batch of 8 × 24 × 6 = 1152.
+24
+
+
+Table 11: Reward models used in the paper. “Range” is the reward’s output scale; several are unbounded in
+principle but concentrate in the interval shown in practice.
+Reward
+Architecture / checkpoint
+Range
+Role
+CLIPSCORE [12]
+CLIP ViT-L/14
+(openai/clip-vit-large-patch14)
+image–text cosine similarity
+≈[0, 1]
+train
+HPSV2 [39]
+open clip ViT-H/14 backbone fine-tuned on
+human preference pairs
+(HPS_v2.1_compressed.pt checkpoint)
+≈[0, 1]
+train
+PICKSCORE [18]
+yuvalkirstain/PickScore_v1, a CLIP
+ViT-H/14 fine-tuned end-to-end on preference
+pairs, with the laion/CLIP-ViT-H-14-
+laion2B-s32B-b79K processor
+≈[0, 3.8]
+train
+OCR
+PaddleOCR (English, angle classification off)
+text extraction
+[0, 1]
+train (training
+stage-OCR)
+GENEVAL [9]
+Mask2Former (Swin-S, COCO) detector +
+CLIP zero-shot color/counting classifiers
+[0, 1]
+train (training
+stage-GenEval)
+AESTHETIC [32]
+Linear-probe MLP over frozen CLIP ViT-L/14
+features, trained on LAION/AVA aesthetic
+ratings
+(sac+logos+ava1-l14-linearMSE
+checkpoint)
+≈[1, 10]
+held-out
+IMAGEREWARD
+[40]
+Official ImageReward-v1.0 checkpoint
+unbounded,
+z-scored
+held-out
+HPSV3 [27]
+HPSv3RewardInferencer, a
+∼7B-parameter vision-language reward model
+unbounded,
+≈
+[−10, 16]
+held-out
+UNIFIEDREWARD-
+2 [38]
+CodeGoat24/UnifiedReward-2.
+0-qwen3vl-8b, a Qwen3-VL-8B pointwise
+judge served through vLLM (greedy decoding,
+temperature 0)
+[1, 5]
+held-out
+Evaluation images are drawn at seed 42+index, identical across the two methods of a pair. Sinkhorn
+kernels are built once per λ before training starts, at α = 2 for every training reward.
+Compute.
+All training ran on single-node 8×NVIDIA H200 allocations. A warmup-stage run
+costs ≈68 GPU-hours, a training stage-OCR run ≈37, and a training stage-GenEval run ≈59. The
+static and ReCAST methods of a pair cost the same: the projection is negligible next to sampling
+and reward scoring.
+Gain curve construction cost.
+Each curve uses N=8 π+ samples per prompt, and K=16 πold
+rollouts from every intermediate xt; every reward of a stage is scored on the same rollouts, so the
+cost is per curve rather than per reward, and App. F reports what reproducing one curve from scratch
+costs. Ignoring the GPT IMAGE 1.5 API time, the P·N·T·K rollouts of one T=10 curve take ≈15
+GPU-hours, under half the ≈37 of a single training stage-OCR run, and a training-stage curve
+at T=25 takes about 6× those 15 GPU-hours. The P·N queries to GPT IMAGE 1.5 cost around
+$35 in API fees. Crucially, this is a one-time cost per stage: each curve is estimated once at the
+untrained policy and then reused, unmodified, so its amortized cost per training run is well below
+the raw totals.
+E.3
+MMRBv2 judge: protocol, position debiasing, and prompt
+Protocol.
+The pairwise judgments of Sec. 4.4 use the image-generation judge from Meta’s MM-
+RBv2 [13] evaluation suite, served by gemini-3.5-flash at temperature 0. For each of the five
+matched λ budgets, we pair the static method and the ReCAST method image-by-image on the fixed
+1,000-prompt subset of the held-out OCR dataset of Tab. 2. Each API call sends the rubric prompt
+below, the original text prompt, and the two images labeled [RESPONSE A:] and [RESPONSE
+25
+
+
+B:]. The judge returns a structured JSON verdict: step-by-step reasoning over seven criteria (faith-
+fulness to prompt, text rendering, input faithfulness, image consistency, text–image alignment, text
+quality, overall quality), a scalar score s ∈{1, . . . , 6} where s ≥4 favors the image shown as A, a
+discrete better response ∈{A, B}, and a self-reported confidence. We take the winner from
+better response; calls that still fail after 8 retries drop the pair.
+Position debiasing.
+LLM judges exhibit position bias: the response presented first is system-
+atically favored. Following MMRBv2’s forward+reverse protocol, every pair is therefore judged
+twice: once with the static image shown as A and ReCAST as B (forward), and once with the im-
+ages swapped (reverse). Each ordering credits one win to the method the judge picks, after mapping
+the shown-side label back to the method’s identity. The win rate over n prompts is the fraction of
+the 2n orderings won,
+win(Ours) =
+1
+2n
+n
+X
+j=1
+#{orderings of pair j won by Ours}.
+Faithfulness and aesthetic sub-scores.
+The judge is not asked for numeric per-criterion scores;
+the Faithfulness and Aesthetics rows of Tab. 3 are extracted from its per-criterion reasoning fields
+faithfulness to prompt and overall quality, respectively. For each ordering, the cri-
+terion’s reasoning text is mapped to a winner in {A, B, undecided} by matching declarative phrasings
+like “Response A is better...” and “the edge goes to B...”, with a text-only LLM tie-break when
+the patterns are ambiguous. The sub-score is the fraction of decided orderings won by ReCAST; or-
+derings whose criterion text is undecided or marked not-applicable are dropped from that criterion’s
+denominator.
+Judge prompt.
+The rubric prompt, verbatim from MMRBv2’s image-generation judge:
+You are an expert in multimodal quality analysis and generative AI evaluation. Your
+role is to act as an objective judge for comparing two AI-generated responses to the
+same prompt. You will evaluate which response is better based on a comprehensive
+rubric.
+**Important Guidelines:**
+- Be completely impartial and avoid any position biases
+- Ensure that the order in which the responses were presented does not influence
+your decision
+- Do not allow the length of the responses to influence your evaluation
+- Do not favor certain model names or types
+- Be as objective as possible in your assessment
+- Consider factors such as helpfulness, relevance, accuracy, depth, creativity, and
+level of detail
+**Understanding the Content Structure:**
+- **[ORIGINAL PROMPT TO MODEL:]**: This is the instruction given to both AI models
+- **[INPUT IMAGE FROM PROMPT:]**: This is the source image provided to both models
+(if any)
+- **[RESPONSE A:]**: The first model’s generated response (text and/or images)
+- **[RESPONSE B:]**: The second model’s generated response (text and/or images)
+Your evaluation must be based on a fine-grained rubric that covers the following
+criteria. For each criterion, you must provide detailed step-by-step reasoning
+comparing both responses. You will use a 1-6 scoring scale.
+**Evaluation Criteria:**
+1. **faithfulness_to_prompt:** Which response better adheres to the composition,
+objects, attributes, and spatial relationships described in the text prompt?
+2. **text_rendering:** If either response contains rendered text, which one has
+better text quality (spelling, legibility, integration)? If no text is rendered,
+state "Not Applicable."
+3. **input_faithfulness:** If an input image is provided, which response better
+respects and incorporates the key elements and style of that source image? If no
+input image is provided, state "Not Applicable."
+4. **image_consistency:** If multiple images are generated, which response has
+better visual consistency between images (character appearance, scene details)?
+If no multiple images are provided, state "Not Applicable."
+5. **text_image_alignment:** Which response has better alignment between text
+descriptions and visual content?
+26
+
+
+6. **text_quality:** If text was generated, which response has better linguistic
+quality (correctness, coherence, grammar, tone)?
+7. **overall_quality:** Which response has better general technical and aesthetic
+quality, realism, coherence, and fewer visual artifacts or distortions?
+**Scoring Rubric:**
+- Score 6 (A is significantly better): Response A is significantly superior across
+most criteria
+- Score 5 (A is marginally better): Response A is noticeably better across several
+criteria
+- Score 4 (Unsure or A is negligibly better): Response A is slightly better or
+roughly equivalent
+- Score 3 (Unsure or B is negligibly better): Response B is slightly better or
+roughly equivalent
+- Score 2 (B is marginally better): Response B is noticeably better across several
+criteria
+- Score 1 (B is significantly better): Response B is significantly superior across
+most criteria
+**Confidence Assessment:**
+After your evaluation, assess your confidence in this judgment on a scale of 0.0
+to 1.0:
+**CRITICAL**: Be EXTREMELY conservative with confidence scores. Most comparisons
+should be in the 0.2-0.5 range.
+- **Very High Confidence (0.8-1.0)**: ONLY for absolutely obvious cases where one
+response is dramatically better across ALL criteria with zero ambiguity. Use this
+extremely rarely (less than 10% of cases).
+- **High Confidence (0.6-0.7)**: Clear differences but some uncertainty remains.
+Use sparingly (less than 20% of cases).
+- **Medium Confidence (0.4-0.5)**: Noticeable differences but significant
+uncertainty. This should be your DEFAULT range.
+- **Low Confidence (0.2-0.3)**: Very close comparison, difficult to distinguish.
+Responses are roughly equivalent or have conflicting strengths.
+- **Very Low Confidence (0.0-0.1)**: Essentially indistinguishable responses or
+major conflicting strengths.
+**IMPORTANT GUIDELINES**:
+- DEFAULT to 0.3-0.5 range for most comparisons
+- Only use 0.6+ when you are absolutely certain
+- Consider: Could reasonable people disagree on this comparison?
+- Consider: Are there any strengths in the "worse" response?
+- Consider: How obvious would this be to a human evaluator?
+- Remember: Quality assessment is inherently subjective
+After your reasoning, you will provide a final numerical score, indicate which
+response is better, and assess your confidence. You must always output your
+response in the following structured JSON format:
+{
+"reasoning": {
+"faithfulness_to_prompt": "YOUR REASONING HERE",
+"text_rendering": "YOUR REASONING HERE",
+"input_faithfulness": "YOUR REASONING HERE",
+"image_consistency": "YOUR REASONING HERE",
+"text_image_alignment": "YOUR REASONING HERE",
+"text_quality": "YOUR REASONING HERE",
+"overall_quality": "YOUR REASONING HERE",
+"comparison_summary": "YOUR OVERALL COMPARISON SUMMARY HERE"
+},
+"score": <int 1-6>,
+"better_response": "A" or "B",
+"confidence": <float 0.0-1.0>,
+"confidence_rationale": "YOUR CONFIDENCE ASSESSMENT REASONING HERE"
+}
+F
+Limitations
+Approximate positive-policy sampling.
+In practice, we use GPT IMAGE 1.5, an external expert
+generator, as a surrogate for π+ for every reward. Its distribution need not equal any reward-specific
+π+
+i ; without an importance correction, the resulting gain curves are therefore biased estimates of
+the theoretical ∆Di,t. The empirical curves and ablations show that this proxy is useful, and swap-
+ping in an independent surrogate generator leaves the curve essentially unchanged (App. B.4), but
+27
+
+
+neither removes this bias. Future work could construct reward-specific positive policies, estimate
+the required density correction, or update the curves on-policy as training progresses; App. B.5
+re-estimates the curve at a trained checkpoint.
+Reproducibility and API cost.
+Depending on GPT IMAGE 1.5 also means depending on a pro-
+prietary, versioned, and priced API. Even though it is a one-time, per-stage expense amortized over
+many downstream training runs, an independent group reproducing a single curve from scratch pays
+around $35 in API costs. Releasing the estimated gain-curve weight files themselves alongside the
+code would let downstream use of ReCAST skip re-querying GPT IMAGE 1.5 entirely.
+G
+Qualitative examples
+The two galleries below (Figs. 6 and 7) show paired generations from the static baseline and Re-
+CAST for the OCR and GENEVAL settings. We state explicitly how these examples were selected
+so that they are not mistaken for random or typical samples. Every one of the 20 pairs shown (2
+per λ budget, with 5 budgets per setting) is a decisive, judge-verified win for ReCAST, drawn from
+the pool of “high-confidence” pairs identified by MMRBv2 pairwise-judge runs following the pro-
+tocol in Sec. 4.4 and App. E.3, applied separately to each setting’s own held-out prompts. For the
+GENEVAL setting, this selection uses an analogous MMRBv2 run whose aggregate results are not
+reported in the main text, since Sec. 4.4 reports only the OCR setting. We call a win decisive when
+ReCAST wins under both presentation orderings with extreme scores and neither the faithfulness
+nor the aesthetic sub-criterion contradicts the overall verdict. Within each budget’s qualifying pool,
+the displayed pair was then selected by a human reviewer rather than sampled uniformly at ran-
+dom. These galleries should therefore be interpreted as illustrating what ReCAST’s most decisive
+wins look like, rather than its average-case behavior. Representative aggregate results are reported
+in Tab. 3 for the OCR setting and in Tabs. 1 and 2, which pool all three seeds, for the GENEVAL
+setting.
+28
+
+
+static
+ReCAST
+static
+ReCAST
+A vibrant skateboard deck featuring the bold graphic ”SKATE OR
+DIE 4EVER” in dynamic, graffiti-style lettering, set against a
+gradient background that shifts from deep blue at the nose to bright
+orange at the tail, with subtle scratch marks and wear to give it a
+well-used, authentic look.
+λ = (1, 1, 1, 1)
+A vibrant car dealership banner reads ”Electric Vehicles Here” in
+bold letters, showcasing a variety of sleek electric cars parked neatly
+in front of a modern showroom with large glass windows reflecting
+the sunny sky.
+λ = (1, 1, 1, 1)
+A sleek, modern vampire fitness tracker displays ”0 Steps 10000
+Bites” on its screen, resting on a dark, gothic desk surrounded by
+antique books and candles. The scene is bathed in a dim, eerie light,
+highlighting the tracker’s eerie glow.
+λ = (1, 1, 1, 2)
+A medieval knight stands proudly, holding a shield emblazoned with
+the motto ”Honor Above All” in intricate Old English font, set
+against a backdrop of a misty, ancient castle.
+λ = (1, 1, 1, 2)
+In a cozy cat cafe, a menu board displays ”Purr Therapy 5 minute”
+among other offerings. A fluffy gray cat sits nearby, looking relaxed
+and ready to offer its soothing presence to patrons. The scene is
+warm and inviting, with soft lighting and comfortable seating.
+λ = (1, 1, 2, 1)
+A vast desert landscape under a scorching sun, where a mirage forms
+the shimmering letters ”Water This Way” on the distant horizon,
+creating an illusion of hope in an otherwise barren and arid
+environment.
+λ = (1, 1, 2, 1)
+A vibrant music festival wristband with ”Festival Access 2024”
+prominently displayed, featuring a colorful design with musical notes
+and festival logos, set against a backdrop of a bustling crowd and
+stage lights.
+λ = (1, 2, 1, 1)
+A purple flower with a delicate crown on its head, featuring a speech
+bubble that says ”I am a purple flower”, set against a serene garden
+backdrop.
+λ = (1, 2, 1, 1)
+A close-up of a robot’s metallic chest, with a digital display
+prominently showing ”System Update In Progress”, surrounded by
+blinking lights and subtle wiring, set against a dimly lit, futuristic
+background.
+λ = (2, 1, 1, 1)
+A realistic construction site with a warning sign that reads ”Bridge to
+Nowhere Ahead”, surrounded by a desolate landscape and half-built
+structures, emphasizing the abandoned and eerie atmosphere.
+λ = (2, 1, 1, 1)
+Figure 6: Qualitative examples from the OCR setting (training stage-OCR family, held-out 1000-prompt OCR
+dataset of Tab. 2): two prompts per λ budget, static baseline (left of each pair) vs. ReCAST (right of each pair).
+All 10 pairs are a curated selection of decisive, judge-verified ReCAST wins, not a random or representative
+sample; see App. G for the selection methodology and Tab. 3 for this setting’s aggregate win rates.
+29
+
+
+static
+ReCAST
+static
+ReCAST
+five mushrooms and a white truck
+λ = (1, 1, 1, 1)
+three metal mushrooms
+λ = (1, 1, 1, 1)
+four spotted birds
+λ = (1, 1, 1, 2)
+a dog and six bagels
+λ = (1, 1, 1, 2)
+five checkered dogs and a green giraffe
+λ = (1, 1, 2, 1)
+four red bears
+λ = (1, 1, 2, 1)
+three motorcycles and a brown giraffe
+λ = (1, 2, 1, 1)
+three metal zebras
+λ = (1, 2, 1, 1)
+four brown monkeys
+λ = (2, 1, 1, 1)
+a elephant and a purple kangaroo
+λ = (2, 1, 1, 1)
+Figure 7: Qualitative examples from the GENEVAL setting (training stage-GenEval family, held-out GENEVAL
+prompts): two prompts per λ budget, static baseline (left of each pair) vs. ReCAST (right of each pair). All 10
+pairs are a curated selection of decisive, judge-verified ReCAST wins, not a random or representative sample;
+see App. G for the selection methodology and Tabs. 1 and 2 for this setting’s aggregate results; Sec. 4.4 reports
+the pairwise judge for the OCR setting only.
+30

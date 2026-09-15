@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-15T22:12:28.374536+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2609.13425v1",
+      "source": "arxiv",
+      "title": "ReCAST: Reward Credit Assignment across Timesteps for Online Diffusion Reinforcement",
+      "abstract": "Training diffusion models with multiple rewards requires distinguishing user preference from reward informativeness. User preference determines how much each reward should contribute to the overall objective; reward informativeness determines when its feedback is useful during denoising. Some rewards can meaningfully evaluate a sample as soon as global structure emerges, but others become informative only when the sample is nearly clean. To address both questions jointly, we propose ReCAST (Reward Credit ASsignment across T}imesteps), the first method, to our knowledge, for per-reward, timestep-dependent credit assignment in diffusion reward fine-tuning. ReCAST separates user preferences from temporal allocation through a reward-by-timestep weight matrix $W$, whose row sums match the user-specified reward budgets $λ$, while its column sums are equal, assigning the same total weight to each denoising step. Under these marginal constraints, ReCAST allocates weight according to each reward's informativeness, quantified by its Rényi discriminability gain at each step. These gains telescope to the total discriminability between the reward-induced positive policy and the current policy, providing a basis for temporal credit assignment. We evaluate ReCAST by training SD3.5-Medium under two distinct four-reward settings, each across five reward budgets $λ$. ReCAST improves the training rewards in one setting and matches them in the other, improves every held-out judge in both, and is preferred by an independent LLM-as-a-Judge. Together, these results show that ReCAST yields improvements that generalize beyond the training rewards and support its core principle: assigning each reward greater weight at the denoising timesteps where its feedback is most informative.",
+      "authors": [
+        "Yihang Chen",
+        "Yuanhao Ban",
+        "Kuei-Chun Kao",
+        "Cho-Jui Hsieh"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-09-11T18:41:09+00:00",
+      "link": "https://arxiv.org/pdf/2609.13425v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "per-reward timestep credit assignment for online diffusion reinforcement",
+      "llm_evidence_cn": "面向在线扩散强化学习的逐奖励时间步信用分配",
+      "llm_evidence": "面向在线扩散强化学习的逐奖励时间步信用分配",
+      "canonical_evidence": "面向在线扩散强化学习的逐奖励时间步信用分配",
+      "llm_tldr_en": "ReCAST performs per-reward, timestep-dependent credit assignment in diffusion reward fine-tuning, separating user preferences from temporal allocation so each reward contributes when its feedback is informative during denoising.",
+      "llm_tldr_cn": "扩散模型在多奖励强化学习微调中需要区分用户偏好与奖励信息量：前者决定各奖励在总体目标中的权重，后者决定其反馈在去噪过程中的有效时机。作者提出ReCAST，首个按奖励与时间步进行信用分配的方法，通过奖励×时间步的分配机制将用户偏好与时间分配解耦，使各奖励在真正有信息量的去噪阶段施加影响。该工作提升了扩散奖励微调中多奖励优化的合理性与效率。",
+      "llm_tldr": "扩散模型在多奖励强化学习微调中需要区分用户偏好与奖励信息量：前者决定各奖励在总体目标中的权重，后者决定其反馈在去噪过程中的有效时机。作者提出ReCAST，首个按奖励与时间步进行信用分配的方法，通过奖励×时间步的分配机制将用户偏好与时间分配解耦，使各奖励在真正有信息量的去噪阶段施加影响。该工作提升了扩散奖励微调中多奖励优化的合理性与效率。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.12245v2",
+      "source": "arxiv",
+      "title": "DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization",
+      "abstract": "Diffusion-based robot policies have become widely used in robotic manipulation, where they are typically trained with behavior cloning. However, policies trained purely from demonstrations are limited by the quality and coverage of the available data. Reinforcement learning can further improve the performance of these pretrained policies through interaction. A common approach is to use policy-gradient methods that formulate diffusion-policy fine-tuning as an outer environment MDP together with an inner denoising MDP. However, existing methods typically assign the same environment-level credit to all denoising steps used to construct an action chunk, without distinguishing which intermediate decisions contributed most to the final return. We introduce Denoising Intermediate Advantage (DIA), a policy-gradient method that learns a value function over partially denoised actions and uses it to construct a denoising level advantage for each step of the generative process. DIA combines this inner credit signal with the standard environment-level PPO advantage, providing state-dependent credit throughout the denoising chain. Across Robomimic, FurnitureBench, Franka Kitchen, and D3IL, DIA consistently improves final performance over existing diffusion-policy fine-tuning methods. Beyond final reward, DIA reaches successful states more efficiently and can shift farther from the pretrained behavior distribution, enabling it to discover more effective and efficient task-level strategies and subtask sequences that baseline methods fail to reach.",
+      "authors": [
+        "Arjun Sohal",
+        "Yuchi Zhao",
+        "Miroslav Bogdanovic",
+        "Alan Aspuru-Guzik"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-10T22:02:28+00:00",
+      "link": "https://arxiv.org/pdf/2609.12245v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning fine-tuning of diffusion policies with advantage credit over denoising steps",
+      "llm_evidence_cn": "用强化学习微调扩散策略并按去噪步分配优势信用",
+      "llm_evidence": "用强化学习微调扩散策略并按去噪步分配优势信用",
+      "canonical_evidence": "用强化学习微调扩散策略并按去噪步分配优势信用",
+      "llm_tldr_en": "Diffusion robot policies trained by behavior cloning are limited by demonstration data; this paper introduces Denoising Intermediate Advantage to assign step-specific credit across denoising steps in reinforcement learning fine-tuning.",
+      "llm_tldr_cn": "基于扩散的机器人策略通常依赖行为克隆训练，受限于示范数据的质量与覆盖范围，需借助强化学习进一步微调提升性能。现有方法将同一环境层信用平均分配给构成动作块的所有去噪步，无法区分哪些中间决策对最终回报贡献最大。为此作者提出去噪中间优势（DIA），对扩散策略优化中的各去噪步进行细粒度信用分配。实验表明该方法能更有效地利用交互数据改进预训练扩散策略，为生成式策略的强化学习优化提供了可迁移的信用分配思路。",
+      "llm_tldr": "基于扩散的机器人策略通常依赖行为克隆训练，受限于示范数据的质量与覆盖范围，需借助强化学习进一步微调提升性能。现有方法将同一环境层信用平均分配给构成动作块的所有去噪步，无法区分哪些中间决策对最终回报贡献最大。为此作者提出去噪中间优势（DIA），对扩散策略优化中的各去噪步进行细粒度信用分配。实验表明该方法能更有效地利用交互数据改进预训练扩散策略，为生成式策略的强化学习优化提供了可迁移的信用分配思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
