@@ -6,22 +6,25 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-16
-- 运行时间：2026-09-16 22:24:33 UTC
+- 最新运行日期：2026-09-17
+- 运行时间：2026-09-17 21:40:00 UTC
 - 运行状态：成功
-- 本次总论文数：0
+- 本次总论文数：1
 - 精读区：0
-- 速读区：0
+- 速读区：1
 
 ### 今日简报（AI）
-> 今日无新推荐，系统未产出可展示论文。
-- 详情：[/202609/16/README](/202609/16/README)
+视觉生成新思路：今天速读1篇《OmniHarness》，精读0篇，日报整体成功。  
+最值得关注的是该论文用“符号策略学习”提升通用视觉生成的方向，评分6.0/10，可重点看其摘要与
+- 详情：[/202609/17/README](/202609/17/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [OmniHarness: Harnessing Generalizable Visual Generation via Symbolic Policy Learning](/202609/17/2609.16057v1-omniharness-harnessing-generalizable-visual-generation-via-symbolic-policy-learning)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：通过符号策略学习实现可泛化视觉生成
 
 
 <div class="dpr-home-promo-card">

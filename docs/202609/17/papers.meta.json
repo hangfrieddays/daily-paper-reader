@@ -1,0 +1,24 @@
+{
+  "label": "2026-09-17",
+  "date": "2026-09-17",
+  "generated_at": "2026-09-17T21:40:05",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202609/17/2609.16057v1-omniharness-harnessing-generalizable-visual-generation-via-symbolic-policy-learning",
+      "section": "quick",
+      "title_en": "OmniHarness: Harnessing Generalizable Visual Generation via Symbolic Policy Learning",
+      "authors": "Xu Xu, Jinxiu Liu, Zhangbo Qiao, Jiaxing Lu, Xiangyu Zhang, Yubin Gu, Fangwei Ning, Yan Shi",
+      "date": "2026-09-13",
+      "pdf": "https://arxiv.org/pdf/2609.16057v1",
+      "score": "6.0",
+      "evidence": "通过符号策略学习实现可泛化视觉生成",
+      "tldr": "现有统一多模态模型与多智能体系统在视觉生成中常面临任务经验难泛化、反思滞后、知识按需获取等局限。OmniHarness通过符号策略学习，将已验证执行抽象为视觉生成任务族的可复用策略，并在执行中验证、适配与组合策略，同时自主生成近能力边界练习任务。实验覆盖6个基准、3个MLLM骨干和3个视觉智能体框架，在ComfyBench创意任务上达到95.0%解决率，超最强基线27.5个百分点。冻结策略快照可即插即用复用，持续提升现有视觉智能体系统并扩展能力。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Unified multimodal large language models (MLLMs) and multi-agent systems have advanced visual generation. However, three limitations remain. (1) Existing methods often distill task-specific experience with limited generalizability. (2) Reflection is often deferred until task completion. (3) Knowledge is often acquired only in response to downstream task demands. To address these limitations, we introduce OmniHarness, a framework for generalizable visual generation via symbolic policy learning. OmniHarness abstracts verified executions into symbolic policies for visual generation task families, capturing shared procedures and applicability conditions while removing instance-specific inputs. The harness instantiates, adapts, and composes these policies for new tasks. Intermediate verification guides refinement and failure recovery during execution. Through self-directed inquiry, OmniHarness autonomously generates and executes practice tasks near its capability limits before downstream objectives are specified. Execution feedback continually refines the policies while model parameters remain fixed. Experiments across six benchmarks, three MLLM backbones, and three visual agent frameworks demonstrate strong performance and continual capability expansion. On ComfyBench's Creative tasks, OmniHarness achieves a 95.0% resolve rate, exceeding the strongest baseline by 27.5 percentage points. Frozen policy snapshots improve existing visual agent systems through plug-and-play reuse.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-17 <!--dpr-date:20260917-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/17/2609.16057v1-omniharness-harnessing-generalizable-visual-generation-via-symbolic-policy-learning" data-sidebar-item="{&quot;title&quot;: &quot;OmniHarness: Harnessing Generalizable Visual Generation via Symbolic Policy Learning&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.16057v1-omniharness-harnessing-generalizable-visual-generation-via-symbolic-policy-learning&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;通过符号策略学习实现可泛化视觉生成&quot;}">OmniHarness: Harnessing Generalizable Visual Generation via Symbolic Policy Learning</a>
   * 2026-09-15 <!--dpr-date:20260915-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/15/2609.13425v1-recast-reward-credit-assignment-across-timesteps-for-online-diffusion-reinforcement" data-sidebar-item="{&quot;title&quot;: &quot;ReCAST: Reward Credit Assignment across Timesteps for Online Diffusion Reinforcement&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.13425v1-recast-reward-credit-assignment-across-timesteps-for-online-diffusion-reinforcement&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;面向在线扩散强化学习的逐奖励时间步信用分配&quot;}">ReCAST: Reward Credit Assignment across Timesteps for Online Diffusion Reinforcement</a>
