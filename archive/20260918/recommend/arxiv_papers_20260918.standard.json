@@ -1,0 +1,93 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-18T21:37:15.983121+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.12245v1",
+      "source": "arxiv",
+      "title": "DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization",
+      "abstract": "Diffusion-based robot policies have become widely used in robotic manipulation, where they are typically trained with behavior cloning. However, policies trained purely from demonstrations are limited by the quality and coverage of the available data. Reinforcement learning can further improve the performance of these pretrained policies through interaction. A common approach is to use policy-gradient methods that formulate diffusion-policy fine-tuning as an outer environment MDP together with an inner denoising MDP. However, existing methods typically assign the same environment-level credit to all denoising steps used to construct an action chunk, without distinguishing which intermediate decisions contributed most to the final return. We introduce Denoising Intermediate Advantage (DIA), a policy-gradient method that learns a value function over partially denoised actions and uses it to construct a denoising- level advantage for each step of the generative process. DIA com- bines this inner credit signal with the standard environment-level PPO advantage, providing state-dependent credit throughout the denoising chain. Across Robomimic, FurnitureBench, Franka Kitchen, and D3IL, DIA consistently improves final performance over existing diffusion-policy fine-tuning methods. Beyond final reward, DIA reaches successful states more efficiently and can shift farther from the pretrained behavior distribution, enabling it to discover more effective and efficient task-level strategies and subtask sequences that baseline methods fail to reach.",
+      "authors": [
+        "Arjun Sohal",
+        "Yuchi Zhao",
+        "Miroslav Bogdanovic",
+        "Alan Aspuru-Guzik"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-10T22:02:28+00:00",
+      "link": "https://arxiv.org/pdf/2609.12245v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning fine-tuning of diffusion policy with credit assignment",
+      "llm_evidence_cn": "对扩散策略做强化学习微调并处理信用分配",
+      "llm_evidence": "对扩散策略做强化学习微调并处理信用分配",
+      "canonical_evidence": "对扩散策略做强化学习微调并处理信用分配",
+      "llm_tldr_en": "Diffusion policies trained by behavior cloning are limited by data coverage; RL can improve them, but existing policy-gradient methods assign the same environment-level credit to every denoising step. DIA introduces intermediate advantage estimates to distinguish which denoising decisions matter most, improving diffusion policy optimization.",
+      "llm_tldr_cn": "基于行为克隆训练的扩散策略受限于示范数据的质量与覆盖，需借助强化学习进一步提升，但现有方法把同一环境级回报均摊到所有去噪步，无法区分哪些中间决策贡献最大。本文提出DIA，通过为去噪过程引入中间优势估计来细化信用分配，改进扩散策略优化。实验表明该方法提升了策略优化效果。其价值在于给出了针对扩散生成过程的细粒度奖励/信用分配思路，可迁移到图像生成的强化学习微调。",
+      "llm_tldr": "基于行为克隆训练的扩散策略受限于示范数据的质量与覆盖，需借助强化学习进一步提升，但现有方法把同一环境级回报均摊到所有去噪步，无法区分哪些中间决策贡献最大。本文提出DIA，通过为去噪过程引入中间优势估计来细化信用分配，改进扩散策略优化。实验表明该方法提升了策略优化效果。其价值在于给出了针对扩散生成过程的细粒度奖励/信用分配思路，可迁移到图像生成的强化学习微调。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.15123v1",
+      "source": "arxiv",
+      "title": "Refinement-based Flow Policy Optimization",
+      "abstract": "Flow-based policies offer an expressive representation for online reinforcement learning, but conventional flow matching requires samples drawn from the distribution to be modeled. This poses a challenge when the desired action distribution is defined only implicitly by a Q-function, since directly sampling actions from the resulting distribution is generally intractable. We propose Refinement-Based Flow Policy Optimization (RFPO), a novel framework for training a flow policy in online reinforcement learning by alternating between Q-guided sample refinement and self-target flow matching. RFPO first generates actions from Gaussian noise using the current flow policy and then uses a finite-step stochastic refinement procedure to move them toward an energy-based distribution induced by the Q-function. Each refined action is then paired with its corresponding initial noise sample and used as a fixed target for flow-matching training. By repeatedly refining its own outputs and learning from the resulting targets, RFPO incorporates Q-guidance into the policy without requiring direct samples from the target distribution, while retaining the capacity to represent multiple action modes. We further provide a theoretical analysis of the distributional dynamics induced by RFPO. Across six continuous-control tasks, RFPO matches or outperforms a standard Gaussian-policy baseline on almost every task. Experiments on six synthetic two-dimensional target distributions with diverse geometries demonstrate that RFPO captures complex multimodal structure without mode collapse.",
+      "authors": [
+        "Bumgeun Park",
+        "Hyukjun Yang",
+        "Donghwan Lee"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-09-14T06:56:33+00:00",
+      "link": "https://arxiv.org/pdf/2609.15123v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "flow-based policy optimization with RL, transferable to generation reward design",
+      "llm_evidence_cn": "基于流的策略优化强化学习，可迁移至生成奖励设计",
+      "llm_evidence": "基于流的策略优化强化学习，可迁移至生成奖励设计",
+      "canonical_evidence": "基于流的策略优化强化学习，可迁移至生成奖励设计",
+      "llm_tldr_en": "Flow-based policies are expressive for online RL but hard to train when the target action distribution is only implicit via a Q-function. RFPO alternates Q-guided sample refinement with self-target flow matching. It enables effective flow-policy RL, offering a transferable method for reward-driven generative modeling.",
+      "llm_tldr_cn": "基于流的策略在在线强化学习中表达力强，但当目标动作分布仅由Q函数隐式定义时，直接采样往往不可行。本文提出精炼式流策略优化（RFPO），交替进行Q引导的样本精炼与自目标流匹配，先从高斯噪声生成动作，再经有限步随机精炼推向能量分布。该框架实现了有效的流策略强化学习，其流匹配与奖励引导思想可迁移至图像生成中的强化学习与奖励函数设计。",
+      "llm_tldr": "基于流的策略在在线强化学习中表达力强，但当目标动作分布仅由Q函数隐式定义时，直接采样往往不可行。本文提出精炼式流策略优化（RFPO），交替进行Q引导的样本精炼与自目标流匹配，先从高斯噪声生成动作，再经有限步随机精炼推向能量分布。该框架实现了有效的流策略强化学习，其流匹配与奖励引导思想可迁移至图像生成中的强化学习与奖励函数设计。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

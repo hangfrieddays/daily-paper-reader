@@ -6,25 +6,27 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-17
-- 运行时间：2026-09-17 21:40:00 UTC
+- 最新运行日期：2026-09-18
+- 运行时间：2026-09-18 21:39:16 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：2
 - 精读区：0
-- 速读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-视觉生成新思路：今天速读1篇《OmniHarness》，精读0篇，日报整体成功。  
-最值得关注的是该论文用“符号策略学习”提升通用视觉生成的方向，评分6.0/10，可重点看其摘要与
-- 详情：[/202609/17/README](/202609/17/README)
+今天速读两篇扩散与流策略优化论文，均获6.0分，无精读。可关注DIA用去噪中间优势优化扩散策略、以及基于细化的流策略优化这两个方向。若对机器人策略学习感兴趣，建议从这两篇的摘要入手，再决定是否深入。
+- 详情：[/202609/18/README](/202609/18/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [OmniHarness: Harnessing Generalizable Visual Generation via Symbolic Policy Learning](/202609/17/2609.16057v1-omniharness-harnessing-generalizable-visual-generation-via-symbolic-policy-learning)  
+1. [DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization](/202609/18/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization)  
    标签：评分：6.0/10、query:image-gen-rl
-   evidence：通过符号策略学习实现可泛化视觉生成
+   evidence：对扩散策略做强化学习微调并处理信用分配
+2. [Refinement-based Flow Policy Optimization](/202609/18/2609.15123v1-refinement-based-flow-policy-optimization)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：基于流的策略优化强化学习，可迁移至生成奖励设计
 
 
 <div class="dpr-home-promo-card">
