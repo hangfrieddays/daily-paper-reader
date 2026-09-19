@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-19 <!--dpr-date:20260919-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/19/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization" data-sidebar-item="{&quot;title&quot;: &quot;DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;扩散策略的强化学习微调，可迁移至扩散图像生成&quot;}">DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization</a>
   * 2026-09-18 <!--dpr-date:20260918-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/18/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization" data-sidebar-item="{&quot;title&quot;: &quot;DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;对扩散策略做强化学习微调并处理信用分配&quot;}">DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization</a>

@@ -1,0 +1,24 @@
+{
+  "label": "2026-09-19",
+  "date": "2026-09-19",
+  "generated_at": "2026-09-19T21:12:57",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202609/19/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization",
+      "section": "quick",
+      "title_en": "DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization",
+      "authors": "Arjun Sohal, Yuchi Zhao, Miroslav Bogdanovic, Alan Aspuru-Guzik",
+      "date": "2026-09-10",
+      "pdf": "https://arxiv.org/pdf/2609.12245v1",
+      "score": "6.0",
+      "evidence": "扩散策略的强化学习微调，可迁移至扩散图像生成",
+      "tldr": "扩散策略在机器人操作中广泛使用，但行为克隆受限于演示数据质量与覆盖。现有策略梯度微调把扩散策略优化建模为外层环境MDP与内层去噪MDP，却给动作块的所有去噪步分配相同信用。DIA学习部分去噪动作上的价值函数，为每个去噪步构造去噪级优势，并与环境级PPO优势结合。在Robomimic、FurnitureBench、Franka Kitchen与D3IL上，DIA稳定超越现有微调方法，更高效到达成功状态并偏离预训练分布，发现更优子任务序列。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Diffusion-based robot policies have become widely used in robotic manipulation, where they are typically trained with behavior cloning. However, policies trained purely from demonstrations are limited by the quality and coverage of the available data. Reinforcement learning can further improve the performance of these pretrained policies through interaction. A common approach is to use policy-gradient methods that formulate diffusion-policy fine-tuning as an outer environment MDP together with an inner denoising MDP. However, existing methods typically assign the same environment-level credit to all denoising steps used to construct an action chunk, without distinguishing which intermediate decisions contributed most to the final return. We introduce Denoising Intermediate Advantage (DIA), a policy-gradient method that learns a value function over partially denoised actions and uses it to construct a denoising- level advantage for each step of the generative process. DIA com- bines this inner credit signal with the standard environment-level PPO advantage, providing state-dependent credit throughout the denoising chain. Across Robomimic, FurnitureBench, Franka Kitchen, and D3IL, DIA consistently improves final performance over existing diffusion-policy fine-tuning methods. Beyond final reward, DIA reaches successful states more efficiently and can shift farther from the pretrained behavior distribution, enabling it to discover more effective and efficient task-level strategies and subtask sequences that baseline methods fail to reach.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

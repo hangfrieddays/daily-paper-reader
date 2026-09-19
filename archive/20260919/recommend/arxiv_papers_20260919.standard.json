@@ -1,0 +1,55 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-19T21:12:44.128837+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.12245v1",
+      "source": "arxiv",
+      "title": "DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization",
+      "abstract": "Diffusion-based robot policies have become widely used in robotic manipulation, where they are typically trained with behavior cloning. However, policies trained purely from demonstrations are limited by the quality and coverage of the available data. Reinforcement learning can further improve the performance of these pretrained policies through interaction. A common approach is to use policy-gradient methods that formulate diffusion-policy fine-tuning as an outer environment MDP together with an inner denoising MDP. However, existing methods typically assign the same environment-level credit to all denoising steps used to construct an action chunk, without distinguishing which intermediate decisions contributed most to the final return. We introduce Denoising Intermediate Advantage (DIA), a policy-gradient method that learns a value function over partially denoised actions and uses it to construct a denoising- level advantage for each step of the generative process. DIA com- bines this inner credit signal with the standard environment-level PPO advantage, providing state-dependent credit throughout the denoising chain. Across Robomimic, FurnitureBench, Franka Kitchen, and D3IL, DIA consistently improves final performance over existing diffusion-policy fine-tuning methods. Beyond final reward, DIA reaches successful states more efficiently and can shift farther from the pretrained behavior distribution, enabling it to discover more effective and efficient task-level strategies and subtask sequences that baseline methods fail to reach.",
+      "authors": [
+        "Arjun Sohal",
+        "Yuchi Zhao",
+        "Miroslav Bogdanovic",
+        "Alan Aspuru-Guzik"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-10T22:02:28+00:00",
+      "link": "https://arxiv.org/pdf/2609.12245v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL fine-tuning of diffusion policies, transferable to diffusion image generation",
+      "llm_evidence_cn": "扩散策略的强化学习微调，可迁移至扩散图像生成",
+      "llm_evidence": "扩散策略的强化学习微调，可迁移至扩散图像生成",
+      "canonical_evidence": "扩散策略的强化学习微调，可迁移至扩散图像生成",
+      "llm_tldr_en": "DIA improves diffusion policy fine-tuning by assigning differentiated credit across denoising steps, addressing the flaw that existing policy-gradient methods give identical environment-level credit to all denoising steps.",
+      "llm_tldr_cn": "扩散机器人策略多用行为克隆训练，受数据质量与覆盖限制，需用强化学习进一步提升。常见做法把扩散策略微调建模为外层环境 MDP 加内层去噪 MDP，但现有方法对所有去噪步骤赋予相同环境级信用，无法区分哪些中间决策对最终回报贡献最大。本文提出 DIA，用去噪中间优势区分各步骤贡献。实验表明更精细的信用分配能提升策略优化效果。该工作把强化学习信用分配引入扩散生成过程，与图像生成中的扩散 RL 方法相通。",
+      "llm_tldr": "扩散机器人策略多用行为克隆训练，受数据质量与覆盖限制，需用强化学习进一步提升。常见做法把扩散策略微调建模为外层环境 MDP 加内层去噪 MDP，但现有方法对所有去噪步骤赋予相同环境级信用，无法区分哪些中间决策对最终回报贡献最大。本文提出 DIA，用去噪中间优势区分各步骤贡献。实验表明更精细的信用分配能提升策略优化效果。该工作把强化学习信用分配引入扩散生成过程，与图像生成中的扩散 RL 方法相通。",
+      "llm_tags": [
+        "query:image-gen-rl:composite"
+      ],
+      "matched_query_tag": "query:image-gen-rl:composite",
+      "matched_query_text": "Papers central to 找图像生成领域用到强化学习的论文, especially work that connects or combines: reinforcement learning for image generation; designing reward functions for image generation tasks; papers on reinforcement learning for image generation; how to use reinforcement learning to improve image quality in generation; survey of reinforcement learning in image synthesis.",
+      "matched_requirement_id": "req-composite-image-gen-rl",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
