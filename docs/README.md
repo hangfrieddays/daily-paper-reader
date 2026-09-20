@@ -6,24 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-19
-- 运行时间：2026-09-19 21:12:54 UTC
+- 最新运行日期：2026-09-20
+- 运行时间：2026-09-20 21:49:08 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：0
 - 精读区：0
-- 速读区：1
+- 速读区：0
 
 ### 今日简报（AI）
-今日日报仅速读 1 篇，聚焦扩散策略优化中的去噪中间优势方法 DIA。最值得看的是它用去噪过程的中间信号构造优势、提升扩散策略优化的思路，但 6.0 分说明仍属值得了解而非必读。普通读者可先看摘要中的方法框架和实验结论，再决定是否深入全文。
-- 详情：[/202609/19/README](/202609/19/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202609/20/README](/202609/20/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization](/202609/19/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：扩散策略的强化学习微调，可迁移至扩散图像生成
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
