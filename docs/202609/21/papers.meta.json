@@ -1,0 +1,24 @@
+{
+  "label": "2026-09-21",
+  "date": "2026-09-21",
+  "generated_at": "2026-09-21T22:58:05",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202609/21/2609.22041v1--controlled-grpo-turning-flow-matching-ratio-instability-into-a-budgeted-resource",
+      "section": "deep",
+      "title_en": "$λ$-Controlled GRPO: Turning Flow-Matching Ratio Instability into a Budgeted Resource",
+      "authors": "Yufeng Wang, Parivesh Priye, Meeshawn Marathe, Ramit Pahwa",
+      "date": "2026-09-18",
+      "pdf": "https://arxiv.org/pdf/2609.22041v1",
+      "score": "10.0",
+      "evidence": "用强化学习对齐图像生成器的奖励信号，稳定流匹配图像生成的 Flow-GRPO 训练",
+      "tldr": "Flow-GRPO 将流匹配去噪采样器视为可优化策略，但多步去噪中重要性比会随步数漂移、离散和裁剪异常，导致训练不稳。作者指出这些现象统一源于可由高斯转移核精确刻画的逐步路径方差，并将其视为可测量、可预算的资源。提出的 λ-Controlled GRPO 依据该预测规律校准重要性比，并按预测代价分配各去噪步的梯度。在文生图 OCR 与人类偏好奖励下，它均优于最强经验稳定器，并把后期步路径方差控制在预算内。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning is increasingly used to align image generators with reward signals, and Flow-GRPO recently extended this paradigm to flow-matching models by treating the denoising sampler as a stochastic policy that can be optimized from reward feedback. Training in this setting is unstable in a way specific to multi-step denoising: the policy update changes systematically across denoising steps, with importance ratios drifting below one, becoming increasingly dispersed, clipping at different rates, and leaving fewer usable samples late in training. Prior work treats these effects as separate failure modes and addresses each with a hand-tuned stabilizer. We show instead that they arise from a single per-step quantity, which we call path variance. This quantity is determined exactly by the sampler's Gaussian transition kernel and can be estimated cheaply during training. This reframes instability as a resource that can be measured and budgeted rather than a collection of symptoms to repair. Our method, $λ$-Controlled GRPO, calibrates importance-ratio behavior from this predicted law rather than from noisy empirical statistics, and allocates gradient effort across denoising steps according to their predicted cost. The two scales governing the update are fixed by standard policy choices rather than introduced as free tuning parameters. On a text-to-image model under two reward settings, rendering difficult target text scored by optical character recognition and matching human preferences scored by a preference model, $λ$-Controlled GRPO improves both text accuracy and preference reward over the strongest empirical stabilizer. It also keeps late-step path variance within its intended budget, precisely where the baseline systematically overshoots. The result is a Flow-GRPO update calibrated by its own transition law rather than stabilized after instability appears.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

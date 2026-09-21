@@ -1,0 +1,54 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-21T22:54:11.018309+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2609.22041v1",
+      "source": "arxiv",
+      "title": "$λ$-Controlled GRPO: Turning Flow-Matching Ratio Instability into a Budgeted Resource",
+      "abstract": "Reinforcement learning is increasingly used to align image generators with reward signals, and Flow-GRPO recently extended this paradigm to flow-matching models by treating the denoising sampler as a stochastic policy that can be optimized from reward feedback. Training in this setting is unstable in a way specific to multi-step denoising: the policy update changes systematically across denoising steps, with importance ratios drifting below one, becoming increasingly dispersed, clipping at different rates, and leaving fewer usable samples late in training. Prior work treats these effects as separate failure modes and addresses each with a hand-tuned stabilizer. We show instead that they arise from a single per-step quantity, which we call path variance. This quantity is determined exactly by the sampler's Gaussian transition kernel and can be estimated cheaply during training. This reframes instability as a resource that can be measured and budgeted rather than a collection of symptoms to repair. Our method, $λ$-Controlled GRPO, calibrates importance-ratio behavior from this predicted law rather than from noisy empirical statistics, and allocates gradient effort across denoising steps according to their predicted cost. The two scales governing the update are fixed by standard policy choices rather than introduced as free tuning parameters. On a text-to-image model under two reward settings, rendering difficult target text scored by optical character recognition and matching human preferences scored by a preference model, $λ$-Controlled GRPO improves both text accuracy and preference reward over the strongest empirical stabilizer. It also keeps late-step path variance within its intended budget, precisely where the baseline systematically overshoots. The result is a Flow-GRPO update calibrated by its own transition law rather than stabilized after instability appears.",
+      "authors": [
+        "Yufeng Wang",
+        "Parivesh Priye",
+        "Meeshawn Marathe",
+        "Ramit Pahwa"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-09-18T17:33:38+00:00",
+      "link": "https://arxiv.org/pdf/2609.22041v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "RL to align image generators with rewards, stabilizing Flow-GRPO for flow-matching image generation",
+      "llm_evidence_cn": "用强化学习对齐图像生成器的奖励信号，稳定流匹配图像生成的 Flow-GRPO 训练",
+      "llm_evidence": "用强化学习对齐图像生成器的奖励信号，稳定流匹配图像生成的 Flow-GRPO 训练",
+      "canonical_evidence": "用强化学习对齐图像生成器的奖励信号，稳定流匹配图像生成的 Flow-GRPO 训练",
+      "llm_tldr_en": "Reinforcement learning is increasingly used to align image generators with reward signals, and Flow-GRPO extended this to flow-matching models; this work shows multi-step denoising instability stems from a single per-step quantity and proposes lambda-controlled GRPO to turn ratio instability into a budgeted resource.",
+      "llm_tldr_cn": "强化学习已被广泛用于让图像生成器对齐奖励信号，Flow-GRPO 进一步把去噪采样器视为随机策略以支持流匹配模型，但多步去噪中的策略更新存在系统性漂移，重要性比率持续低于一并逐渐发散，导致后期可用样本减少。该工作证明这些现象源自单一的逐步量，提出 λ-控制的 GRPO，把比率不稳定性转化为可预算的资源加以调控。实验表明该方法稳定了流匹配模型的强化学习训练，提升了图像生成的对齐效果。其贡献在于统一解释了多步去噪强化学习的失稳机制并给出可控修正。",
+      "llm_tldr": "强化学习已被广泛用于让图像生成器对齐奖励信号，Flow-GRPO 进一步把去噪采样器视为随机策略以支持流匹配模型，但多步去噪中的策略更新存在系统性漂移，重要性比率持续低于一并逐渐发散，导致后期可用样本减少。该工作证明这些现象源自单一的逐步量，提出 λ-控制的 GRPO，把比率不稳定性转化为可预算的资源加以调控。实验表明该方法稳定了流匹配模型的强化学习训练，提升了图像生成的对齐效果。其贡献在于统一解释了多步去噪强化学习的失稳机制并给出可控修正。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}

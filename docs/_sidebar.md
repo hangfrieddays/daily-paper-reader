@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-21 <!--dpr-date:20260921-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/21/2609.22041v1--controlled-grpo-turning-flow-matching-ratio-instability-into-a-budgeted-resource" data-sidebar-item="{&quot;title&quot;: &quot;$λ$-Controlled GRPO: Turning Flow-Matching Ratio Instability into a Budgeted Resource&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.22041v1--controlled-grpo-turning-flow-matching-ratio-instability-into-a-budgeted-resource&quot;, &quot;score&quot;: &quot;10.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;用强化学习对齐图像生成器的奖励信号，稳定流匹配图像生成的 Flow-GRPO 训练&quot;}">$λ$-Controlled GRPO: Turning Flow-Matching Ratio Instability into a Budgeted Resource</a>
   * 2026-09-19 <!--dpr-date:20260919-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/19/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization" data-sidebar-item="{&quot;title&quot;: &quot;DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;扩散策略的强化学习微调，可迁移至扩散图像生成&quot;}">DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization</a>
