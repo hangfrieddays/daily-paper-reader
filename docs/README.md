@@ -6,26 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-21
-- 运行时间：2026-09-21 22:58:00 UTC
+- 最新运行日期：2026-09-22
+- 运行时间：2026-09-22 22:28:17 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：3
 - 精读区：1
-- 速读区：0
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读 1 篇、速读 0 篇，唯一入选的《λ-Controlled GRPO》拿下 10.0 满分，是当天绝对焦点。
-最值得看的是它把流匹配训练中 GRPO 的比率不稳定问题，用 λ 控制转化成可预算、可调度的资源，思路从“消抖”转向“利用抖动”。
-普通读者可先抓住“λ 如何设预算”这条主线，再回看比率不稳定的成因，避免被公式细节劝退。
-- 详情：[/202609/21/README](/202609/21/README)
+今日精读1篇、速读2篇，视频奖励建模与生成智能体成为主线。最值得看的是8.0分的《RewardVerse》，用评分标准引导策略优化做视频奖励建模；7.0分的《VideoGen-Agent》则聚焦强化视频生成智能体。普通读者可优先从这两篇入手，再按兴趣补看6.0分的多模态推理框架。
+- 详情：[/202609/22/README](/202609/22/README)
 
 ### 精读区论文标签
-1. [$λ$-Controlled GRPO: Turning Flow-Matching Ratio Instability into a Budgeted Resource](/202609/21/2609.22041v1--controlled-grpo-turning-flow-matching-ratio-instability-into-a-budgeted-resource)  
-   标签：评分：10.0/10、query:image-gen-rl
-   evidence：用强化学习对齐图像生成器的奖励信号，稳定流匹配图像生成的 Flow-GRPO 训练
+1. [RewardVerse: Rubric-Guided Policy Optimization for Video Reward Modeling](/202609/22/2609.22947v1-rewardverse-rubric-guided-policy-optimization-for-video-reward-modeling)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：面向视频生成的规则化奖励建模
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [VideoGen-Agent: Reinforcing Video Generation Agents](/202609/22/2609.24997v1-videogen-agent-reinforcing-video-generation-agents)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：用智能体强化学习提升视频生成质量
+2. [Anchoring What Matters: A Dual-Level Learning Framework for Visually-Grounded Multimodal Reasoning](/202609/22/2609.18057v1-anchoring-what-matters-a-dual-level-learning-framework-for-visually-grounded-multimodal-reasoning)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：面向视觉语言推理的可验证奖励强化学习设计
 
 
 <div class="dpr-home-promo-card">

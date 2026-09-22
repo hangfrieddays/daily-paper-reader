@@ -1,0 +1,145 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-22T22:25:00.164902+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2609.22947v1",
+      "source": "arxiv",
+      "title": "RewardVerse: Rubric-Guided Policy Optimization for Video Reward Modeling",
+      "abstract": "Reinforcement learning (RL) is vital for optimizing video generation models, with a robust reward model (RM) serving as the cornerstone. However, existing video reward models often produce unstable scalar scores because they directly map complex, subjective video quality into a single score without explicit evaluation criteria. This leads to scalar drift, where the scoring scale collapses or shifts across different prompts, making the reward unreliable for RL. Drawing inspiration from professional human annotation engineering, we address this problem with RewardVerse, a rubric-based video reward framework that introduces a dynamic rubric as an intermediate representation between the evaluation query and the scorer. Instead of unconstrained direct scoring, RewardVerse first generates explicit evaluation criteria and then performs rubric-guided scoring, providing a stable semantic anchor that mitigates scalar drift. To efficiently optimize this collaborative pipeline, we propose Rubric-Guided Policy Optimization (RGPO), a two-stage training algorithm. RGPO first warms up the scorer using self-evolving seed rubrics and then jointly optimizes the rubric generator to produce query-adaptive evaluation criteria while continuously aligning the scorer with human ratings. Extensive experiments on the 16-dimensional EvalVerse benchmark and external datasets demonstrate that RewardVerse mitigates scalar drift, achieves state-of-the-art performance on both pointwise and pairwise evaluation, and provides a robust and interpretable reward signal for RL in video generation.",
+      "authors": [
+        "Zhenchen Tang",
+        "Yang Li",
+        "Songlin Yang",
+        "Bo Peng",
+        "Xiaotong Zhao",
+        "Shuai Li",
+        "Haotian Fan",
+        "Alan Zhao",
+        "Jing Dong"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-09-19T11:01:14+00:00",
+      "link": "https://arxiv.org/pdf/2609.22947v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "rubric-based reward model for RL optimization of video generation",
+      "llm_evidence_cn": "面向视频生成的规则化奖励建模",
+      "llm_evidence": "面向视频生成的规则化奖励建模",
+      "canonical_evidence": "面向视频生成的规则化奖励建模",
+      "llm_tldr_en": "RewardVerse builds a rubric-based video reward model that introduces a dynamic rubric between query and scorer, stabilizing reward scores so RL can reliably optimize video generation models.",
+      "llm_tldr_cn": "现有视频奖励模型直接把复杂主观的视频质量映射为单一标量分数，导致不同提示下评分尺度漂移，使强化学习所依赖的奖励不可靠。本文提出RewardVerse，在评估查询与打分器之间引入动态评分规则作为中间表示，以规则化方式约束奖励生成。实验表明该框架缓解了标量漂移问题，为视频生成模型的强化学习优化提供了更稳定的奖励信号，对生成任务中的奖励函数设计具有直接参考价值。",
+      "llm_tldr": "现有视频奖励模型直接把复杂主观的视频质量映射为单一标量分数，导致不同提示下评分尺度漂移，使强化学习所依赖的奖励不可靠。本文提出RewardVerse，在评估查询与打分器之间引入动态评分规则作为中间表示，以规则化方式约束奖励生成。实验表明该框架缓解了标量漂移问题，为视频生成模型的强化学习优化提供了更稳定的奖励信号，对生成任务中的奖励函数设计具有直接参考价值。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.24997v1",
+      "source": "arxiv",
+      "title": "VideoGen-Agent: Reinforcing Video Generation Agents",
+      "abstract": "Recent advances in video generative models have enabled high-fidelity, temporally coherent video generation. However, these models often struggle to satisfy prompts requiring specialized knowledge, specific identities, physical consistency, or ordered events. In this paper, we present VideoGen-Agent, a multimodal agent trained through multitask agentic reinforcement learning to use external tools for video generation. The agent coordinates augmentation, generation, and verification tools through multi-turn interactions, using the prompt and intermediate observations to guide its decisions. We train a shared policy on a category-balanced dataset spanning six tasks. Supervised fine-tuning on teacher-generated trajectories establishes tool-use behavior, which is then refined through reinforcement learning. A category-aware hybrid reward evaluates tool-call validity, task-appropriate tool use, and generated video quality. We further introduce VABench, a held-out benchmark of 600 prompts covering procedural knowledge, single- and multi-entity identity preservation, physical consistency, scene composition, and multi-shot temporal structure. On VABench, VideoGen-Agent improves over its base text-to-video generator by 19.1 points, from 56.5 to 75.6. Upgrading the generation tools further raises the score to 86.1 without additional agent training. Human raters prefer the upgraded configuration over the strongest standalone baseline in 84.3% of comparisons. These results support learning tool use across video-generation tasks and show that the trained agent can benefit from subsequent advances in generation tools.",
+      "authors": [
+        "Binxu Li",
+        "Haoyi Duan",
+        "Yuhui Zhang",
+        "Yaohui Zhang",
+        "Zihao Lin",
+        "Kaituo Feng",
+        "Suozhi Huang",
+        "Xiangyi Li",
+        "Yu Li",
+        "Chunyuan Li",
+        "Shilong Liu",
+        "Mengdi Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-21T17:58:56+00:00",
+      "link": "https://arxiv.org/pdf/2609.24997v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "agentic reinforcement learning to improve video generation quality",
+      "llm_evidence_cn": "用智能体强化学习提升视频生成质量",
+      "llm_evidence": "用智能体强化学习提升视频生成质量",
+      "canonical_evidence": "用智能体强化学习提升视频生成质量",
+      "llm_tldr_en": "VideoGen-Agent trains a multimodal agent with multitask agentic RL to coordinate tools and better satisfy complex video generation prompts.",
+      "llm_tldr_cn": "视频生成模型常难以满足需要专业知识、特定身份、物理一致性或有序事件的提示。本文提出VideoGen-Agent，通过多任务智能体强化学习训练一个多模态智能体，用多轮交互协调增强、生成与验证工具。方法在覆盖六类任务的数据集上训练共享策略，先监督微调再强化优化。结果表明该方法提升了复杂提示下的生成质量，将强化学习用于生成模型的工具协调与质量改进。",
+      "llm_tldr": "视频生成模型常难以满足需要专业知识、特定身份、物理一致性或有序事件的提示。本文提出VideoGen-Agent，通过多任务智能体强化学习训练一个多模态智能体，用多轮交互协调增强、生成与验证工具。方法在覆盖六类任务的数据集上训练共享策略，先监督微调再强化优化。结果表明该方法提升了复杂提示下的生成质量，将强化学习用于生成模型的工具协调与质量改进。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.18057v1",
+      "source": "arxiv",
+      "title": "Anchoring What Matters: A Dual-Level Learning Framework for Visually-Grounded Multimodal Reasoning",
+      "abstract": "Reinforcement learning with verifiable rewards (RLVR) has significantly improved the reasoning capabilities of large vision-language models (LVLMs). However, standard on-policy RLVR algorithms face a critical optimization bottleneck in preserving and reinforcing visually grounded reasoning behaviors: valuable visually-grounded reasoning trajectories are discarded after a single update, while uniform token advantage allocation prevents the model from reinforcing critical perception or reasoning steps. To bridge this gap, we propose PIVOT, a dual-level learning framework that anchors policy optimization around informative visual reasoning signals. Specifically, PIVOT introduces a self-calibrated experience replay mechanism, which selectively collects and replays visually-grounded historical experiences as stable reference anchors for policy optimization. Building upon this, we further design a vision-guided advantage allocation mechanism to allocate additional vision-aware advantages to tokens based on their local visual support and impact on downstream reasoning. Extensive experiments across diverse benchmarks demonstrate that PIVOT achieves highly competitive performance in enhancing the multimodal reasoning capabilities of LVLMs.",
+      "authors": [
+        "Xinxin Song",
+        "Siyuan Li",
+        "Tingxiong Xiao",
+        "Jinli Suo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-09-16T03:00:32+00:00",
+      "link": "https://arxiv.org/pdf/2609.18057v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RLVR reward design for vision-language reasoning",
+      "llm_evidence_cn": "面向视觉语言推理的可验证奖励强化学习设计",
+      "llm_evidence": "面向视觉语言推理的可验证奖励强化学习设计",
+      "canonical_evidence": "面向视觉语言推理的可验证奖励强化学习设计",
+      "llm_tldr_en": "Standard on-policy RLVR discards valuable visually grounded reasoning trajectories and allocates token advantages uniformly; PIVOT is a dual-level learning framework with self-calibrated experience replay that anchors policy optimization on informative visual signals.",
+      "llm_tldr_cn": "针对视觉语言模型在可验证奖励强化学习中视觉推理轨迹被单次更新丢弃、token优势分配过于均匀的瓶颈，论文提出PIVOT双层学习框架，通过自校准经验回放机制将策略优化锚定在关键视觉推理信号上。实验表明该框架能更有效地保留并强化视觉grounding推理行为，提升多模态推理性能。其意义在于为强化学习的奖励与优化信号设计提供了可迁移思路。",
+      "llm_tldr": "针对视觉语言模型在可验证奖励强化学习中视觉推理轨迹被单次更新丢弃、token优势分配过于均匀的瓶颈，论文提出PIVOT双层学习框架，通过自校准经验回放机制将策略优化锚定在关键视觉推理信号上。实验表明该框架能更有效地保留并强化视觉grounding推理行为，提升多模态推理性能。其意义在于为强化学习的奖励与优化信号设计提供了可迁移思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
