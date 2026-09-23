@@ -1,0 +1,824 @@
+Title: RULER: Instance-aware Rubric Rewards for SVG Generation
+
+URL Source: https://arxiv.org/pdf/2609.25270v1
+
+Published Time: Wed, 23 Sep 2026 00:11:47 GMT
+
+Number of Pages: 19
+
+Markdown Content:
+## RULER: Instance-aware Rubric Rewards for SVG Generation 
+
+Hangyu Ran 1,2,* Yuhao Zheng 3,* Yingying Zhang 1 Kevin Qinghong Lin 4, † Han Peng 1, †
+
+> 1
+
+Ant Group 2The Hong Kong University of Science and Technology (Guangzhou) 
+
+> 3
+
+Independent Researcher 4University of Oxford  
+
+> *Equal contribution †Corresponding authors
+
+Abstract 
+
+Generating Scalable Vector Graphics (SVG) code from natural-language instructions is an open-ended task without absolute visual ground truth, leaving both evaluation and policy opti-mization without a faithful signal. Scalar met-rics (CLIP, Aesthetic) calibrated on natural im-ages transfer poorly to stylized vector content, and reusing them as RL rewards triggers re-ward hacking. We address both limitations with rubric-based scoring. We first establish empirically that prompting a vision–language judge with a multi-axis rubric correlates with human judgments far better than scalar metrics, both across samples and within instructions. Building on this finding, we introduce RULER 
+
+(Instance-aware Ru bric Rewards for Reinforce-ment LE aRning), which converts each instruc-tion into an instance-aware rubric of six items spanning semantic, visual, and stylistic axes; a judge VLM scores rendered rollouts item-by-item, and the weighted satisfactions form a fine-grained reward optimized via Group Rel-ative Policy Optimization. Because the rubric is derived from text alone, RULER requires neither paired SVG ground truth nor human preference labels. On MMSVG-Illustration and MMSVG-Icon, RULER lifts the rubric score from 0.432 /0.395 to 0.693 /0.683 , sur-passing dedicated SVG specialists and match-ing the substantially larger DeepSeek-V3, with ablations identifying rubric design as the ac-tive lever for RL on open-ended SVG genera-tion. The project page is available at https: //hangyuran.github.io/RULER/ .
+
+1 Introduction 
+
+Generating Scalable Vector Graphics (SVG) (Ro-driguez et al., 2025a; Yang et al., 2025b; Wang et al., 2025; Carlier et al., 2020) has emerged as a crucial frontier in visual code generation. As a unique form of text that renders into precise graph-ics, SVG code is structured, executable and con-trollable, unlike descriptive natural language (Lin et al., 2025; Zheng et al., 2026; Chen et al., 2025b). Owing to these distinctive properties, frontier foun-dation models increasingly prioritize SVG genera-tion to showcase their visual code synthesis capa-bilities (Team et al., 2026; Comanici et al., 2025; OpenAI, 2025). This widespread interest has led to pioneering efforts in dataset curation (Yang et al., 2025b; Li et al., 2025), benchmarking (Lin et al., 2025), and specialized model training paradigms (Chen et al., 2025a; Xing et al., 2025; Rodriguez et al., 2025b; He et al., 2026). Within this landscape, generating structured SVG code directly from natural instructions stands as a fundamental research challenge. This core difficulty stems from an inherent characteristic of open-ended synthesis: a single instruction can map to countless semantically valid renderings, leav-ing no absolute visual ground truth to serve as a standard reference. Consequently, the field is bot-tlenecked on two closely coupled fronts: • Unreliable metrics for evaluation. CLIPScore (Hessel et al., 2021), aesthetic classifiers, and the Human Preference Score (Wu et al., 2023b) were calibrated on photorealistic natural images and transfer poorly to stylized vector content. As shown in Figure 1, they frequently assign higher scores to broken SVGs than to faithful ones, and correlate weakly with human judgment both within and across models. • Unfaithful supervision signal for training. Su-pervised fine-tuning on instruction–SVG pairs reduces to behavioral cloning of dataset-specific templates and fails to generalize (Rodriguez et al., 2025a; Yang et al., 2025b). Reinforce-ment learning is the natural alternative, but its effectiveness is dominated by the choice of re-ward (Pan et al., 2022; Team, 2026). The rewards available for SVG generation are exactly the un-reliable metrics above, so the policy drifts toward whichever signal is easiest to inflate rather than arXiv:2609.25270v1 [cs.CV] 21 Sep 2026 A stylized  blue  camera  emoji  with  a
+
+yellow  lens  and  flash. 
+
+Human  prefers the left 
+
+CLIP  Score 
+
+Aesthetic  Score 
+
+Rubric  Score 
+
+Instance -aware  Rubric       
+
+> 𝒄 𝟏 :Camera Emoji Concept Readability
+> The camera must have a distinctly blue body, a clearly
+> yellow/gold lens element, and a visible flash
+> component, as these three color -coded features are the
+> prompt's defining visual cues.
+> 𝒄 𝟑 :Camera Silhouette and Form Quality
+> The camera's overall silhouette should have clean,
+> intentional proportions with a well -shaped
+> rectangular body, rounded corners, circular lens,
+> and viewfinder bump that together form a refined
+> iconic camera shape rather than crude rectangles.
+> 𝒄 𝟒 :Composition and Canvas Utilization
+> The camera should be well -centered and
+> appropriately scaled within the canvas, using space
+> effectively like an emoji would —neither too small
+> nor cropped —with balanced negative space around it.
+
+0.18  0.23 
+
+4.93  4.84 
+
+0.94  0.30   
+
+> 𝒄 𝟓 :Rendering Finish and Vector Cleanliness
+> The SVG should render as clean, complete vector
+> artwork without broken paths, stray fragments,
+> disconnected elements, overlapping artifacts, or
+> unfinished regions.
+> 𝒄 𝟔 :Emoji Style Cohesion and Visual Interest
+> The design should maintain a cohesive emoji/icon
+> graphic style with consistent stroke/fill treatment,
+> appealing color harmony between the blue and yellow
+> elements, and enough internal detail (highlights,
+> gradients, reflections) to feel polished rather than flat.
+
+0.94 
+
+0.30         
+
+> 𝒄 𝟐 :Blue Body, Yellow Lens, and Flash Components
+> 𝒄 𝟑 𝒄 𝟒
+
+Rubric Structure    
+
+> Semantic
+> Fidelity
+> Visual
+> Quality
+> Rendering
+> Style
+> 𝒄 𝟏 𝒄 𝟐 𝒄 𝟓 𝒄 𝟔
+> The image should be immediately recognizable
+> as a stylized camera emoji without needing any
+> text labels, conveying the familiar compact
+> camera icon shape and emoji -like simplification.
+
+Figure 1: Comparison of evaluation metrics and the RULER rubric. Left: Standard scalar metrics (CLIP and Aesthetic) mis-rank or fail to penalize a broken SVG, whereas our Rubric score aligns with human preference. 
+
+Right: The structured six-item instance-aware rubric spanning semantic, visual, and stylistic axes. 
+
+toward better generations (Skalse et al., 2022; Gao et al., 2023). To address these limitations, (i) for evaluation ,we first conduct a systematic empirical analysis (de-tailed in Section 3) utilizing 900 human-annotated SVG samples generated by models of varying ca-pabilities. We observe that rubric-based scor-ing , which prompts a vision-language judge to rate rendered SVGs along multiple decomposed axes, correlates with human preference far better than conventional scalar metrics. Specifically, it achieves a sample-level correlation (Spearman’s 
+
+ρ) of 0.7929 and a pairwise ranking agreement (Goodman-Kruskal γ) of 0.7574, establishing it as a robust evaluator for open-ended SVG qual-ity. (ii) For training , to provide the policy with fine-grained supervision, we introduce RULER 
+
+(Instance-aware Ru bric Rewards for Reinforce-ment LE aRning). By repurposing our robust eval-uation mechanism into a reward signal, RULER converts each instruction into an instance-aware rubric of six items spanning semantic fidelity , vi-sual quality , and rendering style . A judge VLM then scores each rendered rollout item-by-item, and the weighted satisfactions form a fine-grained re-ward optimized via Group Relative Policy Opti-mization. Because the rubric is generated from text alone, RULER requires neither paired SVG ground truth nor human preference labels and scales to any unannotated instruction set .On MMSVG-Illustration and MMSVG-Icon (Yang et al., 2025b), RULER lifts the rubric score from 0.432 /0.395 (the Qwen3-8B (Yang et al., 2025a) backbone) to 0.693 /0.683 , surpassing ded-icated SVG specialists and matching the substan-tially larger DeepSeek-V3 (Liu et al., 2024). Ab-lations further identify rubric design as the active lever for RL on open-ended visual code. Our con-tributions are threefold: • Rubric-based Evaluation for SVG Quality. 
+
+We systematically investigate the evaluation paradigm of SVG generation, exposing the se-vere insensitivity of standard scalar metrics to actual visual quality under domain shift. To ad-dress this, we adopt a rubric-based score and show that it correlates substantially better with human preference. • Instance-aware Rubric for Learning. Building on this analysis, we propose RULER , which gen-erates a six-item rubric per instruction spanning semantic, visual, and stylistic axes, and uses it as a dense, query-conditioned reward for RL, turn-ing ambiguous visual judgments into explicitly verifiable sub-goals. • State-of-the-Art Performance. Extensive exper-iments on MMSVG-Illustration and MMSVG-Icon show that RULER achieves the strongest Rubric scores, surpassing dedicated SVG spe-cialists and the substantially larger DeepSeek-V3 while remaining competitive on conventional metrics, and outperforms standard RL baselines. Table 1: Comparison of reward paradigms for SVG generation. We evaluate existing approaches across five critical desiderata. GT-free denotes that ground-truth visual references are not required.                                       
+
+> Reward Paradigm Representative Metric Visual Semantic GT-Free Multi-Axis Instance-Granularity Granularity Aware Pixel-based SSIM / PSNR (Wang et al., 2004) Fine-grained N/A ✗✗✗
+> Rule-based Code Length (Rodriguez et al., 2025b) N/A N/A ✓✗✗
+> Embedding-based CLIPScore (Hessel et al., 2021) Coarse-grained Coarse-grained ✓✗✗
+> Rubric-based Universal Rubric (He et al., 2026) Fine-grained Fine-grained ✗✓✗
+> Rubric-based Instance-aware Rubric (RULER) Fine-grained Fine-grained ✓✓✓
+
+2 Related Work 
+
+2.1 SVG Code Generation 
+
+SVG code generation has progressed from optimization-based path tracing (Li et al., 2020; Jain et al., 2023; Xing et al., 2024) to autore-gressive primitive-aware generation (Yang et al., 2025b; Li et al., 2025; Rodriguez et al., 2025a), and most recently to rendering-aware reinforce-ment learning (Rodriguez et al., 2025b) that op-timizes the policy directly against the rendered image. A central but unresolved question across these pipelines is how to score a generated SVG when no paired ground truth exists; prior reward designs (Table 1) each fall short on at least one desideratum. Pixel-based metrics (SSIM, PSNR) require a paired reference and reduce quality to a single scalar; rule-based signals such as code length (Rodriguez et al., 2025b) score only the code without inspecting the rendered image; em-bedding scores like CLIPScore (Hessel et al., 2021) are reference-free and visually grounded, but pro-vide only coarse-grained assessments of composi-tional correctness (Ghosh et al., 2023) and can be easy to game under RL (Rodriguez et al., 2025b); and universal-rubric scoring (He et al., 2026; Ro-driguez et al., 2026) provides multi-dimensional feedback yet ignores instruction-specific notions of correctness. Our RULER closes this gap with an instance-aware rubric that is simultane-ously reference-free, multi-dimensional, visually grounded, and instance-conditioned. 
+
+2.2 Rubric-Based Evaluation and Rewards 
+
+Rubric-based evaluation decomposes quality into interpretable criteria without relying on auxiliary reward models. Hashemi et al. (2024) introduce LLM-Rubric for calibrated multi-aspect evaluation. Building on this evaluation primitive, RaR (Gun-jal et al., 2025) and RGR-GRPO (Bi et al., 2025) use rubric scores directly as RL rewards, showing that fine-grained checklist feedback can improve policy training on text-domain tasks such as instruc-tion following and reasoning. Our RULER extends rubric-based RL in two complementary directions: it applies rubric-based rewards to open-ended vi-sual code through a VLM judge that scores ren-dered SVGs against instance-aware rubrics, and it constructs these rubrics without ground-truth SVGs, providing case-specific supervision without restricting generation to a single reference SVG. 
+
+3 RULER 
+
+In this section, we present RULER as illustrated in Figure 2. We first formulate open-ended SVG gen-eration as a token-level Markov Decision Process (§3.1), which highlights the design of the reward function as the central challenge of this task. To address this bottleneck, we conduct a systematic empirical analysis in §3.2 to establish rubric-based scoring as a robust and reliable evaluation primi-tive. Building on these empirical findings, we de-tail the core components of our framework: a scal-able pipeline that constructs instance-aware rubrics from text instructions (§3.3), and a reinforcement learning pipeline that optimizes the policy using these rubrics via Group Relative Policy Optimiza-tion (GRPO) (§3.4). 
+
+3.1 Task Definition 
+
+We formulate open-ended SVG generation as a token-level Markov Decision Process (MDP). Given an instruction Q that specifies the desired visual content, a language model policy πθ autore-gressively generates a structured SVG sequence 
+
+Y = (y1, . . . , y T ). At step t, the state st =(Q, y <t ) concatenates the instruction with the pre-fix already generated, the action at = yt is the next token sampled from πθ(· | st), and the tran-sition st+1 = st ⊕ at is deterministic. Once the Query 𝒒 : A single solid blue outline of a minimalistic cat head with triangular ears and a triangular nose. 
+
+Qwen3-8B 
+
+> Policy Model
+
+Claude-Opus-4.6 
+
+> Rubric Generator
+
+Rollout & Render Instance-aware Rubric R          
+
+> ...
+> Semantic Fidelity:
+> 𝒄 𝟏 :Cat Head Concept Readability
+> 𝒄 𝟐 :Triangular Ears and Nose
+> Visual Quality:
+> 𝒄 𝟑 :Silhouette and Contour Quality
+> 𝒄 𝟒 :Composition and Canvas Placement
+> Rendering Style:
+> 𝒄 𝟓 :Outline Cleanliness and Integrity
+> 𝒄 𝟔 :Minimalist Line-Art Style Cohesion
+> Rollout 1 Rollout 2 Rollout 3 Rollout n
+
+Qwen3-VL-8B 
+
+> Judge Model
+> Diverse Advantage
+
+Policy Update Figure 2: Overview of RULER. A frontier model derives an instance-aware rubric—six items across semantic, visual, and stylistic axes—from each text instruction (left). The policy samples SVG rollouts that are rendered and scored by a judge VLM against the rubric; the weighted per-item satisfactions form the GRPO reward signal that drives policy updates (right). Rubric Aesthetic CLIP    
+
+> 0.5 0.6 0.7 0.8
+> Score Correlation with Human
+> 0.7929 0.6051 0.5518
+> Rubric Aesthetic CLIP
+> 0.5 0.6 0.7 0.8
+> Ranking Agreement with Human
+> 0.7574 0.5465 0.5295
+
+Figure 3: Rubric score shows superior human alignment compared with Aesthetic and CLIP. 
+
+sequence terminates, a deterministic rendering en-gine E executes the completed code into a visual representation Igen = E(Y), on which the reward function R(·) is computed. Because open-ended SVG generation lacks an absolute visual ground truth, the design of R(·)—rather than the optimiza-tion machinery—is the central question raised by this MDP. The objective is to learn the optimal θ
+
+that maximizes the expected reward. 
+
+3.2 Human Assessment of Existing Metrics 
+
+Before constructing the reward signal, we verify whether rubric-based scoring aligns with human judgment for stylized vector content. We collect 900 rendered SVG samples generated by three models of varying capabilities ( Claude-Opus-4.6 ,
+
+Qwen3-32B , and Qwen3-8B (Yang et al., 2025a), 300 each) and obtain human quality ratings fol-lowing the annotation protocol detailed in Ap-pendix D.1. We evaluate metrics against these an-notations from two complementary perspectives: sample-level score correlation and pairwise ranking agreement. 
+
+Score correlation. As shown in Figure 3 (left), we compute the Spearman rank correlation (Spear-man’s ρ) between automated metrics and human scores over all 900 cases. Rubric-based scoring achieves a correlation of ρ = 0.7929 , outper-forming Aesthetic ( ρ = 0 .6051 ) and CLIP ( ρ =0.5518 ). This confirms that decomposing evalu-ation into explicit axes tracks human-perceived quality more effectively than conventional scalar metrics. 
+
+Pairwise ranking agreement. To assess rank-ing stability, we measure agreement using the 
+
+Goodman-Kruskal Gamma ( γ) statistic. For each of the 300 evaluation triples (comprising 900 to-tal pairs across the three generators), we calculate the consistency of metric-induced pairwise order-ings against human preferences. As shown in Fig-ure 3 (right), the rubric-based evaluator achieves a strong directional agreement of γ = 0 .7574 . This substantially exceeds Aesthetic ( γ = 0 .5465 ) and CLIP ( γ = 0 .5295 ). Gamma assesses consistency across all possible pairwise comparisons within each triple, indicating that the rubric serves as a highly reliable evaluator that aligns closely with human preferences .
+
+3.3 Instance-Aware Rubric Generation 
+
+Designing a faithful reward R(·) without paired ground truth is the central question raised by the MDP above. As established in Section 3.2, scalar metrics (CLIP, Aesthetic, HPS) compress multi-dimensional visual quality into an opaque score and are unreliable on stylized vector con-tent. To bypass this, RULER elicits tailored eval-uation criteria from a frontier model Mrub (e.g., 
+
+Claude-Opus-4.6 (Anthropic, 2026)) using only the unannotated instruction Q. We prompt Mrub 
+
+to produce a discrete, instance-aware rubric of six items grouped along three complementary axes. To preserve the open-ended solution space and pre-vent the rubric from degenerating into a reconstruc-tion checklist, items are specified at the level of design intentions rather than exact pixel or path constraints. Each item targets a single observable axis, is independently judgeable from the rendered image, and penalizes a distinct type of failure, so that the rubric covers the multi-dimensional notion of visual quality without redundancy: • Semantic Fidelity : high-level concept readability and the visual presence of major components, distinctive cues, and prompt-specific relations. • Visual Quality : silhouette and form refinement together with composition and canvas design. • Rendering Style : rendering finish and execution cleanliness coupled with style cohesion and de-signed visual interest. The full instance-aware descriptions, weighting scheme, and prompting templates are deferred to Appendix H. The rubric is formally defined as 
+
+CQ = {(ck, w k)}6
+
+> k=1
+
+, (1) where ck encapsulates the instance-aware title, de-scription, and continuous scoring guide for item k
+
+adapted to Q, and wk is its importance weight. 
+
+3.4 Policy Optimization Reward Calculation. At each RL step, the ren-dered image Igen = E(Y) is evaluated by a judge VLM Mjudge . Instead of querying for a holistic scalar score, we prompt Mjudge to follow the rubric 
+
+CQ and independently rate Igen on each item ck,producing a continuous satisfaction sk ∈ [0 , 1] 
+
+guided by an explicit scoring guide. The reward is computed as the normalized weighted average: 
+
+R(Igen ) = 
+
+P6 
+
+> k=1
+
+wksk
+
+P6 
+
+> k=1
+
+wk
+
+. (2) This yields a dense, multi-dimensional signal in place of an opaque scalar. 
+
+Group Relative Advantage. The instance-aware rubric provides fine-grained, multi-axis feedback for each instruction (Figure 2), so different rollouts in the same group often succeed unevenly across items and yield naturally diverse reward signals. This within-group diversity is precisely what Group Relative Policy Optimization (GRPO) (Shao et al., 2024; Guo et al., 2025) exploits: GRPO estimates advantages from the relative rewards of outputs within each group, making it a natural fit for our reward structure. For each instruction Q, we sam-ple G rollouts {Y i}Gi=1 from πθold , render each into 
+
+Ii = E(Yi), score it as Ri = R(Ii), and form group-normalized advantages 
+
+Ai = Ri − mean( {R j }Gj=1 )std( {R j }Gj=1 ) + ϵ . (3) Parameters are then updated by maximizing the clipped surrogate objective (Schulman et al., 2017):        
+
+> LGRPO (θ) = EQ
+> 1
+> G
+> GX
+> i=1
+> min  ρiAi,clip (ρi,1−ϵ,
+> 1 + ϵ)Ai
+> ],
+> (4)
+
+where ρi = πθ(Yi | Q)/π θold (Yi | Q) is the sequence-level importance ratio. Through this pro-cess, RULER iteratively refines its policy to maxi-mize satisfactions across semantic fidelity, visual quality, and rendering style. 
+
+4 Experiments 
+
+We structure our experimental analysis to answer the following research questions: RQ1: How does RULER compare against baselines on open-ended visual code generation? RQ2: Does an instance-aware rubric reward mechanism outperform exist-ing RL paradigms? RQ3: How do the individ-ual evaluation items and dimensions within the instance-aware rubrics contribute to the overall generation quality? RQ4: How robust is RULER across different base models and rubric generators? 
+
+RQ5: What qualitative differences emerge between RULER and existing baselines on representative generation cases? Table 2: Main results on MMSVG benchmarks. Our method achieves the best universal rubric scores on both benchmarks while maintaining competitive CLIP and HPS performance with significantly fewer tokens than optimization-based methods.                                                                                                      
+
+> Method MMSVG-Illustration MMSVG-Icon
+> CLIP ↑Aesth. ↑HPS ↑Rubric ↑Tokens CLIP ↑Aesth. ↑HPS ↑Rubric ↑Tokens
+> Diffusion-Optimized Methods
+> VectorFusion 0.313 4.930 0.265 0.611 31.4k 0.309 4.624 0.254 0.510 31.4k SVGDreamer 0.293 5.119 0.266 0.547 124.3k 0.276 4.850 0.253 0.413 124.3k
+> Foundation LLMs
+> Qwen3-8B 0.244 4.309 0.233 0.432 0.4k 0.266 4.424 0.234 0.395 0.3k Qwen3-32B 0.224 4.392 0.215 0.651 0.5k 0.228 4.514 0.218 0.681 0.3k DeepSeek-V3 0.285 4.653 0.251 0.686 0.5k 0.290 4.610 0.248 0.673 0.2k
+> Specialist Models
+> IconShop 0.236 4.480 0.219 0.262 2.6k 0.285 4.541 0.243 0.586 1.3k OmniSVG-8B 0.215 4.505 0.221 0.288 6.9k 0.272 4.629 0.244 0.565 5.7k JanusCoder-8B 0.228 4.323 0.227 0.390 1.0k 0.256 4.432 0.234 0.384 1.0k
+> RULER 0.249 4.859 0.246 0.693 2.0k 0.269 4.873 0.247 0.683 0.7k
+
+4.1 Experimental Setup Baselines. We compare RULER with three fam-ilies of baselines: (i) Diffusion-optimized meth-ods, including VectorFusion and SVGDreamer; 
+
+(ii) Foundation LLMs, including Qwen3-8B and Qwen3-32B and the much larger DeepSeek-V3; and (iii) SVG specialist models, including Icon-Shop, JanusCoder-8B and OmniSVG-8B. These baselines cover diverse modeling paradigms, model scales, and architectural designs. 
+
+Benchmarks. We evaluate on two benchmarks: MMSVG-Illustration for richer illustrative content and MMSVG-Icon for compact icon-style genera-tion (Yang et al., 2025b). 
+
+Metrics. Following prior work, we report tokens per sample (efficiency), CLIP Score (text–image alignment), Aesthetic Score (an aesthetic classifier score), and the Human Preference Score (HPS), keeping these conventional metrics for comparabil-ity despite their known limitations on evaluation 
+
+(Figure 1). To capture holistic visual quality, we additionally introduce a Rubric score that prompts GPT-5-mini (OpenAI, 2025) as an independent VLM-as-Judge to rate each rendered SVG against a shared universal rubric; we treat this Rubric score as the primary indicator of overall quality. More implementation details are in Appendix A. 
+
+4.2 Main Results (RQ1) 
+
+Table 2 reports the comparison against the three baseline families on two benchmarks. We summa-rize the main observations below. 
+
+Consistent improvements across baselines. 
+
+RULER outperforms every baseline family on the primary Rubric metric across both benchmarks. Against optimization-based methods such as Vec-torFusion and SVGDreamer, it achieves higher uni-versal Rubric scores while generating SVG code end-to-end without per-prompt iterative optimiza-tion. Against dedicated SVG specialists such as OmniSVG, IconShop and JanusCoder (Yang et al., 2025b; Wu et al., 2023a; Sun et al., 2025), it lifts the universal Rubric score from 0.390 to 0.693 on Illustration and from 0.586 to 0.683 on Icon, indi-cating that closing the open-ended quality gap re-quires more than scaling SVG-specific pretraining. Among open-source foundation LLMs of compa-rable scale, RULER clearly outperforms its own Qwen3-8B backbone (Rubric 0.432 → 0.693 on Illustration, 0.395 → 0.683 on Icon) and reaches vi-sual quality on par with the much larger DeepSeek-V3, demonstrating that an 8B model trained with instance-aware rubric rewards can rival models at a substantially larger scale. 
+
+Competitive performance on auxiliary metrics, top-tier on the rubric score. Although we ar-gue in Section 3.2 that CLIP and aesthetic scores Baseline Win Tie Loss Win Rate Qwen3-8B 122 14 14 89.7% Qwen3-32B 84 23 43 66.1% VectorFusion 73 13 64 53.3% OmniSVG 93 11 46 66.9% JanusCoder 139 6 5 96.5%   
+
+> Table 3: Blinded human preference results. Win rates compare RULER against each baseline on 150 MMSVG-Bench prompts and exclude ties.
+
+are individually insufficient for evaluating open-ended SVG code generation, RULER nevertheless achieves competitive CLIP, Aesthetic, and HPS scores across both benchmarks, ruling out the con-cern that our rubric gains come at the cost of these conventional axes. More importantly, the universal Rubric score—which jointly captures semantic fi-delity, visual quality, and rendering style—places RULER as the top performer, confirming that our approach performs better on the metric that aligns most closely with human judgments in our evalua-tion. 
+
+Human preference confirms the performance gains. To complement the automated evaluation, we conduct a blinded pairwise human preference study on 150 MMSVG-Bench prompts, comparing RULER with five representative baselines across foundation models, SVG specialists, and diffusion-optimized methods. As shown in Table 3, RULER achieves a non-tie win rate above 50% against ev-ery evaluated baseline, ranging from 53.3% against VectorFusion to 96.5% against JanusCoder. These results provide direct human evidence that the im-provements of RULER extend beyond automated metrics. The full annotation protocol is provided in Appendix D.2. 
+
+4.3 Reward Design Analysis (RQ2) 
+
+To isolate the contribution of our reward design, we fix the base model (Qwen3-8B) and the GRPO op-timizer, and vary only the reward signal across four configurations. Zero-Shot denotes the base model without any RL post-training. C+A+H RL opti-mizes a weighted combination of CLIP, Aesthetic, and HPS scores, representing a typical multi-metric scalar reward. Universal Rubric RL replaces this scalar with our universal evaluation rubric, apply-ing an identical, query-agnostic checklist to every sample. RULER is our full method, which gen-erates a tailored rubric for each query. Results on MMSVG-Illustration and MMSVG-Icon are re-ported in Table 4. 
+
+RULER delivers the strongest balanced gains. 
+
+Our full method achieves the highest Rubric scores across both benchmarks, reaching 0.693 on Illustra-tion and 0.683 on Icon, compared with 0.432 and 0.395 for zero-shot. It also improves CLIP, HPS, and Aesthetic over the base model, yielding the strongest overall performance among the evaluated RL reward designs. This indicates that grounding each criterion in the specific query provides a fine-grained and prompt-aligned optimization signal. 
+
+Universal rubrics improve steadily but lack instance-level granularity. Universal Rubric RL delivers consistent gains over the zero-shot base-line across multiple axes, lifting Rubric to 0.660 
+
+on Illustration and 0.591 on Icon while keeping CLIP and HPS healthy. This validates the bene-fit of multi-axis, dimension-decomposed feedback without the severe reward hacking observed with C+A+H RL. However, because the same generic checklist is applied uniformly to every query, the reward signal cannot reflect the prompt-specific notions of correctness that distinguish, e.g. , a mini-malist icon from a richly detailed illustration. The resulting optimization granularity remains coarser than that of an instance-aware rubric, leaving rubric gaps of +0 .033 on Illustration and +0 .092 on Icon relative to our full method. 
+
+Conventional metrics collapse into reward hack-ing. C+A+H RL inflates the Aesthetic score to 6.697 on Illustration and 6.210 on Icon—far above all other variants—but degrades other important dimensions: CLIP drops from 0.244 to 0.196 on Illustration, and Rubric collapses from 0.395 to 
+
+0.262 on Icon, even falling below the zero-shot baseline. We observe that this hacking is espe-cially severe on Icon: in an attempt to fool the aesthetic classifier, the policy generates densely overlapping strokes and repeated decorative paths, blowing up the average sequence length to 6.3ktokens (vs. 0.3k for zero-shot) while degrading the actual visual quality. This illustrates a character-istic failure mode of scalar multi-metric rewards: without dimension-aware decomposition, the opti-mizer concentrates probability mass on whichever signal is easiest to inflate, exactly the pathology that motivates our rubric-based design. Table 4: Comparison of different RL reward designs on MMSVG benchmarks. C, A and H denote CLIP, Aesthetic and HPS, respectively. 
+
+Method MMSVG-Illustration MMSVG-Icon 
+
+CLIP ↑ Aesth. ↑ HPS ↑ Rubric ↑ Tokens CLIP ↑ Aesth. ↑ HPS ↑ Rubric ↑ Tokens Zero-Shot 0.244 4.309 0.233 0.432 0.4k 0.266 4.424 0.234 0.395 0.3k C+A+H RL 0.196 6.697 0.235 0.464 0.7k 0.232 6.210 0.239 0.262 6.3k Universal Rubric RL 0.244 4.813 0.241 0.660 0.7k 0.266 4.793 0.244 0.591 0.3k 
+
+RULER 0.249 4.859 0.246 0.693 2.0k 0.269 4.873 0.247 0.683 0.7k Full Rubric w/o semantic w/o visual w/o rendering Rubric-S 0.40 0.45 0.50 0.55 0.60 0.65 0.70  
+
+> Rubric Score
+> 0.69 -10.14% -16.32% -13.53% -22.74% 0.68 -4.64% -9.35% -7.66% -31.73%
+> MMSVG-Illustration MMSVG-Icon
+
+Figure 4: Ablation of rubric design on MMSVG-Illustration and MMSVG-Icon. 
+
+4.4 Ablation Study (RQ3) 
+
+We ablate two aspects of our rubric design across both MMSVG benchmarks: which evaluation axes drive the final policy, and how sensitive the frame-work is to the rubric-generation prompt itself. All variants share the same base model (Qwen3-8B), GRPO optimizer, and training hyperparameters. Three variants— w/o Semantic , w/o Visual , and 
+
+w/o Rendering —zero out the corresponding pair of items (items 1–2, 3–4, 5–6, respectively) during reward aggregation while keeping the remaining items intact. A fourth variant, Rubric-S , replaces our default rubric-generation prompt with a stricter, structurally focused alternative that removes the stylistic axis and generates only five rubric items. We further append a fixed text-hint penalty item to this variant, resulting in six scoring items in total. The Rubric-S generation prompt and fixed penalty item are provided in Appendix H.4. Rubric scores for all variants are reported in Figure 4. 
+
+Effectiveness of the three rubric axes. Re-moving Visual Quality causes the largest decline (0.693 → 0.580 ), indicating that silhouette, form, and composition items contribute the most non-trivial training signal and are where RL helps the policy most. Removing Rendering yields the second-largest drop ( → 0.599 ), confirming that craftsmanship items provide complementary diag-nostic signal not captured by the other two axes. Removing Semantic Fidelity produces the smallest decrease ( → 0.623 )—plausibly because the base Qwen3-8B already exhibits strong text-image align-ment from pretraining, so the marginal gain from explicitly rewarding semantic items is smaller than for the visual and stylistic axes that pretraining cov-ers less directly. These results show that all axes provide complementary training signals and that the dimensional decomposition is not redundant. 
+
+Sensitivity to rubric design. Despite its stricter scoring criteria, Rubric-S triggers a previously un-observed text-hint hacking behavior and drops the universal Rubric to 0.536 —a larger decline than any single-axis ablation above. The policy increas-ingly embeds readable prompt-related text inside the rendered SVGs ( e.g. , the literal query word rendered as a stylized label) despite the explicit text-hint penalty, suggesting that under this stricter, structurally focused rubric specification, textual cues remain an easy shortcut for satisfying the re-sulting criteria. This finding highlights a subtle property of rubric design: complementary axes are at least as important as scoring strictness , and changing the rubric-generation specification can re-open degenerate optimization channels even when the resulting criteria are more strictly defined. 
+
+4.5 Robustness Analysis (RQ4) 
+
+To examine whether the effectiveness of RULER depends on a particular base model or rubric gen-erator, we evaluate the framework across different base-model scales and rubric sources while keeping the remaining training setup unchanged. 
+
+Robustness across base models. We replace the default Qwen3-8B policy with Qwen3-4B while using the same Claude-Opus-4.6-generated rubrics. As shown in Table 5, RULER-4B consistently im-proves over Qwen3-4B across all metrics, increas-ing the universal Rubric score from 0.372 ± 0.017 
+
+to 0.561 ± 0.008 on Illustration and from 0.338 ±
+
+0.017 to 0.559 ± 0.006 on Icon. RULER-8B fur-Table 5: Robustness across base-model scales on MMSVG benchmarks. We compare RULER-4B and RULER-8B with their corresponding base models and representative baselines. Results are reported as mean ± standard deviation over five runs. 
+
+Method MMSVG-Illustration MMSVG-Icon 
+
+CLIP ↑ Aesth. ↑ HPS ↑ Rubric ↑ CLIP ↑ Aesth. ↑ HPS ↑ Rubric ↑
+
+Qwen3-4B 0.240 ±0.002 4.227 ±0.034 0.231 ±0.001 0.372 ±0.017 0.262 ±0.002 4.402 ±0.021 0.232 ±0.001 0.338 ±0.017 
+
+RULER-4B 0.244 ±0.001 4.616 ±0.020 0.241 ±0.001 0.561 ±0.008 0.268 ±0.001 4.778 ±0.019 0.244 ±0.000 0.559 ±0.006 
+
+Qwen3-8B 0.249 ±0.003 4.299 ±0.015 0.234 ±0.001 0.440 ±0.011 0.266 ±0.003 4.434 ±0.015 0.234 ±0.001 0.394 ±0.016 
+
+Qwen3-32B 0.265 ±0.004 4.395 ±0.035 0.241 ±0.000 0.585 ±0.005 0.279 ±0.002 4.483 ±0.022 0.242 ±0.001 0.566 ±0.026 
+
+JanusCoder 0.221 ±0.018 4.357 ±0.053 0.224 ±0.006 0.313 ±0.109 0.249 ±0.006 4.453 ±0.031 0.230 ±0.003 0.324 ±0.040 
+
+RULER-8B 0.247 ±0.002 4.872 ±0.015 0.246 ±0.000 0.692 ±0.007 0.269 ±0.001 4.868 ±0.020 0.247 ±0.000 0.662 ±0.016 
+
+Table 6: Robustness across rubric generators on MMSVG-Icon. RULER uses the same Qwen3-8B pol-icy with different rubric generators. Results are reported as mean ± standard deviation over five runs. 
+
+Method Rubric Generator CLIP ↑ Aesth. ↑ HPS ↑ Rubric ↑
+
+Qwen3-8B – 0.266 ±0.003 4.434 ±0.015 0.234 ±0.001 0.394 ±0.016 
+
+RULER Claude-Opus-4.6 0.269 ±0.001 4.868 ±0.020 0.247 ±0.000 0.662 ±0.016 
+
+GPT-5.5 0.278 ±0.001 4.708 ±0.016 0.244 ±0.000 0.646 ±0.007 
+
+ther achieves 0.692 ± 0.007 and 0.662 ± 0.016 ,respectively, remaining ahead of the substantially larger Qwen3-32B under the same evaluation set-ting ( 0.585 ± 0.005 and 0.566 ± 0.026 ). These re-sults show that the gains of RULER persist across different base-model scales and remain stable over repeated runs. 
+
+Robustness across rubric generators. We re-place Claude-Opus-4.6 with GPT-5.5 (Anthropic, 2026; OpenAI, 2026) for rubric generation while keeping the Qwen3-8B policy and the remaining training setup unchanged. As shown in Table 6, both variants consistently improve over the Qwen3-8B base model across all four metrics. In particular, the universal Rubric score reaches 0.662 ± 0.016 
+
+with Claude-Opus-4.6 and 0.646 ±0.007 with GPT-5.5, compared with 0.394 ± 0.016 for the base model. These results indicate that the effectiveness of instance-aware rubric rewards does not depend on a particular rubric generator. 
+
+4.6 Qualitative Analysis (RQ5) 
+
+Figure 5 compares RULER with four baselines on representative icon-style prompts. RULER better preserves prompt-specific details, including eye-lashes, honeycomb structures, northeast orienta-tion, starburst shapes, and concentric rings, while producing richer colors and more coherent compo-sitions. Several baselines fail to render or omit key details. These observations are consistent with our instance-aware rubric design, which assesses se-mantic fidelity, visual quality, and rendering style. A stylized  eye  icon  with  eyelashes 
+
+A hexagonal  beehive  pattern 
+
+JanusCoder  OmniSVG  DeepSeek -V3  Qwen3 -8B  Ours 
+
+A compass  needle  pointing  northeast 
+
+A starburst  explosion  icon 
+
+A target  with  concentric  rings                       
+
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: CLIP A: Aesthetic H: HPS R: Rubric
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.31 A: 4.63 H: 0.25
+> R: 0.78
+> C: 0.34 A: 4.53 H: 0.25
+> R: 0.82
+> C: 0.28 A: 4.45 H: 0.21
+> R: 0.45
+> C: 0.33 A: 5.01 H: 0.24
+> R: 0.82
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: —A: —H: —
+> R: —
+> C: 0.25 A: 5.35 H: 0.25
+> R: 0.72
+> C: 0.28 A: 4.28 H: 0.24
+> R: 0.75
+> C: 0.29 A: 4.18 H: 0.24
+> R: 0.22
+> C: 0.35 A: 4.88 H: 0.28
+> R: 0.88
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.24 A: 4.42 H: 0.23
+> R: 0.28
+> C: 0.23 A: 5.10 H: 0.25
+> R: 0.58
+> C: 0.29 A: 4.77 H: 0.25
+> R: 0.90
+> C: 0.28 A: 4.23 H: 0.23
+> R: 0.82
+> C: 0.30 A: 5.03 H: 0.27
+> R: 0.94
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.30 A: 5.02 H: 0.23
+> R: 0.50
+> C: 0.32 A: 4.76 H: 0.24
+> R: 0.75
+> C: 0.34 A: 4.32 H: 0.24
+> R: 0.75
+> C: 0.30 A: 4.33 H: 0.26
+> R: 0.92
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.26 A: 4.47 H: 0.23
+> R: 0.62
+> C: 0.28 A: 4.91 H: 0.26
+> R: 0.82
+> C: 0.3 4A: 4.80 H: 0.28
+> R: 0.94
+> C: 0.35 A: 4.53 H: 0.28
+> R: 0.95
+> C: 0.28 A: 5.20 H: 0.27
+> R: 0.92
+> C: —A: —H: —
+> R: —
+> C: —A: —H: —
+> R: —
+
+Figure 5: Qualitative comparison of scalable vector graphics generation between RULER and four base-lines. 
+
+Relative to Qwen3-8B, RULER shows clear qual-itative gains, with visual quality comparable to DeepSeek-V3 on the illustrated examples. 
+
+5 Conclusion 
+
+We first established that evaluating open-ended SVGs with multi-axis rubrics aligns closely with human judgments, achieving strong sample-level correlation and pairwise ranking agreement. Build-ing on this, we introduced RULER, which con-verts instance-aware rubrics into dense rewards op-timized via GRPO. Across MMSVG benchmarks, RULER mitigates reward hacking, outperforms scalar-reward RL baselines and dedicated SVG spe-cialists, and remains consistently effective across different base models and rubric generators. Limitations 
+
+RULER improves reward design for open-ended SVG generation, but several limitations remain. First, the framework depends on two external mod-els: a frontier model to generate the instance-aware rubric and a VLM judge to score rendered outputs. As a result, reward quality may inherit their bi-ases, preferences, and failure modes. Although the rubric is more faithful than scalar metrics in our set-ting, the judge can still overvalue superficial cues or underweight subtle stylistic qualities, especially on prompts that fall outside the training distribution. Second, our method increases the computational cost of RL. Each training step requires rendering sampled SVGs and querying a judge VLM to score each rendered output against its instance-specific rubric, which is substantially more expensive than using lightweight scalar rewards such as CLIP or heuristic code-based signals. This cost may limit scalability to larger models, longer rollouts, or broader hyperparameter searches. Third, while instance-aware rubrics preserve open-endedness better than paired-reference objectives, they still impose a particular decomposition of quality into semantic, visual, and stylistic axes. That decom-position is useful in our benchmarks, but it may not fully capture all valid artistic intents or domain-specific preferences. Extending rubric design to interactive, human-steerable, or domain-adaptive settings remains future work. 
+
+Acknowledgments 
+
+This work was supported by the Ant Group Re-search Intern Program. We also sincerely thank Zhaoyang Zhang, Cong Chen, and Hailong Sun for their valuable discussions, support, and helpful feedback. 
+
+References 
+
+Anthropic. 2026. Claude opus 4.6 system card. Shuai Bai, Yuxuan Cai, Ruizhe Chen, Keqin Chen, Xionghui Chen, Zesen Cheng, Lianghao Deng, Wei Ding, Chang Gao, Chunjiang Ge, et al. 2025. Qwen3-vl technical report. arXiv preprint arXiv:2511.21631 .Baolong Bi, Shenghua Liu, Yiwei Wang, Siqian Tong, Lingrui Mei, Yuyao Ge, Yilong Xu, Jiafeng Guo, and Xueqi Cheng. 2025. Reward and guidance through rubrics: Promoting exploration to improve multi-domain reasoning. arXiv preprint arXiv:2511.12344 .Alexandre Carlier, Martin Danelljan, Alexandre Alahi, and Radu Timofte. 2020. Deepsvg: A hierarchical generative network for vector graphics animation. 
+
+Advances in Neural Information Processing Systems ,33:16351–16361. Yamei Chen, Haoquan Zhang, Yangyi Huang, Zeju Qiu, Kaipeng Zhang, Yandong Wen, and Weiyang Liu. 2025a. Symbolic graphics programming with large language models. arXiv preprint arXiv:2509.05208 .Yanzhe Chen, Kevin Qinghong Lin, and Mike Zheng Shou. 2025b. Code2video: A code-centric paradigm for educational video generation. arXiv preprint arXiv:2510.01174 .Gheorghe Comanici, Eric Bieber, Mike Schaekermann, Ice Pasupat, Noveen Sachdeva, Inderjit Dhillon, Mar-cel Blistein, Ori Ram, Dan Zhang, Evan Rosen, et al. 2025. Gemini 2.5: Pushing the frontier with ad-vanced reasoning, multimodality, long context, and next generation agentic capabilities. arXiv preprint arXiv:2507.06261 .Leo Gao, John Schulman, and Jacob Hilton. 2023. Scal-ing laws for reward model overoptimization. In In-ternational conference on machine learning , pages 10835–10866. PMLR. Dhruba Ghosh, Hannaneh Hajishirzi, and Ludwig Schmidt. 2023. Geneval: An object-focused frame-work for evaluating text-to-image alignment. Ad-vances in Neural Information Processing Systems ,36:52132–52152. Anisha Gunjal, Anthony Wang, Elaine Lau, Vaskar Nath, Yunzhong He, Bing Liu, and Sean Hendryx. 2025. Rubrics as rewards: Reinforcement learn-ing beyond verifiable domains. arXiv preprint arXiv:2507.17746 .Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Peiyi Wang, Qihao Zhu, Runxin Xu, Ruoyu Zhang, Shirong Ma, Xiao Bi, et al. 2025. Deepseek-r1: In-centivizing reasoning capability in llms via reinforce-ment learning. arXiv preprint arXiv:2501.12948 .Helia Hashemi, Jason Eisner, Corby Rosset, Benjamin Van Durme, and Chris Kedzie. 2024. Llm-rubric: A multidimensional, calibrated approach to automated evaluation of natural language texts. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) ,pages 13806–13834. Qijia He, Xunmei Liu, Hammaad Memon, Ziang Li, Zixian Ma, Jaemin Cho, Jason Ren, Daniel S Weld, and Ranjay Krishna. 2026. Vfig: Vectorizing com-plex figures in svg with vision-language models. 
+
+Preprint , arXiv:2603.24575. Jack Hessel, Ari Holtzman, Maxwell Forbes, Ronan Le Bras, and Yejin Choi. 2021. Clipscore: Areference-free evaluation metric for image captioning. In Proceedings of the 2021 conference on empirical methods in natural language processing , pages 7514– 7528. Ajay Jain, Amber Xie, and Pieter Abbeel. 2023. Vector-fusion: Text-to-svg by abstracting pixel-based diffu-sion models. In Proceedings of the IEEE/CVF Con-ference on Computer Vision and Pattern Recognition ,pages 1911–1920. Jinke Li, Jiarui Yu, Chenxing Wei, Hande Dong, Qiang Lin, Liangjing Yang, Zhicai Wang, and Yanbin Hao. 2025. Unisvg: A unified dataset for vector graphic understanding and generation with multimodal large language models. In Proceedings of the 33rd ACM In-ternational Conference on Multimedia , pages 13156– 13163. Tzu-Mao Li, Michal Lukáˇ c, Michaël Gharbi, and Jonathan Ragan-Kelley. 2020. Differentiable vector graphics rasterization for editing and learning. ACM Transactions on Graphics (TOG) , 39(6):1–15. Kevin Qinghong Lin, Yuhao Zheng, Hangyu Ran, Dan-tong Zhu, Dongxing Mao, Linjie Li, Philip Torr, and Alex Jinpeng Wang. 2025. Vcode: a multimodal coding benchmark with svg as symbolic visual repre-sentation. arXiv preprint arXiv:2511.02778 .Aixin Liu, Bei Feng, Bing Xue, Bingxuan Wang, Bochao Wu, Chengda Lu, Chenggang Zhao, Chengqi Deng, Chenyu Zhang, Chong Ruan, et al. 2024. Deepseek-v3 technical report. arXiv preprint arXiv:2412.19437 .OpenAI. 2025. GPT-5 System Card. OpenAI. 2026. GPT-5.5 System Card. Alexander Pan, Kush Bhatia, and Jacob Steinhardt. 2022. The effects of reward misspecification: Map-ping and mitigating misaligned models. arXiv preprint arXiv:2201.03544 .Juan Rodriguez, Haotian Zhang, Abhay Puri, Tianyang Zhang, Rishav Pramanik, Meng Lin, Xiaoqing Xie, Marco Terral, Darsh Kaushik, Aly Shariff, et al. 2026. Vectorgym: A multitask benchmark for svg code generation, sketching, and editing. arXiv preprint arXiv:2603.29852 .Juan A Rodriguez, Abhay Puri, Shubham Agarwal, Is-sam H Laradji, Pau Rodriguez, Sai Rajeswar, David Vazquez, Christopher Pal, and Marco Pedersoli. 2025a. Starvector: Generating scalable vector graph-ics code from images and text. In Proceedings of CVPR .Juan A Rodriguez, Haotian Zhang, Abhay Puri, Aarash Feizi, Rishav Pramanik, Pascal Wichmann, Arnab Mondal, Mohammad Reza Samsami, Rabiul Awal, Perouz Taslakian, et al. 2025b. Rendering-aware reinforcement learning for vector graphics generation. 
+
+arXiv preprint arXiv:2505.20793 .John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. 2017. Proxi-mal policy optimization algorithms. arXiv preprint arXiv:1707.06347 .Zhihong Shao, Peiyi Wang, Qihao Zhu, Runxin Xu, Junxiao Song, Xiao Bi, Haowei Zhang, Mingchuan Zhang, YK Li, Yang Wu, et al. 2024. Deepseekmath: Pushing the limits of mathematical reasoning in open language models. arXiv preprint arXiv:2402.03300 .Joar Skalse, Nikolaus Howe, Dmitrii Krasheninnikov, and David Krueger. 2022. Defining and characteriz-ing reward gaming. Advances in neural information processing systems , 35:9460–9471. Qiushi Sun, Jingyang Gong, Yang Liu, Qiaosheng Chen, Lei Li, Kai Chen, Qipeng Guo, Ben Kao, and Fei Yuan. 2025. Januscoder: Towards a foundational visual-programmatic interface for code intelligence. 
+
+arXiv preprint arXiv:2510.23538 .Kimi Team, Tongtong Bai, Yifan Bai, Yiping Bao, SH Cai, Yuan Cao, Y Charles, HS Che, Cheng Chen, Guanduo Chen, et al. 2026. Kimi k2. 5: Visual agen-tic intelligence. arXiv preprint arXiv:2602.02276 .Tencent HY Frontier Team. 2026. Ui-mate: Advancing open-weight foundation gui agents with in-context demonstrations. arXiv preprint arXiv:2608.15930 .Feiyu Wang, Zhiyuan Zhao, Yuandong Liu, Da Zhang, Junyu Gao, Hao Sun, and Xuelong Li. 2025. Svgen: Interpretable vector graphics generation with large language models. In Proceedings of the 33rd ACM International Conference on Multimedia , pages 9608– 9617. Zhou Wang, Alan C Bovik, Hamid R Sheikh, and Eero P Simoncelli. 2004. Image quality assessment: from error visibility to structural similarity. IEEE transac-tions on image processing , 13(4):600–612. Ronghuan Wu, Wanchao Su, Kede Ma, and Jing Liao. 2023a. Iconshop: Text-guided vector icon synthesis with autoregressive transformers. ACM Transactions on Graphics (TOG) , 42(6):1–14. Xiaoshi Wu, Yiming Hao, Keqiang Sun, Yixiong Chen, Feng Zhu, Rui Zhao, and Hongsheng Li. 2023b. Hu-man preference score v2: A solid benchmark for eval-uating human preferences of text-to-image synthesis. 
+
+arXiv preprint arXiv:2306.09341 .Ximing Xing, Yandong Guan, Jing Zhang, Dong Xu, and Qian Yu. 2025. Reason-svg: Hybrid reward rl for aha-moments in vector graphics generation. arXiv preprint arXiv:2505.24499 .Ximing Xing, Haitao Zhou, Chuang Wang, Jing Zhang, Dong Xu, and Qian Yu. 2024. Svgdreamer: Text guided svg generation with diffusion model. In Pro-ceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 4546–4555. An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chang Gao, Chengen Huang, Chenxu Lv, et al. 2025a. Qwen3 technical report. arXiv preprint arXiv:2505.09388 .Yiying Yang, Wei Cheng, Sijin Chen, Xianfang Zeng, Fukun Yin, Jiaxu Zhang, Liao Wang, Gang Yu, Xingjun Ma, and Yu-Gang Jiang. 2025b. OmniSVG: A unified scalable vector graphics generation model. In Advances in Neural Information Processing Sys-tems , volume 38, pages 113670–113696. Yuhao Zheng, Li’an Zhong, Yi Wang, Rui Dai, Kaikui Liu, Xiangxiang Chu, Linyuan Lv, Philip Torr, and Kevin Qinghong Lin. 2026. Code2world: A gui world model via renderable code generation. arXiv preprint arXiv:2602.09856 .
+
+A Training Details 
+
+We train the policy with Group Relative Policy Optimization (GRPO) using the VERL framework and the vLLM rollout engine. Unless otherwise specified, the policy backbone is Qwen3-8B, and training uses the prompt–rubric pairs described in Appendix B. We disable thinking mode in the chat template, set the maximum prompt length to 512 tokens and the maximum response length to 4096 tokens, and sample eight rollouts per prompt with a temperature of 1.0. We use a training batch size of 128, a PPO mini-batch size of 64, and a PPO micro-batch size of 8 per GPU. The learning rate is 
+
+1 × 10 −6, and the entropy coefficient is 0.001. We do not use KL regularization in either the reward or the actor loss. The rollout model uses bfloat16 precision, ten-sor parallelism of 8, gradient checkpointing, and remove-padding optimization. The maximum to-ken budget per GPU is 65,536 for log-probability computation. All experiments are conducted on one node with 8 H800 80 GB GPUs. 
+
+B Dataset Construction 
+
+We construct the RL training data from the training splits of MMSVG-Icon and MMSVG-Illustration. We randomly sample 20K prompts from MMSVG-Icon and 12K prompts from MMSVG-Illustration. For each prompt, we generate an instance-aware rubric using the template in Appendix H.1. The generated rubric is paired with its source prompt and serves as the reward specification during RL training. We apply both structural and quality filtering to the generated rubrics. We first discard cases in which rubric generation fails or the returned rubric does not satisfy the required format or item struc-ture. We then perform a rubric-quality check using the ideal SVG generated together with each rubric. Specifically, the ideal SVG is rendered and evalu-ated by Qwen3-VL-8B (Bai et al., 2025) against its corresponding rubric using the same item-level scoring and normalized weighted aggregation used during RL reward computation. Rubrics whose ideal SVG receives a reward below 0.9 are removed. This step filters out rubrics that are poorly aligned with the ideal SVG used during rubric construction. After filtering, the final training sets contain 19,531 prompt–rubric pairs for MMSVG-Icon and 11,206 for MMSVG-Illustration, for a total of 30,737 training examples. The MMSVG training and test prompts are generated separately, reducing the risk of direct prompt-level overlap between RL training and eval-uation. Because both splits remain within the same benchmark distribution, however, we do not treat this setting as a domain-shifted out-of-distribution evaluation. 
+
+C Reward Computation and SVG Rendering 
+
+The reward is produced by a rubric-based VLM judge. We use Qwen3-VL-8B as the frozen judge and serve it through multiple OpenAI-compatible endpoints for parallel evaluation. For each gener-ated SVG, we first render the code into an image and then provide the judge with the original text prompt, the rendered candidate, and the correspond-ing instance-aware rubric. The judge scores the six rubric items independently, producing item-level satisfaction scores si ∈ [0 , 1] . The final reward is the normalized weighted average 
+
+R =
+
+P6 
+
+> i=1
+
+wisi
+
+P6 
+
+> i=1
+
+wi
+
+,
+
+where wi denotes the weight of the i-th rubric item. For each prompt, the policy samples G = 8 roll-outs. Every rollout is rendered with CairoSVG and scored independently by Qwen3-VL-8B. The resulting rewards are normalized within the roll-out group and used to form the relative advantages for the GRPO update. The judge remains fixed throughout training. When comparing reward de-signs, the policy backbone, optimizer, and other training settings are held fixed; the Qwen3-VL-8B judge is also fixed across the rubric-based reward variants. The per-endpoint concurrency is 32, and the judge timeout is 180 seconds. Blank renderings are detected by comparing the rendered image with a white image using a mean-squared-error thresh-old of 10 −4.The standard RULER reward consists only of the six instance-aware rubric items and does not in-clude an auxiliary text-hint penalty. Readable-text shortcuts are discouraged within the rubric itself by requiring the prompt concept to be communicated visually and by penalizing text shortcuts under the rendering-quality criterion. In contrast, the Rubric-S ablation uses a different five-item rubric together with an additional fixed text-hint penalty item with weight −2, as detailed in Appendix F.2. All generated SVGs are rendered with CairoSVG 2.9.0 at 512 × 512 resolution on a white background before reward evaluation and metric computation. Automated metrics are aggregated over successfully rendered samples. We use the same rendering pipeline for RULER and all baselines and report model-specific render success rates in Appendix E.2. 
+
+D Human Evaluation 
+
+We conduct two human studies with complemen-tary purposes. The first evaluates the alignment between automated metrics and human judgments, while the second directly compares the final outputs of RULER with representative baselines. 
+
+D.1 Human Alignment Study 
+
+To assess how well different automated metrics re-flect human judgments of SVG quality, we sample 300 prompts, evenly divided between MMSVG-Icon and MMSVG-Illustration. For each prompt, we collect one output from Qwen3-8B, Qwen3-32B, and Claude-Opus-4.6, yielding 900 rendered SVGs in total. Ten human annotators participate in the anno-tation. The rendered outputs are anonymized and randomly assigned to annotators. Each sample is assigned a single holistic quality score from 0 to 100, with annotators considering prompt fidelity, visual quality, composition, rendering quality, and stylistic coherence when making the judgment. Af-ter the initial annotation, three validators review all assigned scores and rescore cases judged to be unreasonable. For the automated rubric-based evaluation in this study, we use GPT-5-mini with a shared universal rubric. This evaluator is separate from the reward model used during RULER training: training uses Qwen3-VL-8B to score prompt-specific instance-aware rubrics, whereas the human-alignment anal-ysis uses GPT-5-mini with the same universal eval-                        
+
+> Comparison Win Tie Loss Win Rate RULER vs. Qwen3-8B 122 14 14 89.7% RULER vs. Qwen3-32B 84 23 43 66.1% RULER vs. VectorFusion 73 13 64 53.3% RULER vs. OmniSVG 93 11 46 66.9% RULER vs. JanusCoder 139 6596.5%
+> Table 7: Blinded pairwise human preference results on 150 MMSVG-Bench prompts for each baseline compar-ison. Win rates are computed after excluding ties.
+
+uation rubric for all samples. Using the human scores as the reference, the universal Rubric score achieves a Spearman rank correlation of ρ = 0 .7929 , compared with 0.6051 
+
+for Aesthetic and 0.5518 for CLIP. For pairwise ranking agreement, the corresponding Goodman– Kruskal Gamma is γ = 0 .7574 , compared with 
+
+0.5465 for Aesthetic and 0.5295 for CLIP. 
+
+D.2 Final-Output Human Preference Study 
+
+We further conduct a blinded pairwise preference study to directly evaluate the final outputs of RULER. We sample 150 prompts from MMSVG-Bench and compare the RULER output for each prompt with the corresponding output from five representative baselines: Qwen3-8B, Qwen3-32B, VectorFusion, OmniSVG, and JanusCoder. This produces 750 pairwise comparisons in total. Three human annotators participate in the study. The 750 comparisons are randomly assigned among the evaluators, with each pair evaluated once. For each comparison, the evaluator is shown only the text prompt and two rendered SVG can-didates. Model identities are hidden, and the left– right order of the candidates is randomized. The evaluator selects whether RULER wins, ties, or loses based on prompt fidelity and overall visual quality. If one candidate fails to render while the other renders successfully, the rendering failure is counted as a loss. We report the non-tie win rate as 
+
+WinRate = Win Win + Loss ,
+
+with ties excluded from the denominator. RULER achieves a non-tie win rate above 50% against all five evaluated baselines. Method MMSVG-Icon MMSVG-Illustration RULER 99.3% 100.0% OmniSVG 99.3% 99.3% DeepSeek-V3 100.0% 99.3% JanusCoder 68.0% 68.7% Qwen3-8B 94.7% 89.3% Qwen3-32B 99.3% 100.0% IconShop 100.0% 100.0% VectorFusion 100.0% 100.0% SVGDreamer 100.0% 100.0%  
+
+> Table 8: Render success rates under the single-run benchmark evaluation.
+
+E Additional Evaluation and Robustness Analyses 
+
+E.1 Stability Across Inference Runs 
+
+The main benchmark results are obtained from a single inference run. To quantify sensitivity to decoding randomness, we additionally evaluate RULER and representative autoregressive baselines over five independently seeded inference runs. The resulting mean and standard deviation are reported in Table 5. Across the five runs, RULER achieves a Rubric score of 0.692 ±0.007 on MMSVG-Illustration and 
+
+0.662 ± 0.016 on MMSVG-Icon, outperforming both its Qwen3-8B backbone and the larger Qwen3-32B model on this metric. The small run-to-run variation further shows that the improvement is stable across decoding seeds. 
+
+E.2 Render Success Rates 
+
+Because automated metrics are computed over suc-cessfully rendered outputs, we separately report render success rates for all methods in Table 8. Un-der the single-run setting used for the main bench-mark comparison, each method generates one out-put for each of 150 MMSVG-Icon prompts and 150 MMSVG-Illustration prompts. RULER successfully renders 99.3% of Icon sam-ples and all Illustration samples. Thus, its aggre-gate metric values are affected by very few ex-cluded samples, while the reported success rates provide additional context for methods with more frequent rendering failures. 
+
+E.3 Policy-Scale Analysis 
+
+We further instantiate RULER with a smaller Qwen3-4B policy to examine the effect of policy scale. We compare RULER-4B and RULER-8B with their corresponding base models and represen-tative baselines in Table 5. To distinguish the two policy scales in this analysis, we denote the stan-dard Qwen3-8B-based model as RULER-8B and the smaller variant as RULER-4B. All results are averaged over five independently seeded inference runs. RULER improves both policy backbones sub-stantially on the Rubric metric. For Qwen3-4B, the score increases from 0.372 to 0.561 on Illustration and from 0.338 to 0.559 on Icon; for Qwen3-8B, it increases from 0.440 to 0.692 and from 0.394 to 
+
+0.662 , respectively. RULER-4B also approaches the much larger Qwen3-32B on Rubric ( 0.561 vs. 
+
+0.585 on Illustration and 0.559 vs. 0.566 on Icon), while RULER-8B exceeds it on both benchmarks. These results show that the gains from instance-aware rubric rewards are retained when the policy is scaled down from 8B to 4B. 
+
+E.4 Rubric Generator Analysis 
+
+The default training rubrics are generated with Claude-Opus-4.6. We additionally generate a sepa-rate rubric set with GPT-5.5 for MMSVG-Icon and retrain the same Qwen3-8B policy under otherwise identical settings. Table 9 places the two RULER variants alongside the same five-run autoregressive baselines used above. Both RULER rows use the Qwen3-8B policy; only the model used to generate the training rubrics is changed. Both rubric generators yield RULER models that substantially outperform the Qwen3-8B backbone on Rubric ( 0.394 ) and also exceed Qwen3-32B (0.566 ). The GPT-5.5-generated rubrics achieve a higher CLIP score, whereas the Claude-Opus-4.6-generated rubrics perform better on Aesthetic, HPS, and Rubric ( 0.662 vs. 0.646 ). The comparable per-formance of the two variants indicates that RULER is not tied to a single rubric generator. 
+
+E.5 Comparison with Iterative Diffusion Methods 
+
+RULER and diffusion-optimized SVG methods use fundamentally different inference procedures. VectorFusion performs iterative optimization sepa-rately for each input prompt, requiring an average of 72.1 minutes per sample and producing SVGs with an average length of 31.4K tokens in our eval-uation. In contrast, RULER generates SVG code end-to-end in a single autoregressive pass. Despite avoiding prompt-specific iterative opti-mization, RULER achieves higher universal Rubric scores on both benchmarks: 0.683 versus 0.510 
+
+on MMSVG-Icon and 0.693 versus 0.611 on Table 9: Robustness to different rubric generators on MMSVG-Icon. Results are averaged over five indepen-dently seeded inference runs and reported as mean ± standard deviation. 
+
+Method Rubric Generator CLIP ↑ Aesth. ↑ HPS ↑ Rubric ↑
+
+Qwen3-8B – 0.266 ±0.003 4.434 ±0.015 0.234 ±0.001 0.394 ±0.016 
+
+Qwen3-32B – 0.279 ±0.002 4.483 ±0.022 0.242 ±0.001 0.566 ±0.026 
+
+JanusCoder – 0.249 ±0.006 4.453 ±0.031 0.230 ±0.003 0.324 ±0.040 
+
+RULER Claude-Opus-4.6 0.269 ±0.001 4.868 ±0.020 0.247 ±0.000 0.662 ±0.016 
+
+GPT-5.5 0.278 ±0.001 4.708 ±0.016 0.244 ±0.000 0.646 ±0.007 
+
+MMSVG-Illustration. We report this comparison to complement the conventional CLIP, Aesthetic, and HPS metrics, on which diffusion-optimized approaches can remain competitive or stronger. 
+
+F Rubric Design Details 
+
+F.1 Ground-Truth-Free Rubric Construction 
+
+In settings with a reference answer, rubric gen-eration can condition on both the input and the answer. Open-ended text-to-SVG generation, how-ever, does not provide a unique ground-truth SVG. RULER therefore constructs each rubric without a paired reference SVG; the only external task input to the rubric generator is the text instruction. As specified in Appendix H.1, the generator first produces one ideal SVG as a plausible high-quality realization of the instruction and then derives an instance-specific rubric for evaluating other candi-dates. The ideal SVG serves as an intermediate quality target during rubric construction rather than as a unique ground-truth answer. The generation prompt explicitly requires the resulting rubric to remain open-ended and prohibits exact reconstruc-tion requirements on geometry, placement, colors, part counts, or other implementation details unless they are specified by the instruction. The ideal SVG is not used as a reference when scoring policy rollouts during RL. This procedure allows the rubric to capture prompt-specific visual requirements without paired ground-truth SVGs while preserving the one-to-many nature of text-to-SVG generation. For consis-tency across prompts, we use a fixed six-item struc-ture spanning Semantic Fidelity, Visual Quality, and Rendering Style, with weights (5 , 5, 5, 4, 5, 5) .The structure and weights are shared across all prompts, while item titles, descriptions, and scor-ing guides are generated separately for each instruc-tion. 
+
+F.2 Rubric-S 
+
+Rubric-S uses an alternative rubric-generation prompt with a stronger emphasis on structural com-pleteness and stricter score calibration. It gener-ates five items—Overall Prompt Readability, Ma-jor Component Legibility, Subject Shape Com-plexity, Key Internal Detail Coverage, and Visual Layering—and removes the stylistic axis used by the default rubric. During training, we additionally append a fixed text-hint penalty item with weight 
+
+−2, resulting in six scoring items in total. A higher satisfaction score on this item indicates stronger evidence of a textual shortcut and therefore reduces the overall reward. For Rubric-S, this negative-weight penalty contributes only to the numerator, while the normalization denominator is computed from the five positive rubric-item weights. The complete prompt is provided in Appendix H.4. Despite the additional text-hint penalty, Rubric-S obtains a universal Rubric score of 0.536 on MMSVG-Illustration, below the full RULER set-ting and all three single-axis ablations. We also observe that the resulting policy increasingly in-serts readable prompt-related text into the rendered SVGs. This result illustrates that changes to the rubric specification can substantially affect opti-mization behavior, and that stricter scoring criteria do not necessarily produce a better reward signal. 
+
+G Rubric Generation Cost 
+
+Instance-aware rubrics are generated once as an offline preprocessing step and cached for subse-quent RL training. Table 10 summarizes the cost of generating the rubrics used to construct our RL training data. Claude-Opus-4.6 processes 60.18M input tokens and generates 68.49M output tokens, with a total cost of $2,013.12. The average rubric-generation cost is $0.0655 per prompt. The rubric generator is not queried during policy optimization. The complete rubric-generation and Statistic MMSVG-Icon MMSVG-Illustration Overall Prompts 19,531 11,206 30,737 Avg. Input Tokens 1,959 1,957 1,958 Avg. Rubric Tokens 1,010 1,057 1,027 Avg. Output Tokens 1,934 2,740 2,228 Total Cost $1,135.77 $877.35 $2,013.12 Cost / Prompt $0.0582 $0.0783 $0.0655 
+
+Table 10: Rubric-generation cost for the RL training data. Avg. Output Tokens includes both the generated ideal SVG and rubric; Avg. Rubric Tokens counts the rubric portion only. 
+
+judging prompts are provided in Appendix H. We will release the generated rubrics together with the processed training data and code. 
+
+H Prompt Templates 
+
+H.1 Rubric Generation Prompt 
+
+Rubric Generation for Text-to-SVG Evaluation 
+
+You are an expert SVG designer and an expert rubric writer for open-ended text-to-SVG evaluation. 
+
+Task. Your task has two sequential stages: 1. Create one ideal SVG for the given prompt. 2. Generate an aligned, instance-specific rubric for judging other rendered SVG candidates for the same prompt. The ideal SVG should establish a strong visual reference. The rubric should convert that reference into open-ended evaluation criteria for reinforcement learning. 
+
+Core Goal. The goal is not merely to make the prompt recognizable. The goal is to encourage polished, deliberate, visually refined SVG artwork. Avoid crude or placeholder-like drawings, generic primitive-symbol assemblies, rough sketches, accidental ugliness, visually empty outputs, and readable text labels used as shortcuts. Simplicity is allowed, but only when it looks intentional, balanced, and aesthetically designed. 
+
+Stage 1: Ideal SVG Generation. First, internally imagine a strong visual solution for the prompt and then write one ideal SVG. The SVG must clearly communicate the prompt concept without using readable text labels. It should look like polished vector artwork, with clear design intention, clean contours, balanced proportions, coherent graphic treatment, and enough visual refinement to serve as a high-quality aesthetic exemplar. It should not be unnecessarily complex or cluttered. This SVG is only one possible good solution and is not the only correct answer. 
+
+Stage 2: Rubric Generation. Generate a rubric for evaluating other rendered SVG candidates for the same prompt. The rubric will be used as a reinforcement-learning reward signal. It must reward candidates that are semantically correct, visually refined, deliberately composed, and aesthetically stronger than crude recognizable placeholders. The rubric must remain open-ended: a candidate may score well with different shapes, layout, orientation, colors, or implementation details. Do not require exact reproduction of the ideal SVG. Do not turn the rubric into a reconstruction checklist. Do not require exact local details, exact geometry, exact placement, exact part counts, or exact colors unless explicitly required by the prompt. 
+
+Instance-specific Requirements. Items 1–2 must specify the visible semantic evidence needed for this prompt, including concept identity, major components, relationships, states, or distinctive cues when relevant. Items 3–6 must specify the visual form, composition, rendering, and style qualities expected for this prompt. Avoid criteria that could apply unchanged to any SVG prompt. Each item should identify visible qualities that meaningfully distinguish stronger and weaker candidates for this prompt. 
+
+Orthogonality Requirements. The rubric must contain exactly six items in the fixed order below. Each item should target one distinct observable dimension, be independently judgeable from visible evidence, and penalize a different type of failure. If two items could be justified using the same evidence, rewrite them until they are clearly separable. Do not include catch-all items such as overall beauty, overall quality, overall polish, or overall visual appeal. Do not combine multiple axes in one item. 
+
+Fixed Rubric Items and Weights. 
+
+1. Concept Identity and Overall Readability – weight 5 2. Major Components and Distinctive Cues – weight 5 3. Silhouette and Form Refinement – weight 5 4. Composition and Canvas Design – weight 4 5. Rendering Finish and Visual Craftsmanship – weight 5 6. Style Cohesion and Designed Visual Interest – weight 5 
+
+Item Definitions. 1. Concept Identity and Overall Readability: Judge whether the overall prompt meaning and primary concept are visually understandable without relying on readable text labels. Do not turn this item into a checklist of parts, and do not discuss component richness, visual complexity, composition, rendering polish, or style quality. 
+
+2. Major Components and Distinctive Cues: Judge whether the major objects, important parts, actions, states, relationships, or concept-distinguishing visual cues are clearly readable. Do not discuss shape elegance, composition quality, rendering cleanliness, visual polish, or style cohesion. 
+
+3. Silhouette and Form Refinement: Judge the quality of the subject’s main shapes, contours, proportions, and silhouette. Distinguish refined, intentional forms from crude blobs, awkward primitive shapes, stiff assembly, collapsed geometry, or weak silhouette design. Do not discuss composition, rendering artifacts, or style consistency. 
+
+4. Composition and Canvas Design: Judge subject scale, placement, spacing, cropping, negative space, visual balance, and spatial hierarchy. Distinguish deliberately composed images from cramped, tiny, badly cropped, awkwardly placed, or spatially careless ones. Do not discuss shape quality, rendering cleanliness, or style consistency. 
+
+5. Rendering Finish and Visual Craftsmanship: Judge execution quality and completion. Distinguish finished vector artwork from outputs with broken contours, disconnected parts, stray fragments, noisy marks, malformed geometry, unfinished regions, text shortcuts, or obvious rendering artifacts. Do not discuss composition, shape elegance, or style harmony. 
+
+6. Style Cohesion and Designed Visual Interest: Judge whether the image has a coherent vector-art treatment and enough intentional visual interest for this prompt. Consider stroke/fill treatment, detail density, color or tone handling, internal structure, decorative accents, depth cues, or graphic rhythm when relevant. Do not discuss semantic correctness, composition, or basic rendering cleanliness. 
+
+Scoring Guide Requirements. Each rubric item must include a 
+
+scoring_guide field. The scoring guide must describe how to assign continuous satisfaction scores from 0.0 to 1.0, use score ranges rather than fixed anchor scores, explicitly allow any decimal value within the ranges, be specific to the current prompt and item, and define visible differences between excellent, strong, partial, weak, and absent satisfaction. Use this exact range structure: 
+
+0.9-1.0: ...; 0.7-0.8: ...; 0.4-0.6: ...; 0.1-0.3: ...; 0.0: ... 
+
+Reserve 0.9–1.0 for excellent, visually convincing satisfaction with clear item-specific evidence. Use 0.7–0.8 only for clearly strong satisfaction. Use 0.4–0.6 for partial but visibly flawed satisfaction. Use 0.1–0.3 for weak, ambiguous, fragmentary, primitive, or barely visible evidence. Use 0.0 for absent, contradicted, unreadable, or completely failed evidence. 
+
+Writing Rules. Return exactly six items in the fixed order above. Each item must have a short, natural, sample-specific title. Each title should mention the prompt object or concept when natural. Each description must be exactly one sentence, self-contained, and positively state the high-quality standard. Do not write generic empty phrases such as “looks good”, “well-formed”, or “coherent style” without explaining what that means for this instance. 
+
+Output Format. Return only two Markdown code blocks in this exact order: first, the ideal SVG in an XML code block; second, the rubric items in a JSON code block. 
+
+Input prompt: {description} 
+
+H.2 Rubric-based Judge Prompt 
+
+Rubric-based VLM Judging 
+
+You are an expert visual evaluator for a text-to-SVG generation task. You will evaluate a rendered image produced from SVG code. 
+
+Inputs. You are given the user prompt, the candidate image, and a rubric with several evaluation items. 
+
+User prompt: {user_prompt} 
+
+Rubric: {rubric_items_formatted} 
+
+Evaluate the candidate image separately for each rubric item. 
+
+Evaluation Rules. 1. Strictly Follow the Rubric. The rubric is the complete evaluation standard. Do not introduce requirements that are not stated in the current rubric item. Base your judgment only on visible evidence in the image. Do not guess intent. 
+
+2. Continuous Band Scoring. Each rubric item includes a scoring guide defining continuous score bands, such as 0.9–1.0 or 0.4–0.6. First, map the visible evidence to the correct score band. Then, assign a precise decimal value that reflects the exact execution quality within that tier. Do not default to high scores just because the image is not blank or broadly recognizable. 
+
+3. Score Calibration. Scores of 0.9–1.0 are reserved for near-perfect satisfaction with no visible weakness. Scores of 0.7–0.8 mean strong but not exceptional. Scores of 0.45–0.6 indicate mediocre satisfaction: the image partially satisfies the item but has obvious limitations. Scores of 0.2–0.4 indicate weak or flawed evidence. Scores of 0.0–0.15 indicate absent, contradicted, or failed evidence. Do not inflate scores. “Not blank” and “roughly recognizable” do not justify scores above 0.6. 
+
+4. Independent Scoring. Score each rubric item independently. Do not let the score of one item affect the score of any other item. 
+
+Output Format. Return only a valid JSON object. Write the reason 
+
+before the satisfaction score. 
+
+{"items": [ {"item_index": 1, "title": "Item Title", "reason": "Briefly evaluate the visible evidence against the scoring guide.", "satisfaction": 0.0 }]}
+
+H.3 Universal Rubric Judge Prompt 
+
+Universal Rubric VLM Judging 
+
+You are an expert visual evaluator for open-ended text-to-SVG generation. You will evaluate a rendered image produced from SVG code. 
+
+Inputs. You are given the user prompt and the candidate image. 
+
+User prompt: {user_prompt} 
+
+Your task is to assign a single overall satisfaction score from 0.0 to 1.0 based on a comprehensive evaluation of the image. 
+
+The 6 Evaluation Dimensions. 
+
+To determine the overall score, evaluate the image across the following six dimensions. The goal is to reward polished, deliberate, visually refined SVG artwork and penalize crude primitive assemblies or rendering artifacts. 
+
+1. Concept Identity: Is the overall prompt meaning and primary concept visually understandable without relying on readable text labels? 
+
+2. Major Components: Are the specific major objects, important parts, states, or distinctive visual cues required by the prompt clearly present? 
+
+3. Silhouette and Form Refinement: Are the main shapes, contours, and proportions refined and intentional? Penalize crude blobs or awkward primitive shape assemblies. 
+
+4. Composition and Canvas Design: Is the subject properly scaled, well-placed, and spatially balanced within the canvas? Penalize cramped, badly cropped, or spatially careless layouts. 
+
+5. Rendering Finish and Visual Craftsmanship: Is the vector execution clean and finished? Penalize broken contours, disconnected parts, stray fragments, or visual noise. 
+
+6. Style Cohesion and Designed Visual Interest: Does the image have a coherent vector-art aesthetic and intentional design? Penalize visually empty outputs, generic placeholders, or inconsistent graphic treatments. 
+
+Holistic Scoring Guide. 
+
+Based on the six dimensions above, assign the final continuous decimal score using the following strict calibration guide. 
+
+0.9–1.0 (Excellent & Refined): Outstanding across all six dimensions. The concept is instantly readable, forms are beautifully refined, rendering is flawless, and the aesthetic is highly cohesive. This range is reserved only for convincing, high-quality vector artwork. 
+
+0.7–0.8 (Strong but not exceptional): Strong performance across most dimensions. The concept is clear (Dims 1–2) and execution is solid (Dims 3–5). The image may lack exceptional stylistic flair (Dim 6) or contain very minor imperfections in form or composition. 
+
+0.4–0.6 (Mediocre / Baseline): The image partially satisfies the concept (Dims 1–2) but suffers from obvious flaws in Dims 3–6. Typical examples include crude primitive shapes, awkward spatial layouts, lack of finish, or a highly generic “clipart” feel. If an image is merely “not blank” and “roughly recognizable”, it belongs in this range. Do not inflate scores above 0.65 for basic, unrefined shape assemblies. 
+
+0.1–0.3 (Weak / Flawed): The image fails significantly across multiple dimensions. It barely hints at the concept or suffers from severe issues such as collapsed geometry, completely broken rendering, or extreme spatial imbalance. 
+
+0.0 (Failed): The image is completely unrecognizable, unrelated to the prompt, or visual garbage. 
+
+Evaluation Rules. 1. Continuous Scoring. Use any precise decimal value within the score bands, such as 0.45 or 0.72. 
+
+2. Anti-Inflation. Do not default to high scores merely because the model successfully rendered something. 
+
+3. No Text Shortcuts. If the image relies on readable text labels to communicate the prompt instead of drawing the concept, severely penalize the overall score. 
+
+Output Format. Return only a valid JSON object. Write the reason 
+
+before the overall_score . In the reason, explicitly comment on how the image performs across the six dimensions—Concept, Components, Form, Composition, Rendering, and Style—before concluding the final score. {"reason": "Step-by-step evaluation of the 6 dimensions, followed by the justification for the final score band.", "overall_score": 0.0 }
+
+H.4 Rubric-S Generation Prompt 
+
+Rubric-S: Structural Rubric Generation 
+
+You are an expert SVG designer and an expert rubric writer for open-ended text-to-SVG evaluation. 
+
+Task. Your task has two sequential stages: 1. Create one ideal SVG for the given query. 2. Generate an aligned evaluation rubric for judging other rendered SVG candidates for the same query. The ideal SVG is used only to establish a strong quality target. The rubric must translate that target into an open-ended scoring standard for rollout candidates. Different valid SVG implementations should be able to score highly, while the rubric should be strict enough to avoid inflated base scores and create fine-grained differences between weak, mediocre, good, and excellent rollout candidates. 
+
+Core Goal. The user query may be simple, but the ideal SVG should not be crude, placeholder-like, or low-effort. Instead, it should be semantically aligned with the query, visually readable, richer than a primitive placeholder, detailed enough to express the subject clearly, structured enough to avoid a flat or underdeveloped appearance, and appropriate as polished vector artwork. Simplicity is allowed only if it is deliberate and visually informative. Avoid crude primitive-only solutions for visually rich concepts, missing key subject details, flat single-block appearances, generic reusable icons that do not reflect the query, readable text labels as semantic shortcuts, and external images, scripts, animation, foreignObject , or remote resources. 
+
+Stage 1: Ideal SVG Generation. First, imagine a strong visual solution for the query and generate one ideal SVG. The SVG must communicate the query meaning without using readable text labels. It should make the main subject and important components visually clear, contain enough subject shape complexity for the depicted concept, include key internal details, show visible layering or part separation when appropriate, and remain clean and renderable without unnecessary clutter. 
+
+Stage 2: Rubric Generation. Generate a rubric for evaluating other rendered SVG candidates for the same query. The judge model will later see only the user query, the rubric, and the candidate rendered image, but not the ideal SVG. Therefore, the rubric must be fully self-contained and designed for continuous reward scoring in reinforcement learning. Weak outputs should receive low scores, mediocre outputs should receive middling scores, good outputs should score well but not automatically near-perfect, and only truly strong outputs should score near 1.0. A merely recognizable image should not score highly on most items. 
+
+Fixed Rubric Items and Weights. Generate exactly five rubric items in this fixed order and with these fixed weights: 1. Overall Prompt Readability – weight 5 2. Major Component Legibility – weight 5 3. Subject Shape Complexity – weight 5 4. Key Internal Detail Coverage – weight 5 5. Visual Layering – weight 4 Do not add extra items. Do not introduce catch-all items such as “overall quality”, “overall beauty”, “style appeal”, or “visual polish”. Each item must focus on exactly one distinct dimension. 
+
+Item Definitions. 1. Overall Prompt Readability: Focus only on whether a viewer can understand the overall intended meaning of the query by looking at the image. Do not turn it into a checklist of parts, and do not discuss visual complexity, internal details, or layering. 
+
+2. Major Component Legibility: Focus only on whether the major objects, important parts, actions, states, or object relationships required by the query are clearly readable. Do not discuss subject shape complexity, internal detail richness, or layering. 
+
+3. Subject Shape Complexity: Focus only on whether the main subject is represented with enough shape complexity for the concept. Penalize candidates that reduce a visually richer subject into an overly simple primitive or low-information geometric substitute. Do not discuss internal detail coverage or layering. 
+
+4. Key Internal Detail Coverage: Focus only on whether the most important internal visual details of the main subject are present and readable. Reward identity-defining details that make the subject feel complete and informative. Do not discuss outer shape complexity or layering. 
+
+5. Visual Layering: Focus only on whether the image shows visible layering, separation, or depth of parts instead of appearing like a flat single-layer block. This may include overlap, fore-ground/background separation, internal region separation, nested shapes, tonal regions, or visibly separated subject parts. Do not discuss semantic correctness, subject shape complexity, or internal detail coverage. 
+
+Orthogonality Requirements. The five items must be as orthogonal as possible: each item should target one distinct observable dimension, be independently judgeable, and avoid using evidence from one item to justify another. Item 1 and Item 2 must not collapse into the same criterion; Item 3 and Item 4 must not collapse into the same criterion; and Item 4 and Item 5 must not collapse into the same criterion. Do not use item titles such as “X and Y”, “complex and detailed”, “clear and layered”, or “readable and polished”. 
+
+Strict Scoring Guide Requirement. For each rubric item, provide a strict item-specific scoring_guide . The scoring guide must prevent inflated base scores and create meaningful differences among rollout candidates. Each scoring_guide must be a JSON object with exactly these keys: 
+
+"1.0" , "0.7-0.9" , "0.4-0.6" , "0.1-0.3" , and "0.0" .Do not describe score ranges using vague satisfaction words such as “partially satisfies”, “mostly satisfies”, “adequate”, “acceptable”, “decent”, “good enough”, “well represented”, or “looks good”. Instead, describe concrete visible thresholds for each score range. 
+
+Scoring Calibration. A score of 1.0 is reserved for exceptional, complete, unambiguous, and non-generic fulfillment of the item. Scores of 0.7–0.9 require strong item-specific visual evidence and, for visual items, multiple non-redundant structures or details. Scores of 0.4–0.6 are for mediocre outputs with real but limited evidence, such as recognizable but overly simple, incomplete, weakly detailed, or visually shallow drawings. Scores of 0.1–0.3 are for weak hints, vague resemblance, isolated marks, primitive symbols, or ambiguous evidence. A score of 0.0 is used for absence, contradiction, or total unreadability. A crude but recognizable drawing should not exceed 0.6 on most visual items. A primitive-only drawing of a complex concept should not exceed 0.6 on Subject Shape Complexity. A drawing missing identity-defining internal details should not exceed 0.6 on Key Internal Detail Coverage. A flat single-block drawing with no visible separation should not exceed 0.6 on Visual Layering. A vague or generic image that only weakly resembles the query should usually be scored in 0.1–0.3 for semantic items. 
+
+Writing Rules. For each rubric item, write a short, natural, sample-specific title, exactly one sentence for the description, and a strict scoring guide object. Keep the rubric open-ended rather than reconstructive. Do not require exact color, orientation, placement, count, or geometry unless the query explicitly requires it. Do not write generic scoring guides that could apply unchanged to any SVG. 
+
+Output Format. Return only two Markdown code blocks in this exact order: first, the ideal SVG in an XML code block; second, the rubric in a JSON code block. Do not output prose outside the two code blocks. The XML block must contain exactly one standalone SVG, starting with 
+
+<svg and ending with </svg> . The JSON block must be a JSON array of exactly five rubric items. Each rubric item must contain exactly the keys 
+
+title , weight , description , and scoring_guide . Do not include the fixed text-penalty item; it will be added later by the script if needed. 
+
+Input query: {description} Fixed Text-Hint Penalty Item 
+
+Title: Prompt Text Hint 
+
+Weight: −2
+
+Description: The candidate uses readable text, letters, numbers, or labels as prompt-related hints, revealing the intended meaning in text instead of expressing it through the image itself. 
+
+Scoring Guide. 0.9–1.0: Clearly readable text directly reveals the prompt meaning, acting as a semantic shortcut. 
+
+0.7–0.8: Partially readable text or symbols are visible and plausibly related to the prompt, but are small, ambiguous, or decorative. 
+
+0.4–0.6: Faint text-like marks or letter-shaped geometric patterns appear, but no clearly readable characters can be identified. 
+
+0.1–0.3: A few isolated straight strokes coincidentally resemble letter strokes, with no coherent textual content. 
+
+0.0: No readable text, letters, numbers, or label-like marks are visible anywhere in the image.

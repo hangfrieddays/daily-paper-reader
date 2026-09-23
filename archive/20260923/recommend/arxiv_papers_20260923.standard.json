@@ -1,0 +1,142 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-23T21:42:25.676085+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2609.22041v2",
+      "source": "arxiv",
+      "title": "$λ$-Controlled GRPO: Turning Flow-Matching Ratio Instability into a Budgeted Resource",
+      "abstract": "Reinforcement learning is increasingly used to align image generators with reward signals, and Flow-GRPO recently extended this paradigm to flow-matching models by treating the denoising sampler as a stochastic policy that can be optimized from reward feedback. Training in this setting is unstable in a way specific to multi-step denoising: the policy update changes systematically across denoising steps, with importance ratios drifting below one, becoming increasingly dispersed, clipping at different rates, and leaving fewer usable samples late in training. Prior work treats these effects as separate failure modes and addresses each with a hand-tuned stabilizer. We show instead that they arise from a single per-step quantity, which we call path variance. This quantity is determined exactly by the sampler's Gaussian transition kernel and can be estimated cheaply during training. This reframes instability as a resource that can be measured and budgeted rather than a collection of symptoms to repair. Our method, $λ$-Controlled GRPO, calibrates importance-ratio behavior from this predicted law rather than from noisy empirical statistics, and allocates gradient effort across denoising steps according to their predicted cost. The two scales governing the update are fixed by standard policy choices rather than introduced as free tuning parameters. On a text-to-image model under two reward settings, rendering difficult target text scored by optical character recognition and matching human preferences scored by a preference model, $λ$-Controlled GRPO improves both text accuracy and preference reward over the strongest empirical stabilizer. It also keeps late-step path variance within its intended budget, precisely where the baseline systematically overshoots. The result is a Flow-GRPO update calibrated by its own transition law rather than stabilized after instability appears.",
+      "authors": [
+        "Yufeng Wang",
+        "Parivesh Priye",
+        "Meeshawn Marathe",
+        "Ramit Pahwa"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-09-18T17:33:38+00:00",
+      "link": "https://arxiv.org/pdf/2609.22041v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reinforcement learning to align image generators with reward signals",
+      "llm_evidence_cn": "用强化学习对齐图像生成器与奖励信号",
+      "llm_evidence": "用强化学习对齐图像生成器与奖励信号",
+      "canonical_evidence": "用强化学习对齐图像生成器与奖励信号",
+      "llm_tldr_en": "The paper analyzes per-step ratio instability in Flow-GRPO for RL-based image generation and turns it into a controlled budget via a single per-step quantity.",
+      "llm_tldr_cn": "强化学习被越来越多用于对齐图像生成器，Flow-GRPO将去噪采样器视为随机策略并依奖励反馈优化，但其多步去噪训练不稳定：重要性比率系统性漂移、离散化、裁剪率不一，导致后期可用样本减少。论文指出这些现象源自同一个逐步量，并据此提出λ控制的GRPO方法，把比率不稳定转化为可预算管理的资源。该工作统一解释了多个失败模式，为强化学习微调流匹配图像生成器提供更稳定的训练方案。",
+      "llm_tldr": "强化学习被越来越多用于对齐图像生成器，Flow-GRPO将去噪采样器视为随机策略并依奖励反馈优化，但其多步去噪训练不稳定：重要性比率系统性漂移、离散化、裁剪率不一，导致后期可用样本减少。论文指出这些现象源自同一个逐步量，并据此提出λ控制的GRPO方法，把比率不稳定转化为可预算管理的资源。该工作统一解释了多个失败模式，为强化学习微调流匹配图像生成器提供更稳定的训练方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.26375v1",
+      "source": "arxiv",
+      "title": "KwaiMind Technical Report",
+      "abstract": "Commercial image editing requires product identity preservation, accurate text rendering, and user appeal alongside general editing quality. We present KwaiMind, an image editing system combining general capabilities with e-commerce specialization. An agent-based data engine maintains approximately 1.8 million high-quality editing pairs. Built on a multimodal diffusion transformer, KwaiMind undergoes continued pre-training and supervised fine-tuning, followed by preference optimization and online reinforcement learning. A general-purpose vision-language judge and specialized rewards for click-through rate (CTR), text rendering, and product consistency guide specialized policies, which are consolidated through on-policy distillation. We introduce Ecom-Bench, covering 11 commercial editing tasks with task-specific visual evaluation and CTR-based ranking. KwaiMind achieves the strongest overall scores among evaluated open-source editors on ImgEdit, GEdit, both language splits of REDEdit, and Ecom-Bench visual quality, and the highest aggregate CTR ranking score among compared systems. Offline, CTR-guided optimization increases the proportion of generated images whose predicted CTR exceeds that of the original product image from 12.16% to 37.41%. In an online A/B experiment, CTR-based selection of product main images yields an approximately 2.44% relative increase in actual CTR. These results demonstrate the value of domain-specific data and reward-driven alignment for commercial image editing.",
+      "authors": [
+        "Junlong Wu",
+        "Zijun Li",
+        "Yuting Hu",
+        "Jia Sun",
+        "Pengcheng Wei",
+        "Yimin Zhou",
+        "Honglie Wang",
+        "Huaiqing Wang",
+        "Dewen Fan",
+        "Fei Zuo",
+        "Haixuan Gao",
+        "Lihui Peng",
+        "Tingxuan She",
+        "Yuqing Li",
+        "Boheng Zhang",
+        "Fan Yang",
+        "Wenwu Ou"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-22T13:21:45+00:00",
+      "link": "https://arxiv.org/pdf/2609.26375v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "online reinforcement learning with specialized rewards for CTR, text rendering and product consistency in image editing",
+      "llm_evidence_cn": "面向图像编辑的在线强化学习与专用奖励函数设计",
+      "llm_evidence": "面向图像编辑的在线强化学习与专用奖励函数设计",
+      "canonical_evidence": "面向图像编辑的在线强化学习与专用奖励函数设计",
+      "llm_tldr_en": "KwaiMind is a commercial image editing system built on a multimodal diffusion transformer, using preference optimization and online RL guided by a vision-language judge and specialized rewards for CTR, text rendering and product consistency. It introduces Ecom-Bench for evaluating commercial editing tasks.",
+      "llm_tldr_cn": "商业图像编辑既要保持商品身份与文字渲染准确，又要兼顾用户吸引力，现有通用编辑模型难以兼顾这些目标。本文提出KwaiMind系统，基于多模态扩散Transformer，经过持续预训练与监督微调后，采用偏好优化和在线强化学习，并用视觉语言评判器及点击率、文字渲染、商品一致性等专用奖励引导策略，再通过同策略蒸馏整合。作者还构建了覆盖11类商业编辑任务的Ecom-Bench。该工作展示了强化学习与奖励设计在真实图像编辑生成中的落地价值。",
+      "llm_tldr": "商业图像编辑既要保持商品身份与文字渲染准确，又要兼顾用户吸引力，现有通用编辑模型难以兼顾这些目标。本文提出KwaiMind系统，基于多模态扩散Transformer，经过持续预训练与监督微调后，采用偏好优化和在线强化学习，并用视觉语言评判器及点击率、文字渲染、商品一致性等专用奖励引导策略，再通过同策略蒸馏整合。作者还构建了覆盖11类商业编辑任务的Ecom-Bench。该工作展示了强化学习与奖励设计在真实图像编辑生成中的落地价值。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.25270v1",
+      "source": "arxiv",
+      "title": "RULER: Instance-aware Rubric Rewards for SVG Generation",
+      "abstract": "Generating Scalable Vector Graphics (SVG) code from natural-language instructions is an open-ended task without absolute visual ground truth, leaving both evaluation and policy optimization without a faithful signal. Scalar metrics (CLIP, Aesthetic) calibrated on natural images transfer poorly to stylized vector content, and reusing them as RL rewards triggers reward hacking. We address both limitations with rubric-based scoring. We first establish empirically that prompting a vision-language judge with a multi-axis rubric correlates with human judgments far better than scalar metrics, both across samples and within instructions. Building on this finding, we introduce RULER (Instance-aware Rubric Rewards for Reinforcement Learning), which converts each instruction into an instance-aware rubric of six items spanning semantic, visual, and stylistic axes; a judge VLM scores rendered rollouts item-by-item, and the weighted satisfactions form a fine-grained reward optimized via Group Relative Policy Optimization. Because the rubric is derived from text alone, RULER requires neither paired SVG ground truth nor human preference labels. On MMSVG-Illustration and MMSVG-Icon, RULER lifts the rubric score from 0.432/0.395 to 0.693/0.683, surpassing dedicated SVG specialists and matching the substantially larger DeepSeek-V3, with ablations identifying rubric design as the active lever for RL on open-ended SVG generation. The project page is available at https://hangyuran.github.io/RULER/.",
+      "authors": [
+        "Hangyu Ran",
+        "Yuhao Zheng",
+        "Yingying Zhang",
+        "Kevin Qinghong Lin",
+        "Han Peng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-21T18:16:40+00:00",
+      "link": "https://arxiv.org/pdf/2609.25270v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "rubric-based RL reward design for SVG generation, mitigating reward hacking",
+      "llm_evidence_cn": "面向SVG生成的评分表强化学习奖励设计，缓解奖励攻击",
+      "llm_evidence": "面向SVG生成的评分表强化学习奖励设计，缓解奖励攻击",
+      "canonical_evidence": "面向SVG生成的评分表强化学习奖励设计，缓解奖励攻击",
+      "llm_tldr_en": "RULER addresses unfaithful reward signals in SVG generation by introducing rubric-based scoring; it converts each instruction into instance-aware rubric rewards for RL, correlating far better with human judgments than CLIP or Aesthetic and reducing reward hacking.",
+      "llm_tldr_cn": "SVG代码生成缺乏绝对视觉真值，标量指标（CLIP、Aesthetic）在自然图像上校准、迁移到风格化矢量内容效果差，直接用作强化学习奖励会引发奖励攻击。论文先实验证明用多轴评分表提示视觉语言裁判，其与人类判断的相关性远高于标量指标。基于此提出RULER，将每条指令转化为实例感知的评分表奖励用于强化学习。该奖励显著缓解奖励攻击，为开放式生成任务的RL奖励设计提供了可借鉴范式。",
+      "llm_tldr": "SVG代码生成缺乏绝对视觉真值，标量指标（CLIP、Aesthetic）在自然图像上校准、迁移到风格化矢量内容效果差，直接用作强化学习奖励会引发奖励攻击。论文先实验证明用多轴评分表提示视觉语言裁判，其与人类判断的相关性远高于标量指标。基于此提出RULER，将每条指令转化为实例感知的评分表奖励用于强化学习。该奖励显著缓解奖励攻击，为开放式生成任务的RL奖励设计提供了可借鉴范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
