@@ -1,0 +1,105 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-24T22:22:17.118263+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2609.27033v1",
+      "source": "arxiv",
+      "title": "WTF?! Simulation-Free Reinforcement Learning with Wasserstein-Tilted Flow Maps",
+      "abstract": "Reward fine-tuning aims to update a pre-trained flow-based generative model to improve the downstream reward of its generated samples. Existing methods typically formulate this problem as sampling from a reward-tilted distribution, the solution to a KL-regularized reward-maximization problem. Here, we introduce an optimal transport regularizer built directly from the pre-trained drift. Unlike KL reward tilting, the resulting objective transports individual samples toward higher reward rather than reweighting the base distribution. We show that the resulting problem is equivalent to a deterministic optimal control problem on the flow. Given a pre-trained flow map, this equivalence yields a simulation-free reinforcement learning algorithm for fine-tuning generative flows. We call the resulting framework Wasserstein-Tilted Flow Maps (WTF), the first end-to-end fine-tuning recipe native to flow maps. The output is a fine-tuned flow map that retains strong reward-aligned performance at few-step inference budgets without post-hoc distillation. Experiments on ImageNet-256 and text-to-image show that WTF achieves higher reward with comparable or higher diversity than baselines, while requiring up to $280\\times$ less training compute. More broadly, we argue that accelerated samplers such as flow maps are essential infrastructure for efficient post-training, and that the dominant KL-regularized formulation is only one of many choices worth revisiting.",
+      "authors": [
+        "Abbas Mammadov",
+        "Jerry Y. Huang",
+        "Justin Lin",
+        "Partha Kaushik",
+        "Sheel Shah",
+        "Kartik Nair",
+        "Yee Whye Teh",
+        "Nicholas M. Boffi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV",
+        "stat.ML"
+      ],
+      "published": "2026-09-22T20:27:50+00:00",
+      "link": "https://arxiv.org/pdf/2609.27033v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reward fine-tuning of flow-based generative models via simulation-free reinforcement learning",
+      "llm_evidence_cn": "用无仿真强化学习对流式生成模型做奖励微调",
+      "llm_evidence": "用无仿真强化学习对流式生成模型做奖励微调",
+      "canonical_evidence": "用无仿真强化学习对流式生成模型做奖励微调",
+      "llm_tldr_en": "Reward fine-tuning of flow-based generative models is recast via an optimal transport regularizer built from the pretrained drift, yielding a simulation-free RL algorithm that transports samples toward higher reward rather than reweighting the base distribution.",
+      "llm_tldr_cn": "奖励微调旨在更新预训练的流式生成模型，以提升其生成样本在下游奖励上的表现，现有方法通常将其建模为从奖励倾斜分布中采样。本文引入直接由预训练漂移构建的最优传输正则项，使目标把单个样本输运到更高奖励区域，而非对基分布重新加权。作者证明该问题等价于流上的确定性最优控制问题，并由此得到一种无仿真的强化学习算法。该工作为生成模型的奖励微调提供了新的最优传输视角与高效求解途径。",
+      "llm_tldr": "奖励微调旨在更新预训练的流式生成模型，以提升其生成样本在下游奖励上的表现，现有方法通常将其建模为从奖励倾斜分布中采样。本文引入直接由预训练漂移构建的最优传输正则项，使目标把单个样本输运到更高奖励区域，而非对基分布重新加权。作者证明该问题等价于流上的确定性最优控制问题，并由此得到一种无仿真的强化学习算法。该工作为生成模型的奖励微调提供了新的最优传输视角与高效求解途径。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.22947v2",
+      "source": "arxiv",
+      "title": "RewardVerse: Rubric-Guided Policy Optimization for Video Reward Modeling",
+      "abstract": "Reinforcement learning (RL) is vital for optimizing video generation models, with a robust reward model (RM) serving as the cornerstone. However, existing video reward models often produce unstable scalar scores because they directly map complex, subjective video quality into a single score without explicit evaluation criteria. This leads to scalar drift, where the scoring scale collapses or shifts across different prompts, making the reward unreliable for RL. Drawing inspiration from professional human annotation engineering, we address this problem with RewardVerse, a rubric-based video reward framework that introduces a dynamic rubric as an intermediate representation between the evaluation query and the scorer. Instead of unconstrained direct scoring, RewardVerse first generates explicit evaluation criteria and then performs rubric-guided scoring, providing a stable semantic anchor that mitigates scalar drift. To efficiently optimize this collaborative pipeline, we propose Rubric-Guided Policy Optimization (RGPO), a two-stage training algorithm. RGPO first warms up the scorer using self-evolving seed rubrics and then jointly optimizes the rubric generator to produce query-adaptive evaluation criteria while continuously aligning the scorer with human ratings. Extensive experiments on the 16-dimensional EvalVerse benchmark and external datasets demonstrate that RewardVerse mitigates scalar drift, achieves state-of-the-art performance on both pointwise and pairwise evaluation, and provides a robust and interpretable reward signal for RL in video generation.",
+      "authors": [
+        "Zhenchen Tang",
+        "Yang Li",
+        "Songlin Yang",
+        "Bo Peng",
+        "Xiaotong Zhao",
+        "Shuai Li",
+        "Haotian Fan",
+        "Alan Zhao",
+        "Jing Dong"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-09-19T11:01:14+00:00",
+      "link": "https://arxiv.org/pdf/2609.22947v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "rubric-guided reward model for RL optimization of video generation",
+      "llm_evidence_cn": "面向视频生成强化学习优化的评分准则奖励模型",
+      "llm_evidence": "面向视频生成强化学习优化的评分准则奖励模型",
+      "canonical_evidence": "面向视频生成强化学习优化的评分准则奖励模型",
+      "llm_tldr_en": "RewardVerse addresses unstable scalar rewards in RL-based video generation by introducing a dynamic rubric as an intermediate representation between query and scorer, improving reward reliability for policy optimization.",
+      "llm_tldr_cn": "强化学习被广泛用于优化视频生成模型，但现有奖励模型直接把复杂主观的视频质量映射为单一分数，导致评分尺度漂移，使奖励对强化学习不可靠。本文借鉴专业人工标注工程，提出RewardVerse，引入动态评分准则作为评价查询与打分器之间的中间表示，替代无约束的直接打分。该方法提升了奖励的稳定性与可解释性，为生成模型的强化学习优化提供了更可靠的奖励设计思路，其思想可迁移到图像生成任务。",
+      "llm_tldr": "强化学习被广泛用于优化视频生成模型，但现有奖励模型直接把复杂主观的视频质量映射为单一分数，导致评分尺度漂移，使奖励对强化学习不可靠。本文借鉴专业人工标注工程，提出RewardVerse，引入动态评分准则作为评价查询与打分器之间的中间表示，替代无约束的直接打分。该方法提升了奖励的稳定性与可解释性，为生成模型的强化学习优化提供了更可靠的奖励设计思路，其思想可迁移到图像生成任务。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "label": "2026-09-24",
+  "date": "2026-09-24",
+  "generated_at": "2026-09-24T22:24:48",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202609/24/2609.27033v1-wtf-simulation-free-reinforcement-learning-with-wasserstein-tilted-flow-maps",
+      "section": "deep",
+      "title_en": "WTF?! Simulation-Free Reinforcement Learning with Wasserstein-Tilted Flow Maps",
+      "authors": "Abbas Mammadov, Jerry Y. Huang, Justin Lin, Partha Kaushik, Sheel Shah, Kartik Nair, Yee Whye Teh, Nicholas M. Boffi",
+      "date": "2026-09-22",
+      "pdf": "https://arxiv.org/pdf/2609.27033v1",
+      "score": "9.0",
+      "evidence": "用无仿真强化学习对流式生成模型做奖励微调",
+      "tldr": "针对预训练流模型奖励微调，现有方法多依赖KL正则化的奖励倾斜分布，仅重加权基分布。本文提出基于预训练漂移的Wasserstein倾斜流映射WTF，用最优传输正则直接让样本向高奖励区域传输。该目标等价于流上的确定性最优控制，从而得到免模拟强化学习微调算法。在ImageNet-256和文生图任务上，WTF奖励更高、多样性相当或更优，训练算力最高减少280倍，且无需后蒸馏即可少步推理。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reward fine-tuning aims to update a pre-trained flow-based generative model to improve the downstream reward of its generated samples. Existing methods typically formulate this problem as sampling from a reward-tilted distribution, the solution to a KL-regularized reward-maximization problem. Here, we introduce an optimal transport regularizer built directly from the pre-trained drift. Unlike KL reward tilting, the resulting objective transports individual samples toward higher reward rather than reweighting the base distribution. We show that the resulting problem is equivalent to a deterministic optimal control problem on the flow. Given a pre-trained flow map, this equivalence yields a simulation-free reinforcement learning algorithm for fine-tuning generative flows. We call the resulting framework Wasserstein-Tilted Flow Maps (WTF), the first end-to-end fine-tuning recipe native to flow maps. The output is a fine-tuned flow map that retains strong reward-aligned performance at few-step inference budgets without post-hoc distillation. Experiments on ImageNet-256 and text-to-image show that WTF achieves higher reward with comparable or higher diversity than baselines, while requiring up to $280\\times$ less training compute. More broadly, we argue that accelerated samplers such as flow maps are essential infrastructure for efficient post-training, and that the dominant KL-regularized formulation is only one of many choices worth revisiting.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/24/2609.22947v2-rewardverse-rubric-guided-policy-optimization-for-video-reward-modeling",
+      "section": "quick",
+      "title_en": "RewardVerse: Rubric-Guided Policy Optimization for Video Reward Modeling",
+      "authors": "Zhenchen Tang, Yang Li, Songlin Yang, Bo Peng, Xiaotong Zhao, Shuai Li, Haotian Fan, Alan Zhao, Jing Dong",
+      "date": "2026-09-19",
+      "pdf": "https://arxiv.org/pdf/2609.22947v2",
+      "score": "7.0",
+      "evidence": "面向视频生成强化学习优化的评分准则奖励模型",
+      "tldr": "视频生成强化学习依赖奖励模型，但现有视频奖励模型直接打分，缺乏显式准则，易导致跨提示的标量漂移。为此，RewardVerse 引入动态评分细则作为查询与打分器间的中间表示，先生成评价标准再进行细则引导打分。配套 RGPO 两阶段训练：先用自演化种子细则预热打分器，再联合优化细则生成器并持续对齐人类评分。在 EvalVerse 等基准上，该方法缓解标量漂移，在 pointwise 与 pairwise 评估中达到 SOTA，为视频生成 RL 提供稳健可解释的奖励信号。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Reinforcement learning (RL) is vital for optimizing video generation models, with a robust reward model (RM) serving as the cornerstone. However, existing video reward models often produce unstable scalar scores because they directly map complex, subjective video quality into a single score without explicit evaluation criteria. This leads to scalar drift, where the scoring scale collapses or shifts across different prompts, making the reward unreliable for RL. Drawing inspiration from professional human annotation engineering, we address this problem with RewardVerse, a rubric-based video reward framework that introduces a dynamic rubric as an intermediate representation between the evaluation query and the scorer. Instead of unconstrained direct scoring, RewardVerse first generates explicit evaluation criteria and then performs rubric-guided scoring, providing a stable semantic anchor that mitigates scalar drift. To efficiently optimize this collaborative pipeline, we propose Rubric-Guided Policy Optimization (RGPO), a two-stage training algorithm. RGPO first warms up the scorer using self-evolving seed rubrics and then jointly optimizes the rubric generator to produce query-adaptive evaluation criteria while continuously aligning the scorer with human ratings. Extensive experiments on the 16-dimensional EvalVerse benchmark and external datasets demonstrate that RewardVerse mitigates scalar drift, achieves state-of-the-art performance on both pointwise and pairwise evaluation, and provides a robust and interpretable reward signal for RL in video generation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
