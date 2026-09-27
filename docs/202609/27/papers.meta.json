@@ -1,0 +1,24 @@
+{
+  "label": "2026-09-27",
+  "date": "2026-09-27",
+  "generated_at": "2026-09-27T22:00:15",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202609/27/2609.29788v1-oreo-fidelity-alignment-in-3d-generation-via-on-the-fly-rendering-editing-optimization",
+      "section": "quick",
+      "title_en": "OREO: Fidelity Alignment in 3D Generation via On-the-fly Rendering-Editing Optimization",
+      "authors": "Zhiyuan Ma, Wenbo Hu, Wang Zhao, Pengfei Wang, Ying Shan, Lei Zhang",
+      "date": "2026-09-24",
+      "pdf": "https://arxiv.org/pdf/2609.29788v1",
+      "score": "7.0",
+      "evidence": "强化编辑提升生成3D资产的视觉保真度",
+      "tldr": "3D生成模型虽进展迅速，却常难以产出高视觉保真度的资产，静态数据集监督不足以弥合差距。OREO提出一种对齐框架，借助丰富的2D扩散先验建立动态优化循环，在线生成经过编辑的渲染视图作为2D伪目标；其核心的强化编辑利用2D模型在保持几何、视角与内容的前提下提升渲染视图的视觉保真度。这些精修视图作为高质量监督，使3D生成器能从自身产物中学习。结果提升了3D生成的真实感，为生成保真度对齐提供了新思路。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Despite recent advancements in 3D generation, models often struggle to produce assets with high visual fidelity. To bridge this gap, we propose OREO, an alignment framework that enhances the realism of 3D generators by leveraging rich 2D diffusion priors. Instead of relying on static datasets, OREO establishes a dynamic optimization loop that produces on-the-fly edited renderings as 2D pseudo-targets. At its core, we introduce Reinforced Editing, which utilizes a 2D model to refine rendered views of the 3D output, enhancing their overall visual fidelity while preserving the underlying geometry, viewpoint, and content. These refined views serve as high-quality supervision targets, enabling the 3D generator to learn from its own generated samples and progressively improve its visual quality. Experiments demonstrate that OREO effectively improves upon pre-trained baselines, producing 3D assets with enhanced visual realism.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

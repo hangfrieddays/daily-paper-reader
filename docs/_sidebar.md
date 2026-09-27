@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-27 <!--dpr-date:20260927-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/27/2609.29788v1-oreo-fidelity-alignment-in-3d-generation-via-on-the-fly-rendering-editing-optimization" data-sidebar-item="{&quot;title&quot;: &quot;OREO: Fidelity Alignment in 3D Generation via On-the-fly Rendering-Editing Optimization&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.29788v1-oreo-fidelity-alignment-in-3d-generation-via-on-the-fly-rendering-editing-optimization&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;强化编辑提升生成3D资产的视觉保真度&quot;}">OREO: Fidelity Alignment in 3D Generation via On-the-fly Rendering-Editing Optimization</a>
   * 2026-09-24 <!--dpr-date:20260924-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/24/2609.27033v1-wtf-simulation-free-reinforcement-learning-with-wasserstein-tilted-flow-maps" data-sidebar-item="{&quot;title&quot;: &quot;WTF?! Simulation-Free Reinforcement Learning with Wasserstein-Tilted Flow Maps&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.27033v1-wtf-simulation-free-reinforcement-learning-with-wasserstein-tilted-flow-maps&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;image-gen-rl&quot;}], &quot;evidence&quot;: &quot;用无仿真强化学习对流式生成模型做奖励微调&quot;}">WTF?! Simulation-Free Reinforcement Learning with Wasserstein-Tilted Flow Maps</a>
