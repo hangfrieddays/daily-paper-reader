@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-28T23:29:52.780714+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2609.30840v1",
+      "source": "arxiv",
+      "title": "Aligning One-Step Generative Models with Reward-Weighted Transport Distillation",
+      "abstract": "One-step generators enable high-quality visual generation with a single network evaluation, but their post-training is difficult: general implicit generators provide neither tractable likelihoods nor denoising trajectories, and many rewards are non-differentiable. We introduce Reward-Weighted Transport Distillation (RWTD), a post-training method that requires only generated samples and scalar reward evaluations. Rather than aligning solely to the conventional reward-tilted reference distribution, RWTD constructs an adaptive target that mixes separately tilted current and reference distributions. The current component incorporates improvements discovered during training, while the reference component anchors the target to the pretrained generator. RWTD realizes this target through feature-space optimal transport and fixed-point regression. Theoretical analysis shows that the fixed-point distributions of RWTD interpolate between off-policy reward tilting of the reference and on-policy tilting of the current model, providing a principled approach to balancing reward adaptation with retention of prior knowledge. Empirically, RWTD substantially improves the GenEval score of the one-step SANA Sprint 1.6B backbone from 0.73 to 0.80, while separate preference alignment experiments demonstrate strong cross-reward generalization that yields balanced improvements and preservation of compositional capabilities.",
+      "authors": [
+        "Austin Wang",
+        "Ziheng Cheng",
+        "Lexing Ying"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-09-25T05:35:32+00:00",
+      "link": "https://arxiv.org/pdf/2609.30840v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reward-weighted post-training aligns one-step image generators using scalar rewards",
+      "llm_evidence_cn": "用标量奖励对一步图像生成器做奖励加权后训练对齐",
+      "llm_evidence": "用标量奖励对一步图像生成器做奖励加权后训练对齐",
+      "canonical_evidence": "用标量奖励对一步图像生成器做奖励加权后训练对齐",
+      "llm_tldr_en": "One-step generators are hard to post-train since they lack likelihoods and denoising trajectories while rewards are non-differentiable; RWTD aligns them using only samples and scalar rewards via reward-weighted transport distillation.",
+      "llm_tldr_cn": "一步生成模型虽能快速产出高质量图像，但其后训练困难，因为隐式生成器既无似然也无去噪轨迹，且多数奖励不可微。论文提出奖励加权传输蒸馏RWTD，仅需生成样本与标量奖励评估，构造混合当前分布与参考分布的自适应目标进行后训练。实验表明该方法能有效对齐生成质量与奖励信号。该工作为图像生成模型的奖励对齐提供了可扩展的通用后训练范式。",
+      "llm_tldr": "一步生成模型虽能快速产出高质量图像，但其后训练困难，因为隐式生成器既无似然也无去噪轨迹，且多数奖励不可微。论文提出奖励加权传输蒸馏RWTD，仅需生成样本与标量奖励评估，构造混合当前分布与参考分布的自适应目标进行后训练。实验表明该方法能有效对齐生成质量与奖励信号。该工作为图像生成模型的奖励对齐提供了可扩展的通用后训练范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.30609v1",
+      "source": "arxiv",
+      "title": "MVAgent: Multi-Agent Video Generation via Consistent Condition Construction and Shot-Level Policy Optimization",
+      "abstract": "Multi-shot agentic video generation requires consistent character appearance, stable spatial layout across camera angles, and continuous character state between shots. When every shot is a separate request to a frozen generator, repeated text does not determine appearance, layout or state. We therefore recast the problem as condition construction and present MVAgent, a multi-agent pipeline whose agents collaborate through typed conditioning inputs. Because an environment image shows one viewpoint, a Spatial Grounding agent samples views from generated camera-traversal clips and anchors each shot to the view matching its framing. As generated shots drift from the plan, an Observer records how each shot ends in a continuity memory, from which a Transition agent builds character action and spatial references for the next shot. An Orchestrator composes these inputs into each request. Since a request reveals its effect only after rendering, we train it by agentic reinforcement learning with Trunk-GDPO, which compares rendered candidates at every shot rather than once per video and continues the best as the trunk. With generator and judges frozen, MVAgent attains the highest cross-shot consistency and narrative-planning quality among the compared methods on ViMax-Bench and is preferred over the strongest agentic baseline in human evaluation.",
+      "authors": [
+        "Xiangyu Kong",
+        "Wenjie Zhou",
+        "Fengping Tian",
+        "Lihua Fang",
+        "Haoqin Sun",
+        "Chenyang Lyu",
+        "Longyue Wang",
+        "Weihua Luo"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-24T22:47:40+00:00",
+      "link": "https://arxiv.org/pdf/2609.30609v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "shot-level policy optimization for multi-shot agentic video generation",
+      "llm_evidence_cn": "面向多镜头智能体视频生成的镜头级策略优化",
+      "llm_evidence": "面向多镜头智能体视频生成的镜头级策略优化",
+      "canonical_evidence": "面向多镜头智能体视频生成的镜头级策略优化",
+      "llm_tldr_en": "MVAgent recasts multi-shot video generation as condition construction, using a multi-agent pipeline with typed conditioning and shot-level policy optimization to maintain character and layout consistency across shots.",
+      "llm_tldr_cn": "针对多镜头视频生成中角色外观、空间布局与状态难以在冻结生成器下保持一致的问题，本文提出MVAgent多智能体流水线。该方法将任务重构为条件构建，各智能体通过类型化条件输入协作，由空间接地智能体锚定镜头视角，并采用镜头级策略优化缓解生成漂移。结果显示角色一致性与空间布局稳定性有所改善。该工作为智能体式视频生成的条件构建与策略优化提供了新思路。",
+      "llm_tldr": "针对多镜头视频生成中角色外观、空间布局与状态难以在冻结生成器下保持一致的问题，本文提出MVAgent多智能体流水线。该方法将任务重构为条件构建，各智能体通过类型化条件输入协作，由空间接地智能体锚定镜头视角，并采用镜头级策略优化缓解生成漂移。结果显示角色一致性与空间布局稳定性有所改善。该工作为智能体式视频生成的条件构建与策略优化提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

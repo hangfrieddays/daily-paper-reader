@@ -1,0 +1,39 @@
+{
+  "label": "2026-09-28",
+  "date": "2026-09-28",
+  "generated_at": "2026-09-28T23:33:15",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202609/28/2609.30840v1-aligning-one-step-generative-models-with-reward-weighted-transport-distillation",
+      "section": "deep",
+      "title_en": "Aligning One-Step Generative Models with Reward-Weighted Transport Distillation",
+      "authors": "Austin Wang, Ziheng Cheng, Lexing Ying",
+      "date": "2026-09-25",
+      "pdf": "https://arxiv.org/pdf/2609.30840v1",
+      "score": "8.0",
+      "evidence": "用标量奖励对一步图像生成器做奖励加权后训练对齐",
+      "tldr": "一步生成器单次评估即可高质量生成，但后训练困难，因隐式生成器无似然/去噪轨迹且奖励多不可微。RWTD 仅需生成样本与标量奖励，构造混合当前模型与参考模型倾斜分布的自适应目标，并用特征空间最优传输与不动点回归实现。在 SANA Sprint 1.6B 上将 GenEval 从0.73提升至0.80，并展现跨奖励泛化。该方法在奖励适配与保留先验间提供原则性平衡。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "One-step generators enable high-quality visual generation with a single network evaluation, but their post-training is difficult: general implicit generators provide neither tractable likelihoods nor denoising trajectories, and many rewards are non-differentiable. We introduce Reward-Weighted Transport Distillation (RWTD), a post-training method that requires only generated samples and scalar reward evaluations. Rather than aligning solely to the conventional reward-tilted reference distribution, RWTD constructs an adaptive target that mixes separately tilted current and reference distributions. The current component incorporates improvements discovered during training, while the reference component anchors the target to the pretrained generator. RWTD realizes this target through feature-space optimal transport and fixed-point regression. Theoretical analysis shows that the fixed-point distributions of RWTD interpolate between off-policy reward tilting of the reference and on-policy tilting of the current model, providing a principled approach to balancing reward adaptation with retention of prior knowledge. Empirically, RWTD substantially improves the GenEval score of the one-step SANA Sprint 1.6B backbone from 0.73 to 0.80, while separate preference alignment experiments demonstrate strong cross-reward generalization that yields balanced improvements and preservation of compositional capabilities.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/28/2609.30609v1-mvagent-multi-agent-video-generation-via-consistent-condition-construction-and-shot-level-policy-optimization",
+      "section": "quick",
+      "title_en": "MVAgent: Multi-Agent Video Generation via Consistent Condition Construction and Shot-Level Policy Optimization",
+      "authors": "Xiangyu Kong, Wenjie Zhou, Fengping Tian, Lihua Fang, Haoqin Sun, Chenyang Lyu, Longyue Wang, Weihua Luo",
+      "date": "2026-09-24",
+      "pdf": "https://arxiv.org/pdf/2609.30609v1",
+      "score": "6.0",
+      "evidence": "面向多镜头智能体视频生成的镜头级策略优化",
+      "tldr": "多镜头智能体视频生成中，冻结生成器面对每个镜头的独立请求时，重复文本无法保证角色外观、空间布局与角色状态的跨镜头一致。MVAgent 将问题重构为条件构造，通过多智能体协作生成类型化条件输入：Spatial Grounding 从相机穿越片段采样视角并锚定构图匹配视图，Observer 将每镜头结尾写入连续性记忆，Transition 据此构建下一镜头的动作与空间参考，Orchestrator 汇总为请求。方法采用 Trunk-GDPO 智能体强化学习，逐镜头比较渲染候选并延续最优主干。在 ViMax-Bench 上跨镜头一致性与叙事规划质量最高，人类评估优于最强智能体基线。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Multi-shot agentic video generation requires consistent character appearance, stable spatial layout across camera angles, and continuous character state between shots. When every shot is a separate request to a frozen generator, repeated text does not determine appearance, layout or state. We therefore recast the problem as condition construction and present MVAgent, a multi-agent pipeline whose agents collaborate through typed conditioning inputs. Because an environment image shows one viewpoint, a Spatial Grounding agent samples views from generated camera-traversal clips and anchors each shot to the view matching its framing. As generated shots drift from the plan, an Observer records how each shot ends in a continuity memory, from which a Transition agent builds character action and spatial references for the next shot. An Orchestrator composes these inputs into each request. Since a request reveals its effect only after rendering, we train it by agentic reinforcement learning with Trunk-GDPO, which compares rendered candidates at every shot rather than once per video and continues the best as the trunk. With generator and judges frozen, MVAgent attains the highest cross-shot consistency and narrative-planning quality among the compared methods on ViMax-Bench and is preferred over the strongest agentic baseline in human evaluation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

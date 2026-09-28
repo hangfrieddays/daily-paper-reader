@@ -6,24 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-27
-- 运行时间：2026-09-27 22:00:12 UTC
+- 最新运行日期：2026-09-28
+- 运行时间：2026-09-28 23:33:13 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：0
+- 本次总论文数：2
+- 精读区：1
 - 速读区：1
 
 ### 今日简报（AI）
-今天速读1篇3D生成论文，聚焦通过实时渲染-编辑优化实现保真度对齐的OREO方法（7.0分）。值得关注的是它如何用"边渲染边编辑"的思路缩小生成模型与真实3D资产之间的保真度差距。普通读者可留意这类"生成+实时修正"范式，它可能让AI生成的3D内容更快达到可用精度。
-- 详情：[/202609/27/README](/202609/27/README)
+今日精读1篇、速读1篇：一步生成模型的奖励加权传输蒸馏（8.0）与MVAgent多智能体视频生成（6.0）。最值得关注的是用奖励加权传输蒸馏来对齐一步生成模型，以及通过一致条件构建与镜头级策略优化提升多智能体视频生成。普通读者可先看精读那篇，理解一步生成如何靠蒸馏对齐偏好。
+- 详情：[/202609/28/README](/202609/28/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Aligning One-Step Generative Models with Reward-Weighted Transport Distillation](/202609/28/2609.30840v1-aligning-one-step-generative-models-with-reward-weighted-transport-distillation)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：用标量奖励对一步图像生成器做奖励加权后训练对齐
 
 ### 速读区论文标签
-1. [OREO: Fidelity Alignment in 3D Generation via On-the-fly Rendering-Editing Optimization](/202609/27/2609.29788v1-oreo-fidelity-alignment-in-3d-generation-via-on-the-fly-rendering-editing-optimization)  
-   标签：评分：7.0/10、query:image-gen-rl
-   evidence：强化编辑提升生成3D资产的视觉保真度
+1. [MVAgent: Multi-Agent Video Generation via Consistent Condition Construction and Shot-Level Policy Optimization](/202609/28/2609.30609v1-mvagent-multi-agent-video-generation-via-consistent-condition-construction-and-shot-level-policy-optimization)  
+   标签：评分：6.0/10、query:image-gen-rl
+   evidence：面向多镜头智能体视频生成的镜头级策略优化
 
 
 <div class="dpr-home-promo-card">
