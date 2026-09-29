@@ -1,0 +1,304 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-29T23:03:39.464340+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 5,
+    "deep_cap": 6,
+    "deep_selected": 5,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2609.32340v1",
+      "source": "arxiv",
+      "title": "SGA-Flow-GRPO: Spatial Gradient-Guided Credit Assignment for Flow-GRPO",
+      "abstract": "Reinforcement Learning (RL) has proven effective in aligning flow-based generative models with human preferences. Recently, Flow-GRPO has emerged as an efficient critic-free paradigm by calculating advantages over sampled candidate trajectories. However, standard Flow-GRPO applies a uniform scalar advantage across both temporal denoising steps and spatial latent dimensions, without explicitly accounting for the spatial structure of generated images, which may lead to sub-optimal policy updates. To address this, we propose a novel gradient-guided spatial credit assignment framework tailored for Diffusion Transformers (DiTs). We first reformulate the transition-level log-likelihood in Flow-GRPO into a token-wise representation natively aligned with DiT patch architectures, constructing spatially fine-grained importance sampling ratios. To allocate localized credit without rigid, boundary-sensitive segmentation heuristics, we introduce a continuous spatial credit map derived from reward gradients. Crucially, we employ an outlier-robust normalization scheme based on Median Absolute Deviation (MAD) coupled with temperature scaling, effectively eliminating gradient noise while highlighting functional prompt-aligned regions. Extensive evaluations on GenEval show that our approach delivers SOTA alignment quality, achieving a convergence rate comparable to top-tier methods like DiffusionNFT while substantially improving upon Flow-GRPO-based methods in alignment performance.",
+      "authors": [
+        "Yunkai Yang",
+        "Yudong Zhang",
+        "Xinying Chen",
+        "Bin Luo",
+        "Jienan Lyu",
+        "Kunquan Zhang",
+        "Weitao Wan",
+        "Runmin Dong"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-26T07:59:21+00:00",
+      "link": "https://arxiv.org/pdf/2609.32340v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reinforcement learning for flow-based image generation via Flow-GRPO",
+      "llm_evidence_cn": "用Flow-GRPO对基于流的图像生成做强化学习",
+      "llm_evidence": "用Flow-GRPO对基于流的图像生成做强化学习",
+      "canonical_evidence": "用Flow-GRPO对基于流的图像生成做强化学习",
+      "llm_tldr_en": "SGA-Flow-GRPO addresses uniform scalar advantages in Flow-GRPO by introducing gradient-guided spatial credit assignment for Diffusion Transformers, yielding better RL alignment of image generation policies.",
+      "llm_tldr_cn": "该文针对Flow-GRPO在去噪时间步与潜空间维度上使用统一标量优势、忽略图像空间结构的问题，提出面向扩散Transformer的空间梯度引导信用分配框架，将转移级对数似然重写为与DiT对齐的token级表示。方法据此实现更精细的策略更新，改善流式生成模型与人类偏好的对齐，为图像生成中的强化学习训练提供了更合理的奖励/优势分配方案，属于强化学习用于图像生成的直接工作。",
+      "llm_tldr": "该文针对Flow-GRPO在去噪时间步与潜空间维度上使用统一标量优势、忽略图像空间结构的问题，提出面向扩散Transformer的空间梯度引导信用分配框架，将转移级对数似然重写为与DiT对齐的token级表示。方法据此实现更精细的策略更新，改善流式生成模型与人类偏好的对齐，为图像生成中的强化学习训练提供了更合理的奖励/优势分配方案，属于强化学习用于图像生成的直接工作。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.32665v1",
+      "source": "arxiv",
+      "title": "Timestep Weighting: A Hidden Key to Effective ELBO-Based Flow-Matching RL",
+      "abstract": "ELBO-based reinforcement learning offers a sampler-agnostic approach to fine-tuning flow matching models with reward feedback. Timestep weighting in ELBO-based RL has large impact on performance, and it also provides a unified view (as we show in this work) to understand prediction losses heuristically chosen in prior work, yet it remains under-researched and is often chosen to inherit pretrain configs. We investigate impacts and dynamics of timestep weighting in ELBO-based RL. We show that effective weighting depends on both the reward landscape and stage of learning. (1) Through experiments on controlled CIFAR image generation, complemented by robotics, we investigate how weighting impacts reward-driven updates across noise levels. (2) Through gradient analysis, we reveal distinct patterns of cross-noise coordination across tasks and their evolution during training. These findings motivate the hypothesis that useful weighting depends on the gap between the policy's current behavior and the behavior favored by the reward. (3) Guided by this analysis, we study simple static weighting, budgeted profile selection, and dynamic schedules that improve performance beyond conventional target choices. Our results establish timestep weighting as an important design choice for flow-matching RL and motivate further research into methods that choose and adapt it throughout learning.",
+      "authors": [
+        "Qinwei Ma",
+        "Jingzhe Shi",
+        "Simin Fan",
+        "Ling Li",
+        "Mengdi Wang",
+        "Alex Lamb"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-09-26T14:22:33+00:00",
+      "link": "https://arxiv.org/pdf/2609.32665v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "ELBO-based RL fine-tuning of flow matching models with reward feedback for image generation",
+      "llm_evidence_cn": "基于ELBO的强化学习用奖励反馈微调流匹配图像生成模型",
+      "llm_evidence": "基于ELBO的强化学习用奖励反馈微调流匹配图像生成模型",
+      "canonical_evidence": "基于ELBO的强化学习用奖励反馈微调流匹配图像生成模型",
+      "llm_tldr_en": "The paper studies timestep weighting in ELBO-based reinforcement learning for fine-tuning flow-matching generative models with reward feedback, analyzing how weighting shapes reward-driven updates across noise levels via CIFAR image generation experiments.",
+      "llm_tldr_cn": "基于ELBO的强化学习可用奖励反馈微调流匹配模型，但其中时间步权重对性能影响巨大却研究不足，常沿用预训练配置。本文系统研究该权重的影响与动态，指出有效权重同时取决于奖励格局与学习阶段。作者在受控CIFAR图像生成及机器人任务上分析不同噪声水平下奖励驱动更新的差异。结果表明合理的时间步加权能显著提升强化学习微调生成模型的效果，为奖励驱动图像生成提供统一理解。",
+      "llm_tldr": "基于ELBO的强化学习可用奖励反馈微调流匹配模型，但其中时间步权重对性能影响巨大却研究不足，常沿用预训练配置。本文系统研究该权重的影响与动态，指出有效权重同时取决于奖励格局与学习阶段。作者在受控CIFAR图像生成及机器人任务上分析不同噪声水平下奖励驱动更新的差异。结果表明合理的时间步加权能显著提升强化学习微调生成模型的效果，为奖励驱动图像生成提供统一理解。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.34688v1",
+      "source": "arxiv",
+      "title": "Unified Trajectory Matching Policy Optimization: Diverse T2I Generation and VLA Generalization",
+      "abstract": "Reward-maximizing reinforcement learning (RL) is widely used to post-train stochastic diffusion and flow policies for text-to-image (T2I) generation. However, reward-maximizing RL causes policy mode collapse even under reference KL or entropy regularization, reducing the policy to a single high-reward mode. In T2I, this produces similar images and reward hacking. When extended to vision-language-action (VLA) models, the same collapse removes alternative successful strategies and weakens task and scene generalization. To address this limitation, we introduce Unified Trajectory Matching Policy Optimization (Uni-TMPO), a unified RL post-training framework for diffusion and flow policies. First, Uni-TMPO converts standardized rewards into a target distribution within each trajectory group and derives the policy distribution from trajectory log probabilities. Then, forward Kullback-Leibler optimization matches the two distributions instead of maximizing expected reward. A progress-conditioned coarse-to-fine scheduler efficiently constructs T2I trajectories. Within the unified framework, feedback-conditioned sampling uses updated observations to construct VLA trajectories. Extensive experiments show that Uni-TMPO achieves higher T2I rewards and VLA ID success rates than the strongest baselines. More importantly, it achieves the best T2I reward-diversity-efficiency trade-off and VLA generalization to held-out tasks and scenes, while real-robot evaluation demonstrates the value of multiple action strategies when the higher-reward target is blocked.",
+      "authors": [
+        "Zhiyuan Ma",
+        "Jiaming Li",
+        "Lingzhen Li",
+        "Yu Liu",
+        "Xuekai Zhu",
+        "Dingkang Liang",
+        "Kaiyan Zhang",
+        "Jianjun Li",
+        "Bowen Zhou",
+        "Xiang Bai"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-28T09:13:03+00:00",
+      "link": "https://arxiv.org/pdf/2609.34688v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "RL post-training of diffusion and flow policies for text-to-image generation",
+      "llm_evidence_cn": "用强化学习后训练扩散与流策略进行文本到图像生成",
+      "llm_evidence": "用强化学习后训练扩散与流策略进行文本到图像生成",
+      "canonical_evidence": "用强化学习后训练扩散与流策略进行文本到图像生成",
+      "llm_tldr_en": "Reward-maximizing RL post-training of diffusion and flow policies causes mode collapse and reward hacking in T2I. Uni-TMPO converts standardized rewards into a unified trajectory-matching RL objective, improving diversity and generalization.",
+      "llm_tldr_cn": "奖励最大化式强化学习在用于文本到图像生成的扩散与流策略后训练时，会把策略压缩到单一高奖励模式，导致生成图像雷同与奖励作弊，扩展到VLA模型时还会削弱任务与场景泛化能力。论文提出统一轨迹匹配策略优化Uni-TMPO，将标准化奖励转化为轨迹匹配目标，在保持奖励提升的同时维持策略多样性。实验表明该方法能显著缓解模式坍缩与奖励作弊，并在文本到图像生成和VLA任务上改善多样性与泛化。该工作为扩散与流策略的强化学习后训练提供了更稳定的统一框架。",
+      "llm_tldr": "奖励最大化式强化学习在用于文本到图像生成的扩散与流策略后训练时，会把策略压缩到单一高奖励模式，导致生成图像雷同与奖励作弊，扩展到VLA模型时还会削弱任务与场景泛化能力。论文提出统一轨迹匹配策略优化Uni-TMPO，将标准化奖励转化为轨迹匹配目标，在保持奖励提升的同时维持策略多样性。实验表明该方法能显著缓解模式坍缩与奖励作弊，并在文本到图像生成和VLA任务上改善多样性与泛化。该工作为扩散与流策略的强化学习后训练提供了更稳定的统一框架。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.35641v1",
+      "source": "arxiv",
+      "title": "Verifiable Visual Rewards Transfer from Synthetic Scenes to Natural Prompts",
+      "abstract": "Precise instruction following in image generation, such as satisfying object counts and spatial relations, remains an open challenge at least in part because it is learned using unreliable reward models such as object detectors and vision-language models. We introduce Verifiable Visual Rewards (VVR), the first framework for programmatically verifiable image rewards, and show that training on it generalizes to natural prompts. Each VVR task is a scene of geometric objects and relations among them, from which we derive both the prompt and a deterministic verifier, so tasks can be generated in any number and at any chosen complexity. We release VVRBench, with 10,000 tasks over 32 constraint types, and VVRBench-Challenge, with 720 more complex tasks; the strongest model we evaluate---GPT-Image-2.5---solves 21.4% of VVRBench-Challenge. Using VVR scores as rewards for reinforcement learning (RLVVR) raises the accuracy of Stable Diffusion 3.5 Medium on VVRBench from 2.8% to 28.3% and demonstrates consistent easy-to-hard generalization. These gains extend to out-of-domain benchmarks, and mixing VVR into existing objectives further improves overall performance and human preference, motivating the adoption of VVR into standard image generation post-training recipes.",
+      "authors": [
+        "Shuyue Stella Li",
+        "Xiaochuang Han",
+        "Yulia Tsvetkov",
+        "Luke Zettlemoyer"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-09-28T17:07:49+00:00",
+      "link": "https://arxiv.org/pdf/2609.35641v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "programmatically verifiable rewards for image generation instruction following",
+      "llm_evidence_cn": "为图像生成指令遵循设计可程序化验证的奖励",
+      "llm_evidence": "为图像生成指令遵循设计可程序化验证的奖励",
+      "canonical_evidence": "为图像生成指令遵循设计可程序化验证的奖励",
+      "llm_tldr_en": "VVR introduces programmatically verifiable rewards for image generation, deriving deterministic verifiers from synthetic geometric scenes so tasks can be generated at any complexity; training on VVR generalizes to natural prompts and improves instruction following.",
+      "llm_tldr_cn": "图像生成的精确指令遵循（如物体计数与空间关系）仍具挑战，部分原因是所用奖励模型如目标检测器和视觉语言模型并不可靠。本文提出Verifiable Visual Rewards（VVR），首个可程序化验证的图像奖励框架：每个任务由几何物体与关系构成的场景同时导出提示与确定性验证器，可任意生成任务与复杂度。训练于该奖励可泛化到自然提示，并显著提升指令遵循能力。作者还发布VVRBench与VVRBench-Challenge基准。",
+      "llm_tldr": "图像生成的精确指令遵循（如物体计数与空间关系）仍具挑战，部分原因是所用奖励模型如目标检测器和视觉语言模型并不可靠。本文提出Verifiable Visual Rewards（VVR），首个可程序化验证的图像奖励框架：每个任务由几何物体与关系构成的场景同时导出提示与确定性验证器，可任意生成任务与复杂度。训练于该奖励可泛化到自然提示，并显著提升指令遵循能力。作者还发布VVRBench与VVRBench-Challenge基准。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.35767v1",
+      "source": "arxiv",
+      "title": "Learning Native Reflection in Unified Models with Interleaved Reinforcement Learning",
+      "abstract": "Unified multimodal models can both look at and render images, so in principle they can repair their own generations: diagnose what an image gets wrong, revise it, observe the result, and diagnose again. Whether a revision helps is known only after it is rendered, so the reflection text and the image generation must be learned jointly, over the whole loop. Supervised fine-tuning (SFT) on reflection trajectories gives a cold start but does not find the high-success repair paths, and naive RL that optimizes only the renderer or only one head leaves most of the gain untapped. We introduce UMM-Reflection, which applies reinforcement learning (RL) to complete reflection trajectories inside one unified model: sibling trajectories share one initial image, so the group-relative advantage compares reflection strategies, and one trajectory-level advantage updates both the reflection tokens and the flow-based revisions, avoiding the combinatorial blow-up of per-round credit assignment. Unlike single-round editing or pipelines with an external critic, credit flows across rounds and to both roles of the same model, and no verifier is needed at inference. On BAGEL, UMM-Reflection improves GenEval by 12.05 points over SFT, and the gains transfer to WISE (+10.97), OneIG-Bench (+3.48), and T2I-CompBench++ (+4.63), none of which is used in training.",
+      "authors": [
+        "Yijia Fan",
+        "Ziqi Huang",
+        "Zhongang Cai",
+        "Yan Li",
+        "Zimo Wen",
+        "Wanqi Yin",
+        "Haiwen Diao",
+        "Ziwei Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-09-28T17:59:36+00:00",
+      "link": "https://arxiv.org/pdf/2609.35767v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "RL on full reflection trajectories to repair self-generated images in a unified model",
+      "llm_evidence_cn": "用强化学习优化完整反思轨迹以修复统一模型自身生成的图像",
+      "llm_evidence": "用强化学习优化完整反思轨迹以修复统一模型自身生成的图像",
+      "canonical_evidence": "用强化学习优化完整反思轨迹以修复统一模型自身生成的图像",
+      "llm_tldr_en": "Unified multimodal models can repair their own image generations, but whether a revision helps is known only after rendering. UMM-Reflection applies RL to full reflection trajectories in one unified model, jointly learning reflection text and image generation for higher-success repairs.",
+      "llm_tldr_cn": "统一多模态模型能看图也能生成图，理论上可自行诊断并修复生成缺陷，但修复是否有效只有渲染后才能判断，因此反思文本与图像生成必须整体联合学习。论文提出UMM-Reflection，用强化学习在单一统一模型内优化完整反思轨迹，让兄弟轨迹共享同一初始状态并协同更新。结果显示，相比监督微调和只优化渲染器或单一头的朴素强化学习，该方法能找到更高成功率的修复路径。这表明把强化学习用于完整生成-反思闭环，可有效提升统一模型的自我修复式图像生成能力。",
+      "llm_tldr": "统一多模态模型能看图也能生成图，理论上可自行诊断并修复生成缺陷，但修复是否有效只有渲染后才能判断，因此反思文本与图像生成必须整体联合学习。论文提出UMM-Reflection，用强化学习在单一统一模型内优化完整反思轨迹，让兄弟轨迹共享同一初始状态并协同更新。结果显示，相比监督微调和只优化渲染器或单一头的朴素强化学习，该方法能找到更高成功率的修复路径。这表明把强化学习用于完整生成-反思闭环，可有效提升统一模型的自我修复式图像生成能力。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.34494v1",
+      "source": "arxiv",
+      "title": "ConCAD: Constraint-Aware Image-to-CAD Generation with Dual-Granularity Rewards",
+      "abstract": "Image-to-CAD generation seeks executable parametric programs that recover both the geometry and design intent of a reference object. Existing systems are commonly evaluated by validity and shape overlap, although two solids with similar volume can encode different CAD relations. We introduce ConCAD, a constraint-aware image-to-CAD framework optimized via Group Relative Policy Optimization (GRPO) with rewards at two complementary granularities: a code-level constraint reward and an execution-level geometric reward. This complementary design disambiguates structurally distinct yet volumetrically similar shapes while ensuring valid 3D geometry. To verify that these rewards recover geometry and design intent, we introduce a B-rep geometric constraint satisfaction rate (G-CSR), which analytically extracts and evaluates geometric constraints from boundary representations. Experiments on the DeepCAD and Zero2CAD demonstrate that ConCAD achieves the best IoU and Chamfer Distance over competitive baselines, while also outperforming them on G-CSR, validating its superior recovery of both geometric fidelity and parametric design intent.",
+      "authors": [
+        "Chenxi Zhai",
+        "Xi Cheng",
+        "Hang Cheng",
+        "Zhicheng Guan",
+        "Mingyu Fan",
+        "Yanzhe Tang",
+        "Pingfa Feng",
+        "Long Zeng"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-28T07:44:16+00:00",
+      "link": "https://arxiv.org/pdf/2609.34494v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "GRPO with dual-granularity reward design for generation",
+      "llm_evidence_cn": "用双粒度奖励设计的GRPO优化生成",
+      "llm_evidence": "用双粒度奖励设计的GRPO优化生成",
+      "canonical_evidence": "用双粒度奖励设计的GRPO优化生成",
+      "llm_tldr_en": "ConCAD optimizes image-to-CAD generation with Group Relative Policy Optimization using two complementary rewards, a code-level constraint reward and an execution-level geometric reward, to recover geometry and design intent.",
+      "llm_tldr_cn": "图像到CAD生成需从参考物体恢复几何与设计意图，而现有系统仅以有效性和形状重叠评估，难以区分体积相近却结构不同的实体。本文提出ConCAD约束感知框架，用组相对策略优化（GRPO）结合两种互补奖励：代码级约束奖励与执行级几何奖励，以区分结构不同但体积相近的形状并保证几何有效。实验通过B-rep几何约束验证奖励确实能恢复几何与设计意图。该工作展示了为生成任务设计多粒度奖励的有效性。",
+      "llm_tldr": "图像到CAD生成需从参考物体恢复几何与设计意图，而现有系统仅以有效性和形状重叠评估，难以区分体积相近却结构不同的实体。本文提出ConCAD约束感知框架，用组相对策略优化（GRPO）结合两种互补奖励：代码级约束奖励与执行级几何奖励，以区分结构不同但体积相近的形状并保证几何有效。实验通过B-rep几何约束验证奖励确实能恢复几何与设计意图。该工作展示了为生成任务设计多粒度奖励的有效性。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.34587v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning from Intermediate Renders for Image-to-Code Generation",
+      "abstract": "Reinforcement learning is increasingly used to post-train vision-language models for image-to-code generation, such as generating SVG code from a reference image, by optimizing rewards computed from the final rendered output. However, relying on a single terminal reward provides sparse feedback that is poorly aligned with the contribution of individual tokens. A generated program may contain operations that accurately reproduce some parts of the target image alongside others that introduce errors, yet all tokens are trained from the same final outcome. We observe that many intermediate code prefixes are not only executable, but already produce meaningful partial renders that reflect progress toward the target. This property provides a natural source of denser supervision during generation. Based on this observation, we introduce IR4RL, an RL framework with a token-level render-progress reward that turns changes between intermediate renders into localized feedback for the generated sequence. We evaluate our approach on Image-to-SVG and Image-to-TikZ generation. Across both tasks, our method improves over supervised fine-tuning and standard GRPO, yielding new state-of-the-art open-source models. This shows that intermediate rendering provides a simple and effective source of process supervision for RL post-training of image-to-code models.",
+      "authors": [
+        "Omri Kaduri",
+        "Kate Feingold",
+        "Phillip Isola",
+        "Tali Dekel"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-09-28T08:26:35+00:00",
+      "link": "https://arxiv.org/pdf/2609.34587v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "dense rewards from intermediate renders for RL post-training of image-to-code generation",
+      "llm_evidence_cn": "利用中间渲染的密集奖励做图像到代码生成的强化学习后训练",
+      "llm_evidence": "利用中间渲染的密集奖励做图像到代码生成的强化学习后训练",
+      "canonical_evidence": "利用中间渲染的密集奖励做图像到代码生成的强化学习后训练",
+      "llm_tldr_en": "RL post-training for image-to-code generation relies on a single terminal render reward, which is sparse. This work derives dense rewards from partial renders of executable code prefixes, improving credit assignment and generation quality.",
+      "llm_tldr_cn": "图像到代码生成的强化学习后训练通常只依赖最终渲染结果给出单一终端奖励，反馈稀疏且难以对应到具体token。该工作观察到许多可执行代码前缀已能产生有意义的部分渲染，据此设计来自中间渲染的密集奖励用于视觉语言模型后训练。实验表明这种更细粒度的奖励信号改善了信用分配，提升了生成质量与训练效率。这为结构化图像生成任务的奖励设计提供了新思路。",
+      "llm_tldr": "图像到代码生成的强化学习后训练通常只依赖最终渲染结果给出单一终端奖励，反馈稀疏且难以对应到具体token。该工作观察到许多可执行代码前缀已能产生有意义的部分渲染，据此设计来自中间渲染的密集奖励用于视觉语言模型后训练。实验表明这种更细粒度的奖励信号改善了信用分配，提升了生成质量与训练效率。这为结构化图像生成任务的奖励设计提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
