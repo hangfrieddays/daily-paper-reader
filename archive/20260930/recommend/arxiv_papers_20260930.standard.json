@@ -1,0 +1,140 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-30T22:55:50.436672+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2609.31882v1",
+      "source": "arxiv",
+      "title": "DOHF: Online Diffusion Fine-tuning with Doob's $h$-transform Guidance",
+      "abstract": "Reward-based diffusion fine-tuning faces practical challenges when desirable outcomes are rare or conditioning corrections are costly to estimate. In this work, we propose Diffusion Online $h$-guidance Fine-tuning (DOHF), which turns Doob's $h$-transform into a practical online training algorithm. DOHF assigns optimality weights to generated samples, estimates the normalized local correction $\\nabla\\log h$ under the current rollout policy, and distills it directly into the generative model. Theoretically, we characterize the population-optimal DiffusionNFT update as well as the various classfier free guidance methods through a unified $h$-transform perspective. Methodologically, our framework accommodates black-box and non-differentiable rewards without additional network evaluations. We further show improved alignments under three empirical scenarios. Our work demonstrates how adapting probabilistic conditioning through inexpensive estimation and iterative distillation can improve generative learning across statistical sampling and visual generation.",
+      "authors": [
+        "Zhengyi Guo",
+        "Jiayuan Sheng",
+        "Wenpin Tang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-09-25T18:18:53+00:00",
+      "link": "https://arxiv.org/pdf/2609.31882v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reward-based online diffusion fine-tuning with black-box non-differentiable rewards",
+      "llm_evidence_cn": "基于奖励的在线扩散微调，支持黑盒不可微奖励",
+      "llm_evidence": "基于奖励的在线扩散微调，支持黑盒不可微奖励",
+      "canonical_evidence": "基于奖励的在线扩散微调，支持黑盒不可微奖励",
+      "llm_tldr_en": "DOHF turns Doob's h-transform into a practical online algorithm for reward-based diffusion fine-tuning, assigning optimality weights to samples and distilling the normalized local correction into the generative model without differentiable rewards.",
+      "llm_tldr_cn": "基于奖励的扩散模型微调在理想结果稀少或条件修正估计代价高时难以实用。本文提出DOHF，把Doob的h变换转化为可实际运行的在线训练算法，为生成样本分配最优性权重，在当前策略下估计归一化的局部修正量，并直接蒸馏进生成模型。理论上统一刻画了DiffusionNFT更新与无分类器引导。方法支持黑盒、不可微奖励，为扩散生成模型的奖励微调提供了新范式。",
+      "llm_tldr": "基于奖励的扩散模型微调在理想结果稀少或条件修正估计代价高时难以实用。本文提出DOHF，把Doob的h变换转化为可实际运行的在线训练算法，为生成样本分配最优性权重，在当前策略下估计归一化的局部修正量，并直接蒸馏进生成模型。理论上统一刻画了DiffusionNFT更新与无分类器引导。方法支持黑盒、不可微奖励，为扩散生成模型的奖励微调提供了新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.34658v1",
+      "source": "arxiv",
+      "title": "CapField-OPD: Learning Continuous Capability Fields via Joint-Anchored Multi-Teacher On-Policy Distillation for Flow Models",
+      "abstract": "Reward-specialized post-training produces strong experts for flow-based generative models, while multi-teacher on-policy distillation (OPD) consolidates their capabilities into a single student. Existing methods, however, route each prompt to a single teacher according to its semantic category, implicitly binding the desired capability to prompt content. This coupling makes capability invocation vulnerable to prompt perturbations and prevents users from explicitly adjusting the strength of the desired capability at inference time. In this work, we introduce CapField-OPD, an OPD framework that integrates multiple teachers into a continuous capability field through explicit capability coordinates. We use teacher models as anchors to construct this field, with the coordinates determining how their outputs are combined. Each capability configuration thus receives a unique supervision target, and capability control no longer depends on prompt semantics. Since the training anchors may not be optimal at inference time, we further profile the learned field on a small calibration set. The coordinate with the highest mean reward serves as the recommended default, while coordinates that are frequently optimal offer a promising candidate set for test-time scaling. Extensive experiments on compositional generation, text rendering, and visual aesthetics demonstrate that CapField-OPD consolidates multiple specialized teachers into a single student while preserving or surpassing their performance, reliably invokes the desired capabilities under semantics-preserving prompt variations, and supports continuous capability control and coordinate-based test-time scaling.",
+      "authors": [
+        "Pengyang Ling",
+        "Yujie Zhou",
+        "Jiazi Bu",
+        "Yibin Wang",
+        "Xiaoxiao Ma",
+        "Yi Jin",
+        "Huaian Chen",
+        "Yuhang Zang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-28T09:00:56+00:00",
+      "link": "https://arxiv.org/pdf/2609.34658v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reward-specialized post-training and multi-teacher distillation for flow models",
+      "llm_evidence_cn": "面向流模型的奖励专业化后训练与多教师蒸馏",
+      "llm_evidence": "面向流模型的奖励专业化后训练与多教师蒸馏",
+      "canonical_evidence": "面向流模型的奖励专业化后训练与多教师蒸馏",
+      "llm_tldr_en": "Reward-specialized post-training yields strong experts for flow models, but multi-teacher on-policy distillation routes each prompt to one teacher, coupling capability to prompt content. CapField-OPD integrates teachers into a continuous capability field via explicit coordinates.",
+      "llm_tldr_cn": "面向流匹配生成模型的奖励专业化后训练能产生强专家，但多教师在线策略蒸馏常按语义类别将每个提示路由到单一教师，导致能力调用易受提示扰动且无法在推理时调节强度。本文提出CapField-OPD，通过显式能力坐标将多个教师整合为连续能力场。该框架使能力可连续调节并提升对提示扰动的鲁棒性。工作为图像生成中的奖励后训练与能力组合提供了新思路。",
+      "llm_tldr": "面向流匹配生成模型的奖励专业化后训练能产生强专家，但多教师在线策略蒸馏常按语义类别将每个提示路由到单一教师，导致能力调用易受提示扰动且无法在推理时调节强度。本文提出CapField-OPD，通过显式能力坐标将多个教师整合为连续能力场。该框架使能力可连续调节并提升对提示扰动的鲁棒性。工作为图像生成中的奖励后训练与能力组合提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.34658v2",
+      "source": "arxiv",
+      "title": "CapField-OPD: Learning Continuous Capability Fields via Joint-Anchored Multi-Teacher On-Policy Distillation for Flow Models",
+      "abstract": "Reward-specialized post-training produces strong experts for flow-based generative models, while multi-teacher on-policy distillation (OPD) consolidates their capabilities into a single student. Existing methods, however, route each prompt to a single teacher according to its semantic category, implicitly binding the desired capability to prompt content. This coupling makes capability invocation vulnerable to prompt perturbations and prevents users from explicitly adjusting the strength of the desired capability at inference time. In this work, we introduce CapField-OPD, an OPD framework that integrates multiple teachers into a continuous capability field through explicit capability coordinates. We use teacher models as anchors to construct this field, with the coordinates determining how their outputs are combined. Each capability configuration thus receives a unique supervision target, and capability control no longer depends on prompt semantics. Since the training anchors may not be optimal at inference time, we further profile the learned field on a small calibration set. The coordinate with the highest mean reward serves as the recommended default, while coordinates that are frequently optimal offer a promising candidate set for test-time scaling. Extensive experiments on compositional generation, text rendering, and visual aesthetics demonstrate that CapField-OPD consolidates multiple specialized teachers into a single student while preserving or surpassing their performance, reliably invokes the desired capabilities under semantics-preserving prompt variations, and supports continuous capability control and coordinate-based test-time scaling.",
+      "authors": [
+        "Pengyang Ling",
+        "Jiazi Bu",
+        "Yujie Zhou",
+        "Yibin Wang",
+        "Zeqiang Lai",
+        "Xiaoxiao Ma",
+        "Yi Jin",
+        "Huaian Chen",
+        "Yuhang Zang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-28T09:00:56+00:00",
+      "link": "https://arxiv.org/pdf/2609.34658v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reward-specialized post-training and multi-teacher distillation for flow models",
+      "llm_evidence_cn": "面向流模型的奖励专业化后训练与多教师蒸馏",
+      "llm_evidence": "面向流模型的奖励专业化后训练与多教师蒸馏",
+      "canonical_evidence": "面向流模型的奖励专业化后训练与多教师蒸馏",
+      "llm_tldr_en": "Reward-specialized post-training yields strong experts for flow models, but multi-teacher on-policy distillation routes each prompt to one teacher, coupling capability to prompt content. CapField-OPD integrates teachers into a continuous capability field via explicit coordinates.",
+      "llm_tldr_cn": "面向流匹配生成模型的奖励专业化后训练能产生强专家，但多教师在线策略蒸馏常按语义类别将每个提示路由到单一教师，导致能力调用易受提示扰动且无法在推理时调节强度。本文提出CapField-OPD，通过显式能力坐标将多个教师整合为连续能力场。该框架使能力可连续调节并提升对提示扰动的鲁棒性。工作为图像生成中的奖励后训练与能力组合提供了新思路。",
+      "llm_tldr": "面向流匹配生成模型的奖励专业化后训练能产生强专家，但多教师在线策略蒸馏常按语义类别将每个提示路由到单一教师，导致能力调用易受提示扰动且无法在推理时调节强度。本文提出CapField-OPD，通过显式能力坐标将多个教师整合为连续能力场。该框架使能力可连续调节并提升对提示扰动的鲁棒性。工作为图像生成中的奖励后训练与能力组合提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
