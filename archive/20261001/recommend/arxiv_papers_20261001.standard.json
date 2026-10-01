@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-10-01T23:04:34.453743+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.34673v1",
+      "source": "arxiv",
+      "title": "FestDPO: Few-step Generator Alignment with Direct Preference Optimization",
+      "abstract": "Few-step generative models can generate high-fidelity samples within a few function evaluations. Despite this efficiency, generated samples may not exhibit desirable properties. When these properties are difficult to encode as an explicit reward function, direct preference optimization (DPO) can align generative models using pairwise preference feedback without training a separate reward model. However, extending DPO to few-step generative models is challenging because few-step generative models are generally implicit, making the likelihood evaluation required by DPO intractable. To address this challenge, we introduce Few-step DPO (FestDPO), an extension of DPO for few-step generative models that leverages nonparametric likelihood estimation from empirical samples. By exploiting the fast sampling capabilities of few-step generative models, our approach makes sample-based approximation of DPO loss computationally feasible. Furthermore, the sample-based formulation makes FestDPO agnostic to the model family and sampling procedure. Our toy experiment demonstrates that FestDPO matches the reward-tilted target distribution across four few-step generators. For real-world tasks, we evaluate FestDPO in two domains: text-to-image generation and protein backbone generation. In text-to-image generation, FestDPO outperforms preference optimization baselines in both win rates against the base models and human evaluation scores. In protein backbone generation, it achieves a higher $β$-sheet fraction and better structural designability than the baselines.",
+      "authors": [
+        "Jaewoo Lee",
+        "Kyuil Sim",
+        "Hyeongyu Kang",
+        "Kanghoon Lee",
+        "Woocheol Shin",
+        "Jinkyoo Park"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-09-28T09:06:32+00:00",
+      "link": "https://arxiv.org/pdf/2609.34673v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "preference alignment for few-step image generators",
+      "llm_evidence_cn": "少步图像生成器的偏好对齐",
+      "llm_evidence": "少步图像生成器的偏好对齐",
+      "canonical_evidence": "少步图像生成器的偏好对齐",
+      "llm_tldr_en": "FestDPO extends direct preference optimization to few-step generative models using nonparametric likelihood estimation, enabling preference alignment without explicit reward models.",
+      "llm_tldr_cn": "少步生成模型能在少量函数评估内生成高保真样本，但样本未必具备理想属性。当这些属性难以写成显式奖励函数时，直接偏好优化DPO可用成对偏好反馈对齐模型而无需单独奖励模型。然而少步生成模型通常是隐式的，DPO所需似然评估不可行。本文提出FestDPO，利用非参数似然估计把DPO扩展到少步生成模型，实现无需显式奖励的偏好对齐。",
+      "llm_tldr": "少步生成模型能在少量函数评估内生成高保真样本，但样本未必具备理想属性。当这些属性难以写成显式奖励函数时，直接偏好优化DPO可用成对偏好反馈对齐模型而无需单独奖励模型。然而少步生成模型通常是隐式的，DPO所需似然评估不可行。本文提出FestDPO，利用非参数似然估计把DPO扩展到少步生成模型，实现无需显式奖励的偏好对齐。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.33765v1",
+      "source": "arxiv",
+      "title": "Principal Steering Subspaces for Online Adaptation of Frozen Generative Robot Policies",
+      "abstract": "Generative robot policies provide expressive behavior priors, but updating a large diffusion or flow-matching model through online interaction is costly. Latent-space reinforcement learning avoids updating the pretrained generator by controlling its initial sampling noise, yet high-dimensional noise can have strongly anisotropic effects on decoded actions. We introduce Principal Steering Subspaces (PSS), a forward-query interface that constructs a fixed low-dimensional control basis from finite-difference decoder responses. Soft Actor-Critic controls the leading response directions, while the orthogonal complement is independently resampled from the Gaussian prior at each query. On three RoboMimic tasks with diffusion and flow-matching policies, response spectra reveal substantial concentration. Across five matched task-generator pairs, the training curves indicate that PSS generally converges faster and exhibits more stable late-training behavior than full-latent control, while achieving stronger final performance overall. Controlled Diffusion-Square ablations further show that leading-response directions outperform random and least-responsive subspaces of equal dimension. We further integrate PSS with a frozen, closed-source 3B-parameter vision-language-action (VLA) policy in a humanoid learning system with synchronous transition collection, reset-time optimization, and latency-aware asynchronous deployment. In an exploratory screwdriver-placement evaluation, success is observed in 2/10 trials for the frozen VLA policy and 6/10 after SAC+PSS adaptation. These results support decoder-response geometry as a practical basis for online adaptation of frozen generative robot policies.",
+      "authors": [
+        "Jialeng Ni",
+        "Nathan Zhao",
+        "Kunpeng Song"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-27T17:04:16+00:00",
+      "link": "https://arxiv.org/pdf/2609.33765v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "latent-space RL steering a frozen diffusion/flow generative model",
+      "llm_evidence_cn": "用隐空间强化学习调控冻结的扩散或流匹配生成模型",
+      "llm_evidence": "用隐空间强化学习调控冻结的扩散或流匹配生成模型",
+      "canonical_evidence": "用隐空间强化学习调控冻结的扩散或流匹配生成模型",
+      "llm_tldr_en": "Updating large generative robot policies online is costly, so latent-space RL controls the generator sampling noise instead. PSS builds a fixed low-dimensional control basis from finite-difference decoder responses, letting Soft Actor-Critic steer leading directions while resampling the rest. It adapts frozen diffusion and flow-matching policies on RoboMimic, showing RL can steer generative models.",
+      "llm_tldr_cn": "生成式机器人策略提供强行为先验，但通过在线交互更新大型扩散或流匹配模型代价高昂。本文提出主导向子空间 PSS，从解码器有限差分响应中构建固定低维控制基，用 Soft Actor-Critic 调控主导响应方向，其余方向按高斯先验重采样。在三个 RoboMimic 任务上验证了有效性。该工作展示了以强化学习调控生成模型隐空间噪声的思路，与用强化学习改进图像生成高度相通。",
+      "llm_tldr": "生成式机器人策略提供强行为先验，但通过在线交互更新大型扩散或流匹配模型代价高昂。本文提出主导向子空间 PSS，从解码器有限差分响应中构建固定低维控制基，用 Soft Actor-Critic 调控主导响应方向，其余方向按高斯先验重采样。在三个 RoboMimic 任务上验证了有效性。该工作展示了以强化学习调控生成模型隐空间噪声的思路，与用强化学习改进图像生成高度相通。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

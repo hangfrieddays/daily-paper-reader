@@ -6,33 +6,27 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-30
-- 运行时间：2026-09-30 23:00:04 UTC
+- 最新运行日期：2026-10-01
+- 运行时间：2026-10-01 23:06:27 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：1
+- 本次总论文数：2
+- 精读区：0
 - 速读区：2
 
 ### 今日简报（AI）
-今日完成3篇论文筛选：精读1篇、速读2篇，主线聚焦扩散/流模型的微调与蒸馏。
-
-最值得看的是精读的《DOHF: Online Diffusion Fine-tuning with Doob's h-transform Guidance》（8.0/10），用Doob h-变换引导做在线扩散微调；速读的《CapField-OPD》（6.0/10）则关注流模型的多教师在线蒸馏能力场学习。
-
-普通读者可先读DOHF了解在线微调思路，再按兴趣翻CapField-OPD；另注意速读两条记录标题相同，建议核对是否重复。
-- 详情：[/202609/30/README](/202609/30/README)
+今日速读两篇生成模型前沿：FestDPO 用直接偏好优化让少步生成器对齐，Principal Steering Subspaces 为冻结机器人策略做在线适配。最值得看的是 FestDPO 如何把偏好优化压进少步采样（7.0分），以及后者不重训模型即可适配新任务的思路（6.0分）。建议普通读者先读 FestDPO 摘要了解少步对齐，再扫一眼机器人策略适配的场景。
+- 详情：[/202610/01/README](/202610/01/README)
 
 ### 精读区论文标签
-1. [DOHF: Online Diffusion Fine-tuning with Doob's $h$-transform Guidance](/202609/30/2609.31882v1-dohf-online-diffusion-fine-tuning-with-doobs-h-transform-guidance)  
-   标签：评分：8.0/10、query:image-gen-rl
-   evidence：基于奖励的在线扩散微调，支持黑盒不可微奖励
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [CapField-OPD: Learning Continuous Capability Fields via Joint-Anchored Multi-Teacher On-Policy Distillation for Flow Models](/202609/30/2609.34658v1-capfield-opd-learning-continuous-capability-fields-via-joint-anchored-multi-teacher-on-policy-distillation-for-flow-models)  
+1. [FestDPO: Few-step Generator Alignment with Direct Preference Optimization](/202610/01/2609.34673v1-festdpo-few-step-generator-alignment-with-direct-preference-optimization)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：少步图像生成器的偏好对齐
+2. [Principal Steering Subspaces for Online Adaptation of Frozen Generative Robot Policies](/202610/01/2609.33765v1-principal-steering-subspaces-for-online-adaptation-of-frozen-generative-robot-policies)  
    标签：评分：6.0/10、query:image-gen-rl
-   evidence：面向流模型的奖励专业化后训练与多教师蒸馏
-2. [CapField-OPD: Learning Continuous Capability Fields via Joint-Anchored Multi-Teacher On-Policy Distillation for Flow Models](/202609/30/2609.34658v2-capfield-opd-learning-continuous-capability-fields-via-joint-anchored-multi-teacher-on-policy-distillation-for-flow-models)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：面向流模型的奖励专业化后训练与多教师蒸馏
+   evidence：用隐空间强化学习调控冻结的扩散或流匹配生成模型
 
 
 <div class="dpr-home-promo-card">
