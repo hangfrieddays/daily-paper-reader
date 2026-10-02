@@ -1,0 +1,413 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-10-02T23:06:20.643788+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 5,
+    "deep_cap": 6,
+    "deep_selected": 5,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2609.38329v1",
+      "source": "arxiv",
+      "title": "ExploreNet: Learning Where to Explore in Diffusion GRPO",
+      "abstract": "Group-relative RL methods such as Flow-GRPO post-train image generators by exploring with isotropic Gaussian noise added at every denoising step. This noise decides which rollouts the model learns from, yet it perturbs every channel and spatial position of the latent equally. In this paper, we instead show that latent elements differ in how much they change the generated image, so exploration should adapt to these differences. We introduce EXPLORENET to learn an adaptive exploration distribution. EXPLORENET is a policy that predicts a noise scale for every latent element from the current latent, the denoising step, and the prompt, before any reward is observed; it is trained on the reward spread of each rollout group and discarded after training, leaving inference unchanged. On Stable Diffusion 3.5 Medium, EXPLORENET improves held-out GenEval2 by 14% over Flow-GRPO, transfers to two independent compositional benchmarks and five preference and image-quality models, and reaches a 67.2% human preference win-rate. Overall, across our group-relative diffusion RL experiments, we find that exploration is learnable, the shape of the exploration distribution outweighs its magnitude, and rollout quality is more effective than rollout quantity.",
+      "authors": [
+        "Shuyue Stella Li",
+        "Xiaochuang Han",
+        "Yulia Tsvetkov",
+        "Luke Zettlemoyer"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-29T18:00:52+00:00",
+      "link": "https://arxiv.org/pdf/2609.38329v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "RL post-training of image generators via diffusion GRPO with learned adaptive exploration",
+      "llm_evidence_cn": "用扩散GRPO对图像生成器做强化学习后训练并学习自适应探索",
+      "llm_evidence": "用扩散GRPO对图像生成器做强化学习后训练并学习自适应探索",
+      "canonical_evidence": "用扩散GRPO对图像生成器做强化学习后训练并学习自适应探索",
+      "llm_tldr_en": "ExploreNet targets diffusion GRPO post-training of image generators, where isotropic noise explores poorly. It learns a policy predicting per-latent noise scales from reward spread, giving adaptive exploration and better RL fine-tuning of image generation.",
+      "llm_tldr_cn": "现有Flow-GRPO等方法在扩散模型每个去噪步加各向同性高斯噪声做探索，却同等扰动所有潜变量，探索效率低。本文提出ExploreNet，在观测奖励前根据当前潜变量、去噪步与提示预测每个潜元素的噪声尺度，并以各rollout组的奖励离散度训练该探索策略，训练后丢弃、不改变推理。实验表明自适应探索能提升图像生成的强化学习后训练效果，为RL微调图像生成器提供了更合理的探索机制。",
+      "llm_tldr": "现有Flow-GRPO等方法在扩散模型每个去噪步加各向同性高斯噪声做探索，却同等扰动所有潜变量，探索效率低。本文提出ExploreNet，在观测奖励前根据当前潜变量、去噪步与提示预测每个潜元素的噪声尺度，并以各rollout组的奖励离散度训练该探索策略，训练后丢弃、不改变推理。实验表明自适应探索能提升图像生成的强化学习后训练效果，为RL微调图像生成器提供了更合理的探索机制。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.39441v1",
+      "source": "arxiv",
+      "title": "CAST: Causal Advantage-Structured Training with Spatially Grounded Compositional Rewards for Diffusion Models",
+      "abstract": "Online reinforcement learning has been extended to flow matching for diffusion model (DM) image generation. However, this paradigm faces three limitations: (1) Window selection. Existing methods manually set the stochastic differential equation (SDE) sampling window, i.e., the denoising steps where exploration noise is injected. We instead determine it from each model's denoising trajectory. (2) Reward saturation. Current methods rely on scoring models trained on human annotations; we find that such scores are extremely high and nearly indistinguishable on the latest SOTA open-source DMs, making advantage estimation largely ineffective. (3) Sample inefficiency. A single scalar reward collapses different failure modes into almost identical scores, leaving minimal gradient guidance for targeted improvement. To address these issues, we propose CAST (Causal Advantage-Structured Training), an RL fine-tuning method for pretrained DMs, which (1) identifies the denoising step at which each model fixes the objects and their spatial arrangement in the image and uses that timing to set the SDE window, (2) decomposes each prompt via Causal Scene Graphs (CSG) into verifiable-atoms, i.e., minimal semantic units such as an object, count, attribute, or spatial relation that can each be checked independently, and rewards each atom separately, and (3) projects the signed atom-level advantages into pixel space through teacher-forced attention and uses them to spatially weight the SDE policy objective. We fine-tune two of the strongest open-source DMs, FLUX.2-dev and Qwen-Image-2512, with CAST, and evaluate them on GenEval 2, a compositional benchmark, and on Qwen-Image-Bench for overall quality. Within almost the same training budget, CAST's improvement over the base model on the most challenging GenEval 2 prompts is up to 3.07x that of Flow-GRPO, while overall generation quality also improves.",
+      "authors": [
+        "Shu Yu",
+        "Chaochao Lu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-09-30T10:16:58+00:00",
+      "link": "https://arxiv.org/pdf/2609.39441v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "online RL for diffusion image generation with compositional rewards",
+      "llm_evidence_cn": "面向扩散图像生成的在线强化学习与组合奖励",
+      "llm_evidence": "面向扩散图像生成的在线强化学习与组合奖励",
+      "canonical_evidence": "面向扩散图像生成的在线强化学习与组合奖励",
+      "llm_tldr_en": "CAST addresses online RL for diffusion image generation, deriving the SDE exploration window from each denoising trajectory, mitigating reward saturation, and using spatially grounded compositional rewards to fix sample inefficiency.",
+      "llm_tldr_cn": "针对扩散模型图像生成中在线强化学习的三点局限——采样窗口需人工设定、标注奖励趋于饱和导致优势估计失效、单一标量奖励造成样本低效，本文提出CAST。它依据每个模型的去噪轨迹自适应确定探索窗口，并引入空间定位的组合奖励，避免不同失败模式被单一分数压缩。该方法提升了流匹配扩散模型在线强化学习的训练效果与图像生成质量。",
+      "llm_tldr": "针对扩散模型图像生成中在线强化学习的三点局限——采样窗口需人工设定、标注奖励趋于饱和导致优势估计失效、单一标量奖励造成样本低效，本文提出CAST。它依据每个模型的去噪轨迹自适应确定探索窗口，并引入空间定位的组合奖励，避免不同失败模式被单一分数压缩。该方法提升了流匹配扩散模型在线强化学习的训练效果与图像生成质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "papers on reinforcement learning for image generation",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.37372v1",
+      "source": "arxiv",
+      "title": "Think Before You Score: Thinking Reward Model for Visual Generation",
+      "abstract": "Visual reward models are essential for evaluating and improving visual generation models, yet existing approaches typically map task conditions and candidate outputs directly to scalar rewards, leaving implicit what should be evaluated for each individual case. We introduce Think Before You Score, a paradigm that explicitly determines what matters for each case before judging how well the candidate performs. Following this principle, we propose the Thinking Reward Model (TRM), which formulates case-adaptive rubrics, performs rubric-guided assessment, and produces fine-grained pointwise rewards. We further observe that conventional pairwise preference optimization can induce score polarization, and introduce Pairwise Dual-Group Relative Policy Optimization (PD-GRPO), which leverages pairwise supervision to improve reward discrimination while preserving fine-grained pointwise scoring. Extensive experiments on image generation and editing reward-modeling benchmarks demonstrate that TRM achieves state-of-the-art performance among open-source reward models while remaining highly competitive with proprietary alternatives. Moreover, using TRM as a reward for reinforcement learning consistently improves diverse visual generation models, demonstrating that its fine-grained, case-adaptive rewards translate into effective optimization signals for visual generation.",
+      "authors": [
+        "Xuehai Bai",
+        "Zhenchen Tang",
+        "Yang Shi",
+        "Dianyi Wang",
+        "Tengfei Liu",
+        "Wanshun Su",
+        "Xuanyu Zhu",
+        "Ruohui Wang",
+        "Haiwen Diao",
+        "Haotian Wang",
+        "Xiaoling Gu",
+        "Yuanxing Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-29T12:28:00+00:00",
+      "link": "https://arxiv.org/pdf/2609.37372v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Thinking Reward Model for visual generation producing fine-grained rewards with policy optimization",
+      "llm_evidence_cn": "面向视觉生成的思考奖励模型，结合策略优化产生细粒度奖励",
+      "llm_evidence": "面向视觉生成的思考奖励模型，结合策略优化产生细粒度奖励",
+      "canonical_evidence": "面向视觉生成的思考奖励模型，结合策略优化产生细粒度奖励",
+      "llm_tldr_en": "This paper proposes a Thinking Reward Model for visual generation that formulates case-adaptive rubrics before scoring, producing fine-grained pointwise rewards, and introduces Pairwise Dual-Group Relative Policy Optimization to avoid score polarization.",
+      "llm_tldr_cn": "该文针对现有视觉奖励模型直接将条件与输出映射为标量、未明确评估依据的问题，提出先思考再打分的范式。作者设计思考奖励模型，为每个样本自适应生成评分准则并进行准则引导的评估，输出细粒度逐点奖励。同时发现传统成对偏好优化会导致分数极化，进而提出成对双组相对策略优化。该工作为视觉生成提供了更可解释、更稳定的奖励建模方案。",
+      "llm_tldr": "该文针对现有视觉奖励模型直接将条件与输出映射为标量、未明确评估依据的问题，提出先思考再打分的范式。作者设计思考奖励模型，为每个样本自适应生成评分准则并进行准则引导的评估，输出细粒度逐点奖励。同时发现传统成对偏好优化会导致分数极化，进而提出成对双组相对策略优化。该工作为视觉生成提供了更可解释、更稳定的奖励建模方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.36245v1",
+      "source": "arxiv",
+      "title": "CoRe: Co-Evolving Reward Models for Mitigating Latent Reward Hacking in Video Diffusion Models",
+      "abstract": "Latent reward models (LRMs) enable efficient alignment of video diffusion models by scoring intermediate states directly in latent space. However, we find that optimizing against a fixed latent reward rapidly leads to latent reward hacking: the predicted reward stays high while perceptual and motion quality deteriorate. Our analysis identifies distributional escape as the central cause: within a few hundred updates, the generator moves beyond the reward model's training support, where its scores no longer reflect video quality. Based on this insight, we introduce CoRe, a co-evolving reward framework that treats latent-space alignment as a dynamic interaction between the generator and the reward model. Rather than optimizing against a stationary proxy, CoRe continually refits the reward model on the generator's current samples while anchoring it to real-video preferences, so the generator cannot gain reward by drifting away from the data. On Wan2.1-T2V-1.3B, experiments show that CoRe consistently improves generation quality over both the pretrained model and prior alignment methods, while avoiding the quality collapse of fixed-reward optimization.",
+      "authors": [
+        "Zhaolong Su",
+        "Yujin Han",
+        "Feng Wang",
+        "Jameson Dong",
+        "Hins Hu",
+        "Difan Zou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-09-28T20:38:50+00:00",
+      "link": "https://arxiv.org/pdf/2609.36245v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "co-evolving reward framework to mitigate reward hacking when aligning video diffusion models",
+      "llm_evidence_cn": "协同演化奖励框架，缓解视频扩散模型对齐中的奖励攻击",
+      "llm_evidence": "协同演化奖励框架，缓解视频扩散模型对齐中的奖励攻击",
+      "canonical_evidence": "协同演化奖励框架，缓解视频扩散模型对齐中的奖励攻击",
+      "llm_tldr_en": "This paper identifies latent reward hacking when aligning video diffusion models against fixed latent reward models, traces it to distributional escape, and proposes CoRe, a co-evolving reward framework treating alignment as dynamic generator-reward interaction.",
+      "llm_tldr_cn": "该文针对视频扩散模型在潜空间奖励对齐中的奖励攻击问题展开研究，发现固定潜奖励模型在数百次更新后奖励虚高而感知与运动质量下降。作者将根因归为分布逃逸，即生成器偏离奖励模型的训练支撑。为此提出CoRe协同演化奖励框架，把潜空间对齐视为生成器与奖励模型的动态交互。该设计可有效缓解奖励攻击，提升视频生成的对齐质量。",
+      "llm_tldr": "该文针对视频扩散模型在潜空间奖励对齐中的奖励攻击问题展开研究，发现固定潜奖励模型在数百次更新后奖励虚高而感知与运动质量下降。作者将根因归为分布逃逸，即生成器偏离奖励模型的训练支撑。为此提出CoRe协同演化奖励框架，把潜空间对齐视为生成器与奖励模型的动态交互。该设计可有效缓解奖励攻击，提升视频生成的对齐质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2610.00365v1",
+      "source": "arxiv",
+      "title": "Manifold-Constrained Initial Noise Optimization for Efficient Generative Model Alignment",
+      "abstract": "Recent advances in distillation and flow-map models have enabled deterministic one- or few-step generation for high-quality data, facilitating a new branch of reward alignment approaches that directly optimize the initial noise from a Gaussian distribution. However, most existing initial-noise optimization methods rely on first-order gradient information, which is either inapplicable or suffers from instability and inefficiency in black-box reward scenarios. Here, we introduce ZeNOVA, a stable and efficient initial noise alignment method in a gradient-free manner. Specifically, we address existing algorithms' major challenge in black-box scenarios through annealed soft-value guidance, manifold-constrained hyperspherical Langevin dynamics, and Metropolis-Hastings jumping. Extensive experiments on image and video generative models show that ZeNOVA outperforms all evaluated zeroth-order baselines by optimizing the initial noise toward higher rewards substantially more stably while exploiting the geometry of the Gaussian prior, demonstrating its practical applicability to various black-box reward alignment.",
+      "authors": [
+        "Jinho Chang",
+        "Jong Chul Ye"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-09-30T06:37:54+00:00",
+      "link": "https://arxiv.org/pdf/2610.00365v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reward alignment of generative models via initial noise optimization",
+      "llm_evidence_cn": "通过初始噪声优化实现生成模型奖励对齐",
+      "llm_evidence": "通过初始噪声优化实现生成模型奖励对齐",
+      "canonical_evidence": "通过初始噪声优化实现生成模型奖励对齐",
+      "llm_tldr_en": "Existing initial-noise optimization relies on first-order gradients, failing under black-box rewards. ZeNOVA achieves stable, gradient-free noise alignment via annealed soft-value guidance and manifold-constrained hyperspherical Langevin dynamics for efficient generative model reward alignment.",
+      "llm_tldr_cn": "现有初始噪声优化方法多依赖一阶梯度信息，在仅有黑盒奖励的场景下不适用且易出现不稳定与低效问题。本文提出ZeNOVA，通过退火软值引导与流形约束的超球面Langevin动力学，实现无梯度的初始噪声对齐。该方法在保持训练稳定的同时提升了黑盒奖励下的对齐效率与质量。其意义在于为蒸馏与流映射模型的奖励对齐提供了稳定高效的新范式。",
+      "llm_tldr": "现有初始噪声优化方法多依赖一阶梯度信息，在仅有黑盒奖励的场景下不适用且易出现不稳定与低效问题。本文提出ZeNOVA，通过退火软值引导与流形约束的超球面Langevin动力学，实现无梯度的初始噪声对齐。该方法在保持训练稳定的同时提升了黑盒奖励下的对齐效率与质量。其意义在于为蒸馏与流映射模型的奖励对齐提供了稳定高效的新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.36224v1",
+      "source": "arxiv",
+      "title": "Mutually Adversarial Self-Training with Evolving Data for Unified Multimodal Models",
+      "abstract": "Unified multimodal models (UMMs) combine image generation and visual understanding in a shared backbone. Since generation and understanding are inverse tasks, recent studies self-train UMMs by letting the two branches cooperatively supervise each other. We introduce MATE (Mutually Adversarial self-Training with Evolving data), a reinforcement-learning-based post-training framework in which the two branches instead challenge each other, and the challenges evolve as the model trains. MATE lets generation and understanding take turns to be challenger and solver. Given an image, the understanding branch proposes several candidate descriptions that the generation branch must turn back into similar images, and vice versa. The candidates are screened for consistency with the image or prompt they were proposed from, and the solver is trained on the candidate it handles worst. The adversary thus comes from the model's own outputs, and no separate adversary is trained. Moreover, the candidates that defeat one branch become the sources of the next challenges to the other in the next epoch, which keeps the challenges evolving with the model and turns the training into self-play in data space. On Janus-Pro-1B, MATE improves GenEval by 2.4 points, DPG-Bench by 1.7 points, and the average over nine understanding benchmarks by 0.7 points, while strengthening consistency across repeated image-text cycles.",
+      "authors": [
+        "Wentao Zhou",
+        "Weijie Gan",
+        "Jiayun Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-09-28T20:22:14+00:00",
+      "link": "https://arxiv.org/pdf/2609.36224v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement-learning-based post-training for unified multimodal models with image generation branch",
+      "llm_evidence_cn": "面向含图像生成分支的统一多模态模型的强化学习后训练",
+      "llm_evidence": "面向含图像生成分支的统一多模态模型的强化学习后训练",
+      "canonical_evidence": "面向含图像生成分支的统一多模态模型的强化学习后训练",
+      "llm_tldr_en": "This paper proposes MATE, a reinforcement-learning-based post-training framework for unified multimodal models where generation and understanding branches adversarially challenge each other with evolving data, improving both image generation and understanding.",
+      "llm_tldr_cn": "该文针对统一多模态模型中生成与理解互为逆任务、以往多采用协同自训练的问题，提出MATE框架。作者让生成与理解两个分支在强化学习后训练中相互对抗，轮流充当出题者与解题者，并让挑战随训练演化。给定图像，理解分支提出候选描述，生成分支需据此重建相似图像，反之亦然。该机制在共同骨干上同时提升图像生成与视觉理解能力。",
+      "llm_tldr": "该文针对统一多模态模型中生成与理解互为逆任务、以往多采用协同自训练的问题，提出MATE框架。作者让生成与理解两个分支在强化学习后训练中相互对抗，轮流充当出题者与解题者，并让挑战随训练演化。给定图像，理解分支提出候选描述，生成分支需据此重建相似图像，反之亦然。该机制在共同骨干上同时提升图像生成与视觉理解能力。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.40030v2",
+      "source": "arxiv",
+      "title": "Fenchel Tilting: Weighted Correction for Efficient Finetuning of Generative Models",
+      "abstract": "Adapting a pretrained generative model to an arbitrary preference expressed as a utility function underlies reward alignment, guided design, and constraint satisfaction, enabling diverse applications. Existing fine-tuning methods trade off generality against computational cost: they either restrict the family class of supported preferences to keep optimization simple or preserve generality at the expense of efficiency. We introduce Fenchel Tilt Flow Control (FTFC), which decouples utility optimization from generative-model fitting. FTFC first optimizes for a target distribution by jointly fitting an effective reward and density-ratio weights on pretrained samples. Method combines the utility's variational structure with Fenchel duality, supporting general $f$-divergence penalties that determine how rewards are transformed into an distribution-correction weights. These weights are then frozen and used to modify a diffusion or flow model in a single stage of importance-weighted denoising or flow matching, without differentiating through sampling trajectories. We establish exact duality for concave utilities under suitable conditions and show that weighted fitting reproduces the optimal target distribution for a given utility. Across image and molecule generation benchmarks, FTFC improves over baselines on diverse preference functions, while also being up to $20\\times$ more efficient. roposed method enables adaptation beyond expected-reward maximization without complex optimization, while preserving robustness for more general class of the utility functions compared to baselines.",
+      "authors": [
+        "Maksim Bobrin",
+        "Maksim Zhdanov",
+        "Dmitry Dylov"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-09-30T16:02:58+00:00",
+      "link": "https://arxiv.org/pdf/2609.40030v2",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "utility and reward optimization for finetuning generative models",
+      "llm_evidence_cn": "面向生成模型微调的效用与奖励优化",
+      "llm_evidence": "面向生成模型微调的效用与奖励优化",
+      "canonical_evidence": "面向生成模型微调的效用与奖励优化",
+      "llm_tldr_en": "Fenchel Tilt Flow Control decouples utility optimization from generative-model fitting, jointly fitting an effective reward and density-ratio weights to efficiently finetune generative models for arbitrary preferences.",
+      "llm_tldr_cn": "针对生成模型在奖励对齐与偏好微调中难以兼顾通用性与计算效率的问题，本文提出Fenchel Tilt Flow Control。该方法将效用优化与生成模型拟合解耦，先在预训练样本上联合拟合有效奖励与密度比权重，再据此调整生成分布。它借助效用变分结构与Fenchel对偶，实现高效且通用的偏好对齐。",
+      "llm_tldr": "针对生成模型在奖励对齐与偏好微调中难以兼顾通用性与计算效率的问题，本文提出Fenchel Tilt Flow Control。该方法将效用优化与生成模型拟合解耦，先在预训练样本上联合拟合有效奖励与密度比权重，再据此调整生成分布。它借助效用变分结构与Fenchel对偶，实现高效且通用的偏好对齐。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2610.01233v1",
+      "source": "arxiv",
+      "title": "Flow Matching Reinforcement for 3D Mesh Generation via Dynamic Homing Optimization",
+      "abstract": "Flow matching is central to 3D generation, yet in practice its reinforcement learning (RL) methods are largely adapted from 2D visual generation. Representative DPO-, GRPO-, and NFT-style objectives, when applied to negative trajectories, mainly steer predicted velocities away from the corresponding directions without explicitly specifying a target velocity field toward preferred samples. In 3D generation, constrained by pretrained model capabilities, rollout diversity, and reward-distribution complexity, directly applying these RL methods yields limited gains in geometric quality. We introduce a forward-process RL method \\textbf{Dynamic Homing Optimization (DHO)}, which reformulates negative-trajectory optimization as positive-sample attraction-guided dynamic homing. Specifically, Minimum-Cost Attractive Matching (MAM) assigns each negative sample a distinct positive target, and Time-Aware Dynamic Correction (TDC) then redirects its trajectory toward the target using a remaining-time-aware corrective velocity. Building on asynchronous online DHO, we develop \\textbf{Flow3D-Pro}, an image-to-3D geometry generation framework. Experiments show that DHO outperforms representative DPO-, GRPO-, and NFT-style objectives in 3D generation, while Flow3D-Pro produces higher-quality 3D geometry than existing mesh generation methods.",
+      "authors": [
+        "Zhen Zhou",
+        "Zhiwei Ning",
+        "Puhua Jiang",
+        "Sheng Zhang",
+        "Yifei Tang",
+        "Jie Yang",
+        "Xintong Han",
+        "Wei Liu",
+        "Chunchao Guo"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-10-01T07:35:03+00:00",
+      "link": "https://arxiv.org/pdf/2610.01233v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning objectives for generative models via dynamic homing optimization",
+      "llm_evidence_cn": "用动态归航优化为生成模型设计强化学习目标",
+      "llm_evidence": "用动态归航优化为生成模型设计强化学习目标",
+      "canonical_evidence": "用动态归航优化为生成模型设计强化学习目标",
+      "llm_tldr_en": "DHO is a forward-process RL method for 3D mesh generation that reformulates negative-trajectory optimization as attraction toward positive samples, fixing the limited gains of DPO, GRPO and NFT objectives naively ported from 2D visual generation.",
+      "llm_tldr_cn": "流匹配在三维生成中至关重要，但其强化学习方法多沿用二维视觉生成的DPO、GRPO与NFT目标，对负轨迹仅将预测速度推离对应方向，未显式给出朝向偏好样本的目标速度场，导致几何质量提升有限。本文提出前向过程强化学习方法动态归航优化（DHO），将负轨迹优化重构为对正样本的吸引。实验表明该方法在几何质量上优于直接迁移的RL方法，为三维乃至更广生成任务的奖励驱动优化提供了新思路。",
+      "llm_tldr": "流匹配在三维生成中至关重要，但其强化学习方法多沿用二维视觉生成的DPO、GRPO与NFT目标，对负轨迹仅将预测速度推离对应方向，未显式给出朝向偏好样本的目标速度场，导致几何质量提升有限。本文提出前向过程强化学习方法动态归航优化（DHO），将负轨迹优化重构为对正样本的吸引。实验表明该方法在几何质量上优于直接迁移的RL方法，为三维乃至更广生成任务的奖励驱动优化提供了新思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2610.00994v1",
+      "source": "arxiv",
+      "title": "VIEScore2: Unified Image Evaluation with Spatially Grounded Explanations",
+      "abstract": "Existing synthetic image evaluators typically provide only a scalar quality score and do not identify the image regions that support it. We introduce VIEScore2, a unified evaluator for image generation and editing tasks with optional conditioning images. VIEScore2 represents an image as an N x N grid and jointly predicts quality scores and defect locations in a single model pass. Its text-native grid representation provides a common interface for heterogeneous spatial supervision and enables directly verifiable post-training objectives. We train on 38K examples spanning score-only, localization-only, and joint supervision across generation and editing tasks. Starting from supervised fine-tuning, we further apply GRPO to improve defect localization using rewards that combine cell-level Dice overlap, score accuracy, and output-format validity. A parameter-free parser converts the structured predictions into readable explanations. On the primary suite, VIEScore2 achieves an overall-score SRCC of 0.601, compared with 0.491 for Gemini-3-Flash, the strongest zero-shot general-purpose VLM baseline under matched inputs. For defect localization, VIEScore2 outperforms both general-purpose VLMs and specialized spatial evaluators on three of six benchmarks in per-image grid IoU and ranks among the top three on five, including datasets beyond its training sources.",
+      "authors": [
+        "Xianda Du",
+        "Max Ku",
+        "Weiming Ren",
+        "Zhi Rui Tam",
+        "Chunlin Ren",
+        "Ping Nie",
+        "Min-Hung Chen",
+        "Wenhu Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-10-01T03:29:03+00:00",
+      "link": "https://arxiv.org/pdf/2610.00994v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "image generation evaluator used as reward with GRPO post-training",
+      "llm_evidence_cn": "图像生成评估器可作奖励并用GRPO后训练",
+      "llm_evidence": "图像生成评估器可作奖励并用GRPO后训练",
+      "canonical_evidence": "图像生成评估器可作奖励并用GRPO后训练",
+      "llm_tldr_en": "VIEScore2 predicts image quality scores and defect locations jointly on an N-by-N grid, enabling verifiable post-training objectives and applying GRPO to improve defect localization for generation and editing.",
+      "llm_tldr_cn": "针对现有合成图像评估器只给标量分、无法指出支撑评分区域的问题，提出VIEScore2，将图像表示为N×N网格，单次前向同时预测质量分与缺陷位置，并在监督微调后用GRPO提升缺陷定位。方法在3.8万条生成与编辑样本上训练，实现可验证的评估与空间定位。该评估器可作为图像生成的奖励模型，支撑强化学习式后训练。",
+      "llm_tldr": "针对现有合成图像评估器只给标量分、无法指出支撑评分区域的问题，提出VIEScore2，将图像表示为N×N网格，单次前向同时预测质量分与缺陷位置，并在监督微调后用GRPO提升缺陷定位。方法在3.8万条生成与编辑样本上训练，实现可验证的评估与空间定位。该评估器可作为图像生成的奖励模型，支撑强化学习式后训练。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2610.01973v1",
+      "source": "arxiv",
+      "title": "Token-Level Video Reinforcement Learning",
+      "abstract": "Reinforcement learning (RL) for video generation usually assigns one scalar reward to an entire sampled video. Yet a video is not uniformly flawed: some visual tokens may already satisfy the prompt, whereas others require correction. A scalar reward cannot localize errors, causing optimization to perturb satisfactory tokens while under-targeting the tokens that actually need to change. We introduce Token-Level Video Reinforcement Learning, TVRL, a framework that derives token-level credit from the reward being optimized. Our key insight is that the answer likelihood of a frozen vision-language model provides both signals: its outputs contribute to the video-level reward, while magnitudes of its video-input gradients reveal which generated video tokens most affect that score. We instantiate TVRL in Group Relative Policy Optimization by averaging prompt-derived question rewards into one group-relative advantage and using detached, question-conditioned token-credit maps to reweight dense denoising-transition log-probabilities inside the clipped policy ratio. On VBench-2.0, TVRL achieves an Overall score of 57.69, outperforming the base model by 3.60 points. TVRL also improves matched GRPO baselines across three SDE samplers (SAGE, Flow, and Dance) by 2.68--3.15 points and across four reward models (VideoAlign, VideoScore2, UnifiedReward2, and Qwen3.5-9B) by 1.33--3.15 points.",
+      "authors": [
+        "Yifan Wang",
+        "Gordon Guocheng Qian",
+        "Yanyu Li",
+        "Anil Kag",
+        "Yun Fu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-10-01T16:22:41+00:00",
+      "link": "https://arxiv.org/pdf/2610.01973v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "token-level credit assignment derived from the reward being optimized for video generation RL",
+      "llm_evidence_cn": "从被优化的奖励中推导令牌级信用分配的视频生成强化学习",
+      "llm_evidence": "从被优化的奖励中推导令牌级信用分配的视频生成强化学习",
+      "canonical_evidence": "从被优化的奖励中推导令牌级信用分配的视频生成强化学习",
+      "llm_tldr_en": "RL for video generation usually assigns one scalar reward per video, unable to localize flaws. TVRL derives token-level credit from a frozen VLM's answer likelihood and video-input gradients, focusing optimization on tokens that need change and improving generation quality.",
+      "llm_tldr_cn": "视频生成的强化学习通常给整段采样视频分配一个标量奖励，但视频并非均匀有缺陷，标量奖励无法定位错误，会扰动已合格的令牌而忽视需修正的令牌。本文提出TVRL，从被优化的奖励中推导令牌级信用：冻结视觉语言模型的答案似然既贡献视频级奖励，其视频输入梯度幅值又揭示哪些令牌最影响该分数。据此对生成视频进行更精细的强化学习优化。实验表明令牌级信用能提升视频生成质量，其奖励/信用设计思路对图像生成RL同样有借鉴价值。",
+      "llm_tldr": "视频生成的强化学习通常给整段采样视频分配一个标量奖励，但视频并非均匀有缺陷，标量奖励无法定位错误，会扰动已合格的令牌而忽视需修正的令牌。本文提出TVRL，从被优化的奖励中推导令牌级信用：冻结视觉语言模型的答案似然既贡献视频级奖励，其视频输入梯度幅值又揭示哪些令牌最影响该分数。据此对生成视频进行更精细的强化学习优化。实验表明令牌级信用能提升视频生成质量，其奖励/信用设计思路对图像生成RL同样有借鉴价值。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
