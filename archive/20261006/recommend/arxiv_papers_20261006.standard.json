@@ -1,15 +1,15 @@
 {
   "mode": "standard",
-  "generated_at": "2026-10-06T00:59:44.743933+00:00",
+  "generated_at": "2026-10-06T23:41:27.314613+00:00",
   "stats": {
     "mode": "standard",
     "tag_count": 1,
     "deep_divecandidates": 2,
     "deep_cap": 6,
     "deep_selected": 2,
-    "quick_candidates": 2,
+    "quick_candidates": 7,
     "quick_skim_target": 11,
-    "quick_selected": 2
+    "quick_selected": 7
   },
   "deep_dive": [
     {
@@ -37,13 +37,13 @@
         "query:image-gen-rl"
       ],
       "llm_score": 9.0,
-      "llm_evidence_en": "composing preference and rubric rewards for text-to-image post-training",
-      "llm_evidence_cn": "组合偏好与评分奖励用于文生图后训练",
-      "llm_evidence": "组合偏好与评分奖励用于文生图后训练",
-      "canonical_evidence": "组合偏好与评分奖励用于文生图后训练",
-      "llm_tldr_en": "This work post-trains text-to-image models by composing a Bradley-Terry preference reward with rubric-based rewards, capturing both human aesthetic preference and prompt faithfulness while guarding against reward hacking.",
-      "llm_tldr_cn": "现有文本到图像模型虽视觉质量出色，但单一奖励信号难以全面刻画人类偏好，后训练提升仍具挑战。本文提出组合式奖励后训练方案，将基于大规模人类偏好数据训练的偏好奖励与评估提示词忠实度等属性的评分奖励结合。实验显示该配方能有效提升开放域文生图质量，并降低奖励被钻空子的风险。",
-      "llm_tldr": "现有文本到图像模型虽视觉质量出色，但单一奖励信号难以全面刻画人类偏好，后训练提升仍具挑战。本文提出组合式奖励后训练方案，将基于大规模人类偏好数据训练的偏好奖励与评估提示词忠实度等属性的评分奖励结合。实验显示该配方能有效提升开放域文生图质量，并降低奖励被钻空子的风险。",
+      "llm_evidence_en": "composing preference and rubric rewards for post-training text-to-image models",
+      "llm_evidence_cn": "组合偏好奖励与评分标准奖励后训练文生图模型",
+      "llm_evidence": "组合偏好奖励与评分标准奖励后训练文生图模型",
+      "canonical_evidence": "组合偏好奖励与评分标准奖励后训练文生图模型",
+      "llm_tldr_en": "Text-to-image models reach high visual quality but post-training is hard since no single reward captures human preference. This work composes a preference reward with rubric-based rewards for prompt faithfulness, forming a robust recipe that improves open-domain generation.",
+      "llm_tldr_cn": "近年文生图模型视觉质量已很高，但通过后训练进一步提升仍很困难，因为没有单一奖励信号能覆盖人类偏好的全部维度。本文提出一套简单有效的开放域文生图后训练配方，核心是组合互补的奖励信号：一方面用大规模人类偏好数据以Bradley-Terry目标训练偏好奖励，捕捉整体美学与感知偏好；另一方面引入基于评分标准的奖励，显式评估提示词忠实度等属性并提供防奖励攻击的保障。实验表明该组合奖励配方能有效提升生成质量，为图像生成任务的奖励函数设计提供了可复用范式。",
+      "llm_tldr": "近年文生图模型视觉质量已很高，但通过后训练进一步提升仍很困难，因为没有单一奖励信号能覆盖人类偏好的全部维度。本文提出一套简单有效的开放域文生图后训练配方，核心是组合互补的奖励信号：一方面用大规模人类偏好数据以Bradley-Terry目标训练偏好奖励，捕捉整体美学与感知偏好；另一方面引入基于评分标准的奖励，显式评估提示词忠实度等属性并提供防奖励攻击的保障。实验表明该组合奖励配方能有效提升生成质量，为图像生成任务的奖励函数设计提供了可复用范式。",
       "llm_tags": [
         "query:image-gen-rl"
       ],
@@ -53,41 +53,38 @@
       "selection_source": "fresh_fetch"
     },
     {
-      "id": "2610.02372v1",
+      "id": "2610.05908v1",
       "source": "arxiv",
-      "title": "Traversing the Satisfaction-Diversity Frontier in Text-to-Image Diffusion",
-      "abstract": "Text-to-image generation enables users to explore several images generated from the same prompt. For these generated images to be useful, each one must reflect the user's preferences, measured by a learned reward, and differ visually from the others to maintain diversity. Existing methods are limited: they either address reward and diversity separately or combine them in one aggregate score, enabling high diversity to offset low rewards. In this paper, we address these limitations by formulating generation as satisficing: every image (candidate) must satisfy a reward floor and the batch of images must satisfy a diversity cutoff. The reward floor controls the balance between worst-candidate reward and batch diversity; we show that varying this floor defines a Pareto frontier. To traverse this frontier, we introduce SatisDive, a training-free inference-time method. SatisDive uses a batch-relative reward cutoff to distinguish lower- from higher-reward candidates, emphasizing reward improvement for candidates below the cutoff and diversity among candidates above it. On Pick-a-Pic, at matched DreamSim, SatisDive improves worst-candidate reward over FK steering by up to 0.43 with FLUX.1-dev as the base model and HPSv3 as the reward, and by up to 0.70 with SANA-1.6B as the base model and ImageReward as the reward. More broadly, across their overlapping DreamSim ranges, SatisDive's satisfaction-diversity curve Pareto-dominates FK steering's curve in each setting.",
+      "title": "Safe Image Generation via Reinforcement Learning",
+      "abstract": "Recent Text-to-Image (T2I) models achieve remarkable visual image generation performance, but they can still generate NSFW (Not-Safe-For-Work) contents, including violent or explicit images. Existing safety checker mechanisms are largely confined to pre-generation filtering (e.g. prompt-level text classifiers) or post-hoc moderation applied after an image is completely synthesized. However, adversarial attack methods operate over a much broader space. This imbalance highlights the need for a safety mechanism that intervenes during the generation process. We propose an in-generation safety framework that monitors the denoising trajectory and detects emerging NSFW signals from intermediate representations. Rather than merely detecting NSFW generations, our method applies reinforcement learning to generate safe images from NSFW prompts. By coupling in-generation detection with controllable steering, our approach mitigates unsafe trajectories even when NSFW signals emerge after generation has already begun. Experiments results show that our method consistently outperforms existing safe image generation methods across both standard and adversarial evaluation sets, while preserving perceptual quality and prompt fidelity. Code will be released upon acceptance.",
       "authors": [
-        "Kevin Zhai",
-        "Siva Rajesh Kasa",
-        "Soumya Roy",
-        "Sumit Negi",
-        "Mubarak Shah"
+        "Eungyeol Han",
+        "Jong-Seok Lee"
       ],
-      "primary_category": "cs.AI",
+      "primary_category": "cs.CV",
       "categories": [
-        "cs.AI"
+        "cs.CV"
       ],
-      "published": "2026-10-01T18:50:24+00:00",
-      "link": "https://arxiv.org/pdf/2610.02372v1",
+      "published": "2026-10-05T07:24:01+00:00",
+      "link": "https://arxiv.org/pdf/2610.05908v1",
       "tags": [
         "keyword:image-gen-rl",
         "query:image-gen-rl"
       ],
-      "llm_score": 8.0,
-      "llm_evidence_en": "learned reward floor and diversity cutoff for text-to-image generation",
-      "llm_evidence_cn": "面向文本到图像生成的学习奖励下限与多样性阈值",
-      "llm_evidence": "面向文本到图像生成的学习奖励下限与多样性阈值",
-      "canonical_evidence": "面向文本到图像生成的学习奖励下限与多样性阈值",
-      "llm_tldr_en": "Formulates T2I generation as satisficing: each image must meet a learned-reward floor while the batch keeps diversity, balancing preference satisfaction and variety.",
-      "llm_tldr_cn": "文本到图像扩散常需为同一提示生成多张图像，但既有方法要么分别处理奖励与多样性，要么用单一聚合分数，导致高多样性掩盖低奖励。本文把生成建模为满足问题：每张候选图像须达到奖励下限，整批图像须满足多样性阈值。实验表明，调节奖励下限即可控制最差候选奖励与批多样性的权衡。该工作为扩散模型的多候选生成提供了可调的奖励-多样性平衡框架。",
-      "llm_tldr": "文本到图像扩散常需为同一提示生成多张图像，但既有方法要么分别处理奖励与多样性，要么用单一聚合分数，导致高多样性掩盖低奖励。本文把生成建模为满足问题：每张候选图像须达到奖励下限，整批图像须满足多样性阈值。实验表明，调节奖励下限即可控制最差候选奖励与批多样性的权衡。该工作为扩散模型的多候选生成提供了可调的奖励-多样性平衡框架。",
+      "llm_score": 9.0,
+      "llm_evidence_en": "reinforcement learning applied directly during text-to-image generation for safety",
+      "llm_evidence_cn": "在文本到图像生成过程中直接应用强化学习以保障安全",
+      "llm_evidence": "在文本到图像生成过程中直接应用强化学习以保障安全",
+      "canonical_evidence": "在文本到图像生成过程中直接应用强化学习以保障安全",
+      "llm_tldr_en": "This framework monitors the denoising trajectory to detect emerging NSFW signals and applies reinforcement learning to intervene during image generation.",
+      "llm_tldr_cn": "该文针对文本到图像模型仍会生成暴力或色情等NSFW内容、而现有安全检查多局限于生成前提示过滤或生成后审核、难以应对更广攻击空间的问题，提出生成过程内的安全框架。方法监控去噪轨迹，从中间表征检测新兴NSFW信号，并用强化学习在生成过程中进行干预，而非仅事后检测。结果在生成阶段抑制了不安全内容，弥补了过滤与审核的空档。该工作展示了强化学习直接用于图像生成过程控制的可行性与价值。",
+      "llm_tldr": "该文针对文本到图像模型仍会生成暴力或色情等NSFW内容、而现有安全检查多局限于生成前提示过滤或生成后审核、难以应对更广攻击空间的问题，提出生成过程内的安全框架。方法监控去噪轨迹，从中间表征检测新兴NSFW信号，并用强化学习在生成过程中进行干预，而非仅事后检测。结果在生成阶段抑制了不安全内容，弥补了过滤与审核的空档。该工作展示了强化学习直接用于图像生成过程控制的可行性与价值。",
       "llm_tags": [
         "query:image-gen-rl"
       ],
       "matched_query_tag": "query:image-gen-rl",
-      "matched_query_text": "designing reward functions for image generation tasks",
-      "matched_requirement_id": "req-2",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
       "selection_source": "fresh_fetch"
     }
   ],
@@ -114,13 +111,13 @@
         "query:image-gen-rl"
       ],
       "llm_score": 7.0,
-      "llm_evidence_en": "RL for generation with sequential reward scheduling",
-      "llm_evidence_cn": "生成任务强化学习中的序列化奖励调度",
-      "llm_evidence": "生成任务强化学习中的序列化奖励调度",
-      "canonical_evidence": "生成任务强化学习中的序列化奖励调度",
-      "llm_tldr_en": "OuroReward tackles imbalanced optimization in RL for text-to-3D generation by estimating inter-dimension dependencies among quality rewards and scheduling them sequentially along a cyclic path that minimizes interference.",
-      "llm_tldr_cn": "文本到3D生成的强化学习需同时优化语义对齐、纹理清晰等多个质量维度，现有多奖励聚合方法忽视维度间依赖，导致优化失衡与相互干扰。本文提出OuroReward，先估计各维度两两依赖关系，再构造使累积干扰最小的循环优化路径并按时序调度奖励。实验表明该方法缓解了冲突维度的干扰，提升了生成质量。",
-      "llm_tldr": "文本到3D生成的强化学习需同时优化语义对齐、纹理清晰等多个质量维度，现有多奖励聚合方法忽视维度间依赖，导致优化失衡与相互干扰。本文提出OuroReward，先估计各维度两两依赖关系，再构造使累积干扰最小的循环优化路径并按时序调度奖励。实验表明该方法缓解了冲突维度的干扰，提升了生成质量。",
+      "llm_evidence_en": "RL reward scheduling across quality dimensions for generation",
+      "llm_evidence_cn": "面向生成的多维奖励调度强化学习",
+      "llm_evidence": "面向生成的多维奖励调度强化学习",
+      "canonical_evidence": "面向生成的多维奖励调度强化学习",
+      "llm_tldr_en": "OuroReward addresses imbalanced optimization in RL for text-to-3D generation by scheduling multiple quality rewards sequentially along a cyclic, interference-minimizing path instead of aggregating them simultaneously.",
+      "llm_tldr_cn": "针对文本到三维生成中强化学习多维质量目标同时优化导致的失衡与干扰问题，本文提出OuroReward顺序奖励调度策略。该方法先估计各质量维度之间的成对依赖关系，再构造一条累积干扰最小的循环优化路径，并将尾首依赖纳入调度。实验表明该策略能缓解维度间冲突、提升生成质量，为生成任务中的奖励函数设计提供了可迁移思路。",
+      "llm_tldr": "针对文本到三维生成中强化学习多维质量目标同时优化导致的失衡与干扰问题，本文提出OuroReward顺序奖励调度策略。该方法先估计各质量维度之间的成对依赖关系，再构造一条累积干扰最小的循环优化路径，并将尾首依赖纳入调度。实验表明该策略能缓解维度间冲突、提升生成质量，为生成任务中的奖励函数设计提供了可迁移思路。",
       "llm_tags": [
         "query:image-gen-rl"
       ],
@@ -152,19 +149,214 @@
         "query:image-gen-rl"
       ],
       "llm_score": 6.0,
-      "llm_evidence_en": "evolving image-generation harness to improve T2I quality",
-      "llm_evidence_cn": "演化图像生成外部框架以提升生成质量",
-      "llm_evidence": "演化图像生成外部框架以提升生成质量",
-      "canonical_evidence": "演化图像生成外部框架以提升生成质量",
-      "llm_tldr_en": "EvoGen-Harness evolves multiple generator-external responsibilities around frozen T2I models, using trajectory-relative exploration to better correct generation failures.",
-      "llm_tldr_cn": "现有方法在不改动生成器参数的前提下，通常只优化提示、路由或工作流等单一外部维度，限制了纠正生成失败的空间。论文提出EvoGen-Harness，一个与生成器无关的多职责图像生成框架演化框架，并引入轨迹相对（Trace）机制来高效探索何处以及如何持续演化。该方法利用视觉反馈指导多职责协同演化，从而扩大可修正失败的范围。实验表明多职责演化比单一维度优化更能有效提升文本到图像生成质量，为冻结生成器的外部适配提供了新范式。",
-      "llm_tldr": "现有方法在不改动生成器参数的前提下，通常只优化提示、路由或工作流等单一外部维度，限制了纠正生成失败的空间。论文提出EvoGen-Harness，一个与生成器无关的多职责图像生成框架演化框架，并引入轨迹相对（Trace）机制来高效探索何处以及如何持续演化。该方法利用视觉反馈指导多职责协同演化，从而扩大可修正失败的范围。实验表明多职责演化比单一维度优化更能有效提升文本到图像生成质量，为冻结生成器的外部适配提供了新范式。",
+      "llm_evidence_en": "improving image generation by evolving external harness with trajectory-relative search",
+      "llm_evidence_cn": "通过演化外部工具链并采用轨迹相对搜索来提升图像生成",
+      "llm_evidence": "通过演化外部工具链并采用轨迹相对搜索来提升图像生成",
+      "canonical_evidence": "通过演化外部工具链并采用轨迹相对搜索来提升图像生成",
+      "llm_tldr_en": "EvoGen-Harness evolves multiple generator-external responsibilities for frozen T2I systems using trajectory-relative search to better correct failures.",
+      "llm_tldr_cn": "该文针对现有文本到图像系统改进方法仅优化提示、路由或工作流等预设单一维度、限制生成失败修正空间的问题，提出生成器无关的EvoGen-Harness框架。方法允许多个生成器外部职责共同演化，并引入轨迹相对（Trace）机制，解决视觉反馈只揭示失败却不知在何处持续演化、如何高效探索的难题。结果拓宽了图像生成失败的修正空间。该工作为不改动生成器参数即可提升图像生成提供了新框架。",
+      "llm_tldr": "该文针对现有文本到图像系统改进方法仅优化提示、路由或工作流等预设单一维度、限制生成失败修正空间的问题，提出生成器无关的EvoGen-Harness框架。方法允许多个生成器外部职责共同演化，并引入轨迹相对（Trace）机制，解决视觉反馈只揭示失败却不知在何处持续演化、如何高效探索的难题。结果拓宽了图像生成失败的修正空间。该工作为不改动生成器参数即可提升图像生成提供了新框架。",
       "llm_tags": [
         "query:image-gen-rl"
       ],
       "matched_query_tag": "query:image-gen-rl",
       "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
       "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2610.04920v1",
+      "source": "arxiv",
+      "title": "PWM: Personalized World Models with Online Reinforcement Learning",
+      "abstract": "Pretrained world models can generate diverse environments, yet users often want to explore a particular scene specified by their own video. This requires learning the scene's visual identity while retaining the quality of action-conditioned generation. We introduce Personalized World Models (PWM), a framework for customizing interactive world models from short scene videos through online reinforcement learning. In PWM, the support trajectory and its associated controls provide reward feedback on continuations sampled from the current policy. In the GRPO instantiation, group-relative optimization updates a compact LoRA adapter using a unified reward for scene appearance, visual continuity, and motion, while base-policy anchoring regularizes changes to the pretrained generation prior of a frozen Yume-5B backbone. The same adaptation procedure is applied across real and rendered environments. We also instantiate PWM with DiffusionNFT as an alternative reward-guided optimization method for learning the scene-specific adapter. We also introduce PWM-Bench, comprising 150 customization tasks across Indoor, Outdoor, and Gaming, with paired evaluation on held-out continuations. The GRPO and DiffusionNFT instantiations of PWM improve customization over native Yume in 71.3% and 65.3% of the evaluated scenes, respectively, with positive mean gains across all three domains. For the GRPO instantiation, matched SFT comparisons further demonstrate higher mean customization gains and better mean image-quality scores in every domain, while retaining frame-level visual quality close to the pretrained model.",
+      "authors": [
+        "Zhexin Lou",
+        "Guancheng Lu",
+        "Zeyu Zhang",
+        "Yi Zhang",
+        "Yang Zhao",
+        "Hao Tang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-10-04T03:57:47+00:00",
+      "link": "https://arxiv.org/pdf/2610.04920v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "online reinforcement learning with a unified reward for scene appearance, visual continuity and motion to customize generative world models",
+      "llm_evidence_cn": "用统一奖励的在线强化学习定制生成式世界模型",
+      "llm_evidence": "用统一奖励的在线强化学习定制生成式世界模型",
+      "canonical_evidence": "用统一奖励的在线强化学习定制生成式世界模型",
+      "llm_tldr_en": "PWM customizes interactive world models from short scene videos via online RL, using a unified reward for appearance, continuity and motion to update a LoRA adapter with GRPO.",
+      "llm_tldr_cn": "预训练世界模型虽能生成多样环境，却难以按用户自有视频定制特定场景。本文提出个性化世界模型PWM，通过在线强化学习从短场景视频中学习场景视觉身份，同时保持动作条件生成质量。方法以支撑轨迹及其控制信号作为奖励反馈，在GRPO实例化下用统一奖励优化LoRA适配器，并加入基础策略锚定正则。实验表明该框架能有效定制交互式世界模型，兼顾外观、连续性与运动质量。",
+      "llm_tldr": "预训练世界模型虽能生成多样环境，却难以按用户自有视频定制特定场景。本文提出个性化世界模型PWM，通过在线强化学习从短场景视频中学习场景视觉身份，同时保持动作条件生成质量。方法以支撑轨迹及其控制信号作为奖励反馈，在GRPO实例化下用统一奖励优化LoRA适配器，并加入基础策略锚定正则。实验表明该框架能有效定制交互式世界模型，兼顾外观、连续性与运动质量。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2610.02372v1",
+      "source": "arxiv",
+      "title": "Traversing the Satisfaction-Diversity Frontier in Text-to-Image Diffusion",
+      "abstract": "Text-to-image generation enables users to explore several images generated from the same prompt. For these generated images to be useful, each one must reflect the user's preferences, measured by a learned reward, and differ visually from the others to maintain diversity. Existing methods are limited: they either address reward and diversity separately or combine them in one aggregate score, enabling high diversity to offset low rewards. In this paper, we address these limitations by formulating generation as satisficing: every image (candidate) must satisfy a reward floor and the batch of images must satisfy a diversity cutoff. The reward floor controls the balance between worst-candidate reward and batch diversity; we show that varying this floor defines a Pareto frontier. To traverse this frontier, we introduce SatisDive, a training-free inference-time method. SatisDive uses a batch-relative reward cutoff to distinguish lower- from higher-reward candidates, emphasizing reward improvement for candidates below the cutoff and diversity among candidates above it. On Pick-a-Pic, at matched DreamSim, SatisDive improves worst-candidate reward over FK steering by up to 0.43 with FLUX.1-dev as the base model and HPSv3 as the reward, and by up to 0.70 with SANA-1.6B as the base model and ImageReward as the reward. More broadly, across their overlapping DreamSim ranges, SatisDive's satisfaction-diversity curve Pareto-dominates FK steering's curve in each setting.",
+      "authors": [
+        "Kevin Zhai",
+        "Siva Rajesh Kasa",
+        "Soumya Roy",
+        "Sumit Negi",
+        "Mubarak Shah"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-10-01T18:50:24+00:00",
+      "link": "https://arxiv.org/pdf/2610.02372v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learned reward and diversity trade-off in text-to-image generation",
+      "llm_evidence_cn": "文生图生成中学习奖励与多样性的权衡",
+      "llm_evidence": "文生图生成中学习奖励与多样性的权衡",
+      "canonical_evidence": "文生图生成中学习奖励与多样性的权衡",
+      "llm_tldr_en": "This paper formulates text-to-image generation as satisficing, requiring each candidate to meet a reward floor and the batch to meet a diversity cutoff, giving better control of the reward-diversity trade-off than aggregate scores.",
+      "llm_tldr_cn": "文生图扩散模型可从同一提示生成多张图像，但每张既要符合用户偏好（由学习到的奖励度量），又要保持视觉多样性。现有方法要么分开处理奖励与多样性，要么用单一聚合分数，导致高多样性掩盖低奖励。本文将生成建模为满足式优化：每张候选必须达到奖励下限，整批图像必须满足多样性阈值。实验表明调节奖励下限可控制最差候选奖励与批多样性的权衡，为图像生成的奖励设计提供了新视角。",
+      "llm_tldr": "文生图扩散模型可从同一提示生成多张图像，但每张既要符合用户偏好（由学习到的奖励度量），又要保持视觉多样性。现有方法要么分开处理奖励与多样性，要么用单一聚合分数，导致高多样性掩盖低奖励。本文将生成建模为满足式优化：每张候选必须达到奖励下限，整批图像必须满足多样性阈值。实验表明调节奖励下限可控制最差候选奖励与批多样性的权衡，为图像生成的奖励设计提供了新视角。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2610.06021v1",
+      "source": "arxiv",
+      "title": "Scalable Minimal-Change Learning for Controllable Image Editing",
+      "abstract": "Image editing should change only the attributes specified by an instruction while preserving everything else, yet current methods often make unintended changes. We treat this minimal-change principle as an optimization objective for instruction-based editing. Latent L1 regularization is a poor proxy for output locality in modern nonlinear generators and often requires supervision unavailable at scale. We instead optimize edit outcomes with reinforcement learning. An agentic vision-language reward model audits each source image, instruction, and edited image for two failure types: unimplemented requested changes and unintended changes. A group-level rubric merges and verifies these issues to provide consistent rewards across candidate edits without per-instruction human annotations. On FLUX.1 Kontext-dev, ARRO raises average EditScore from 5.21 to 5.88 across MinEval, MagicBrush, AnyBench, and Emu-Edit. On 600 evaluation examples, it reduces off-target pixel change by 8.4% relative to the base editor. Reward and SFT controls, blinded human evaluations, and transfer to OmniGen2 provide complementary evidence. Code: https://github.com/Showwwwwwwww/ARRO",
+      "authors": [
+        "Shuo Chen",
+        "Fengming Huang",
+        "Yu Yao",
+        "Mingming Gong",
+        "Tongliang Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-10-05T09:18:55+00:00",
+      "link": "https://arxiv.org/pdf/2610.06021v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning with agentic VLM reward model and group-level rubric for image editing",
+      "llm_evidence_cn": "用智能体式视觉语言奖励模型与组级评分标准进行图像编辑的强化学习",
+      "llm_evidence": "用智能体式视觉语言奖励模型与组级评分标准进行图像编辑的强化学习",
+      "canonical_evidence": "用智能体式视觉语言奖励模型与组级评分标准进行图像编辑的强化学习",
+      "llm_tldr_en": "This work optimizes instruction-based image editing with RL, using an agentic VLM reward model and group-level rubric to enforce minimal-change edits.",
+      "llm_tldr_cn": "该文针对指令式图像编辑常出现非预期改动、而潜空间L1正则难以衡量现代非线性生成器输出局部性的问题，提出以强化学习直接优化编辑结果。方法用智能体式视觉语言奖励模型审查源图、指令与编辑图，识别未实现改动与意外改动两类失败，并通过组级评分标准合并与校验，形成无需逐指令监督的一致奖励。结果在可控编辑中减少了非预期改动。该工作为图像编辑任务的奖励函数设计提供了可扩展方案。",
+      "llm_tldr": "该文针对指令式图像编辑常出现非预期改动、而潜空间L1正则难以衡量现代非线性生成器输出局部性的问题，提出以强化学习直接优化编辑结果。方法用智能体式视觉语言奖励模型审查源图、指令与编辑图，识别未实现改动与意外改动两类失败，并通过组级评分标准合并与校验，形成无需逐指令监督的一致奖励。结果在可控编辑中减少了非预期改动。该工作为图像编辑任务的奖励函数设计提供了可扩展方案。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2610.03202v1",
+      "source": "arxiv",
+      "title": "Contextual Flow Matching: Adaptive Step Selection in Flow Models for Efficient Visual Generation",
+      "abstract": "Flow Matching enables high-quality visual generation via continuous-time dynamics, but inference remains costly due to multiple sequential function evaluations. Existing acceleration methods reduce the number of function evaluations but often introduce additional training overhead, degrade quality, or fail to account for input-dependent variability. We propose COFLOW, an inference-time method that adaptively selects the step counts each generation based on the prompt features. Our context-aware COFLOW is trained online with an unsupervised reward that balances inference efficiency and generation fidelity. Our method is plug-and-play, requiring no retraining of the underlying generative model. It generalizes to image and video generation, achieving over 2.5x speedup while preserving perceptual and semantic quality. We further provide a theoretical analysis establishing an O(1/K) forward-Euler discretization error bound under standard regularity conditions.",
+      "authors": [
+        "Divya Jyoti Bajpai",
+        "Arun Verma",
+        "Manjesh Kumar Hanawal"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-10-02T12:19:49+00:00",
+      "link": "https://arxiv.org/pdf/2610.03202v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "online unsupervised reward balances efficiency and generation fidelity",
+      "llm_evidence_cn": "在线无监督奖励平衡效率与生成保真度",
+      "llm_evidence": "在线无监督奖励平衡效率与生成保真度",
+      "canonical_evidence": "在线无监督奖励平衡效率与生成保真度",
+      "llm_tldr_en": "COFLOW tackles costly inference in flow-matching visual generation by adaptively choosing step counts per prompt, trained online with an unsupervised reward that trades off efficiency and fidelity without retraining the base model.",
+      "llm_tldr_cn": "针对流匹配视觉生成推理开销大、现有加速方法需额外训练或忽略输入差异的问题，本文提出COFLOW。该方法在推理时依据提示特征自适应选择步数，并用以平衡推理效率与生成保真度的无监督奖励进行在线训练。结果表明显著降低函数评估次数的同时保持生成质量，且即插即用、可泛化到图像与视频，为用奖励驱动生成质量优化提供了思路。",
+      "llm_tldr": "针对流匹配视觉生成推理开销大、现有加速方法需额外训练或忽略输入差异的问题，本文提出COFLOW。该方法在推理时依据提示特征自适应选择步数，并用以平衡推理效率与生成保真度的无监督奖励进行在线训练。结果表明显著降低函数评估次数的同时保持生成质量，且即插即用、可泛化到图像与视频，为用奖励驱动生成质量优化提供了思路。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "how to use reinforcement learning to improve image quality in generation",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2610.04538v1",
+      "source": "arxiv",
+      "title": "FASTER: Fast Adjoint Stochastic Transport for Endpoint Refinement in Reward-Guided Image Editing",
+      "abstract": "Reward-guided image editing at test time seeks to improve a specified reward while preserving source content and visual plausibility. Many existing approaches optimize candidates through pretrained generation processes, making repeated adjustment depend on costly large-model execution and, in some cases, backbone backpropagation. We develop a theoretical framework that jointly accounts for reward, source preservation, and pretrained-prior preferences, allowing the desired output distribution to be specified separately from the dynamics used to realize it. Based on this framework, we introduce FASTER, which trains a small network for each source and objective to perform inexpensive editing, while pretrained and reward models provide feedback on candidate outputs. By reusing each candidate and its feedback across multiple small-network updates, FASTER reduces repeated sampling and supervision queries without placing the pretrained generative backbone inside the inner optimization loop. On SD3, FASTER leads all four target metrics and several validation metrics among the evaluated methods. Compared with the evaluated baseline that optimizes controls along pretrained generation trajectories, FASTER achieves editing-time speedups of up to \\({6.91\\times}\\) on Stable Diffusion 3 and \\({24.14\\times}\\) on Stable Diffusion 1.5.",
+      "authors": [
+        "Yimiao Zhou",
+        "Zejia Zhong",
+        "Jingya Wang",
+        "Ye Shi"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-10-03T14:09:00+00:00",
+      "link": "https://arxiv.org/pdf/2610.04538v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reward-guided image editing via adjoint stochastic transport",
+      "llm_evidence_cn": "基于伴随随机传输的奖励引导图像编辑",
+      "llm_evidence": "基于伴随随机传输的奖励引导图像编辑",
+      "canonical_evidence": "基于伴随随机传输的奖励引导图像编辑",
+      "llm_tldr_en": "FASTER addresses costly reward-guided test-time image editing by training a small per-source network to realize a target distribution, separating reward, source preservation, and prior preferences without repeated large-model execution.",
+      "llm_tldr_cn": "针对测试时奖励引导图像编辑反复调用大模型、依赖反向传播且代价高昂的问题，本文提出FASTER。该方法构建联合考虑奖励、源内容保持与预训练先验的理论框架，为每个源与目标训练小网络实现低成本编辑，而预训练与奖励模型保持不变。实验表明显著降低编辑开销并保持内容与视觉合理性，为图像生成中的奖励引导优化提供了可迁移范式。",
+      "llm_tldr": "针对测试时奖励引导图像编辑反复调用大模型、依赖反向传播且代价高昂的问题，本文提出FASTER。该方法构建联合考虑奖励、源内容保持与预训练先验的理论框架，为每个源与目标训练小网络实现低成本编辑，而预训练与奖励模型保持不变。实验表明显著降低编辑开销并保持内容与视觉合理性，为图像生成中的奖励引导优化提供了可迁移范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "designing reward functions for image generation tasks",
+      "matched_requirement_id": "req-2",
       "selection_source": "fresh_fetch",
       "quick_tier": "6"
     }
