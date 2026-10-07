@@ -1,0 +1,39 @@
+{
+  "label": "2026-10-07",
+  "date": "2026-10-07",
+  "generated_at": "2026-10-07T23:23:06",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202610/07/2610.05252v1-mgpo-manifold-guided-diffusion-alignment-for-task-aware-dataset-distillation",
+      "section": "deep",
+      "title_en": "MGPO: Manifold-Guided Diffusion Alignment for Task-Aware Dataset Distillation",
+      "authors": "Yunyi Chen, Chenru Wang, Xinyi Ye, Zexin Zheng, Chi Zhang",
+      "date": "2026-10-04",
+      "pdf": "https://arxiv.org/pdf/2610.05252v1",
+      "score": "9.0",
+      "evidence": "将数据集蒸馏重构为多目标强化学习并设计判别与几何奖励",
+      "tldr": "扩散式数据集蒸馏存在目标错配：似然驱动的扩散模型偏向密度拟合，忽视下游任务所需的判别边界；仅靠密度还导致几何覆盖缺失，生成样本坍缩到少数高密度模态。为此提出MGPO，把蒸馏重构为多目标强化学习，用像素空间判别奖励与类别级最小生成树引导的隐空间几何奖励实现双空间对齐。实验显示其持续优于现有方法，低预算分割任务mIoU提升8.0%，并可扩展至检测等结构化任务。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Diffusion-based dataset distillation (DD) suffers from a fundamental objective mismatch: likelihood-driven diffusion models prioritize density approximation over the discriminative decision boundaries required for downstream tasks. Beyond semantic mismatch, relying solely on density also leads to geometric coverage loss, where generated samples collapse into a few high-density modes and fail to cover the manifold's structural diversity. We propose Manifold-Guided Policy Optimization (MGPO), which reformulates DD as a multi-objective reinforcement learning problem and achieves Dual-Space Alignment via a pixel-space discriminative reward and a latent-space geometric reward guided by a class-wise Minimum Spanning Tree (MST). The discriminative reward enforces class separability, while the MST-based geometric reward encourages generated latents to cover a sparse geometric skeleton of each class, jointly addressing both failure modes. We further provide an idealized analysis that motivates the MST-based reward, including a Hausdorff approximation bound and a subsampling bound independent of the dataset size. The reward-modular design extends to structured tasks such as object detection and segmentation by substituting the frozen task reward model. Extensive experiments show MGPO consistently outperforms existing methods, including a +8.0% mIoU gain on segmentation under low-budget settings.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202610/07/2610.04719v1-learning-to-clarify-underspecified-intents-under-limited-interaction",
+      "section": "quick",
+      "title_en": "Learning to Clarify Underspecified Intents Under Limited Interaction",
+      "authors": "Pranav M R, Manuel Cherep, Pattie Maes, Nikhil Singh",
+      "date": "2026-10-03",
+      "pdf": "https://arxiv.org/pdf/2610.04719v1",
+      "score": "6.0",
+      "evidence": "在图像生成中构建强化学习框架以恢复用户效用",
+      "tldr": "AI助手常收到信息不完整的请求，需在有限交互中决定是否追问，否则只能猜测。论文将其重构为信息价值问题：优先获取缺失后导致用户效用损失最大的信息，并在图像生成中用多轮模拟用户和强化学习训练助手预测该价值。预注册实验中，76名参与者共456轮交互，用户以更少提问、更短时间和更低成本更准确匹配参考图像。该框架为语言模型助手通过提出更有信息量的问题来消歧用户意图提供了可扩展路径。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "AI assistants receive requests that leave out information needed for a good outcome, for example about users' preferences or goals. They must then either speculate or ask for more information before proceeding. We reconceptualize this as a value-of-information problem: the assistant should acquire information whose absence causes the greatest avoidable loss in user utility. This is rarely known ex ante; rather, assistants must predict it in order to optimally allocate limited user interactions. We instantiate this problem in image generation and derive a reinforcement learning framework using multi-turn simulated users to maximize utility recovery under uncertainty. In a preregistered study with 456 interactive sessions across 76 human participants, this helped users significantly better match reference images with significantly fewer questions, less total interaction time, and lower cost. This points toward a simple and scalable framework for training language model assistants to better disambiguate user intent by asking more informative questions.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

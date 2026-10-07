@@ -1,0 +1,95 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-10-07T23:21:00.939295+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2610.05252v1",
+      "source": "arxiv",
+      "title": "MGPO: Manifold-Guided Diffusion Alignment for Task-Aware Dataset Distillation",
+      "abstract": "Diffusion-based dataset distillation (DD) suffers from a fundamental objective mismatch: likelihood-driven diffusion models prioritize density approximation over the discriminative decision boundaries required for downstream tasks. Beyond semantic mismatch, relying solely on density also leads to geometric coverage loss, where generated samples collapse into a few high-density modes and fail to cover the manifold's structural diversity. We propose Manifold-Guided Policy Optimization (MGPO), which reformulates DD as a multi-objective reinforcement learning problem and achieves Dual-Space Alignment via a pixel-space discriminative reward and a latent-space geometric reward guided by a class-wise Minimum Spanning Tree (MST). The discriminative reward enforces class separability, while the MST-based geometric reward encourages generated latents to cover a sparse geometric skeleton of each class, jointly addressing both failure modes. We further provide an idealized analysis that motivates the MST-based reward, including a Hausdorff approximation bound and a subsampling bound independent of the dataset size. The reward-modular design extends to structured tasks such as object detection and segmentation by substituting the frozen task reward model. Extensive experiments show MGPO consistently outperforms existing methods, including a +8.0% mIoU gain on segmentation under low-budget settings.",
+      "authors": [
+        "Yunyi Chen",
+        "Chenru Wang",
+        "Xinyi Ye",
+        "Zexin Zheng",
+        "Chi Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-10-04T14:27:08+00:00",
+      "link": "https://arxiv.org/pdf/2610.05252v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "reformulates diffusion dataset distillation as multi-objective RL with discriminative and geometric rewards",
+      "llm_evidence_cn": "将数据集蒸馏重构为多目标强化学习并设计判别与几何奖励",
+      "llm_evidence": "将数据集蒸馏重构为多目标强化学习并设计判别与几何奖励",
+      "canonical_evidence": "将数据集蒸馏重构为多目标强化学习并设计判别与几何奖励",
+      "llm_tldr_en": "MGPO reformulates diffusion dataset distillation as multi-objective RL, combining pixel-space discriminative and latent geometric rewards for dual-space alignment.",
+      "llm_tldr_cn": "针对扩散式数据集蒸馏中似然目标与下游判别需求错配、生成样本坍缩到少数高密度模态的问题，本文提出流形引导策略优化MGPO，把蒸馏重构为多目标强化学习问题，并设计像素空间判别奖励与基于类级最小生成树的隐空间几何奖励。实验显示该方法兼顾判别性与流形覆盖，缓解模式坍缩并提升下游任务性能。其意义在于为扩散生成引入可迁移的多目标奖励对齐范式。",
+      "llm_tldr": "针对扩散式数据集蒸馏中似然目标与下游判别需求错配、生成样本坍缩到少数高密度模态的问题，本文提出流形引导策略优化MGPO，把蒸馏重构为多目标强化学习问题，并设计像素空间判别奖励与基于类级最小生成树的隐空间几何奖励。实验显示该方法兼顾判别性与流形覆盖，缓解模式坍缩并提升下游任务性能。其意义在于为扩散生成引入可迁移的多目标奖励对齐范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2610.04719v1",
+      "source": "arxiv",
+      "title": "Learning to Clarify Underspecified Intents Under Limited Interaction",
+      "abstract": "AI assistants receive requests that leave out information needed for a good outcome, for example about users' preferences or goals. They must then either speculate or ask for more information before proceeding. We reconceptualize this as a value-of-information problem: the assistant should acquire information whose absence causes the greatest avoidable loss in user utility. This is rarely known ex ante; rather, assistants must predict it in order to optimally allocate limited user interactions. We instantiate this problem in image generation and derive a reinforcement learning framework using multi-turn simulated users to maximize utility recovery under uncertainty. In a preregistered study with 456 interactive sessions across 76 human participants, this helped users significantly better match reference images with significantly fewer questions, less total interaction time, and lower cost. This points toward a simple and scalable framework for training language model assistants to better disambiguate user intent by asking more informative questions.",
+      "authors": [
+        "Pranav M R",
+        "Manuel Cherep",
+        "Pattie Maes",
+        "Nikhil Singh"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-10-03T19:17:57+00:00",
+      "link": "https://arxiv.org/pdf/2610.04719v1",
+      "tags": [
+        "keyword:image-gen-rl",
+        "query:image-gen-rl"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL framework instantiated in image generation to recover user utility",
+      "llm_evidence_cn": "在图像生成中构建强化学习框架以恢复用户效用",
+      "llm_evidence": "在图像生成中构建强化学习框架以恢复用户效用",
+      "canonical_evidence": "在图像生成中构建强化学习框架以恢复用户效用",
+      "llm_tldr_en": "The paper reframes clarifying underspecified user intents as a value-of-information problem and derives an RL framework with multi-turn simulated users, instantiated in image generation, validated by a preregistered 76-participant study.",
+      "llm_tldr_cn": "该文针对AI助手面对信息缺失请求时只能猜测或追问的问题，将其重新表述为信息价值问题，即应优先获取最能避免效用损失的信息。作者在图像生成场景中构建了基于多轮模拟用户的强化学习框架，以在有限交互下最大化用户效用恢复。通过76名参与者、456次交互的预注册实验，验证了该方法的有效性。其贡献在于把主动澄清与强化学习结合，为交互式图像生成提供了新范式。",
+      "llm_tldr": "该文针对AI助手面对信息缺失请求时只能猜测或追问的问题，将其重新表述为信息价值问题，即应优先获取最能避免效用损失的信息。作者在图像生成场景中构建了基于多轮模拟用户的强化学习框架，以在有限交互下最大化用户效用恢复。通过76名参与者、456次交互的预注册实验，验证了该方法的有效性。其贡献在于把主动澄清与强化学习结合，为交互式图像生成提供了新范式。",
+      "llm_tags": [
+        "query:image-gen-rl"
+      ],
+      "matched_query_tag": "query:image-gen-rl",
+      "matched_query_text": "reinforcement learning for image generation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
