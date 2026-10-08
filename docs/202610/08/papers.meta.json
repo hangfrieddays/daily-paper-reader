@@ -1,0 +1,54 @@
+{
+  "label": "2026-10-08",
+  "date": "2026-10-08",
+  "generated_at": "2026-10-08T23:35:15",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202610/08/2610.09328v1-visual-jev-rewards-reference-bound-verification-for-multi-subject-image-generation",
+      "section": "deep",
+      "title_en": "Visual Jev Rewards: Reference-Bound Verification for Multi-Subject Image Generation",
+      "authors": "Baoteng Li, Wenzhuo Wu, Kongming Liang, Zhanyu Ma",
+      "date": "2026-10-07",
+      "pdf": "https://arxiv.org/pdf/2610.09328v1",
+      "score": "9.0",
+      "evidence": "将参考绑定的视觉奖励作为GRPO训练信号",
+      "tldr": "多主体图像生成中，仅检测主体是否出现不足以验证指定参考主体是否正确参与属性、动作与关系。本文提出 reference-bound Visual Jev 奖励，将每个主体相关问题的正标签限定为请求条件与参考身份同时成立，并用离线固定问题训练 Qwen3.5-4B 二分类验证器，从其语言模型头读取 Yes 概率，均值作为 GRPO 奖励。在 200 个 MICo-150K 任务上训练 30 次更新后，GPT-5.4 在 897 项 MICo-Bench 子集上的综合分从 41.78 升至 52.50，直接 27B 奖励为 51.84。该工作初步实现并评估了面向多主体生成的参考绑定奖励。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Multi-subject image generation requires rewards that verify whether requested attributes, actions, and relations hold for the specified reference subjects. Subject presence alone does not establish that the correct subjects participate in a requested interaction. We present reference-bound Visual Jev rewards that turn these visual decisions into generator training signals. Each subject-related question receives a positive label only when the requested condition and the relevant reference identities hold jointly. We construct fixed questions offline, train a Qwen3.5-4B verifier with binary supervision, and directly read Yes probabilities from its language-model head. Their mean supplies a GRPO reward while retaining individual judgments for inspection. Using 200 MICo-150K training tasks and 30 updates, the framework raises a GPT-5.4 composite score from 41.78 to 52.50 on a manually selected 897-task MICo-Bench subset; direct 27B rewards yield 51.84. Each reward is tested in one GRPO run, and offline human evaluation does not establish a statistically significant advantage over direct scoring. The study provides an initial implementation and evaluation of Visual Jev as a reference-bound reward for multi-subject image generation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202610/08/2610.09015v1-personalize-at-test-time-learning-user-preferences-for-image-generation",
+      "section": "deep",
+      "title_en": "Personalize at Test Time: Learning User Preferences for Image Generation",
+      "authors": "Jiamu Bai, Jiaming Hu, Yanhong Wu, Zellux Wang",
+      "date": "2026-10-06",
+      "pdf": "https://arxiv.org/pdf/2610.09015v1",
+      "score": "8.0",
+      "evidence": "从偏好对学习个性化奖励模型用于图像生成",
+      "tldr": "扩散模型生成质量高，却难对齐个体用户偏好；现有方法依赖人工标注或VLM，成本高且难扩展。本文提出从用户历史图像偏好对中学习个性化奖励：先用自编码器把数百视觉属性压缩为50个属性锚定偏好维度并训练评估器，再把用户偏好表示为这些共享维度得分的线性组合，用Bradley-Terry模型最大化成对偏好似然估计用户权重。推理时以个性化奖励引导冻结的扩散模型生成。真实用户数据上留出成对偏好预测约77%，显著提升生成图像与个人偏好对齐，实现稀疏反馈下的数据高效个性化。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Diffusion models can generate high-quality images, yet aligning their outputs with individual user preferences remains challenging. A key bottleneck is accurately modeling diverse user preferences from limited feedback. Existing approaches often rely on labor-intensive manual preference annotations or vision-language models (VLM) to extract preference information from user interaction histories, introducing substantial annotation or computational costs that limit scalability. We propose an approach that learns personalized reward models directly from users' historical image preference pairs. First, we use an autoencoder to compress hundreds of visual attributes into 50 attribute-anchored preference dimensions and train an evaluator to score images along these dimensions. We then represent each user's preferences as a linear combination of the shared dimension scores, estimating the user-specific weights by maximizing the likelihood of their observed pairwise preferences under the Bradley-Terry model. This formulation reduces per-user adaptation to optimizing a low-dimensional weight vector, simplifying optimization and enabling data-efficient personalization from sparse feedback. The learned personalized rewards guide image generation at inference time while keeping the diffusion model frozen. Experiments on real-user preference data show that our approach achieves approximately 77% held-out pairwise preference prediction accuracy and improves the alignment of generated images with individual user preferences.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202610/08/2610.08068v1-phystacgen-physics-aware-visual-tactile-sensor-image-generation",
+      "section": "quick",
+      "title_en": "PhysTacGen: Physics-Aware Visual-Tactile Sensor Image Generation",
+      "authors": "Guo Tang, Yongtao Wang",
+      "date": "2026-10-06",
+      "pdf": "https://arxiv.org/pdf/2610.08068v1",
+      "score": "7.0",
+      "evidence": "用强化学习GTPO做视触觉图像生成",
+      "tldr": "视觉-触觉配对数据采集成本高，视觉到触觉合成受外观与接触材料属性鸿沟及空间错位制约。PhysTacGen融合材料感知描述与几何条件，用GTPO强化微调视觉语言模型生成结构化材料描述，结合DINOv2配对筛选与单目相对深度先验，由SDXL ControlNet合成光学触觉图像。在SSVTP上结构相似度优于基线，用户研究偏好GTPO描述，生成触觉输入还提升力系数预测代理任务表现。",
+      "tags": "query:image-gen-rl",
+      "abstract_en": "Realistic physical interaction is a cornerstone of embodied intelligence, yet collecting paired visual--tactile data remains costly. Visual-to-tactile synthesis offers a promising approach to augmenting such data, but learning this mapping is complicated by the gap between visual appearance and contact-related material properties, as well as spatial misalignment in paired observations. To address these challenges, we present \\textbf{PhysTacGen}, a visual-to-optical-tactile image generation framework that integrates material-aware descriptions with geometric conditioning. First, we introduce Group Tactile Policy Optimization (GTPO), a reinforcement learning strategy that refines a vision--language model to generate structured material descriptions using task-specific rewards. Second, we combine DINOv2-based pair curation with monocular relative-depth estimation to select training pairs and provide geometric priors. Finally, an SDXL ControlNet synthesizes optical tactile images conditioned on RGB, relative depth, and GTPO-generated text. Experiments on curated SSVTP data demonstrate improved structural similarity over the compared baselines, while a blinded user study shows a preference for GTPO-generated descriptions. Generated tactile inputs also improve performance on an attribute-derived force-coefficient prediction proxy. Together, these results demonstrate the effectiveness of PhysTacGen for optical tactile image synthesis and its utility in the evaluated downstream task.The code will be available at https://github.com/VDIGPKU/PhysTacGen.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

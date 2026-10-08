@@ -6,26 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-10-07
-- 运行时间：2026-10-07 23:23:03 UTC
+- 最新运行日期：2026-10-08
+- 运行时间：2026-10-08 23:35:10 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
+- 本次总论文数：3
+- 精读区：2
 - 速读区：1
 
 ### 今日简报（AI）
-今日精读1篇、速读1篇，共2篇，重点落在扩散对齐与数据集蒸馏。最值得看的是9.0分的MGPO，用流形引导做任务感知的数据集蒸馏；速读的6.0分工作则关注有限交互下澄清欠明确意图。普通读者可先读MGPO了解扩散模型如何按任务定制小数据集，再按兴趣浏览意图澄清方向。
-- 详情：[/202610/07/README](/202610/07/README)
+- 今日共生成 3 篇推荐（精读 2 篇，速读 1 篇）
+- 精读：《Visual Jev Rewards: Reference-Bound Verification for Multi-Subject Image Generation》（9.0/10）, 《Personalize at Test Time: Learning User Preferences for Image Generation》（8.0/10）
+- 速读：《PhysTacGen: Physics-Aware Visual-Tactile Sensor Image Generation》（7.0/10）
+- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
+- 详情：[/202610/08/README](/202610/08/README)
 
 ### 精读区论文标签
-1. [MGPO: Manifold-Guided Diffusion Alignment for Task-Aware Dataset Distillation](/202610/07/2610.05252v1-mgpo-manifold-guided-diffusion-alignment-for-task-aware-dataset-distillation)  
+1. [Visual Jev Rewards: Reference-Bound Verification for Multi-Subject Image Generation](/202610/08/2610.09328v1-visual-jev-rewards-reference-bound-verification-for-multi-subject-image-generation)  
    标签：评分：9.0/10、query:image-gen-rl
-   evidence：将数据集蒸馏重构为多目标强化学习并设计判别与几何奖励
+   evidence：将参考绑定的视觉奖励作为GRPO训练信号
+2. [Personalize at Test Time: Learning User Preferences for Image Generation](/202610/08/2610.09015v1-personalize-at-test-time-learning-user-preferences-for-image-generation)  
+   标签：评分：8.0/10、query:image-gen-rl
+   evidence：从偏好对学习个性化奖励模型用于图像生成
 
 ### 速读区论文标签
-1. [Learning to Clarify Underspecified Intents Under Limited Interaction](/202610/07/2610.04719v1-learning-to-clarify-underspecified-intents-under-limited-interaction)  
-   标签：评分：6.0/10、query:image-gen-rl
-   evidence：在图像生成中构建强化学习框架以恢复用户效用
+1. [PhysTacGen: Physics-Aware Visual-Tactile Sensor Image Generation](/202610/08/2610.08068v1-phystacgen-physics-aware-visual-tactile-sensor-image-generation)  
+   标签：评分：7.0/10、query:image-gen-rl
+   evidence：用强化学习GTPO做视触觉图像生成
 
 
 <div class="dpr-home-promo-card">
